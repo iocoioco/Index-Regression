@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C838A759-4B9B-4AB1-952B-20F47E8112DE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>New_Tradegy</RootNamespace>
+    <AssemblyName>New Tradegy</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommandLineProgram">
+      <HintPath>..\..\MyMedialLite\MyMediaLite-3.11\MyMediaLite-3.11\lib\mymedialite\CommandLineProgram.dll</HintPath>
+    </Reference>
+    <Reference Include="glbl">
+      <HintPath>..\glbl\bin\Debug\netstandard2.0\glbl.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.61.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.61\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.5.1\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MyMediaLite">
+      <HintPath>..\..\MyMedialLite\MyMediaLite-3.11\MyMediaLite-3.11\lib\mymedialite\MyMediaLite.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.3.2\lib\net46\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="oper">
+      <HintPath>..\oper\bin\Debug\netstandard2.0\oper.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Speech" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebDriver, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.4.21.0\lib\netstandard2.0\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="work">
+      <HintPath>..\work\bin\Debug\netstandard2.0\work.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_그룹.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_그룹.Designer.cs">
+      <DependentUpon>Form_그룹.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_매매.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_매매.Designer.cs">
+      <DependentUpon>Form_매매.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_무게.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_무게.Designer.cs">
+      <DependentUpon>Form_무게.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_제어.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_제어.Designer.cs">
+      <DependentUpon>Form_제어.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_지수_조정.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_지수_조정.Designer.cs">
+      <DependentUpon>Form_지수_조정.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_매수_매도.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_매수_매도.Designer.cs">
+      <DependentUpon>Form_매수_매도.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_보조_차트.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_보조_차트.Designer.cs">
+      <DependentUpon>Form_보조_차트.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_호가.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_호가.Designer.cs">
+      <DependentUpon>Form_호가.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Library\buys.cs" />
+    <Compile Include="Library\ChartState.cs" />
+    <Compile Include="Library\clic.cs" />
+    <Compile Include="Library\cncl.cs" />
+    <Compile Include="Library\deal.cs" />
+    <Compile Include="Library\draw.cs" />
+    <Compile Include="Library\eval.cs" />
+    <Compile Include="Library\hoga.cs" />
+    <Compile Include="Library\jpbd.cs" />
+    <Compile Include="Library\sell.cs" />
+    <Compile Include="Library\temp.cs" />
+    <Compile Include="Library\test.cs" />
+    <Compile Include="Library\glbl.cs" />
+    <Compile Include="Library\keys.cs" />
+    <Compile Include="Library\math.cs" />
+    <Compile Include="Library\misc.cs" />
+    <Compile Include="Library\mnts.cs" />
+    <Compile Include="Library\opdl.cs" />
+    <Compile Include="Library\post.cs" />
+    <Compile Include="Library\read.cs" />
+    <Compile Include="Library\scrp.cs" />
+    <Compile Include="Library\strg.cs" />
+    <Compile Include="Library\wndw.cs" />
+    <Compile Include="Library\work.cs" />
+    <Compile Include="Library\writ.cs" />
+    <Compile Include="Memo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Memo.Designer.cs">
+      <DependentUpon>Memo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Library\mkey.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_그룹.resx">
+      <DependentUpon>Form_그룹.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_매매.resx">
+      <DependentUpon>Form_매매.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_매수_매도.resx">
+      <DependentUpon>Form_매수_매도.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_보조_차트.resx">
+      <DependentUpon>Form_보조_차트.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_제어.resx">
+      <DependentUpon>Form_제어.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_지수_조정.resx">
+      <DependentUpon>Form_지수_조정.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_호가.resx">
+      <DependentUpon>Form_호가.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Memo.resx">
+      <DependentUpon>Memo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="CPSYSDIBLib">
+      <Guid>{9C31B76A-7189-49A3-9781-3C6DD6ED5AD3}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="CPTRADELib">
+      <Guid>{1F7D5E5A-05AB-4236-B6F3-3D383B09203A}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="CPUTILLib">
+      <Guid>{2DA9C35C-FE59-4A32-A942-325EE8A6F659}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="DSCBO1Lib">
+      <Guid>{859343F1-08FD-11D4-8231-00105A7C4F8C}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Selenium.WebDriver.4.21.0\build\Selenium.WebDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.4.21.0\build\Selenium.WebDriver.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.4.21.0\build\Selenium.WebDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.4.21.0\build\Selenium.WebDriver.targets'))" />
+  </Target>
+</Project>

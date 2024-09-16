@@ -1,0 +1,49 @@
+my work flows 
+1. download 1000 stock data from stock exchange company every second using API 
+2. recalculate the date for my own purpose 
+3. plot using chart and datagridview to make a selection and a decision  
+4 buying based on the decision 
+5 monitoring the price change of holding stock 
+6 sell ... recommend code structure how to start
+
+
+ I used a lot of global variables to used in different classes ... 
+ how can I change my codes ... guess total lines are more than 20,000 lines
+
+ public class StockRepository
+{
+    public Dictionary<string, decimal> StockPrices { get; private set; }
+
+    public StockRepository()
+    {
+        StockPrices = new Dictionary<string, decimal>();
+    }
+
+    public void AddStockPrice(string symbol, decimal price)
+    {
+        StockPrices[symbol] = price;
+    }
+
+    public decimal GetStockPrice(string symbol)
+    {
+        return StockPrices.ContainsKey(symbol) ? StockPrices[symbol] : 0;
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var stockRepository = new StockRepository();
+
+        // Add some sample data
+        stockRepository.AddStockPrice("AAPL", 150.25M);
+        stockRepository.AddStockPrice("GOOGL", 2800.50M);
+
+        var stockAnalyzer = new StockAnalyzer(stockRepository);
+        var stockDisplay = new StockDisplay(stockRepository);
+
+        stockAnalyzer.Analyze();
+        stockDisplay.Display();
+    }
+}

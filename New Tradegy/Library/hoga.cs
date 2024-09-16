@@ -1,0 +1,317 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace New_Tradegy.Library
+{
+
+    internal class hg
+    {
+        private static CPUTILLib.CpCybos _cpcybos;
+
+        public static bool HogaInsert(string stock, int rows, int rowId, int colId)
+        {
+            if (HogaFormNameGivenStock(stock) != null)
+                return false;
+
+            bool inserted = false;
+
+            Size formSize = new Size();
+            Point formLocation = new Point();
+            HogaFormSizeLocation(stock, rowId, colId, rows, ref formSize, ref formLocation);
+
+            if (stock == g.KODEX4[0])
+            {
+                HogaRemove(g.KODEX4[1]);
+            }
+            else if (stock == g.KODEX4[1])
+            {
+                HogaRemove(g.KODEX4[0]);
+               
+            }
+            else if (stock == g.KODEX4[2])
+            {
+                HogaRemove(g.KODEX4[3]);
+            }
+            else if (stock == g.KODEX4[3])
+            {
+                HogaRemove(g.KODEX4[2]);
+               
+            }
+            // if a form with stock name exists, locate a new location and return
+            
+
+            Form_호가 form_호가 = new Form_호가(stock, formSize, formLocation, rows, rowId, colId);
+           
+            
+            form_호가.Show();
+
+            return inserted;
+        }
+
+        // called by HogaInsert
+        // rowID 1 ~ 3, colID if 일반, not couting 0 and 1, start from 0, rows 5 or 10, return formSize, formLocation
+        public static void HogaFormSizeLocation(string stock, int rowId, int colId, int rows, ref Size formSize, ref Point formLocation)
+        {
+            // 크기
+            formSize.Width = g.screenWidth / 11;      // main form column => 11 ea 1920 / 11 = 174
+            if (rows == 5)
+            {
+                formSize.Height = g.formSize.ch * 12; // height of a row * 12 rows for 5 Hoga
+            }
+            else
+            {
+                formSize.Height = g.formSize.ch * 22; // height of a row * 22 rows for 10 Hoga
+            }
+
+            // Column
+            if (colId == g.nCol - 1)
+            {
+                colId--; // last column
+            }
+            else
+            {
+                colId++;
+            }
+            // Row
+            if(rows == 10 && rowId == 2)
+            {
+                rowId--;
+            }
+
+            if (stock == g.KODEX4[2] || stock == g.KODEX4[3]) // kosdaq leverage & inverse
+            {
+                rowId++;
+            }
+           
+            
+            int xShift = 0;
+            if (g.nCol == 10)
+                xShift += 15;
+            if (g.nCol == 9)
+                xShift += 30;
+
+            int yShift = 0;
+            if (rows == 10 && rowId == 2)
+            {
+                yShift = g.formSize.ch * 4;
+            }
+
+            formLocation = new Point(g.screenWidth / g.rqwey_nCol * colId + xShift, g.screenHeight / g.rqwey_nRow * rowId + yShift);
+        }
+
+        // close form and dgv with the name of stock
+        public static bool HogaRemove(string stock)
+        {
+            object a;
+
+            if (g.jpjds.TryGetValue(stock, out a))
+            {
+                int sb = RemainSB();
+                DSCBO1Lib.StockJpbid _stockjpbid = (DSCBO1Lib.StockJpbid)a;
+                _stockjpbid.Unsubscribe(); // working
+                                           // Key was present; date is set to the value in the dictionary.
+                sb = RemainSB();
+                Form f = HogaFormNameGivenStock(stock);
+                DataGridView dgv = f.Controls.Find(stock, true).FirstOrDefault() as DataGridView;
+                dgv.Dispose();
+                f.Close();
+                if (g.jpjds.ContainsKey(stock))
+                {
+                    g.jpjds.Remove(stock);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // from HogaForm find value : rowShft 
+        public static int HogaGetValue(string stock, int rowShift, int column)
+        {
+            int return_value = -1;
+
+            Form_호가 f = (Form_호가)Application.OpenForms[stock];
+            if (f == null)
+            {
+                return -1;
+            }
+
+            if (!IsBidChartComplete(f))
+            {
+                // Handle the case where the bid chart is not complete
+                return -1;
+            }
+
+            //Form F = null;
+            //foreach (Form form in Application.OpenForms)
+            //{
+            //    if (form.Text == stock)
+            //    {
+            //        F = form;
+            //        break;
+            //    }
+            //}
+
+            //if (F == null)
+            //{
+            //    return -1;
+            //}
+
+            var d = f.Controls.Find(stock, true);
+            if (d == null)
+            {
+                return -1;
+            }
+
+            DataGridView dg = null;
+            foreach (var aa in d)
+            {
+                if (aa.Name == stock)
+                {
+                    dg = (DataGridView)aa;
+                    break;
+                }
+            }
+            if (dg == null)
+            {
+                return -1;
+            }
+
+            int a = (dg.RowCount - 2) / 2 + rowShift; // 매수1호가 -> rowShift = 0
+            if (a >= dg.RowCount - 2) // 호가 하단 3개 Row 호가 없음, 잘못 클릭으로 처리
+            {
+                return -1;
+            }
+            else
+            {
+                return return_value = wk.return_integer_from_mixed_string(dg.Rows[a].Cells[column].Value.ToString());
+            }
+        }
+
+        // Method to check if the bid chart is complete
+        private static bool IsBidChartComplete(Form_호가 form)
+        {
+            // Find the DataGridView control within the form
+            DataGridView dg = form.Controls.OfType<DataGridView>().FirstOrDefault();
+            if (dg == null)
+            {
+                return false;
+            }
+
+            // Check if the DataGridView has the expected number of rows
+            //if (dg.RowCount < EXPECTED_ROW_COUNT)
+            //{
+            //    return false;
+            //}dg.RowCount != 12
+            if (dg.RowCount != 12 && dg.RowCount != 22)
+            {
+                return false;
+            }
+
+            // Check if specific key cells contain valid data
+            //int KEY_COLUMN_INDEX = 2;
+            //for (int i = 0; i < dg.RowCount; i++)
+            //{
+            //    if (dg.Rows[i].Cells[KEY_COLUMN_INDEX].Value == null ||
+            //        string.IsNullOrWhiteSpace(dg.Rows[i].Cells[KEY_COLUMN_INDEX].Value.ToString()))
+            //    {
+            //        return false;
+            //    }
+            //}
+
+            //// Optionally, use a flag to indicate completeness
+            //if (!form.IsBidChartPopulated)
+            //{
+            //    return false;
+            //}
+
+            return true;
+        }
+
+        // return form name if exist as a given stock name
+        public static Form HogaFormNameGivenStock(string stock)
+        {
+            Form formFound = null;
+            FormCollection openForms = Application.OpenForms;
+            foreach (Form form in openForms)
+            {
+                if (form.Name == stock)
+                    formFound = form;
+            }
+            return formFound;
+        }
+
+        // this is used to delete duplicate Form_지수_조정
+        public static List<Form> FormNameContainGivenString(string str)
+        {
+            List<Form> list = new List<Form>();
+            Form formFound = null;
+            FormCollection openForms = Application.OpenForms;
+            foreach (Form form in openForms)
+            {
+                if (form.Name.Contains(str))
+                    list.Add(form);
+            }
+            return list;
+        }
+
+        public static Form FormContainGivenString(string str)
+        {
+
+            Form formFound = null;
+            FormCollection openForms = Application.OpenForms;
+            foreach (Form form in openForms)
+            {
+                if (form.Name.Contains(str))
+                    return form;
+            }
+            return formFound;
+        }
+
+        // all stock forms name to a list and return it
+        public static List<string> HogaAllStockFormNames()
+        {
+            List<string> stockFormNames = new List<string>();
+            FormCollection openForms = Application.OpenForms;
+            foreach (Form form in openForms)
+            {
+                if (wk.isStock(form.Name))
+                {
+                    stockFormNames.Add(form.Name);
+                }
+            }
+            return stockFormNames;
+        }
+
+        // all forms name to a list and return it
+        public static List<Form> FormListGeneralStock()
+        {
+            List<Form> FormList = new List<Form>();
+            FormCollection openForms = Application.OpenForms;
+            foreach (Form form in openForms)
+            {
+                if (wk.isStock(form.Name) && !g.KODEX4.Contains(form.Name))
+                {
+                    FormList.Add(form);
+                }
+            }
+            return FormList;
+        }
+
+        public static int RemainSB()
+        {
+            if (_cpcybos == null)
+                return 400;
+            return _cpcybos.GetLimitRemainCount(CPUTILLib.LIMIT_TYPE.LT_SUBSCRIBE);               // 400건의 요청으로 제한   
+        }
+    }
+}

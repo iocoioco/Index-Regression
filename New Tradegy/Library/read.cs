@@ -1,0 +1,1986 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using System.Diagnostics;                   // 필요함.
+
+
+namespace New_Tradegy.Library
+{
+    internal class rd
+    {
+        static CPUTILLib.CpCodeMgr _cpcodemgr;
+        static CPUTILLib.CpStockCode _cpstockcode;
+
+        // not used
+        public static void read_관심제거추가(string stock)
+        {
+            return;
+
+            DateTime date = DateTime.Now;
+            int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
+
+            foreach (var item in g.관심삭제) // 3분 이상 지난 종목은 제외
+            {
+                if (HHmmss - item.Value > 300)
+                {
+                    g.관심삭제.Remove(item.Key);
+                }
+            }
+
+            g.관심삭제.Remove(stock); // by key, if exist remove
+            g.관심삭제.Add(stock, HHmmss);
+        }
+
+        // not used
+        public static bool read_관심제거여부(string stock)
+        {
+            return false;
+
+            DateTime date = DateTime.Now;
+            int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
+
+            foreach (var item in g.관심삭제)
+            {
+                if (HHmmss - item.Value > 300) // 3분 이상 지난 종목은 제외
+                {
+                    g.관심삭제.Remove(item.Key);
+                }
+            }
+
+            return g.관심삭제.ContainsKey(stock);
+        }
+
+        public static List<string> txtFilesInGivenDirectory(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                return null;
+            }
+            var txtFiles = Directory.GetFiles(directory, "*.txt")
+                     .Select(Path.GetFileName)
+                     .ToList();
+
+            return txtFiles;
+        }
+
+        public static void read_dl_stocks_only_for_given_date(List<string> dl)
+        {
+            string path = @"C:\병신\분\" + g.date.ToString();
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
+
+            foreach (var stock in dl)
+            {
+                string file_path = path + "/" + stock + ".txt";
+                if (!File.Exists(path))
+                {
+                    continue;
+                }
+            }
+        }
+
+        public static void read_all_stocks_for_given_date(List<string> gl)
+        {
+            g.sl.Clear();
+            string path = @"C:\병신\분\" + g.date.ToString();
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
+            var sl = Directory.GetFiles(path, "*.txt")
+                     .Select(Path.GetFileName)
+                     .ToList();
+
+            List<string> 제외종목 = new List<string>();
+            제외종목 = read_제외();  // read_all_stocks_for_given_date
+
+
+            g.호가종목.Clear();
+            foreach (var stock in sl)
+            {
+                if (제외종목.Contains(stock))
+                {
+                    continue;
+                }
+                if (stock.Contains("processed"))
+                {
+                    continue;
+                }
+                string stock_without_txt = stock.Replace(".txt", "");
+
+                gl.Add(stock_without_txt);
+            }
+        }
+
+        public static void read_통계()
+        {
+            string[] grlines = File.ReadAllLines(@"C:\병신\data\통계.txt");
+            foreach (string line in grlines)
+            {
+                List<string> alist = new List<string>();
+
+                string[] words = line.Split('\t');
+                if (words.Length != 14)
+                {
+                    continue;
+                }
+
+                int index = wk.return_index_of_ogldata(words[0]); // o&g in "h&g" the index could be negative
+                if (index < 0)
+                {
+                    continue;
+                }
+                g.stock_data o = g.ogl_data[index];
+
+                o.pass.month = (int)((Convert.ToInt32(words[1]) - (int)o.전일종가) * 10000.0 / o.전일종가);
+                o.pass.quarter = (int)((Convert.ToInt32(words[2]) - (int)o.전일종가) * 10000.0 / o.전일종가);
+                o.pass.half = (int)((Convert.ToInt32(words[3]) - (int)o.전일종가) * 10000.0 / o.전일종가);
+                o.pass.year = (int)((Convert.ToInt32(words[4]) - (int)o.전일종가) * 10000.0 / o.전일종가);
+
+                // 프분
+                if (words[5] == "")
+                    o.통계.프분_count = 0;
+                else
+                    o.통계.프분_count = Convert.ToInt32(words[5]);
+                if (words[6] == "")
+                    o.통계.프분_avr = 0.0;
+                else
+                    o.통계.프분_avr = Convert.ToDouble(words[6]);
+                if (words[7] == "")
+                    o.통계.프분_dev = 0.0;
+                else
+                    o.통계.프분_dev = Convert.ToDouble(words[7]);
+
+                // 거분
+                if (words[8] == "")
+                    o.통계.거분_avr = 0.0;
+                else
+                    o.통계.거분_avr = Convert.ToDouble(words[8]);
+                if (words[9] == "")
+                    o.통계.거분_dev = 0.0;
+                else
+                    o.통계.거분_dev = Convert.ToDouble(words[9]);
+
+                // 배차
+                if (words[10] == "")
+                    o.통계.배차_avr = 0.0;
+                else
+                    o.통계.배차_avr = Convert.ToDouble(words[10]);
+                if (words[11] == "")
+                    o.통계.배차_dev = 0.0;
+                else
+                    o.통계.배차_dev = Convert.ToDouble(words[11]);
+
+                // 배합
+                if (words[12] == "")
+                    o.통계.배합_avr = 0.0;
+                else
+                    o.통계.배합_avr = Convert.ToDouble(words[12]);
+                if (words[13] == "")
+                    o.통계.배합_dev = 0.0;
+                else
+                    o.통계.배합_dev = Convert.ToDouble(words[13]);
+            }
+        }
+
+        public static void read_시간별거래비율(List<List<string>> 누적)
+        {
+            string[] grlines = File.ReadAllLines(@"C:\병신\data\누적.txt", Encoding.Default);
+            foreach (string line in grlines)
+            {
+                List<string> alist = new List<string>();
+
+                string[] words = line.Split(' ');
+                foreach (string item in words)
+                {
+                    if (item == "") continue; // WN code check needed for misspelling
+
+                    alist.Add(item);
+                }
+                누적.Add(alist);
+            }
+        }
+
+        public static void read_누적(double[] 누적)
+        {
+            string[] grlines = File.ReadAllLines(@"C:\병신\data\누적.txt", Encoding.Default);
+            int count = 0;
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split(' ');
+                누적[count++] = Convert.ToDouble(words[1]);
+            }
+        }
+
+        public static void read_or_set_stocks()
+        {
+            string path = @"C:\병신\분" + "\\" + g.date.ToString();
+            Directory.CreateDirectory(path); // read_or_set_stocks
+
+            //if (wk.return_index_of_ogldata("코스피혼합") < 0)
+            //{
+            //    g.stock_data a = new g.stock_data();
+            //    a.종목 = "코스피혼합";
+
+            //    g.ogl_data.Insert(0, a);
+            //}
+            //if (wk.return_index_of_ogldata("코스닥혼합") < 0)
+            //{
+            //    g.stock_data b = new g.stock_data();
+            //    b.종목 = "코스닥혼합";
+            //    g.ogl_data.Insert(0, b);
+            //}
+
+            if (g.KODEX4.Count == 0)
+            {
+                g.KODEX4.Add("KODEX 레버리지");
+                g.KODEX4.Add("KODEX 200선물인버스2X");
+                g.KODEX4.Add("KODEX 코스닥150레버리지");
+                g.KODEX4.Add("KODEX 코스닥150선물인버스");
+            }
+
+            // read_or_set_stocks
+            for (int i = 0; i < g.ogl_data.Count; i++)
+            {
+                g.stock_data o = g.ogl_data[i];
+
+                // read in file into o.x[382, 12]
+                // if file not exist, generate a new file from 0859 and save & read it again
+                #region
+                string file = path + "\\" + o.stock + ".txt";
+                if (!(File.Exists(file))) // if file not exist, create new
+                {
+                    File.Create(file).Close();
+                    string minutestr = "85959\t0\t100\t0\t0\t0\t0\t0\t0\t0\t0\t0"; // 12 items
+                    using (StreamWriter w = File.AppendText(file))
+                    {
+                        w.WriteLine("{0}", minutestr);
+                        w.Close(); // modified
+                    }
+                }
+
+                var lines = File.ReadAllLines(file); // Nothing in file
+                if (lines.Length == 0)
+                {
+                    File.Delete(file);
+                    File.Create(file).Close();
+                    string minutestr;
+                    if (g.KODEX4.Contains(o.stock))
+                        minutestr = "85959\t0\t100\t0\t0\t0\t0\t0\t0\t0\t0\t0"; // 12 items
+                    else
+                        minutestr = "85959\t0\t100\t10000\t0\t0\t0\t0\t0\t0\t0\t0"; // 12 items
+
+                    using (StreamWriter w = File.AppendText(file))
+                    {
+                        w.WriteLine("{0}", minutestr);
+                        w.Close(); // modified
+                    }
+                    lines = File.ReadAllLines(file);
+                }
+
+                o.nrow = 0;
+
+                int current_time = 0;
+
+                foreach (var line in lines)
+                {
+                    string[] words = line.Split(' ');
+                    if (words.Length == 1)
+                    {
+                        words = line.Split('\t');
+                    }
+                    if (words[0].Contains(":"))
+                    {
+                        current_time = ms.time_to_int(words[0]);
+                    }
+                    else
+                    {
+                        current_time = Convert.ToInt32(words[0]);
+                    }
+
+                    if (current_time >= 85959 && current_time < 152100)
+                    {
+                        o.x[o.nrow, 0] = current_time;
+                        for (int j = 1; j < words.Length; j++)
+                        {
+                            o.x[o.nrow, j] = Convert.ToInt32(words[j]);
+                        }
+                        o.nrow++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // make the other rows not in the file all zeros for marketeye_received
+                for (int j = o.nrow; j < g.MAX_ROW; j++) // read_or_set_stocks again ... not zero and trouble in draw_stock
+                {
+                    for (int m = 0; m < 12; m++)
+                    {
+                        o.x[j, m] = 0;
+                    }
+                }
+
+                if (o.nrow == 0)
+                    continue;
+
+                o.당일프로그램순매수량 = o.x[o.nrow - 1, 4];
+                o.당일외인순매수량 = o.x[o.nrow - 1, 5];
+                o.당일기관순매수량 = o.x[o.nrow - 1, 6];
+                int 거래량 = o.x[o.nrow - 1, 7];
+
+                o.틱의시간[0] = o.x[o.nrow - 1, 0];
+                o.틱의가격[0] = o.x[o.nrow - 1, 1];
+                o.틱의수급[0] = o.x[o.nrow - 1, 2];
+                o.틱의체강[0] = o.x[o.nrow - 1, 3];
+                double intensity_double = o.틱의체강[0] / g.HUNDRED;
+                if (intensity_double > 0)
+                {
+                    o.틱매수량[0] = (int)(거래량 * intensity_double / (100.0 + intensity_double));
+                    o.틱매도량[0] = (int)(거래량 * 100.0 / (100.0 + intensity_double));
+                }
+
+                o.틱매수배[0] = o.x[o.nrow - 1, 8];
+                o.틱매도배[0] = o.x[o.nrow - 1, 9];
+
+                o.종거천 = (int)(o.전일종가 * (거래량 / g.천만원) * wk.누적거래액환산율(o.x[o.nrow - 1, 0]));
+
+                #endregion
+
+                // continuity setting as default
+                #region
+                if ((!(g.KODEX4.Contains(o.stock) || o.stock.Contains("혼합"))) && o.nrow >= 2)
+                {
+                    for (int j = 1; j < o.nrow; j++)
+                    {
+                        // Continuity of amount
+                        if (o.x[j, 7] == o.x[j - 1, 7])
+                            o.x[j, 10] = o.x[j - 1, 10];
+                        else if (o.x[j, 2] > o.x[j - 1, 2]) // including VI
+                            o.x[j, 10] = o.x[j - 1, 10] + 1;
+                        else
+                            o.x[j, 10] = 0;
+
+                        // Continuity of intensity : the intensity was multiplied by g.HUNDRED -> too many cyan  -> divided by g.HUNDRED again, let's see
+                        if (o.x[j, 7] == o.x[j - 1, 7])
+                            o.x[j, 11] = o.x[j - 1, 11];
+                        else if (((int)(o.x[j, 3] / g.HUNDRED)) > ((int)(o.x[j - 1, 3] / g.HUNDRED))) // including VI
+                            o.x[j, 11] = o.x[j - 1, 11] + 1;
+                        else
+                            o.x[j, 11] = 0;
+                    }
+                }
+
+                for(int j = 0; j < o.nrow; j++) // 전체 0.002seconds
+                {
+                    ps.PostPassing(o, j, false); // initialization
+                }
+                #endregion
+                
+            }
+
+            // 기존에는 코스피, 코스닥에 들어간 모든 돈을 억 단위로 
+            // 계산하였는 데 .. 지금 방식은 코스피 지수에 사용되는 10개 종목
+            // 코스닥 지수에 사용되는 10개 종목의 합으로만 계산하여 draw_stock_KODEX()에서
+            // 사용
+
+
+  
+
+            int index = wk.return_index_of_ogldata("KODEX 레버리지");
+            if (g.ogl_data[index].x[0, 3] > 1000)
+                ps.post_지수_프외_합산_382();
+        }
+
+        // 업종, 10억이상, 상관, 상관, 통계
+        public static void gen_ogldata_oGLdata()
+        {
+            double td = 0;
+            List<string> total_stock_list = new List<string>();
+            List<string> tgl_title = new List<string>();
+            List<List<string>> tgl = new List<List<string>>();
+            List<string> 상관_group_total_stock_list = new List<string>();
+            List<List<string>> Gl = new List<List<string>>();
+            List<List<string>> GL = new List<List<string>>();
+
+            if (g.shortform)
+            {
+            }
+            else
+            {
+                total_stock_list = rd.read_그룹_네이버_업종(Gl, GL); // duration 2.7 seconds
+            }
+
+            // total_stock_list : 20일 최대거래액 30억 이상 종목만 total_stock_list에
+            // 저장 (2400여 개 종목 중 1200개 정도 total_stock_list에 다시 저장
+            wk.일최대거래액일정액이상종목선택(total_stock_list, 30); // duration 0.8 seconds
+
+            // 상관.txt에 있는 종목을 상관_group_total_stock_list에 저장
+            // tgl_title : group 이름
+            // tgl : 각 그룹별 종목
+            rd.read_상관(상관_group_total_stock_list, tgl_title, tgl, total_stock_list); // duration 1.3 seconds
+
+            // if exist read
+            // 상관_group_total_stock_list 중 중복되지 않는 종목 1200여 개 total_stock_list.추가
+            //foreach (var item in 상관_group_total_stock_list)
+            //{
+            //    if (total_stock_list.Contains(item))
+            //        continue;
+            //    else
+            //        total_stock_list.Add(item);
+            //}
+
+            // 지수종목 
+
+            rd.read_삼성_코스피_코스닥();  // duration 0.001 seconds
+
+            rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
+
+            foreach (string t in g.지수종목) // duration 0.000 seconds
+            {
+                if (!total_stock_list.Contains(t))
+                    total_stock_list.Add(t);
+            }
+
+            // some stocks missing whole data, possibly due to stop deal
+            //if(total_stock_list.Contains("씨케이에이치"))
+            //{
+            //    int a = 1;
+            //}
+
+            foreach (var stock in total_stock_list) // duration 5.86 seconds
+                wk.gen_ogl_data(stock);
+
+            // 개별 종목이 그룹에 속하는 지 여부 bool로 기록
+            //for (int i = 0; i < GL.Count; i++)
+            //{
+            //    for (int j = 0; j < GL[i].Count; j++)
+            //    {
+            //        int index = wk.return_index_of_ogldata(GL[i][j]);
+            //        if (index < 0)
+            //            continue;
+            //        g.stock_data o = g.ogl_data[index];
+            //        o.in_group_or_not = true;
+            //    }
+            //}
+
+            // 통계 숫자 1200여 개 .ogl_data 숫자 1581 MODI
+            rd.read_통계();
+            rd.read_절친();
+
+            g.ogl_data = g.ogl_data.OrderByDescending(x => x.전일거래액_천만원).ToList();
+
+            foreach (var item in g.ogl_data)
+                g.sl.Add(item.stock);
+
+            rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.호가종목
+
+            wk.gen_oGL_data(tgl_title, tgl); // generate oGL_data
+
+            //rd.calculation_wieght_mixed_kospi_kosdaq(g.kospi_mixed);
+            //rd.calculation_wieght_mixed_kospi_kosdaq(g.kosdaq_mixed);
+        }
+
+        public static void read_파일관심종목()
+        {
+            string filename = @"C:\병신\data\관심.txt";
+
+            g.파일관심종목.Clear();
+
+            if (File.Exists(filename))
+            {
+                string[] grlines = File.ReadAllLines(filename, Encoding.Default);
+
+                List<string> temp_list = new List<string>();
+                foreach (string line in grlines)
+                {
+                    string[] words = line.Split(' '); // empty spaces also recognized as words, word.lenght can be larger than 4
+
+                    for (int i = 0; i < words.Length; i++)
+                    {
+                        if (words[i] == "//")
+                            break;
+                        if (words[i] == "")
+                            continue;
+                        string stock = words[i].Replace('_', ' ');
+                        if (wk.return_index_of_ogldata(stock) >= 0)
+                            g.파일관심종목.Add(stock);
+
+
+                    }
+                }
+            }
+        }
+
+        public static void read_상승() // file of 상승.txt not in 3 computers
+        {
+            string file = @"C:\병신\상승.txt";
+
+            if (!File.Exists(file))
+            {
+                g.eval_score[0, 0] = -2; // if file not exist, set the first data -2 (no more data)
+                return;
+            }
+
+            string[] grlines = File.ReadAllLines(file, Encoding.Default);
+            List<string> list = new List<string>();
+
+            int row_count = 0;
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split('\t');
+                if (line == "") // first empty line met
+                    break;
+
+                int lastRows = g.eval_score.GetUpperBound(0); // lastRows is 9, this is the dimension
+                int lastColumns = g.eval_score.GetUpperBound(1); // lastColu,mns is 11, this is the dimension
+                if (words.Length > lastColumns + 1) // number of columns should be less than 10
+                {
+                    MessageBox.Show("First Data Error in 상승.txt");
+                    break;
+                }
+
+                for (int i = 0; i <= lastColumns; i++)
+                {
+                    if (i >= words.Length)
+                    {
+                        g.eval_score[row_count, i] = -1;
+                        continue;
+                    }
+
+                    bool success = true;
+                    success = int.TryParse(words[i], out g.eval_score[row_count, i]);
+                    if (!success)
+                    {
+                        g.eval_score[row_count, i] = -1;
+                    }
+                }
+                row_count++;
+
+                if (row_count >= lastRows) // if row of data is more than 10
+                {
+                    MessageBox.Show("Second Data Error in 상승.txt");
+                    break;
+                }
+            }
+            g.eval_score[row_count, 0] = -2; // no more date sign in the first column of (last + 1) line
+        }
+
+        public static bool read_단기과열(string stock)
+        {
+            _cpcodemgr = new CPUTILLib.CpCodeMgr();
+            _cpstockcode = new CPUTILLib.CpStockCode();
+            int t = (int)_cpcodemgr.GetOverHeating(_cpstockcode.NameToCode(stock));
+
+            if (t == 2 || t == 3)
+                return true;
+            else
+                return false;
+        }
+
+        public static char read_코스피코스닥시장구분(string stock)
+        {
+            _cpcodemgr = new CPUTILLib.CpCodeMgr();
+            _cpstockcode = new CPUTILLib.CpStockCode();
+            int marketKind = (int)_cpcodemgr.GetStockMarketKind(_cpstockcode.NameToCode(stock));
+            if (marketKind == 1)
+
+            {
+                return 'S';
+
+            }
+            else if (marketKind == 2)
+            {
+                return 'D';
+            }
+            else
+                return 'N';
+        }
+
+        public static int read_데이터컬럼들(string filename, int[] c_id, string[,] x)
+        {
+            /* 파일이름, 구하고자하는 컬럼 번호를 주면 x[,] 저장 nrow 반환
+	   * public static int read_데이터컬럼들
+		 (string filename, int[] c_id, string[,] x)
+	   * */
+
+            if (!File.Exists(filename)) return -1;
+            string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
+
+            int nrow = 0;
+            foreach (string line in grlines)
+            {
+                List<string> alist = new List<string>();
+
+                string[] words = line.Split(' ');
+                for (int k = 0; k < c_id.Length; k++)
+                {
+                    x[nrow, k] = words[c_id[k]];
+                }
+                nrow++;
+
+
+            }
+            return nrow;
+        }
+
+        public static void read_제어()
+        {
+            string 바탕화면 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string filename = 바탕화면 + @"\제어.txt";
+
+
+            if (!File.Exists(filename)) return;
+            string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
+
+
+            if (grlines[0] == "r")
+                g.test = false;
+            else
+                g.test = true;
+
+            if (grlines[1] == "s")
+                g.shortform = true;
+            else
+                g.shortform = false;
+
+            string[] strs = grlines[2].Split(' ');
+            g.Account = strs[0];
+
+            strs = grlines[3].Split(' ');
+            g.date = Convert.ToInt32(strs[0]);
+            if (strs[1] == "w" || strs[1] == "W")
+            {
+                g.workingday = true;
+            }
+
+            strs = grlines[4].Split(' ');
+            g.deal_maximum_loss = Convert.ToInt32(strs[0]);
+            g.deal_finish_time = Convert.ToInt32(strs[1]);
+            g.deal_total_profit = Convert.ToInt32(strs[2]);
+
+            strs = grlines[5].Split(' ');
+            
+            g.전일종가이상 = Convert.ToInt32(strs[0]);
+
+
+        }
+
+        public static void read_변수()
+        {
+            string filename = @"C:\병신\data\변수.txt";
+
+            if (!File.Exists(filename)) return;
+            string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
+
+
+            foreach (string line in grlines)
+            {
+                var words = line.Split('\t');
+
+                switch (words[0])
+                {
+                    //case "textbox_date_char_to_string":
+                    //    라인분리(line, ref g.v.textbox_date_char_to_string);
+                    //    break;
+
+                    case "neglectable_price_differ":
+                        라인분리(line, ref g.v.neglectable_price_differ);
+                        break;
+
+                    //case "files_to_open_by_clicking_edge":
+                    //    라인분리(line, ref g.v.files_to_open_by_clicking_edge);
+                    //    break;
+                    case "q_advance_lines":
+                        라인분리(line, ref g.v.q_advance_lines);
+                        break;
+                    case "Q_advance_lines":
+                        라인분리(line, ref g.v.Q_advance_lines);
+                        break;
+                    case "r3_display_lines":
+                        라인분리(line, ref g.v.r3_display_lines);
+                        break;
+
+                    // old version EvalKODEX()
+                    //case "kospi_difference_for_sound":
+                    //    라인분리(line, ref g.v.kospi_difference_for_sound);
+                    //    break;
+                    //case "kosdq_difference_for_sound":
+                    //    라인분리(line, ref g.v.kosdq_difference_for_sound);
+                    //    break;
+                    // new version eval_index()
+                    //case "index_difference_sound":
+                    //    라인분리(line, ref g.v.index_difference_sound);
+                    //    break;
+
+
+
+                    //case "dev":
+                    //    라인분리(line, ref g.s.dev);
+                    //    break;
+                    //case "mkc":
+                    //    //라인분리(line, ref g.s.mkc);
+                    //    break;
+
+                    //case "돌파":
+                    //    라인분리(line, ref g.s.돌파);
+                    //    break;
+                    //case "눌림":
+                    //    라인분리(line, ref g.s.눌림);
+                    //    break;
+
+                    case "가연":
+                        라인분리(line, ref g.s.가연);
+                        break;
+                    case "가분":
+                        라인분리(line, ref g.s.가분);
+                        break;
+                    case "가틱":
+                        라인분리(line, ref g.s.가틱);
+                        break;
+                    case "가반":
+                        라인분리(line, ref g.s.가반);
+                        break;
+                    case "가지":
+                        라인분리(line, ref g.s.가지);
+                        break;
+
+                    case "수연":
+                        라인분리(line, ref g.s.수연);
+                        break;
+                    case "수지":
+                        라인분리(line, ref g.s.수지);
+                        break;
+                    case "수위":
+                        라인분리(line, ref g.s.수위);
+                        break;
+
+                    case "강연":
+                        라인분리(line, ref g.s.강연);
+                        break;
+                    case "강지":
+                        라인분리(line, ref g.s.강지);
+                        break;
+                    case "강위":
+                        라인분리(line, ref g.s.강위);
+                        break;
+
+
+                    case "푀분":
+                        라인분리(line, ref g.s.푀분);
+                        break;
+                    case "프틱":
+                        라인분리(line, ref g.s.프틱);
+                        break;
+                    case "프지":
+                        라인분리(line, ref g.s.프지);
+                        break;
+                    case "프퍼":
+                        라인분리(line, ref g.s.프퍼);
+                        break;
+                    case "프누":
+                        라인분리(line, ref g.s.프누);
+                        break;
+
+
+                    case "거분":
+                        라인분리(line, ref g.s.거분);
+                        break;
+                    case "거틱":
+                        라인분리(line, ref g.s.거틱);
+                        break;
+                    case "거일":
+                        라인분리(line, ref g.s.거일);
+                        break;
+
+                    case "배차":
+                        라인분리(line, ref g.s.배차);
+                        break;
+                    case "배반":
+                        라인분리(line, ref g.s.배반);
+                        break;
+                    case "배합":
+                        라인분리(line, ref g.s.배합);
+                        break;
+
+
+                    case "급락":
+                        라인분리(line, ref g.s.급락);
+                        break;
+                    case "잔잔":
+                        라인분리(line, ref g.s.잔잔);
+                        break;
+
+                    case "그룹":
+                        라인분리(line, ref g.s.그룹);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public static void read_무게()
+        {
+            string filePath = @"C:\병신\data\무게.txt";
+
+            if (File.Exists(filePath))
+            {
+                string[] values = File.ReadAllLines(filePath);
+                if (values.Length >= 7)
+                {
+                    // Convert values to double
+                    g.s.푀분_wgt = Convert.ToDouble(values[0]);
+                    g.s.거분_wgt = Convert.ToDouble(values[1]);
+                    g.s.배차_wgt = Convert.ToDouble(values[2]);
+                    g.s.배합_wgt = Convert.ToDouble(values[3]);
+                    g.s.그룹_wgt = Convert.ToDouble(values[4]);
+                    g.s.피로_wgt = Convert.ToDouble(values[5]); // New text box
+                    g.s.기타_wgt = Convert.ToDouble(values[6]); // New text box
+                }
+            }
+        }
+
+        public static void read_절친()
+        {
+            string filename = @"C:\병신\data\Correlation.txt";
+
+            if (!File.Exists(filename)) return;
+            string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
+
+            int index = 0;
+            g.stock_data o = null;
+            int count = 0;
+            foreach (string line in grlines)
+            {
+                var words = line.Split('\t');
+                if (words.Length == 1)
+                {
+
+                    //int indez = words[0].LastIndexOf("(");
+                    //if (indez >= 0)
+                    //    words[0] = words[0].Substring(0, indez); // 
+                    //else
+                    //    continue;
+
+                    index = wk.return_index_of_ogldata(words[0]);
+                    if (index < 0)
+                        continue;
+                    o = g.ogl_data[index];
+                }
+                else if (words.Length == 2)
+                {
+                    if (o == null) { continue; }
+
+                    if (o.절친.Count < 9 && o != null)
+                        o.절친.Add(line);
+                }
+            }
+        }
+
+        public static void 라인분리(string line, ref int data) // scalar -> no 비중, dev, mkc
+        {
+            string[] words = line.Split('\t');
+            Int32.TryParse(words[1], out data);
+        }
+
+        public static void 라인분리(string line, ref string[] data) // single vector -> no 비중, dev, mkc
+        {
+            string[] words = line.Split('\t');
+
+            for (int i = 1; i < words.Length; i++)
+            {
+                data[i - 1] = words[i];
+            }
+        }
+
+        public static void 라인분리(string line, ref int[] data) // single vector -> no 비중, dev, mkc
+        {
+            string[] words = line.Split('\t');
+
+            for (int i = 1; i < words.Length; i++)
+            {
+                bool success = false;
+                if (words[i].Contains("//"))
+                    continue;
+
+                success = Int32.TryParse(words[i], out data[i - 1]);
+                if (!success)
+                    return;
+            }
+        }
+
+        public static void 라인분리(string line, ref List<List<double>> data) // double list, with 비중, dev. mkc
+        {
+            data.Clear();
+
+            string[] words = line.Split('\t');
+
+            List<double> t = new List<double>();
+            for (int i = 1; i < words.Length; i++)
+            {
+                if (words[i].Contains("//"))
+                    break;
+
+                string[] items = words[i].Split('/');
+
+                if (items.Length == 1)
+                {
+                    double a;
+                    bool success = false;
+                    success = double.TryParse(items[0], out a);
+
+                    if (success)
+                        t = new List<double> { a, 0.0 };
+                    else
+                        continue;
+                }
+
+                if (items.Length == 2)
+                {
+                    double a, b;
+
+                    bool success_1 = false;
+                    success_1 = double.TryParse(items[0], out a);
+
+                    bool success_2 = false;
+                    success_2 = double.TryParse(items[1], out b);
+                    if (!success_2)
+                        break;
+
+                    if (success_1 && success_2)
+                        t = new List<double> { a, b };
+                    else
+                        break;
+                }
+                data.Add(t);
+            }
+
+            // Integrity Check
+            if (line.Contains("dev") || line.Contains("mkc") || line.Contains("잔잔"))
+            {
+            }
+            else
+            {
+                bool error_exist = false;
+                for (int i = 2; i < data.Count - 1; i++)
+                {
+                    if (data[i + 1][0] < data[i][0])
+                        error_exist = true;
+                    if (data[i + 1][1] < data[i][1])
+                        error_exist = true;
+                }
+                if (error_exist)
+                    MessageBox.Show("Error in 변수 파일 : " + line);
+            }
+
+            // the following lines to check the integrity of data
+            string path = @"C:\병신\temp_변수.txt";
+            StreamWriter sw = File.AppendText(path);
+
+            string str = line;
+            if (data.Count > 0)
+                str += "\t" + data[data.Count - 1][0].ToString() + "/" + data[data.Count - 1][1].ToString() +
+                         "\t" + data.Count.ToString();
+            sw.WriteLine("{0}", str);
+            sw.Close();
+        }
+
+        public static int read_stock_minute(int date, string stock, int[,] x)
+        {
+            if (date < 10)
+            {
+                DateTime now = DateTime.Now;
+                date = Convert.ToInt32(now.ToString("yyyyMMdd"));
+            }
+
+            string file = @"C:\병신\분\" + date.ToString() + "\\" + stock + ".txt";
+            if (!File.Exists(file)) return -1;
+            string[] grlines = System.IO.File.ReadAllLines(file, Encoding.Default);
+
+            int nrow = 0;
+            foreach (string line in grlines)
+            {
+                List<string> alist = new List<string>();
+
+                string[] words = line.Split(' ');
+                for (int k = 0; k < words.Length; k++)
+                {
+                    if (k == 4)
+                    {
+                        x[nrow, k] = Convert.ToInt32((int)Convert.ToDouble(words[k]));
+                    }
+                    else
+                    {
+                        x[nrow, k] = Convert.ToInt32(words[k]);
+                    }
+                }
+                if (x[nrow, 0] < 10)
+                    break;
+                else
+                    nrow++;
+            }
+            return nrow;
+        }
+
+        public static double read_시총(string stock)
+        {
+            string[] grlines = File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default);
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split(' ');
+                string newname = words[0].Replace("_", " ");
+                if (string.Equals(newname, stock))
+                {
+                    return Convert.ToDouble(words[1]);
+                }
+            }
+            return -1;
+        }
+
+        public static List<string> read_제외()
+        {
+            List<string> gl_list = new List<string>();
+
+            string filename = @"C:\병신\data\제외.txt"; ;
+
+            string[] grlines = File.ReadAllLines(filename);
+
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split(' ');
+                foreach (string stock in words)
+                {
+                    string newname = stock.Replace("_", " ");
+                    if (!wk.isStock(newname) || gl_list.Contains(newname))
+                        continue;
+
+                    gl_list.Add(newname); // for single
+                }
+            }
+            var uniqueItemsList = gl_list.Distinct().ToList();
+            return uniqueItemsList;
+        }
+
+        //public static void calculation_wieght_mixed_kospi_kosdaq(g.kospi_kosdaq_mixed mixed_data)
+        //{
+        //    string file;
+        //    file = @"C:\병신\data\지수_비중" + ".txt";
+
+        //    if (!File.Exists(file))
+        //        File.Create(file).Dispose();
+        //    string str_add = "";
+
+        //    List<string> copy = new List<string>(g.코스피합성);
+        //    double total_value = 0;
+        //    foreach (string t in copy)
+        //    {
+        //        string[] words = t.Split('\t');
+
+        //        int index = wk.return_index_of_ogldata(words[0]);
+        //        if (index < 0) continue;
+
+        //        total_value += (int)g.ogl_data[index].전일종가 * int.Parse(words[1], NumberStyles.AllowThousands);
+        //    }
+
+        //    for (int i = 0; i < 10; i++)
+        //    {
+        //        int index = wk.return_index_of_ogldata(mixed_data.stock[i]);
+        //        if (index < 0) continue;
+
+        //        total_value += (int)g.ogl_data[index].전일종가 * mixed_data.number[i];
+        //    }
+
+
+        //    g.코스피합성.Clear();
+        //    foreach (string t in copy)
+        //    {
+        //        string[] words = t.Split('\t');
+
+        //        int index = wk.return_index_of_ogldata(words[0]);
+        //        if (index < 0) continue;
+
+        //        double individual_value = g.ogl_data[index].전일종가 * Convert.ToDouble(words[1]);
+        //        double factor = individual_value / total_value;
+        //        g.코스피합성.Add(words[0] + "\t" + factor.ToString());
+
+        //        string x = Math.Round((factor * 100), 1) + "%" + "\n";
+        //        str_add += String.Format("{0, -20}  {1, 10}", words[0], x);
+        //    }
+        //    str_add += "\n";
+
+        //    List<string> copy1 = new List<string>(g.코스닥합성);
+        //    total_value = 0;
+        //    foreach (string t in copy1)
+        //    {
+        //        string[] words = t.Split('\t');
+
+        //        int index = wk.return_index_of_ogldata(words[0]);
+        //        if (index < 0)
+        //            continue;
+
+        //        total_value += g.ogl_data[index].전일종가 * Convert.ToDouble(words[1]);
+        //    }
+        //    g.코스닥합성.Clear();
+        //    foreach (string t in copy1)
+        //    {
+        //        string[] words = t.Split('\t');
+
+        //        int index = wk.return_index_of_ogldata(words[0]);
+        //        if (index < 0)
+        //            continue;
+
+        //        double individual_value = g.ogl_data[index].전일종가 * Convert.ToDouble(words[1]);
+        //        double factor = individual_value / total_value;
+        //        g.코스닥합성.Add(words[0] + "\t" + factor.ToString());
+
+        //        string x = Math.Round((factor * 100), 1) + "%" + "\n";
+        //        str_add += String.Format("{0, -20}  {1}", words[0], x);
+        //    }
+
+        //    File.WriteAllText(file, str_add);
+        //}
+
+        public static void read_write_kodex_magnifier(string to_do)
+        {
+            string filename = @"C:\병신\data\kodex_magnifier.txt";
+
+            if (to_do == "read")
+            {
+                if (!File.Exists(filename))
+                {
+                    MessageBox.Show("kodex_magnifier.txt Not Exist");
+                    return;
+                }
+
+                string[] grlines = File.ReadAllLines(filename);
+                List<string> list = new List<string>();
+
+                int id = 0;
+                foreach (string line in grlines)
+                {
+                    string[] words = line.Split('\t');
+                    for (int i = 0; i < 4; i++)
+                    {
+                        g.kodex_magnifier[id, i] = Convert.ToDouble(words[i]);
+                    }
+                    id++;
+                }
+            }
+
+            else
+            {
+                if (File.Exists(filename))
+                {
+                    File.Delete(filename);
+                }
+                string str = "";
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (g.kodex_magnifier[i, j] < g.EPS)
+                            g.kodex_magnifier[i, j] = 1.0;
+
+                        str += g.kodex_magnifier[i, j];
+                        if (j < 3)
+                            str += "\t";
+                        else
+                        {
+                            str += "\n";
+                        }
+                    }
+                }
+                File.WriteAllText(filename, str);
+            }
+        }
+
+        public static void read_삼성_코스피_코스닥()
+        {
+            string filename = @"C:\병신\data\삼성_코스피_코스닥.txt";
+
+            if (!File.Exists(filename))
+            {
+                MessageBox.Show("삼성_코스피_코스닥.txt Not Exist");
+                return;
+            }
+
+            string[] grlines = File.ReadAllLines(filename);
+
+            int kospi_mixed_stock_count = 0;
+            int kosdaq_mixed_stock_count = 0;
+            bool empty_line_met = false;
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split('\t');
+                if (words[0] == "")
+                    empty_line_met = true;
+
+                double kospi_weight_sum = 0.0;
+                double kosdaq_weight_sum = 0.0;
+                if (words[0].Length > 0)
+                {
+                    if (empty_line_met == false)
+                    {
+                        string stock = words[0];
+                        g.kospi_mixed.stock.Add(stock);
+                        string t = words[3].Trim(new Char[] { '%', '(', ')' });
+                        double d = Convert.ToDouble(t);
+                        g.kospi_mixed.weight.Add(d);
+                        kospi_weight_sum += d;
+                        kospi_mixed_stock_count++;
+                    }
+                    else
+                    {
+                        string stock = words[0];
+                        g.kosdaq_mixed.stock.Add(stock);
+                        string t = words[3].Trim(new Char[] { '%', '(', ')' });
+                        double d = Convert.ToDouble(t);
+                        g.kosdaq_mixed.weight.Add(d);
+                        kosdaq_weight_sum += d;
+                        kosdaq_mixed_stock_count++;
+                    }
+                }
+            }
+
+            //g.평불종목.Add("코스피혼합");
+            //g.평불종목.Add("코스닥혼합");
+
+            g.지수종목.Clear();
+            foreach (string stock in g.kospi_mixed.stock)
+            {
+                g.지수종목.Add(stock);
+            }
+            foreach (string stock in g.kosdaq_mixed.stock)
+            {
+                g.지수종목.Add(stock);
+            }
+
+            g.지수종목.Add("KODEX 레버리지"); // 0504
+            g.지수종목.Add("KODEX 200선물인버스2X");
+            g.지수종목.Add("KODEX 코스닥150레버리지");
+            g.지수종목.Add("KODEX 코스닥150선물인버스");
+        }
+
+        public static void read_지수_숫자_비중()
+        {
+            string filename = @"C:\병신\data\지수_숫자_비중.txt";
+
+            if (!File.Exists(filename))
+            {
+                MessageBox.Show("지수_숫자_비중.txt Not Exist");
+                return;
+            }
+
+            string[] grlines = File.ReadAllLines(filename);
+            List<string> list = new List<string>();
+
+            int kospi_mixed_stock_count = 0;
+            int kosdaq_mixed_stock_count = 0;
+            bool empty_line_met = false;
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split('\t');
+                if (words[0] == "")
+                    empty_line_met = true;
+
+
+                if (words[0].Length > 0)
+                {
+                    if (empty_line_met == false)
+                    {
+                        g.kospi_mixed.stock[kospi_mixed_stock_count] = words[0];
+                        string t = words[2].Trim(new Char[] { '%' });
+                        g.kospi_mixed.weight[kospi_mixed_stock_count++] = Convert.ToDouble(t);
+                    }
+                    else
+                    {
+                        g.kosdaq_mixed.stock[kosdaq_mixed_stock_count] = words[0];
+                        string t = words[2].Trim(new Char[] { '%' });
+                        g.kosdaq_mixed.weight[kosdaq_mixed_stock_count++] = Convert.ToDouble(t);
+                    }
+                }
+            }
+
+            //g.평불종목.Add("코스피혼합");
+            //g.평불종목.Add("코스닥혼합");
+
+            g.지수종목.Clear();
+            foreach (string stock in g.kospi_mixed.stock)
+            {
+                g.지수종목.Add(stock);
+            }
+            foreach (string stock in g.kosdaq_mixed.stock)
+            {
+                g.지수종목.Add(stock);
+            }
+
+            g.지수종목.Add("KODEX 레버리지"); // 0504
+            g.지수종목.Add("KODEX 200선물인버스2X");
+            g.지수종목.Add("KODEX 코스닥150레버리지");
+            g.지수종목.Add("KODEX 코스닥150선물인버스");
+        }
+
+        public static void read_그룹_네이버_테마(List<string> tsl, List<string> tsl_그룹_상관, List<string> GL_title, List<List<string>> GL)
+        {
+            string filepath = @"C:\병신\data\그룹_네이버_테마.txt"; // QQQ
+            if (!File.Exists(filepath))
+                return;
+
+            var lines = File.ReadAllLines(filepath, Encoding.Default);
+
+            List<List<string>> temp_GL = new List<List<string>>(); // temporary working space for group list
+            List<string> temp_Gl = new List<string>();
+
+            foreach (var item in lines)
+            {
+                if (item == "" && temp_Gl.Count > 1)
+                {
+                    GL_title.Add(temp_Gl[0]);
+                    temp_Gl.RemoveAt(0);
+                    GL.Add(temp_Gl.ToList());
+
+                    foreach (var stock in temp_Gl)
+                    {
+                        if (!tsl.Contains(stock))
+                            tsl.Add(stock);
+                    }
+                    temp_Gl.Clear();
+                }
+                if (item != "" && !tsl_그룹_상관.Contains(item))
+                    temp_Gl.Add(item);
+            }
+        }
+
+        public static void read_상관(List<string> gl, List<string> GL_title, List<List<string>> GL, List<string> stocks_over_deal_per_day)
+        {
+            string filename = @"C:\병신\data\상관.txt";
+
+            if (!File.Exists(filename))
+            {
+                return;
+            }
+            string[] grlines = File.ReadAllLines(filename, Encoding.Default);
+
+            List<string> temp_gl = new List<string>();
+            List<string> temp_Gl = new List<string>();
+            string temp_title = "";
+
+            foreach (var line in grlines)
+            {
+                if (line == "") continue;
+                string[] words = line.Split(' ', '\t', '\n', ',', '(');
+
+                if (words[0] == ("//")) // read in title as temporary
+                {
+                    if (temp_Gl.Count >= 2)
+                    {
+                        if (!GL_title.Contains(temp_title))
+                        {
+                            if (g.shortform)
+                            {
+                                if (GL.Count == 4)
+                                    break;
+                            }
+                            GL_title.Add(temp_title);
+                            GL.Add(temp_Gl.ToList());
+                        }
+                    }
+                    temp_Gl.Clear();
+                    string title = "";
+                    for (int i = 1; i < words.Length; i++)
+                    {
+                        title += words[i];
+                    }
+                    if (words.Length > 1)
+                        temp_title = title;
+
+                    continue;
+                }
+                else
+                {
+                    string new_name = "";
+                    foreach (string stock in words)
+                    {
+                        if (stock == "//") // not a first word, then go to next line
+                            break;
+
+                        new_name = stock.Replace("_", " ");
+                        if (!wk.isStock(new_name))
+                            continue;
+
+                        if (!stocks_over_deal_per_day.Contains(new_name)) // 상관에 있더라도 평균거래액 10억 이하는 제외
+                            continue;
+
+                        if (!temp_Gl.Contains(new_name))
+                            temp_Gl.Add(new_name); // large group GL 
+                        if (!gl.Contains(new_name))
+                            gl.Add(new_name);
+                    }
+                }
+            }
+
+            if (temp_Gl.Count >= 2) // 그룹 상관, 2개 이상의 종목으로 구성된 그룹
+            {
+                GL_title.Add(temp_title);
+                GL.Add(temp_Gl.ToList()); // 임시저장으로
+            }
+        }
+
+        public static int read_Stock_Seven_Lines_Reverse(int date, string stock, int nline, int[,] x)
+        {
+            if (date < 0)
+            {
+                DateTime now = DateTime.Now;
+                date = Convert.ToInt32(now.ToString("yyyyMMdd"));
+            }
+
+            string file = @"C:\병신\분\" + date.ToString() + "\\" + stock + ".txt";
+            if (!File.Exists(file))
+                return -1;
+
+            int n = File.ReadAllLines(file).Length;
+            if (n < nline)
+            {
+                nline = n;
+            }
+            List<string> lines = File.ReadLines(file).Reverse().Take(nline).ToList();
+
+            // Error Prone : Below 8 lines not Tested Exactly
+            if (g.test)
+            {
+                if (n < g.time[1] + 1)
+                {
+                    g.time[1] = n;
+                }
+                lines = File.ReadLines(file).Skip(g.time[1] - nline).Take(nline).Reverse().ToList();
+            }
+
+            int nrow = 0;
+            foreach (var line in lines)
+            {
+                string[] words = line.Split('\t');
+                if (words.Length == 1)
+                {
+                    words = line.Split(' ');
+                }
+
+                // values are crossed, later rearrange ZZZ
+                string[] time = words[0].Split(':');
+                if (time.Length == 1)
+                {
+                    x[nrow, 0] = Convert.ToInt32(words[0]);
+                }
+                else
+                {
+                    x[nrow, 0] = Convert.ToInt32(time[0]) * 100 + Convert.ToInt32(time[1]);
+                }
+
+                x[nrow, 1] = Convert.ToInt32(words[1]);   // price
+                x[nrow, 2] = Convert.ToInt32(words[2]);   // amount
+                x[nrow, 3] = Convert.ToInt32(words[3]);   // intensity
+
+                x[nrow, 4] = Convert.ToInt32(words[4]);   // institue from marketeye
+                x[nrow, 5] = Convert.ToInt32(words[5]);   // foreign 
+                x[nrow, 6] = Convert.ToInt32(words[6]);   // foreign from marketeye
+
+                x[nrow, 7] = Convert.ToInt32(words[7]);   // total amount dealt
+                x[nrow, 8] = Convert.ToInt32(words[8]);   // buy multiple 10 times
+                x[nrow, 9] = Convert.ToInt32(words[9]);   // sell multiple 10 times
+
+                nrow++;
+                if (nrow == nline) // can not exceeed the maximum allocation of x[nline,]
+                {
+                    break;
+                }
+            }
+            return nrow;
+        }
+
+        // This is for eval. of stock for testing purpose
+        public static int read_Stock_Seven_Lines_Reverse_From_Endtime
+            (int date, string stock, int end_time, int nline, int[,] x)
+        {
+            string file = @"C:\병신\분\" + date.ToString() + "\\" + stock + ".txt";
+            if (!File.Exists(file))
+                return -1;
+
+            int n = File.ReadAllLines(file).Length;
+
+            if (end_time > n)
+            {
+                end_time = n;
+            }
+            else
+            {
+                if (end_time < nline)
+                {
+                    nline = end_time;
+                }
+            }
+
+
+            //end_time - 1 : - 1 because start from end_time to reverse
+            // Skip, Reverse, Take does not work, Reverse is done by using Reverse.array();
+            var lines = File.ReadLines(file).Skip(end_time - nline).Take(nline);
+
+            n = nline - 1; // to reverse
+
+            int nrow = 0;
+            foreach (var line in lines)
+            {
+                string[] words = line.Split('\t');
+                if (words.Length == 1)
+                {
+                    words = line.Split(' ');
+                }
+
+                // values are crossed, later rearrange ZZZ
+                string[] time = words[0].Split(':');
+                if (time.Length == 1)
+                {
+                    x[n, 0] = Convert.ToInt32(words[0]);
+                }
+                else
+                {
+                    x[n, 0] = Convert.ToInt32(time[0]) * 100 + Convert.ToInt32(time[1]);
+                }
+
+                x[n, 1] = Convert.ToInt32(words[1]);   // price
+                x[n, 2] = Convert.ToInt32(words[2]);   // amount
+                x[n, 3] = Convert.ToInt32(words[3]);   // intensity
+
+                x[n, 4] = Convert.ToInt32(words[4]);   // institue from marketeye
+                x[n, 5] = Convert.ToInt32(words[5]);   // foreign 
+                x[n, 6] = Convert.ToInt32(words[6]);   // foreign from marketeye
+
+                x[n, 7] = Convert.ToInt32(words[7]);   // total amount dealt
+                x[n, 8] = Convert.ToInt32(words[8]);   // buy multiple 10 times
+                x[n, 9] = Convert.ToInt32(words[9]);   // sell multiple 10 times
+
+                n--;
+
+                nrow++;
+            }
+
+            //x[nrow, 0] = 0; // used to check the end of data, no need actually
+            //if (x[nrow - 1, 1] == 0 && x[nrow - 1, 2] == 0 && x[nrow - 1, 3] == 0) // maybe trading suspended
+            //{
+            //    nrow = 0;
+            //}
+
+            return nrow; // nrow = nline as the result from above
+        }
+
+        public static int read_Stock_Minute(int date, string stock, int[,] x)
+        {
+            if (date < 0)
+            {
+                DateTime now = DateTime.Now;
+                date = Convert.ToInt32(now.ToString("yyyyMMdd"));
+            }
+
+            string file = @"C:\병신\분\" + date.ToString() + "\\" + stock + ".txt";
+            if (!File.Exists(file))
+            {
+                return 0;
+            }
+
+
+
+            string[] lines = File.ReadAllLines(file, Encoding.Default);
+            if (lines.Length == 0)
+            {
+                return 0;
+            }
+
+            int nrow = 0;
+            foreach (string line in lines)
+            {
+                string[] words = line.Split('\t');
+                if (words.Length == 1)
+                {
+                    words = line.Split(' ');
+                }
+
+                // values are crossed, later rearrange ZZZ
+                string[] time = words[0].Split(':');
+                if (time.Length == 1)
+                {
+                    x[nrow, 0] = Convert.ToInt32(words[0]); // words[0] = time[0], no difference
+                }
+                else
+                {
+                    x[nrow, 0] = Convert.ToInt32(time[0]) * 10000 + Convert.ToInt32(time[1]) * 100 + Convert.ToInt32(time[2]);
+                }
+
+                x[nrow, 1] = Convert.ToInt32(words[1]);   // price
+                x[nrow, 2] = Convert.ToInt32(words[2]);   // amount
+                x[nrow, 3] = Convert.ToInt32(words[3]);   // intensity
+
+                x[nrow, 4] = Convert.ToInt32(words[4]);   // institue from marketeye
+                x[nrow, 5] = Convert.ToInt32(words[5]);   // foreign 
+                x[nrow, 6] = Convert.ToInt32(words[6]);   // foreign from marketeye
+
+                x[nrow, 7] = Convert.ToInt32(words[7]);   // total amount dealt
+                x[nrow, 8] = Convert.ToInt32(words[8]);   // buy multiple 10 times
+                x[nrow, 9] = Convert.ToInt32(words[9]);   // sell multiple 10 times
+
+                if (words.Length == 12)
+                {
+                    x[nrow, 10] = Convert.ToInt32(words[10]);   // buy multiple 10 times
+                    x[nrow, 11] = Convert.ToInt32(words[11]);   // sell multiple 10 times
+                }
+                nrow++;
+                if (nrow == g.MAX_ROW)
+                    break;
+                //if (x[nrow - 1 , 0] > 152100) //0505 from nrow > 390 to current if
+                //{
+                //    x[nrow - 1, 0] = 0;
+                //    nrow--;
+                //    break;
+                //}
+            }
+            for (int i = nrow; i < g.MAX_ROW; i++)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    x[i, j] = 0;
+                }
+            }
+
+            //x[nrow, 0] = 0; // used to check the end of data, no need actually
+            //if (x[nrow - 1, 1] == 0 && x[nrow - 1, 2] == 0 && x[nrow - 1, 3] == 0) // maybe trading suspended, 아래 3 라인이 없으면 축 개체 문제 발생
+            //{
+            //    nrow = 0;
+            //}
+
+            if (g.dl.Count == 4) // 코스피혼합 & 코스닥혼합 인버스로 만들기 위해 가격 X -1 & 매수배수 매도배수 Swap
+            {
+                if ((g.dl[0] == "KODEX 200선물인버스2X" && stock == "코스피혼합") ||
+                   (g.dl[2] == "KODEX 코스닥150선물인버스" && stock == "코스닥혼합"))
+                {
+                    for (int i = 0; i < nrow; i++)
+                    {
+                        x[i, 1] *= -1;
+                        wk.Swap(ref x[i, 8], ref x[i, 9]);
+                    }
+                }
+            }
+
+            //if(stock == "KODEX 레버리지" || 
+            //  stock == "KODEX 200선물인버스2X" ||
+            //  stock == "KODEX 코스닥150레버리지" ||
+            //  stock == "KODEX 코스닥150선물인버스")
+            //{
+            //    for (int i = 0; i < g.money_shift; i++)
+            //    {
+            //        x[nrow + i, 4] = x[nrow - 1, 4];
+            //        x[nrow + i, 5] = x[nrow - 1, 5];
+            //        x[nrow + i, 6] = x[nrow - 1, 6];
+            //        x[nrow + i, 10] = x[nrow - 1, 10];
+            //        x[nrow + i, 11] = x[nrow - 1, 11];
+            //    }
+            //    for (int i = 0; i < nrow; i++)
+            //    {
+            //        x[i, 4] = x[i + g.money_shift, 4];
+            //        x[i, 5] = x[i + g.money_shift, 5];
+            //        x[i, 6] = x[i + g.money_shift, 6];
+            //        x[i, 10] = x[i + g.money_shift, 10];
+            //        x[i, 11] = x[i + g.money_shift, 11];
+            //    }
+            //}
+
+
+            return nrow;
+        }
+
+        public static int read_Stock_Minute_no_multiply(int date, string stock, int[,] x)
+        {
+            if (date < 0)
+            {
+                DateTime now = DateTime.Now;
+                date = Convert.ToInt32(now.ToString("yyyyMMdd"));
+            }
+
+            string file = @"C:\병신\분\" + date.ToString() + "\\" + stock + ".txt";
+            if (!File.Exists(file))
+                return 0;
+
+            //var lineCount = File.ReadLines(file).Count();
+            string[] lines = File.ReadAllLines(file, Encoding.Default);
+
+            int nrow = 0;
+            foreach (string line in lines)
+            {
+                string[] words = line.Split('\t');
+                if (words.Length == 1)
+                {
+                    words = line.Split(' ');
+                }
+
+                // values are crossed, later rearrange ZZZ
+                string[] time = words[0].Split(':');
+                if (time.Length == 1)
+                {
+
+                    x[nrow, 0] = Convert.ToInt32(words[0]);
+                }
+                else
+                {
+                    x[nrow, 0] = Convert.ToInt32(time[0]) * 100 + Convert.ToInt32(time[1]);
+                }
+
+                x[nrow, 1] = Convert.ToInt32(words[1]);   // price
+                x[nrow, 2] = Convert.ToInt32(words[2]);   // amount
+                x[nrow, 3] = Convert.ToInt32(words[3]);   // intensity
+
+                x[nrow, 4] = Convert.ToInt32(words[4]);   // institue from marketeye
+                x[nrow, 5] = Convert.ToInt32(words[5]);   // foreign 
+                x[nrow, 6] = Convert.ToInt32(words[6]);   // foreign from marketeye
+
+                x[nrow, 7] = Convert.ToInt32(words[7]);   // total amount dealt
+                x[nrow, 8] = Convert.ToInt32(words[8]);   // buy multiple 10 times
+                x[nrow, 9] = Convert.ToInt32(words[9]);   // sell multiple 10 times
+
+                if (words.Length == 12)
+                {
+                    x[nrow, 10] = Convert.ToInt32(words[10]);   // buy multiple 10 times
+                    x[nrow, 11] = Convert.ToInt32(words[11]);   // sell multiple 10 times
+                }
+                nrow++;
+                if (x[nrow - 1, 0] > 1420) //0505 from nrow > 390 to current if
+                {
+                    x[nrow - 1, 0] = 0;
+                    nrow--;
+                    break;
+                }
+            }
+
+            x[nrow, 0] = 0; // used to check the end of data, no need actually
+            if (x[nrow - 1, 1] == 0 && x[nrow - 1, 2] == 0 && x[nrow - 1, 3] == 0) // maybe trading suspended
+            {
+                nrow = 0;
+            }
+            return nrow;
+        }
+
+        public static int read_일주월(string stock, string dwm, int nrow, int[] col, int[,] x)
+        {
+            string file = "";
+            switch (dwm)
+            {
+                case "일":
+                    file = @"C:\병신\data\일\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
+                    break;
+                case "주":
+                    file = @"C:\병신\data\주\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
+                    break;
+                case "월":
+                    file = @"C:\병신\data\월\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
+                    break;
+                default:
+                    break;
+            }
+            if (!File.Exists(file))
+                return 0;
+
+            List<string> lines = File.ReadLines(file).Reverse().Take(nrow).ToList();
+
+            nrow = 0;
+            foreach (string line in lines)
+            {
+                string[] words = line.Split(' ');
+
+                for (int i = 0; i < col.Length; i++)
+                {
+                    x[nrow, i] = Convert.ToInt32(words[col[i]]);
+
+                }
+                nrow++;
+            }
+            return nrow;
+        }
+
+        public static int read_전일종가_전일거래액_천만원(string stock)
+        {
+            string path = @"C:\병신\data\일\" + stock + ".txt";
+            if (!File.Exists(path))
+            {
+                return -1;
+            }
+
+            string lastline = File.ReadLines(path).Last(); // last line read 
+
+            string[] words = lastline.Split(' ');
+            int 전일종가 = Convert.ToInt32(words[4]);
+            ulong 전일거래량 = Convert.ToUInt32(words[5]);
+            return (int)(전일종가 * (전일거래량 / g.천만원));
+        }
+
+        public static int read_전일종가_GivenDate(string stock, int date)
+        {
+
+            string path = @"C:\병신\data\일\" + stock + ".txt";
+            if (!File.Exists(path))
+            {
+                return -1;
+            }
+            string[] grlines = File.ReadAllLines(path);
+            int FoundLine = 0;
+            foreach (string line in grlines)
+            {
+                string[] wordss = line.Split(' ');
+                if (Convert.ToInt32(wordss[0]) == date)
+                    break;
+                else
+                    FoundLine++;
+            }
+            string aline = File.ReadLines(path).Skip(FoundLine - 1).Take(1).First();
+            
+            string[] words = aline.Split(' ');
+            return Convert.ToInt32(words[4]);
+        }
+
+        public static int read_전일종가(string stock)
+        {
+
+            string path = @"C:\병신\data\일\" + stock + ".txt";
+            if (!File.Exists(path))
+            {
+                return -1;
+            }
+
+            string lastline = File.ReadLines(path).Last(); // last line read 
+
+            string[] words = lastline.Split(' ');
+            return Convert.ToInt32(words[4]);
+        }
+
+        public static List<string> read_그룹_네이버_업종(List<List<string>> Gl, List<List<string>> GL)
+        {
+            _cpstockcode = new CPUTILLib.CpStockCode();
+
+            List<string> gl_list = new List<string>();
+
+            string filepath = @"C:\병신\data\그룹_네이버_업종.txt";
+            if (!File.Exists(filepath))
+            {
+                return gl_list;
+            }
+
+            List<string> 제외 = new List<string>();
+            제외 = read_제외(); // read_그룹_네이버_업종
+
+            string[] grlines = File.ReadAllLines(filepath, Encoding.Default);
+
+            List<string> GL_list = new List<string>();
+
+            int count = 0;
+            foreach (string line in grlines)
+            {
+                List<string> Gl_list = new List<string>();
+
+                string[] words = line.Split('\t');
+
+                if (words[0] != "")
+                {
+                    string stock = words[0].Replace(" *", "");
+                    string code = _cpstockcode.NameToCode(stock);
+                    if (code.Length != 7)
+                    {
+                        continue;
+                    }
+                    if (code[0] != 'A')
+                        continue;
+
+                    char marketKind = read_코스피코스닥시장구분(stock);
+                    if (marketKind == 'S' || marketKind == 'D')
+                    { }
+                    else
+                        continue;
+
+                    if (제외.Contains(stock))
+                        continue;
+
+                    gl_list.Add(stock); // for single
+                    GL_list.Add(stock); // for small group
+                    if (count == grlines.Length - 1) // the last stock added as group
+                    {
+                        GL.Add(GL_list.ToList()); //modified to create a new List when adding
+                        GL_list.Clear();
+                    }
+                }
+                else
+                {
+                    GL.Add(GL_list.ToList()); // to create a new List when adding
+                    GL_list.Clear();
+                }
+                count++;
+
+
+            }
+
+            var uniqueItemsList = gl_list.Distinct().ToList();
+            return uniqueItemsList;
+        }
+
+        public static List<string> read_그룹_네이버_업종() // this is for single list of stocks in 그룹_네이버_업종
+        {
+            _cpstockcode = new CPUTILLib.CpStockCode();
+
+            List<string> gl_list = new List<string>();
+
+            string filepath = @"C:\병신\data\그룹_네이버_업종.txt";
+            if (!File.Exists(filepath))
+            {
+                return gl_list;
+            }
+
+            string[] grlines = File.ReadAllLines(filepath, Encoding.Default);
+
+            List<string> GL_list = new List<string>();
+
+
+            foreach (string line in grlines)
+            {
+                string[] words = line.Split('\t');
+
+                if (words[0] != "")
+                {
+                    string stock = words[0].Replace(" *", "");
+                    string code = _cpstockcode.NameToCode(stock);
+                    if (code.Length != 7)
+                    {
+                        continue;
+                    }
+                    if (code[0] != 'A')
+                        continue;
+
+                    char marketKind = read_코스피코스닥시장구분(stock);
+                    if (marketKind == 'S' || marketKind == 'D')
+                    { }
+                    else
+                        continue;
+
+                    gl_list.Add(stock); // for single
+                }
+            }
+
+            var uniqueItemsList = gl_list.Distinct().ToList();
+            return uniqueItemsList;
+        }
+    }
+}

@@ -1,0 +1,128 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace New_Tradegy.Library
+{
+    internal class Order
+    {
+        public string Code { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public DateTime OrderTime { get; set; }
+        public int UrgencyLevel { get; set; }
+        public TimeSpan CancelThreshold { get; set; }
+
+        public Order(string code, decimal price, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
+        {
+            Code = code;
+            Price = price;
+            Quantity = quantity;
+            OrderTime = orderTime;
+            UrgencyLevel = urgencyLevel;
+            CancelThreshold = cancelThreshold;
+        }
+    }
+    
+
+    public class StockExchange
+    {
+        private List<Order> buyOrders = new List<Order>();
+        private List<Order> sellOrders = new List<Order>();
+
+        public void AddBuyOrder(string code, decimal price, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
+        {
+            buyOrders.Add(new Order(code, price, quantity, orderTime, urgencyLevel, cancelThreshold));
+        }
+
+        public void AddSellOrder(string code, decimal price, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
+        {
+            sellOrders.Add(new Order(code, price, quantity, orderTime, urgencyLevel, cancelThreshold));
+        }
+
+        private void RemoveOrder(List<Order> orderList, Order order)
+        {
+            orderList.Remove(order);
+        }
+
+        private void ExecuteBuyOrder(Order order)
+        {
+            Console.WriteLine($"Bought {order.Quantity} shares of {order.Code} at {order.Price} (Order Time: {order.OrderTime:HH:mm:ss}, Urgency Level: {order.UrgencyLevel}, Cancel Threshold: {order.CancelThreshold})");
+        }
+
+        private void ExecuteSellOrder(Order order)
+        {
+            Console.WriteLine($"Sold {order.Quantity} shares of {order.Code} at {order.Price} (Order Time: {order.OrderTime:HH:mm:ss}, Urgency Level: {order.UrgencyLevel}, Cancel Threshold: {order.CancelThreshold})");
+        }
+
+        private void CancelOrder(Order order)
+        {
+            Console.WriteLine($"Cancelled order for {order.Quantity} shares of {order.Code} (Order Time: {order.OrderTime:HH:mm:ss}, Urgency Level: {order.UrgencyLevel}, Cancel Threshold: {order.CancelThreshold})");
+        }
+
+        public void MonitorPrices(Dictionary<string, decimal> currentPrices)
+        {
+            DateTime now = DateTime.Now;
+
+            foreach (var order in new List<Order>(buyOrders))
+            {
+                if ((now - order.OrderTime) >= order.CancelThreshold)
+                {
+                    CancelOrder(order);
+                    RemoveOrder(buyOrders, order);
+                }
+                else if (currentPrices.ContainsKey(order.Code) && currentPrices[order.Code] <= order.Price)
+                {
+                    ExecuteBuyOrder(order);
+                    RemoveOrder(buyOrders, order);
+                }
+            }
+
+            foreach (var order in new List<Order>(sellOrders))
+            {
+                if ((now - order.OrderTime) >= order.CancelThreshold)
+                {
+                    CancelOrder(order);
+                    RemoveOrder(sellOrders, order);
+                }
+                else if (currentPrices.ContainsKey(order.Code) && currentPrices[order.Code] >= order.Price)
+                {
+                    ExecuteSellOrder(order);
+                    RemoveOrder(sellOrders, order);
+                }
+            }
+        }
+
+        public Dictionary<string, decimal> GetCurrentPrices()
+        {
+            // Dummy implementation, should be replaced with real stock price fetching logic
+            return new Dictionary<string, decimal>
+        {
+            { "AAPL", 150.00m },
+            { "GOOGL", 2800.00m },
+            { "MSFT", 300.00m }
+        };
+        }
+    }
+
+    //public class Program
+    //{
+    //    public static void Main()
+    //    {
+    //        StockExchange stockExchange = new StockExchange();
+
+    //        stockExchange.AddBuyOrder("AAPL", 145.00m, 10, DateTime.Now, 50, TimeSpan.FromMinutes(30));
+    //        stockExchange.AddSellOrder("GOOGL", 2850.00m, 5, DateTime.Now, 70, TimeSpan.FromMinutes(20));
+
+    //        while (true)
+    //        {
+    //            var currentPrices = stockExchange.GetCurrentPrices();
+    //            stockExchange.MonitorPrices(currentPrices);
+    //            Thread.Sleep(1000); // Sleep for a second before checking prices again
+    //        }
+    //    }
+    //}
+}
