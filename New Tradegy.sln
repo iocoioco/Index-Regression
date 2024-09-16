@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "New Tradegy", "New Tradegy\New Tradegy.csproj", "{C838A759-4B9B-4AB1-952B-20F47E8112DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8C1D470-EFC7-4A19-B359-C02780AD676C}"
+	ProjectSection(SolutionItems) = preProject
+		Program.txt = Program.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
