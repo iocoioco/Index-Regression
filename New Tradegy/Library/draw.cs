@@ -375,7 +375,7 @@ namespace New_Tradegy.Library
                     #endregion
                     break;
 
-                case "s&s": // NF
+                case "s&s": // not used
                     #region
                     //if (g.Group_ranking_Gid < 0)
                     //{
@@ -475,7 +475,7 @@ namespace New_Tradegy.Library
                     #endregion
                     break;
 
-                case "a&s": // NF, 4개 종목 묶음으로 중첩 가격만 차트
+                case "a&s": // not used, 4개 종목 묶음으로 중첩 가격만 차트
                     #region
                     //    g.nCol = g.rqwey_nCol;
                     //    g.nRow = g.rqwey_nRow;

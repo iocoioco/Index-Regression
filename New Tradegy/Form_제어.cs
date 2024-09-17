@@ -143,7 +143,7 @@ namespace New_Tradegy
 
             // Row 7
             g.제어.dtb.Rows[7][0] = "배차";
-            g.제어.dtb.Rows[7][1] = 0; g.v.배차이상 = 0; // defined, but NF
+            g.제어.dtb.Rows[7][1] = 0; g.v.배차이상 = 0; // defined, but not used
             g.제어.dtb.Rows[7][2] = "시총";
             g.제어.dtb.Rows[7][3] = 0; g.v.시총이상 = 0;
 
@@ -377,7 +377,7 @@ namespace New_Tradegy
                         g.제어.dtb.Rows[8][3] = newValue;
                         break;
 
-                    case "평가": // NF
+                    case "평가": // not used
                         array = new int[] { 2, 5, 7, 10, 15, 20, 25, 40, 60 }; // 평가
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)

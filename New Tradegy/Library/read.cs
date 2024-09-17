@@ -19,7 +19,7 @@ namespace New_Tradegy.Library
         static CPUTILLib.CpCodeMgr _cpcodemgr;
         static CPUTILLib.CpStockCode _cpstockcode;
 
-        // NF
+        // not used
         public static void read_관심제거추가(string stock)
         {
             return;
@@ -39,7 +39,7 @@ namespace New_Tradegy.Library
             g.관심삭제.Add(stock, HHmmss);
         }
 
-        // NF
+        // not used
         public static bool read_관심제거여부(string stock)
         {
             return false;

@@ -161,8 +161,8 @@ namespace New_Tradegy.Library
 
 
         // list of variables``
-        public static int revolving_number_for_kospi = 0; // used in misc : revoling_naver(int kospi_or_kosdaq) - NF
-        public static int revolving_number_for_kosdaq = 0; // used in misc : revoling_naver(int kospi_or_kosdaq) - NF
+        public static int revolving_number_for_kospi = 0; // used in misc : revoling_naver(int kospi_or_kosdaq) - not used
+        public static int revolving_number_for_kosdaq = 0; // used in misc : revoling_naver(int kospi_or_kosdaq) - not used
 
         //public static double 일중거래액환산율;
         public static double 천만원 = 10000000.0;
@@ -385,7 +385,7 @@ namespace New_Tradegy.Library
             public double old_분당거래액이상_천만원;// 분거
             public double old_호가거래액_백만원; // not active for g.tesing 호가
             public double old_편차이상; // 편차
-            public double old_배차이상; // defined, but NF // 배차
+            public double old_배차이상; // defined, but not used // 배차
             public double old_종가기준추정거래액이상_천만원; // 종거
             public double old_시총이상; // 시총
             public int old_배플;
@@ -394,7 +394,7 @@ namespace New_Tradegy.Library
             public double 분당거래액이상_천만원; // in setting 10
             public double 호가거래액_백만원; // in setting 10
             public double 편차이상;  // in setting 1
-            public double 배차이상; // in setting 0, NF
+            public double 배차이상; // in setting 0, not used
             public double 종가기준추정거래액이상_천만원; // insetting 0
             public double 시총이상; // in setting 0
 
@@ -757,7 +757,7 @@ namespace New_Tradegy.Library
 
             public bool selected_for_group = true; // used, but the value is fixed in glbl
 
-            public int oGL_sequence_id; // assigned in the program, but NF 
+            public int oGL_sequence_id; // assigned in the program, but not used 
 
             public stock_data ShallowCopy()
             {

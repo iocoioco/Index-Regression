@@ -398,7 +398,7 @@ namespace New_Tradegy.Library
             rhs = temp;
         }
 
-        // NF
+        // not used
         public static void calculate_cyan_magenta_in_stock()
         {
             for (int i = 0; i < g.ogl_data.Count; i++)
@@ -728,7 +728,7 @@ namespace New_Tradegy.Library
             return list;
         }
 
-        // NF
+        // not used
         public static List<string> 코닥순서(List<string> gl)
         {
             List<string> list = new List<string>();
@@ -1047,7 +1047,7 @@ namespace New_Tradegy.Library
         //     }
 
 
-        // avr_dealt, min_dealt, max_dealt : NF, just for reference
+        // avr_dealt, min_dealt, max_dealt : not used, just for reference
         public static string calcurate_종목일중변동평균편차(string stock, int days, ref double avr, ref double dev,
                                     ref int avr_dealt, ref int min_dealt, ref int max_dealt, ref ulong 일평균거래량)
         {
@@ -1228,7 +1228,7 @@ namespace New_Tradegy.Library
         /* 24일 거래량 중 상, 하 2개씩 극단을 제외하고 일평균거래량 환산 
     *  public static int calculate_종목20일기준일평균거래량(string stock)
     */
-        // NF
+        // not used
         public static ulong calculate_종목20일기준일평균거래량(string stock)
         {
             // Extract column 5 from stock filename

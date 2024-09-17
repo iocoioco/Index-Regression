@@ -559,7 +559,7 @@ namespace New_Tradegy.Library
                             }
                             else
                             {
-                                // Urgency and TimeThresh NF
+                                // Urgency and TimeThresh not used
                                 stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
                             }
                         }

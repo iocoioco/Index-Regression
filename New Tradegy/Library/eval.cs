@@ -595,7 +595,7 @@ namespace New_Tradegy.Library
                     g.그룹.dtb.Rows[i][2] = ((int)g.oGL_data[i].총점).ToString();
                 }
 
-                // two groups in a row : NF
+                // two groups in a row : not used
                 #region
                 //g.그룹.dtb.Rows[0][0] = g.ogl_data.Count;
                 //g.그룹.dtb.Rows[0][1] = g.sl.Count;
@@ -1142,7 +1142,7 @@ namespace New_Tradegy.Library
             //    }
             //}
 
-            //// new verwsion : NF, sound rarely
+            //// new verwsion : not used, sound rarely
             //public static void EvalKODEX_not_using2(g.stock_data o)//, int[,] x)
             //{
             //    // !!! 2023 1/9 3:00, naming of index_difference_sound and

@@ -3,7 +3,7 @@
 public class Class1
 {
 
-        public void task_stock_add() // NF
+        public void task_stock_add() // not used
         {
             int previous_mm = -1;
             while (true)
@@ -195,6 +195,6 @@ public class Class1
 
             }
             Thread.Sleep(500);
-        } // NF called by task_stock_add()
+        } // not used called by task_stock_add()
 
 }
