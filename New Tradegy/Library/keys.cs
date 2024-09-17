@@ -467,7 +467,7 @@ namespace New_Tradegy.Library
                 // Middle
                 #region
                 case 'a':
-                    List<string> list = new List<string> { "닥올", "피올" };
+                    List<string> list = new List<string> {  "피올", "닥올" };
                     g.v.key_string = ms.cycleStrings(g.v.key_string, list);
 
                     g.v.columnsofoGl_data = 0; // number of column for group = 0

@@ -239,7 +239,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l3":
-                    
+
                     break;
 
                 case "l4":
@@ -499,7 +499,7 @@ namespace New_Tradegy.Library
                     }
                     else
                     {
-                        if (g.clickedStock == g.KODEX4[0]) 
+                        if (g.clickedStock == g.KODEX4[0])
                         {
                             if (!hg.HogaInsert(g.KODEX4[1], 5, row_id, col_id))
                             {
@@ -519,7 +519,7 @@ namespace New_Tradegy.Library
                 case "r1": // News
                     string t = "http://google.com/search?q=" + g.clickedStock + " 뉴스 " + "주식" + "&tbs=qdr:" + g.PeoridNews; // qdr:w, m, d, h
                     Process.Start(t);
-                
+
 
                     // the followings are suggested by ChatGpt to exact
                     //string encodedQuery = Uri.EscapeDataString(g.clickedStock + " 뉴스 " + "주식");
@@ -534,21 +534,15 @@ namespace New_Tradegy.Library
                     break;
 
                 case "r3": // 정보
-                    if (g.test)
-                    {
-                        t = "http://google.com/search?q=" + g.clickedStock + " 잡코리아 " + "기업정보";
-                        Process.Start(t);
-                        //
-                        //Process.Start("chrome.exe", t);
-                    }
-                    else
-                        sr.r3_display_lines(chart, g.clickedStock, row_id, col_id);
+                    string query = g.clickedStock + " 잡코리아 " + "기업정보";
+                    string encodedQuery = Uri.EscapeDataString(query);
+                    t = "http://google.com/search?q=" + encodedQuery;
+                    Process.Start("chrome.exe", t);
 
                     break; ;
 
                 case "r4": // Naver main
                     wk.call_네이버(g.clickedStock, "main");
-                    // wk.BringToFront();
                     break;
 
                 case "r5": // 관심 추가 제거

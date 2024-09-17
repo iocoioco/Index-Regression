@@ -1,4 +1,6 @@
-﻿using New_Tradegy.Library;
+﻿using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static New_Tradegy.Library.g.stock_data;
 
 namespace New_Tradegy.Library
 {
@@ -171,7 +174,7 @@ namespace New_Tradegy.Library
                         {
                             continue;
                         }
-                       
+
                         int check_row = 0;
                         if (g.test)
                         {
@@ -181,10 +184,10 @@ namespace New_Tradegy.Library
                         }
                         else
                             check_row = o.nrow - 1;
-                        if (o.nrow < 2 ||  o.x[check_row, 4] < 0)
-                                continue;
+                        if (o.nrow < 2 || o.x[check_row, 4] < 0)
+                            continue;
 
-                        
+
 
                         double value = 0.0;
 
@@ -203,7 +206,7 @@ namespace New_Tradegy.Library
 
                     foreach (var t in a_tuple)
                     {
-                       
+
                         if (!displayList.Contains(t.Item2))
                             displayList.Add(t.Item2);
                     }
@@ -395,7 +398,7 @@ namespace New_Tradegy.Library
             rhs = temp;
         }
 
-        // not used
+        // NF
         public static void calculate_cyan_magenta_in_stock()
         {
             for (int i = 0; i < g.ogl_data.Count; i++)
@@ -575,7 +578,7 @@ namespace New_Tradegy.Library
                 // 최대 일 거래액 구하기
                 ulong max_day_dealt_money = 0;
                 foreach (var line in lines)
-                        {
+                {
                     string[] words = line.Split(' ');
                     ulong day_dealt_money = (ulong)(Convert.ToDouble(words[4]) * Convert.ToUInt64(words[5]) / g.억원); // 종가 * 당일거래량
                     if (day_dealt_money > max_day_dealt_money)
@@ -725,7 +728,7 @@ namespace New_Tradegy.Library
             return list;
         }
 
-        // not used
+        // NF
         public static List<string> 코닥순서(List<string> gl)
         {
             List<string> list = new List<string>();
@@ -1044,7 +1047,7 @@ namespace New_Tradegy.Library
         //     }
 
 
-        // avr_dealt, min_dealt, max_dealt : not used, just for reference
+        // avr_dealt, min_dealt, max_dealt : NF, just for reference
         public static string calcurate_종목일중변동평균편차(string stock, int days, ref double avr, ref double dev,
                                     ref int avr_dealt, ref int min_dealt, ref int max_dealt, ref ulong 일평균거래량)
         {
@@ -1225,7 +1228,7 @@ namespace New_Tradegy.Library
         /* 24일 거래량 중 상, 하 2개씩 극단을 제외하고 일평균거래량 환산 
     *  public static int calculate_종목20일기준일평균거래량(string stock)
     */
-        // not used
+        // NF
         public static ulong calculate_종목20일기준일평균거래량(string stock)
         {
             // Extract column 5 from stock filename
@@ -1524,7 +1527,7 @@ namespace New_Tradegy.Library
 
         public static void BringToFront()
         {
-            return; 
+            return;
             Process[] AllBrowsers = Process.GetProcesses();
             foreach (var process in AllBrowsers)
             {
@@ -1566,10 +1569,40 @@ namespace New_Tradegy.Library
                 string code = _cd.NameToCode(stock);
                 code = new String(code.Where(Char.IsDigit).ToArray());
                 basestring += code;
-                Process.Start("chrome.exe", basestring);
+                //OpenTabBySelenium(basestring);
+                Process.Start("chrome.exe",  basestring);
             }
         }
 
+        // 20240917
+        // to open a tab on the existing active tab on a window (by ChatGpt not working)
+        // Selenium is installed 
+        private static void OpenTabBySelenium(string t)
+        {
+            // Initialize ChromeDriver
+            var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\병신\mis\New Tradegy\bin\Debug");
+     
+        IWebDriver driver = new ChromeDriver(chromeDriverService);
+            //IWebDriver driver = new ChromeDriver();
+
+            // Set an explicit wait (e.g., wait up to 10 seconds)
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));CacheVirtualItemsEventArgs:
+
+            // Open the first URL
+            driver.Navigate().GoToUrl("http://google.com");
+
+            // Wait for the page to load completely (e.g., by waiting for a specific element)
+            wait.Until(d => d.FindElement(By.Name("q"))); // Wait for the search box to be visible
+
+            // Reuse the same tab to open the second URL
+            driver.Navigate().GoToUrl(t);
+
+            // Wait for the page to load completely (optional)
+            //wait.Until(d => d.FindElement(By.CssSelector("some-selector"))); // Wait for a specific element on the second page
+
+            // Proceed with your automation, without needing Thread.Sleep
+            driver.Quit();
+        }
 
         public static void call_네이버_차트(string stock, int selection, double xval)
         {

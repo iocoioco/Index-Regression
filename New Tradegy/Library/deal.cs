@@ -732,7 +732,7 @@ namespace New_Tradegy.Library
         //}
 
 
-        // not used
+        // NF
         public static void 설정매수수량_설정매도수량(string stock, DataGridView dgv2, ref int 설정매수수량, ref int 설정매도수량)
         {
             for (int i = 0; i < dgv2.Rows.Count; i++)

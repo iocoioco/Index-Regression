@@ -91,7 +91,7 @@ namespace New_Tradegy
 			122 전일기관순매수long
 			127 공매도수량ulong
 
-            not used
+            NF
             63:52주최고가(long or float)
             64:52주최저가(long or float)
 			*/

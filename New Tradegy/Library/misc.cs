@@ -139,7 +139,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        // not used
+        // NF
         public static void toggle_inclusion_criteria()
         {
             switch (g.v.key_string)
@@ -163,7 +163,7 @@ namespace New_Tradegy.Library
                     g.v.old_편차이상 =
                         g.v.편차이상;
                     g.v.old_배차이상 =
-                        g.v.배차이상; // defined, but not used // 배차
+                        g.v.배차이상; // defined, but NF // 배차
                     g.v.old_배플 = g.v.배플;
                     g.v.old_푀플 = g.v.푀플;
 
@@ -171,7 +171,7 @@ namespace New_Tradegy.Library
                     g.v.분당거래액이상_천만원 = 0; // 분거ㅁㅏㅣㅣㅇ
                     g.v.호가거래액_백만원 = 0; // not active for g.tesing 호가
                     g.v.편차이상 = 0; // 편차
-                    g.v.배차이상 = -10000; // defined, but not used // 배차
+                    g.v.배차이상 = -10000; // defined, but NF // 배차
                     g.v.시총이상 = 0;
                     g.v.배플 = 0;
                     g.v.푀플 = 0;
@@ -187,7 +187,7 @@ namespace New_Tradegy.Library
                     g.v.편차이상 =
                         g.v.old_편차이상;
                     g.v.배차이상 =
-                        g.v.old_배차이상; // defined, but not used // 배차
+                        g.v.old_배차이상; // defined, but NF // 배차
                     g.v.시총이상 =
                         g.v.old_시총이상;
                     g.v.배플 = g.v.old_배플;
@@ -196,7 +196,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        // not used
+        // NF
         public static void toggle_inclusion_criteria_old()
         {
             bool is_old_key_본피_배차_분거_총점 = false;
@@ -225,7 +225,7 @@ namespace New_Tradegy.Library
                 g.v.편차이상 =
                     g.v.old_편차이상;
                 g.v.배차이상 =
-                    g.v.old_배차이상; // defined, but not used // 배차
+                    g.v.old_배차이상; // defined, but NF // 배차
             }
             if (!is_new_key_본피_배차_분거_총점 && is_old_key_본피_배차_분거_총점)
             {
@@ -238,17 +238,17 @@ namespace New_Tradegy.Library
                 g.v.old_편차이상 =
                     g.v.편차이상;
                 g.v.old_배차이상 =
-                    g.v.배차이상; // defined, but not used // 배차
+                    g.v.배차이상; // defined, but NF // 배차
 
                 g.v.종가기준추정거래액이상_천만원 = 0; // 종거
                 g.v.분당거래액이상_천만원 = 0; // 분거ㅁㅏㅣㅣㅇ
                 g.v.호가거래액_백만원 = 0; // not active for g.tesing 호가
                 g.v.편차이상 = 0; // 편차
-                g.v.배차이상 = -10000; // defined, but not used // 배차
+                g.v.배차이상 = -10000; // defined, but NF // 배차
             }
         }
 
-        // not used
+        // NF
         public static void toggle_gq(string given_gq, int row_id, int col_id)
         {
             switch (given_gq)
@@ -311,7 +311,7 @@ namespace New_Tradegy.Library
         {
         }
 
-        // not used
+        // NF
         public static int index_of_optimum_time_interval(g.stock_data o)
         {
             for (int i = 1; i < g.틱_array_size; i++)
@@ -353,7 +353,7 @@ namespace New_Tradegy.Library
         }
 
 
-        // not used
+        // NF
         public static void marketeye_record_변곡(g.stock_data o)
         {
             if (o.통계.프분_dev > g.EPS)
@@ -399,7 +399,7 @@ namespace New_Tradegy.Library
         }
 
 
-        // not used
+        // NF
         public static void marketeye_record(g.stock_data o) // 20220720 o.틱외돈천[0] not included
         {
             string temp_file = @"C:\병신\temo.txt";
@@ -451,7 +451,7 @@ namespace New_Tradegy.Library
             synthesizer.Speak(speech);
         }
 
-        // Not used
+        // NF
         public static void revovling_naver(int kospi_or_kosdaq)
         {
 

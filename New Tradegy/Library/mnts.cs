@@ -7,7 +7,7 @@ namespace New_Tradegy.Library
 {
 	public class mn
 	{
-		// not used
+		// NF
 		public static void calc_종목별일중평균(List<string> rL, List<List<string>> aV)
 		{
 			int[] c_id = new int[1]; // number of columns needed

@@ -940,7 +940,7 @@ namespace New_Tradegy.Library
         }
 
 
-        // not used
+        // NF
         public static void read_write_10Columns(string stock)
         {
             string path = @"C:\병신\분\" + g.date.ToString() + "\\" + stock + "_processed" + ".txt";

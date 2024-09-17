@@ -148,7 +148,7 @@ namespace New_Tradegy // added for test on 20230807 1749
 
             rd.read_제어();
 
-            string newdirectory = @"C:\병신\변\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
+            string newdirectory = @"C:\병신\변\" + g.date.ToString(); // for writing 변곡 NF in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
             rd.read_변수(); ///
@@ -160,7 +160,7 @@ namespace New_Tradegy // added for test on 20230807 1749
 
             ms.setting_kodex_magnifier_shifter(); // duration 0.000 seconds
 
-            // rd.read_누적(g.누적); // not used in marketeye_received
+            // rd.read_누적(g.누적); // NF in marketeye_received
 
             // ms.setting_코스피_코스닥합성();
 

@@ -182,7 +182,7 @@ namespace New_Tradegy
             chart2.Invalidate(); // Trigger the Paint event to redraw chart2
             se.Instance?.InvalidateChart1();
         }
-
+        // NR
         private void Chart_Paint(object sender, PaintEventArgs e)
         {
             if (ChartState.ActiveChart == "chart2")
@@ -207,7 +207,7 @@ namespace New_Tradegy
 
 
 
-        // not used
+        // NF
         public void THREAD_Form_보조_차트()
         {
             //string title ="";
