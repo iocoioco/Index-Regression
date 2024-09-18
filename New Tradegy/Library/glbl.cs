@@ -281,6 +281,8 @@ namespace New_Tradegy.Library
         public static int ogl_data_next = 0;
         public static int 예치금 = 0;
 
+        public static long 코스피매수배 = 0;
+        public static long 코스피매도배 = 0;
         public static long 코스피지수순매수 = 0;
         public static long 코스피개인순매수 = 0;
         public static long 코스피외인순매수 = 0;
@@ -288,6 +290,8 @@ namespace New_Tradegy.Library
         public static long 코스피금투순매수 = 0;
         public static long 코스피연기순매수 = 0;
 
+        public static long 코스닥매수배 = 0;
+        public static long 코스닥매도배 = 0;
         public static long 코스닥지수순매수 = 0;
         public static long 코스닥개인순매수 = 0;
         public static long 코스닥외인순매수 = 0;

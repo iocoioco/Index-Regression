@@ -400,7 +400,7 @@ namespace New_Tradegy.Library
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             if (g.ogl_data[index].x[0, 3] > 1000)
-                ps.post_지수_프외_합산_382();
+                ps.post_지수_프외_배차_합산_382();
         }
 
         // 업종, 10억이상, 상관, 상관, 통계
@@ -1274,6 +1274,7 @@ namespace New_Tradegy.Library
             g.지수종목.Add("KODEX 코스닥150선물인버스");
         }
 
+        // not used
         public static void read_지수_숫자_비중()
         {
             string filename = @"C:\병신\data\지수_숫자_비중.txt";

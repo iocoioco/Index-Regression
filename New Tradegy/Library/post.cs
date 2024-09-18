@@ -37,7 +37,7 @@ namespace New_Tradegy.Library
     {
         public static double post_score(g.stock_data o, int check_row)
         {
-            
+
             double sending_value;
 
             // prep 에서 -> 통계.프분_dev, 통계.프분_avr 계산하였으나 푀분에 적용함.
@@ -69,7 +69,7 @@ namespace New_Tradegy.Library
             //}
             //o.점수.거분 *= g.s.거분_wgt;
 
-          
+
             if (o.통계.배차_dev > g.EPS)
             {
                 sending_value = (o.분배수차[0] - o.통계.배차_avr) / o.통계.배차_dev;
@@ -93,7 +93,7 @@ namespace New_Tradegy.Library
                 o.점수.배합 = 0.0;
             }
             o.점수.배합 *= g.s.배합_wgt;
-                
+
             return o.점수.푀분 + o.점수.배차 + o.점수.배합;
 
 
@@ -729,7 +729,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void post_지수_프외_합산_382()
+        public static void post_지수_프외_배차_합산_382()
         {
             int index;
 
@@ -741,22 +741,23 @@ namespace New_Tradegy.Library
             for (int i = 0; i < 382; i++)
             {
                 double sum = 0.0;
-                foreach (var stock in g.kospi_mixed.stock)
+                for (int j = 0; j < g.kospi_mixed.stock.Count; j++)
                 {
+                    var stock = g.kospi_mixed.stock[j];
                     index = wk.return_index_of_ogldata(stock);
                     if (index < 0) continue;
 
                     g.stock_data t = g.ogl_data[index];
                     double money_factor = t.전일종가 / g.억원;
                     sum += (int)((t.x[i, 4] + t.x[i, 5]) * money_factor);
-
                 }
                 g.ogl_data[kospi_leverage].x[i, 3] = (int)sum;
                 g.ogl_data[kospi_inverse].x[i, 3] = (int)sum;
 
                 sum = 0.0;
-                foreach (var stock in g.kosdaq_mixed.stock)
+                for (int j = 0; j < g.kosdaq_mixed.stock.Count; j++)
                 {
+                    var stock = g.kosdaq_mixed.stock[j];
                     index = wk.return_index_of_ogldata(stock);
                     if (index < 0) continue;
 
@@ -769,148 +770,62 @@ namespace New_Tradegy.Library
             }
         }
 
-        // !g.test only called
-        public static void post_지수_프외_합산()
+        public static void post_지수_프외_배차_합산()
         {
-            int index;
-
-
+            g.코스피매수배 = 0;
+            g.코스피매도배 = 0;
             g.코스피지수순매수 = 0;
-            foreach (var stock in g.kospi_mixed.stock)
+
+            for (int i = 0; i < g.kospi_mixed.stock.Count; i++)
             {
-                index = wk.return_index_of_ogldata(stock);
+                int index = wk.return_index_of_ogldata(g.kospi_mixed.stock[i]);
                 if (index < 0) continue;
 
                 g.stock_data t = g.ogl_data[index];
                 double money_factor = t.전일종가 / g.억원;
-                // 프로그램 + 외인
+
                 g.코스피지수순매수 += (int)((t.x[t.nrow - 1, 4] + t.x[t.nrow - 1, 5]) * money_factor);
-               
+                g.코스피매수배 = (int)(t.x[t.nrow - 1, 8] * g.kospi_mixed.weight[i]);
+                g.코스피매도배 = (int)(t.x[t.nrow - 1, 9] * g.kospi_mixed.weight[i]);
             }
 
+            g.코스닥매수배 = 0;
+            g.코스닥매도배 = 0;
             g.코스닥지수순매수 = 0;
-            foreach (var stock in g.kosdaq_mixed.stock)
+
+            for (int i = 0; i < g.kosdaq_mixed.stock.Count; i++)
             {
-                index = wk.return_index_of_ogldata(stock);
+                int index = wk.return_index_of_ogldata(g.kosdaq_mixed.stock[i]);
                 if (index < 0) continue;
 
                 g.stock_data t = g.ogl_data[index];
                 double money_factor = t.전일종가 / g.억원;
-                // 프로그램 + 외인
+
                 g.코스닥지수순매수 += (int)((t.x[t.nrow - 1, 4] + t.x[t.nrow - 1, 5]) * money_factor);
-               
+                g.코스닥매수배 = (int)(t.x[t.nrow - 1, 8] * g.kosdaq_mixed.weight[i]);
+                g.코스닥매도배 = (int)(t.x[t.nrow - 1, 9] * g.kosdaq_mixed.weight[i]);
             }
         }
 
-        // 종가 뿐 아니라 분데이터도 다시 읽어야 하므로 불가
-        public static void post_지수_프외_합산(int nrow) 
-        {
-            int index;
-
-
-            g.코스피지수순매수 = 0;
-            foreach (var stock in g.kospi_mixed.stock)
-            {
-                index = wk.return_index_of_ogldata(stock);
-                if (index < 0) continue;
-
-
-
-                g.stock_data t = g.ogl_data[index];
-
-
-                //t.전일종가 = rd.read_전일종가_GivenDate(t.stock, g.date);
-                
-                double money_factor = t.전일종가 / g.억원;
-                // 프로그램 + 외인
-                g.코스피지수순매수 += (int)((t.x[nrow, 4] + t.x[nrow, 5]) * money_factor);
-
-            }
-
-            //g.코스닥지수순매수 = 0;
-            //int buySum = 0;
-            //foreach (var stock in g.kosdaq_mixed.stock)
-            //{
-            //    index = wk.return_index_of_ogldata(stock);
-            //    if (index < 0) 
-            //        continue;
-
-            //    g.stock_data t = g.ogl_data[index];
-
-            //    t.전일종가 = rd.read_전일종가_GivenDate(t.stock, g.date);
-
-            //    double money_factor = t.전일종가 / g.억원;
-            //    // 프로그램 + 외인
-            //    buySum += (int)((t.x[nrow, 4] - t.x[nrow - 1, 4] + t.x[nrow, 5] - t.x[nrow, 5]) * money_factor);
-            //    int buy = (int)((t.x[nrow, 4] + t.x[nrow, 5]) * money_factor);
-            //    g.코스닥지수순매수 += buy;
-
-            //}
-
-            //g.코스닥지수순매수 = 0;
-            //foreach (var stock in g.kosdaq_mixed.stock)
-            //{
-            //    index = wk.return_index_of_ogldata(stock);
-            //    if (index < 0) continue;
-
-            //    g.stock_data t = g.ogl_data[index];
-            //    double money_factor = t.전일종가 / g.억원;
-            //    // 프로그램 + 외인
-            //    g.코스닥지수순매수 += (int)((t.x[t.nrow - 1, 4] + t.x[t.nrow - 1, 5]) * money_factor);
-
-            //}
-        }
-
-
-        // real : marketeye_received()
-        // test : eval_stock(), chart1_clic(),draw_stock(), chart1
-        // post : 0.9 / 1000 milliseconds -> 시간소요 없음
         public static void post(g.stock_data o)
         {
             if ((o.stock.Contains("KODEX") && !o.stock.Contains("레버리지")) ||
                 o.stock.Contains("KODSEF") ||
                 o.stock.Contains("TIGER") ||
                 o.stock.Contains("KBSTAR") ||
-                o.stock.Contains("HANARO")
-                )
-                return;
+                o.stock.Contains("HANARO")) return;
 
-            int check_row;
-            if (g.test)
-            {
-                check_row = g.time[1] - 1;
-                if (check_row > o.nrow - 1)
-                    check_row = o.nrow - 1;
-            }
-            else
-                check_row = o.nrow - 1;
+            int check_row = g.test ? Math.Min(g.time[1] - 1, o.nrow - 1) : o.nrow - 1;
 
-            
-            
-            post_minute(o, check_row); // post
-
-            o.점수.총점 = post_score(o, check_row); // 임시로
-
-
-            // Blocked on 20240406
-            //if (g.q == "o&s") // should be drawn even in case of no inclusion 20230928
-            //    o.included = ev.eval_inclusion(o);
-            //else
-            //    o.included = true;
-            // eval_group 계산할 때 post_score 하지않아 총점 틀림 방지하기 위해 막음
-            //if (o.included == false) 
-            //    return;
-
+            post_minute(o, check_row);
+            o.점수.총점 = post_score(o, check_row);
 
             if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
             {
-                if (!g.test)
-                    ev.EvalKODEX(o); //, x); //  // for both 코스피 & 코스닥
+                if (!g.test) ev.EvalKODEX(o);
             }
-
         }
 
-        
         public static void PostPassing(g.stock_data o, int checkRow, bool add)
         {
             bool previousPriceReset = false;
@@ -930,8 +845,8 @@ namespace New_Tradegy.Library
                     o.pass.previousPriceHigh = o.x[checkRow, 1]; previousPriceReset = true;
                     o.pass.previousPriceLow = null;
                     o.pass.priceStatus = 1;
-                    if (!g.관심종목.Contains(o.stock) && 
-                        !o.stock.Contains("KODEX") && 
+                    if (!g.관심종목.Contains(o.stock) &&
+                        !o.stock.Contains("KODEX") &&
                         o.분거래천[0] > 50 &&
                         o.분배수차[0] > 100 &&
                         o.분프로천[0] >= 0 &&
@@ -1015,7 +930,7 @@ namespace New_Tradegy.Library
             o.점수.급상 = rise_value;
         }
 
-        
+
         // 통계 적용하지 않은 원본 상태
         public static double post_score_20230824(g.stock_data o)
         {

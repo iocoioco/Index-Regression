@@ -125,7 +125,7 @@ namespace New_Tradegy.Library
 
                 for (int j = 1; j < o.nrow; j++)
                 {
-                    ps.post_지수_프외_합산(j);
+                    ps.post_지수_프외_배차_합산(j);
                     str += (o.x[j, 3]).ToString() + "\t" + g.코스피지수순매수 + "\n";
 
                 }

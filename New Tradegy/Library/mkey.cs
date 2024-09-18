@@ -614,7 +614,7 @@ namespace New_Tradegy
             q = g.ogl_data[index];
             g.코스닥지수 = q.x[q.nrow - 1, 1];
             
-            ps.post_지수_프외_합산();
+            ps.post_지수_프외_배차_합산();
             
             g.marketeye_count++;
 
@@ -636,7 +636,7 @@ namespace New_Tradegy
             //if (index >= 0)
             //{
             //    g.stock_data o = g.ogl_data[index];
-            //    ps.post_지수_프외_합산(o.nrow - 1);
+      
             //}
 
             //wr.wt(" ");

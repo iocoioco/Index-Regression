@@ -1,4 +1,5 @@
 20240917 : do it consistently
+	지수 : 배차 및 개인 g.kospi_mixed.(stock, weight)
 	프로그램 손실 : 당일 또는 주간
 	급락 + 프돈 + 배차(양전)
 	배차 급증(프돈 유입)
