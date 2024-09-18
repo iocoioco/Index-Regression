@@ -644,8 +644,17 @@ namespace New_Tradegy.Library
                         }
                         if (!found)
                             return;
-                        //}
-                        dr.draw_보조_차트("상관");
+
+                        Form_보조_차트 form = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
+
+                        if (form?.KeyString == "상관" || form?.KeyString == "절친")
+                        {
+                            dr.draw_보조_차트(form?.KeyString);
+                        }
+                        else
+                        {
+                            dr.draw_보조_차트("상관");
+                        }
                     }
                     break;
             }

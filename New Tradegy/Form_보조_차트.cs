@@ -26,7 +26,13 @@ namespace New_Tradegy
         public int nRow;
         public int nCol;
 
-        public string keyString = "그순"; 
+        public string keyString = "그순";
+        public string KeyString
+        {
+            get { return keyString; }
+            set { keyString = value; }
+        }
+
         private int Cell_Height = 30;
         // 상관, 보유, 그순, 관심, 코닥, 코피, 푀손
 
