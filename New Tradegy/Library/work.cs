@@ -190,8 +190,6 @@ namespace New_Tradegy.Library
 
 
                         double value = 0.0;
-
-                        // t[4] : 프로그램, t[5] : 외인, t[6] : 기관, t[7] : 전거래량
                         {
                             for (int i = check_row - 1; i >= 1; i--)
                             {

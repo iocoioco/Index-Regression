@@ -151,16 +151,6 @@ namespace New_Tradegy.Library
                         str += str_add;
                     }
                     str += "\n";
-
-                    //t[0] = HHmmss;
-                    //t[1] = o.가격; // 매수1호가기준              
-                    //t[2] = o.수급;
-                    //t[3] = (int)(o.체강 * g.HUNDRED);
-                    //t[7] = (int)o.거래량;
-                    //t[8] = o.매수배;
-                    //t[9] = o.매도배;
-
-
                 }
             }
             return str;
@@ -321,10 +311,15 @@ namespace New_Tradegy.Library
                 }
                 str += "\n";
 
-                str += "  " + Math.Round(o.통계.프분_avr * 10, 0) + "  " + Math.Round(o.통계.프분_dev * 10, 0) + "    " +
-                                 Math.Round(o.통계.거분_avr * 10, 0) + "  " + Math.Round(o.통계.거분_dev * 10, 0) + "      프분     거분 (단위 : 백만)\n" +
-                         "  " + Math.Round(o.통계.배차_avr, 0) + "  " + Math.Round(o.통계.배차_dev, 0) + "    " +
-                                 Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
+                //str += "  " + Math.Round(o.통계.프분_avr * 10, 0) + "  " + Math.Round(o.통계.프분_dev ) + "    " +
+                //                 Math.Round(o.통계.거분_avr * 10, 0) + "  " + Math.Round(o.통계.거분_dev * 10, 0) + "      프분     거분 (단위 : 백만)\n" +
+                //         "  " + Math.Round(o.통계.배차_avr, 0) + "  " + Math.Round(o.통계.배차_dev, 0) + "    " +
+                //                 Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
+
+                str += "  " + o.통계.프분_avr.ToString("F1") + "\t" + o.통계.프분_dev.ToString("F1") + "\t" +
+                                 o.통계.거분_avr.ToString("F1") + "\t" + o.통계.거분_dev.ToString("F1") + "\t      프분     거분 (단위 : 천만)\n" +
+                         "  " + o.통계.배차_avr.ToString("F0") + "\t" + o.통계.배차_dev.ToString("F0") + "\t" +
+                                 o.통계.배합_avr.ToString("F0") + "\t" + o.통계.배합_dev.ToString("F0") + "\t      배차     배합\n\n";
             }
             return str;
         }

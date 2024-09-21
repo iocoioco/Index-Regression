@@ -411,7 +411,7 @@ namespace New_Tradegy
                 // 7 거래량, 8 매수배, 9 매도배, 10 Nasdaq_지수, 11 연기금순매수액(억)
                 if (o.stock.Contains("KODEX 레버리지") || o.stock.Contains("KODEX 200선물인버스2X")) // full
                 {
-                    t[3] = (int)g.코스피지수순매수; //지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[3] = (int)g.코스피프외순매수; //지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
                     t[4] = (int)g.코스피기관순매수;
                     t[5] = (int)g.코스피외인순매수;
                     t[6] = (int)g.코스피개인순매수;
@@ -420,7 +420,7 @@ namespace New_Tradegy
                 }
                 else if (o.stock.Contains("KODEX 코스닥150레버리지") || o.stock.Contains("KODEX 코스닥150선물인버스")) // full
                 {
-                    t[3] = (int)g.코스닥지수순매수;// t[3] : 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[3] = (int)g.코스닥프외순매수;// t[3] : 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
                     t[4] = (int)g.코스닥기관순매수;
                     t[5] = (int)g.코스닥외인순매수;
                     t[6] = (int)g.코스닥개인순매수;

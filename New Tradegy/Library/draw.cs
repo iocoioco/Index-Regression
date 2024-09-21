@@ -3134,9 +3134,9 @@ namespace New_Tradegy.Library
                         t.Points[total_number_of_point - 1].Label = "      " + ((int)(x[end_id, i] / g.HUNDRED)).ToString();
                 }
                 else if (i == 4 && !KODEX)
-                    t.Points[total_number_of_point - 1].Label = (o.프누천 / 10.0).ToString("F2");
+                    t.Points[total_number_of_point - 1].Label = o.프누천.ToString("F1");
                 else if (i == 5 && !KODEX)
-                    t.Points[total_number_of_point - 1].Label = (o.외누천 / 10.0).ToString("F2");
+                    t.Points[total_number_of_point - 1].Label = o.외누천.ToString("F1");
                 else
                     t.Points[total_number_of_point - 1].Label = "      " + x[end_id, i].ToString();
 
@@ -3156,9 +3156,9 @@ namespace New_Tradegy.Library
                     }
 
                     else if (i == 4 && !KODEX)
-                        d = (int)Math.Round(o.분프로천[k] / 10.0); // 20220723
+                        d = (int)Math.Round(o.분프로천[k]); // 20220723
                     else if (i == 5 && !KODEX)
-                        d = (int)Math.Round(o.분외인천[k] / 10.0); // 20220723
+                        d = (int)Math.Round(o.분외인천[k]); // 20220723
                     else
                         d = x[end_id - k, i] - x[end_id - k - 1, i]; // difference
 
