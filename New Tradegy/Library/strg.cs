@@ -13,7 +13,13 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace New_Tradegy.Library
 {
     internal class sr
+
     {
+        public static string[] CollectWordsFromString(string text)
+        {
+            return text.Split(new char[] { ' ', ',', '.', '!', '?', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         public static string r3_display_lines_body(g.stock_data t)
         {
             // row setting

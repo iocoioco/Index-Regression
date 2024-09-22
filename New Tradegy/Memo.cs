@@ -31,7 +31,7 @@ namespace New_Tradegy
         string directory = @"C:\병신\data\";
         string lastOpendFileName = "";
         int startIndex = 0;
-        
+
         public Memo()
         {
             InitializeComponent();
@@ -44,7 +44,7 @@ namespace New_Tradegy
             this.TopMost = true;
 
             string str = "";
-            str =   "open(^o)" + Environment.NewLine +
+            str = "open(^o)" + Environment.NewLine +
             "save(^s)" + Environment.NewLine +
             "find(^f)" + Environment.NewLine +
             "blank(^b)" + Environment.NewLine +
@@ -67,7 +67,7 @@ namespace New_Tradegy
         //private void richTextBox1_KeyPress(object sender, KeyPressEventArgs e)
         //{
         //   ky.chart_keypress(e);
-           
+
         //    SetFocusAndReturn();
         //}
 
@@ -187,6 +187,7 @@ namespace New_Tradegy
 
             if (e.Button == MouseButtons.Right)
             {
+                #region
                 int line = -1;
                 int p = -1;
                 p = richTextBox1.GetCharIndexFromPosition(e.Location);
@@ -206,6 +207,23 @@ namespace New_Tradegy
                 if (wordsInLine.Length <= 0)
                     return;
 
+                //Collectg words from the string
+                //List<string> words = CollectWordsFromString(text);
+                #endregion
+
+
+                //int line = -1;
+                //int p = -1;
+                //p = richTextBox1.GetCharIndexFromPosition(e.Location);
+                //line = richTextBox1.GetLineFromCharIndex(p);
+
+                //text = richTextBox1.Text;
+                //if (text.Length == 0) { return; }
+                //if (line < 0 || p < 0 || line >= richTextBox1.Lines.Length) { return; }
+
+                //string temp = getWordAtIndex(richTextBox1, richTextBox1.SelectionStart);
+                //string wordsInLine = richTextBox1.Lines[line];
+                //string[] words = sr.CollectWordsFromString(wordsInLine);
                 if (words[0] == "//")
                 {
                     for (int i = 0; i < g.oGL_data.Count; i++)
@@ -230,8 +248,8 @@ namespace New_Tradegy
                     //string myString = File.ReadAllText(directory + words[0], Encoding.Default);
                     //byte[] bytes = Encoding.Default.GetBytes(myString);
                     //myString = Encoding.UTF8.GetString(bytes); 
-                    
-                    
+
+
                     lastOpendFileName = wordsInLine;
                     richTextBox1.Select(0, 0);
                     this.Text = words[0];
@@ -281,6 +299,27 @@ namespace New_Tradegy
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
+            // Detect if Ctrl + V is pressed
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                // Get the text from the clipboard
+                if (Clipboard.ContainsText())
+                {
+                    string pastedText = Clipboard.GetText();
+
+                    // Call method to collect words
+                    string[] words = sr.CollectWordsFromString(pastedText);
+
+                    // Do something with the words (e.g., display or process them)
+                    foreach (string word in words)
+                    {
+                        Console.WriteLine(word); // Example output
+                    }
+
+                    e.Handled = true; // Optional: prevent the default paste operation if needed
+                }
+            }
+
             if (e.KeyCode == Keys.Enter)
             {
                 int returned_startIndex = FindMyText(textBox1.Text, startIndex);
@@ -381,7 +420,7 @@ namespace New_Tradegy
             return foundIndex;
         }
 
-        public void insertMemoRichTextBox(string text) 
+        public void insertMemoRichTextBox(string text)
         {
             // after adding text the position move to the top
             startIndex = richTextBox1.SelectionStart;

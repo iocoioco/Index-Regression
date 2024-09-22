@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8C1D470-EFC7-4A19-B359-C02780AD676C}"
 	ProjectSection(SolutionItems) = preProject
 		급락.txt = 급락.txt
+		뉴스.txt = 뉴스.txt
 		빨리.txt = 빨리.txt
 		상한_상승_보합_등.cs = 상한_상승_보합_등.cs
 		여행.txt = 여행.txt
