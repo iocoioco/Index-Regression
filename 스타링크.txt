@@ -10,3 +10,6 @@ standard Starlink dish (the rectangular or circular one) : compact and protable
 	Dimensions:
 	Rectangular Dish: Approx. 20.2 x 11.9 inches (513 x 303 mm)
 	Circular Dish: Approx. 23.2 inches (590 mm) in diameter
+
+
+Gen 2 dishes usually start with UTR-211. : model number confirmation
