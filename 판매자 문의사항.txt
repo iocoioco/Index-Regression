@@ -16,3 +16,5 @@ Webasto gasoline 4kw 무시동 히터(공기, 액체 타이프 여부), 토출구위치
 Dometic Harrier inverter roof air conditioner
 Sony carplay(Apple & Android)
 후방카메라/ 하이패스/ LED후진등, 전면 틴팅, 하부 전체 방청
+
+보조타이어
