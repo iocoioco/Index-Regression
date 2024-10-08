@@ -621,7 +621,7 @@ namespace New_Tradegy.Library
                 public double 그룹_avr, 그룹_dev;
                 public double 피로_avr, 피로_dev;
                 public double 기타_avr, 기타_dev;
-
+                
             }
             public statics 통계 = new statics();
 

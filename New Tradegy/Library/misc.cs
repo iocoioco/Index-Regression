@@ -330,7 +330,7 @@ namespace New_Tradegy.Library
 
         public static void marketeye_record_변곡_write(g.stock_data o)
         {
-            string file = @"C:\병신\변\" + g.date.ToString() + "\\" + o.stock + ".txt";
+            string file = @"C:\병신\변곡\" + g.date.ToString() + "\\" + o.stock + ".txt";
 
             if (!File.Exists(file))
                 File.Create(file).Dispose();

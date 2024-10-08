@@ -502,6 +502,15 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'S':
+                    List<string> list_3 = new List<string> { "프편", "종편" };
+                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_3);
+                    g.q = "o&s";
+                    g.gid = 0;
+                    se = (Form)Application.OpenForms["se"];
+                    se.Text = g.v.key_string;
+                    break;
+
+                case '\u0013': // Ctrl + S
                     if (!g.test)
                     {
                         string caption = "Save all stocks ?";
@@ -519,8 +528,8 @@ namespace New_Tradegy.Library
 
 
                 case 'd':
-                    List<string> list_3 = new List<string> { "푀분", "총점" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_3);
+                    List<string> list_7 = new List<string> { "푀분", "총점" };
+                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_7);
                     g.q = "o&s"; 
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
@@ -842,13 +851,13 @@ namespace New_Tradegy.Library
 
 
             //g.제어.dtb.Rows[0][1] = g.v.key_string; // key input
-
+            // 20241007 프편, 종편 추가에 따른 'S' 추가
             string testPost = "1q";
             string testEval = "2twtTyYWW";
-            string testAndRealEval = "asdDgh";
+            string testAndRealEval = "asSdDgh";
 
             string testDraw1 = "12qwrRtTyYmMWW";
-            string testAndRealDraw1 = "45[]asdDfghjJkK mMn\\";
+            string testAndRealDraw1 = "45[]asSdDfghjJkK mMn\\";
 
             string testDraw2 = "12qwrRtTyYWW";
             string testAndRealDraw2 = "";

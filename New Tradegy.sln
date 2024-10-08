@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "New Tradegy", "New Tradegy\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8C1D470-EFC7-4A19-B359-C02780AD676C}"
 	ProjectSection(SolutionItems) = preProject
+		Electricity.txt = Electricity.txt
 		급락.txt = 급락.txt
 		뉴스.txt = 뉴스.txt
 		빨리.txt = 빨리.txt
@@ -14,8 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		스타링크.txt = 스타링크.txt
 		여행.txt = 여행.txt
 		전기.txt = 전기.txt
-		코딩 진행 단순 정리.txt = 코딩 진행 단순 정리.txt
 		캠핑카 출국준비.txt = 캠핑카 출국준비.txt
+		코딩 진행 단순 정리.txt = 코딩 진행 단순 정리.txt
 		코딩.txt = 코딩.txt
 		판매자 문의사항.txt = 판매자 문의사항.txt
 		프외배수.txt = 프외배수.txt

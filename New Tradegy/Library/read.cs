@@ -659,7 +659,7 @@ namespace New_Tradegy.Library
             g.Account = strs[0];
 
             strs = grlines[3].Split(' ');
-            g.date = Convert.ToInt32(strs[0]);
+            g.date = Convert.ToInt32(strs[0]);21
             if (strs[1] == "w" || strs[1] == "W")
             {
                 g.workingday = true;

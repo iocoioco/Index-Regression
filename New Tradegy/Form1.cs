@@ -148,7 +148,7 @@ namespace New_Tradegy // added for test on 20230807 1749
 
             rd.read_제어();
 
-            string newdirectory = @"C:\병신\변\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
+            string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
             rd.read_변수(); ///

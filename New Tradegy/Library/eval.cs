@@ -215,6 +215,12 @@ namespace New_Tradegy.Library
                         case "종누":
                             value = o.종거천;
                             break;
+                        case "프편":
+                            value = (o.프누천 + o.외누천) / o.통계.프분_dev;
+                            break;
+                        case "종편":
+                            value = o.종거천 / o.통계.프분_dev;
+                            break;
 
                         case "푀분":// 분당프로그램(천만원)
                             value = o.분프로천[0] + o.분외인천[0];// 20220720;
