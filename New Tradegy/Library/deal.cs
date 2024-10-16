@@ -393,20 +393,37 @@ namespace New_Tradegy.Library
 
             TradeInit();
             if (_checkedTradeInit == false)
-                return;
-
-            //ICollection keyColl = g.m_mapOrder.Keys;
-
-            List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
-            if(keyColl == null)
             {
+                MessageBox.Show("Trade initialization failed.", "Error", MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
                 return;
             }
-            g.OrderItem data = (g.OrderItem)g.m_mapOrder[keyColl[rowindex]];
 
-            //int 원주문번호 = data.m_ordOrgKey; // CpTd0314 manual 상 원주문번호로 되어있음
+            List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
+            if (keyColl == null || rowindex >= keyColl.Count)
+            {
+                MessageBox.Show("Invalid rowindex or keyColl is null.", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            g.OrderItem data = (g.OrderItem)g.m_mapOrder[keyColl[rowindex]];
+            if (data == null)
+            {
+                MessageBox.Show("Order data is null.", "Error", MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+                return;
+            }
+
             int 원주문번호 = data.m_ordKey;
             string stockcode = _cpstockcode.NameToCode(data.stock);
+            if (string.IsNullOrEmpty(stockcode))
+            {
+                MessageBox.Show("Invalid stock code.", "Error", MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+                return;
+            }
+
             _cptd0314 = new CPTRADELib.CpTd0314();
 
             // 미체결 주문번호입력에 따른 선택적 취소
@@ -417,8 +434,15 @@ namespace New_Tradegy.Library
             _cptd0314.SetInputValue(5, 0);// 0 : 전체 취소, 숫자입력 : 입력숫자만큼 취소
 
             int result = _cptd0314.BlockRequest();
+            if (result != 0)
+            {
+                MessageBox.Show($"Order cancellation failed with result code: {result}", 
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
+
+        // called when the amount of stock is less than that of selling
         public static void DealCancelStock(string stock) // tr(1)
         {
             if (g.test)
@@ -453,6 +477,7 @@ namespace New_Tradegy.Library
         }
 
      
+        // not used
         private string deal_correct(long 원주문번호, string stock, long 주문수량, long 주문단가) // tr(1)
         {
             if (g.test)
@@ -478,6 +503,8 @@ namespace New_Tradegy.Library
             return _cptd0303.GetDibMsg1();
         }
 
+
+        // not used
         public static string deal_trade_매수점검(g.stock_data o) // tr(1)
         {
             // warning message

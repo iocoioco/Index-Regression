@@ -437,8 +437,7 @@ namespace New_Tradegy.Library
 
                 Dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(Dgv_CellMouseClick);
 
-                Dgv.PreviewKeyDown += new PreviewKeyDownEventHandler(Dgv_PreviewKeyDown);
-
+            
                 Dgv.KeyPress += OnDataGirdView1_KeyPress;
 
                 f.Controls.Add(Dgv);
@@ -1095,72 +1094,12 @@ namespace New_Tradegy.Library
                 }
             }
 
-            private void Dgv_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-            {
-                //ky.char1_previewkeydown(sender, e);
-                return;
-                switch (e.KeyCode)
-                {
-                    #region
-                    // 매도(ActiveForm)
-                    case Keys.F5:
-                        //Form f = cl.GetActiveForm();
-                        //if (f == null)
-                        //{
-                        //    return;
-                        //}
-
-                        int Price = hg.HogaGetValue(Stock, 0, 1); // 0 : 매수1호가 라인, 1 : 호가 column
-                        if (Price <= 0)
-                        {
-                            return;
-                        }
-
-                        //string Stock = f.Name;
-                        int index = wk.return_index_of_ogldata(Stock);
-                        if (index < 0)
-                        {
-                            return;
-                        }
-                        g.stock_data o = g.ogl_data[index];
-
-                        int Amount = g.일회거래액 * 10000 / Price;
-                        ms.Sound_돈(g.일회거래액);
-
-                        if (o.보유량 < Amount)
-                        {
-                            dl.DealCancelStock(Stock); // dgv_CellClick tr(2) 에러 메세지 20231122
-                            dl.deal_hold(); // dgv_CellClick tr(1)
-                            if (o.보유량 == 0)
-                            {
-                                return;
-                            }
-                        }
-                        if (o.보유량 < Amount)
-                        {
-                            Amount = o.보유량;
-                        }
-                        if (Amount == 0)
-                        {
-                            Amount = 1;
-                        }
-
-                        dl.deal_exec("매도", Stock, Amount, Price, "03"); // dgv_PreviewKeyDow F1(F5) "01"; 지정가, "03" 시장가
-                        break;
-
-                    case Keys.F9:
-                        Form Form_무게 = new Form_그룹(); // grup
-                        Form_무게.Show();
-                        break;
-
-                        #endregion
-                }
-            }
-
+          
             private void OnDataGirdView1_KeyPress(object sender, KeyPressEventArgs e)
             {
                 ky.chart_keypress(e);
             }
+
 
             private int RemainSB()
             {
@@ -1170,6 +1109,7 @@ namespace New_Tradegy.Library
                 return _cpcybos.GetLimitRemainCount(CPUTILLib.LIMIT_TYPE.LT_SUBSCRIBE);               // 400건의 요청으로 제한   
             }
 
+
             private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
             {
                 // Log the error details to a file or logging system
@@ -1178,6 +1118,7 @@ namespace New_Tradegy.Library
                 // Prevent the default error dialog from showing
                 e.ThrowException = false;
             }
+
 
             // Method to log error details
             private void LogError(Exception ex)
@@ -1190,7 +1131,6 @@ namespace New_Tradegy.Library
                     writer.WriteLine(ex.StackTrace);
                 }
             }
-
         }
     }
 
