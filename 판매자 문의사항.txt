@@ -4,19 +4,14 @@
 
 
 난방 및 조리
-	heating system(알데, 무시동) : 프로판 또는  LPG
+
 	알데히팅액(파란 2년, 분홍 5년)
 	Webasto gasoline 4kw 무시동 히터(공기, 액체 타이프 여부), 토출구위치
-	가스 안전 장치
-	외부 요리 가능 프로판 아웃렛 위치
-	냉장고
 
 
 
 
 
-냉방
-	Dometic Harrier inverter roof air conditioner
 
 
 
@@ -55,7 +50,7 @@ Sony carplay(Apple & Android) : Apple 사용 가능 ?
 
 
 호스(물, 한전충전 : 서지방지)
-전면창 가림막
+
 
 
 동파 : 청수 오수 제거 필요
@@ -65,16 +60,11 @@ Sony carplay(Apple & Android) : Apple 사용 가능 ?
 고장나면 고칠 수 있는 곳 : 사설정비소 ?
 포드 정비소 가야하나, 추가정비 추천 
 	구매 후 차량 추가 정비 내역
-	액 교체 주기
-	타이어 종류 : All-Season Tires ?
-	타이어 교체주기(몇년만에 일반적으로 4만 - 6만 miles), 
-	동계타이어필요성 : 사계절여부, 중하중용
-	 보조타이어, Rotation(앞 타이어 마모 먼저), 정격압력 ?
-	 7도 이하면 동계 (눈이 오지 않더라도)
+
+
 
 	
 
-	아니면 새로 국문자동차등록증을 새로 발급받을 것
 
 	 
-	 dㅇ
+	

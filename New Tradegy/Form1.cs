@@ -228,8 +228,13 @@ namespace New_Tradegy // added for test on 20230807 1749
                 Task Task_eval_draw = new Task(task_eval_draw); // 시초 17초 후 시작, 60초에 1회씩
                 Task_eval_draw.Start();
 
+                
+                runKOSPIUpdater();
+                runKOSDAQUpdater();
+
                 hg.HogaInsert(g.KODEX4[0], 5, 0, 0);
                 hg.HogaInsert(g.KODEX4[2], 5, 1, 0);
+
 
                 //Task Task_bitcoin =
                 //new Task(sc.task_bitcoin);
@@ -252,9 +257,7 @@ namespace New_Tradegy // added for test on 20230807 1749
 
             //g.제어.dtb.Rows[0][1] = g.v.key_string;
 
-            runKOSPIUpdater();
-            runKOSDAQUpdater();
-
+            
             // AddSearchTextBox();
 
             ms.Sound("일반", "to jsb");

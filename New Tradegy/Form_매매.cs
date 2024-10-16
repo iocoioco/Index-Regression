@@ -130,7 +130,7 @@ namespace New_Tradegy
 
             switch (e.ColumnIndex)
             {
-                case 1: // 체결종목 취소
+                case 1: // 체결종목 취소, 취소가 안 되는 이유는 뭘까 //?
                     if (g.test)
                         return;
 
@@ -141,7 +141,7 @@ namespace New_Tradegy
                     }
                     break;
 
-                case 2: // 매도 
+                case 2: // 매도 Blocked
                     if (!g.test)
                     {
                         string buySell = "매도";
@@ -157,7 +157,7 @@ namespace New_Tradegy
                     }
                     break;
 
-                case 3: // 매수 
+                case 3: // 매수 Blocked 
                     if (!g.test)
                     {
                         string buySell = "매수";

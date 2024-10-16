@@ -610,7 +610,10 @@ namespace New_Tradegy.Library
                     //Form f = (Form)(hg.FormNameGivenStock(g.clickedStock));
                     //f.Location = new Point(f.Location.X, f.Location.Y + 100);
                     if (g.v.Screens >= 2)
+                    {
                         sr.r3_display_lines(chart, g.clickedStock, row_id, col_id);
+                    }
+                        
                     //wk.BringToFront();
 
                     break;
