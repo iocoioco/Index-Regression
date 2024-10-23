@@ -538,7 +538,8 @@ namespace New_Tradegy.Library
                     if (HHmm == 1000)
                     {
                         ms.Sound("time", "taiwan open");
-                        g.제어.dtb.Rows[13][1] = 2; g.width.가격 = 2;
+                        g.제어.dtb.Rows[13][1] = 2; 
+                        g.width.가격 = 2;
                     }
                     else if (HHmm == 1030)
                         ms.Sound("time", "china open");
@@ -558,8 +559,6 @@ namespace New_Tradegy.Library
                         ms.Sound("time", "2");
                     else if (HHmm == 1519)
                         ms.Sound("time", "1");
-
-
                 }
             }
         }

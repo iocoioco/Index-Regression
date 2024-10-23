@@ -1,8 +1,20 @@
 ﻿
+using CPUTILLib;
+using DSCBO1Lib;
+using NLog.Layouts;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using static New_Tradegy.Library.g.stock_data;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Net.NetworkInformation;
+using System.Security.Policy;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Forms;
 namespace New_Tradegy.Library
 {
     internal class cn
@@ -23,33 +35,6 @@ namespace New_Tradegy.Library
             _CpConclusion.Subscribe();
 
             g.m_mapOrder = new Hashtable(); // 초기
-
-
-            // Orderitem Usage Example
-            #region
-            //OrderItem xyz = new OrderItem();
-            //xyz.m_ordKey = 12345;
-            //xyz.m_ordOrgKey = 1;
-            //g.m_mapOrder[xyz.m_ordKey] = xyz;
-
-            //xyz = new OrderItem();
-            //xyz.m_ordKey = 12346;
-            //xyz.m_ordOrgKey = 0;
-            //g.m_mapOrder[xyz.m_ordKey] = xyz;
-
-            //xyz = new OrderItem();
-            //xyz.m_ordKey = 23456;
-            //g.m_mapOrder[xyz.m_ordKey] = xyz;
-
-            //List<int> keys = g.m_mapOrder.Keys.Cast<int>().ToList();
-            //OrderItem abc = null;
-            //if (keys.Count > 0)
-            //    abc = (OrderItem)g.m_mapOrder[keys[0]];
-
-            //OrderItem bcd = null;
-            //if (keys.Count > 0)
-            //    bcd = (OrderItem)g.m_mapOrder[keys[1]];
-            #endregion
         }
 
         private static void CpConclusion_Received()
@@ -105,14 +90,14 @@ namespace New_Tradegy.Library
                         data.m_nModAmt = data.m_nAmt; // 정정취소 가능수량은 결과적으로 남은 미체결수량
                         data.m_nContAmt += nContAmt; // 체결수량(결과적으로 남은)
                     }
-                    else 
+                    else
                     {
                         g.m_mapOrder.Remove(nOrdKey); // 미체결 잔량이 없어졌으므로(전부 체결) - 원주문 제거 
                     }
                     break;
 
                 case "2": // 확인 - 정정 또는 취소 확인
-                     // 원주문이 있는 지 체크 한다. (무조건 원주문이 있어야 하지만, ioc, fok 는 예외)
+                          // 원주문이 있는 지 체크 한다. (무조건 원주문이 있어야 하지만, ioc, fok 는 예외)
                     if (g.m_mapOrder.ContainsKey(nOrdOrgKey) == false)
                     {
                         // IOC/FOK 의 경우 취소 주문을 낸적이 없어도 자동으로 취소 확인이 들어 온다.
@@ -269,7 +254,9 @@ namespace New_Tradegy.Library
         {
             lock (g.lockObject)
             {
-                //g.매매.BeginLoadData();
+                // Suspend DataGridView updates to avoid flickering
+                g.매매.dgv.SuspendLayout();
+
 
                 int rowCount = 0;
 
@@ -317,9 +304,9 @@ namespace New_Tradegy.Library
                     // 상위 2개 종목 + g.v.보유종목점검최소액 > 9만원 (현재)
                     //if (o.보유량 * o.매수1호가 / 10000.0 > g.v.보유종목점검최소액 && 보유종목_순서번호 < 2)
                     //{
-                        dgv2_update_보유종목updownsoundandcolor(o, 보유종목_순서번호, rowCount);
+                    dgv2_update_보유종목updownsoundandcolor(o, 보유종목_순서번호, rowCount);
                     //}
-                        
+
 
                     rowCount++;
                     보유종목_순서번호++;
@@ -336,8 +323,9 @@ namespace New_Tradegy.Library
                     g.매매.dtb.Rows[i][2] = " ";
                     g.매매.dtb.Rows[i][3] = " ";
                 }
-                //g.매매.AcceptChanges();
-                //g.매매.EndLoadData();
+
+                // Resume DataGridView updates to render all changes at once
+                g.매매.dgv.ResumeLayout();
 
                 foreach (var stock in g.보유종목) // if g.보유종목 change, no further action and return
                 {
@@ -351,6 +339,91 @@ namespace New_Tradegy.Library
             }
         }
 
+
+        //public static void dgv2_update_old()
+        //{
+        //    lock (g.lockObject)
+        //    {
+        //        //g.매매.BeginLoadData();
+
+        //        int rowCount = 0;
+
+        //        // 매수 매도 진행 중 row
+        //        if (g.m_mapOrder != null) // ADDED
+        //        {
+        //            foreach (DictionaryEntry de in g.m_mapOrder)
+        //            {
+        //                g.OrderItem data = de.Value as g.OrderItem;
+
+        //                g.매매.dtb.Rows[rowCount][0] = data.stock;
+        //                g.매매.dtb.Rows[rowCount][1] = data.buyorSell;
+        //                g.매매.dtb.Rows[rowCount][2] = data.m_nPrice;
+        //                g.매매.dtb.Rows[rowCount][3] = data.m_nContAmt + "/" + data.m_nAmt;
+        //                rowCount++;
+        //            }
+        //        }
+
+        //        // empty line inbetween dealing and holding stocks
+        //        g.매매.dtb.Rows[rowCount][0] = " ";
+        //        g.매매.dtb.Rows[rowCount][1] = " ";
+        //        g.매매.dtb.Rows[rowCount][2] = " ";
+        //        g.매매.dtb.Rows[rowCount][3] = " ";
+        //        rowCount++;
+
+        //        // 보유종목 row
+        //        int 보유종목_순서번호 = 0;
+        //        foreach (var stock in g.보유종목.ToList())
+        //        {
+        //            int index = wk.return_index_of_ogldata(stock);
+        //            if (index < 0)
+        //                return;
+        //            g.stock_data o = g.ogl_data[index];
+
+        //            if (o.매수1호가 > 0)
+        //                o.수익률 = (double)(o.매수1호가 - o.장부가) / o.매수1호가 * 100;
+
+        //            g.매매.dtb.Rows[rowCount][0] = o.stock;
+        //            g.매매.dtb.Rows[rowCount][1] = Math.Round((o.매수1호가 / 10000.0), 4);
+        //            if (o.최우선매도호가잔량 >= 0)
+        //                g.매매.dtb.Rows[rowCount][2] = Math.Round(((double)o.최우선매수호가잔량 / o.최우선매도호가잔량), 2);
+
+        //            g.매매.dtb.Rows[rowCount][3] = o.보유량.ToString() + "/" + Math.Round(o.수익률, 2);
+
+        //            // 상위 2개 종목 + g.v.보유종목점검최소액 > 9만원 (현재)
+        //            //if (o.보유량 * o.매수1호가 / 10000.0 > g.v.보유종목점검최소액 && 보유종목_순서번호 < 2)
+        //            //{
+        //            dgv2_update_보유종목updownsoundandcolor(o, 보유종목_순서번호, rowCount);
+        //            //}
+
+
+        //            rowCount++;
+        //            보유종목_순서번호++;
+
+        //            if (rowCount == 10)
+        //                break;
+        //        }
+
+        //        // empty row below holding stocks
+        //        for (int i = rowCount; i < g.매매.dtb.Rows.Count; i++)
+        //        {
+        //            g.매매.dtb.Rows[i][0] = " ";
+        //            g.매매.dtb.Rows[i][1] = " ";
+        //            g.매매.dtb.Rows[i][2] = " ";
+        //            g.매매.dtb.Rows[i][3] = " ";
+        //        }
+
+
+        //        foreach (var stock in g.보유종목) // if g.보유종목 change, no further action and return
+        //        {
+        //            int index = wk.return_index_of_ogldata(stock);
+        //            if (index < 0)
+        //                return;
+        //            g.stock_data o = g.ogl_data[index];
+        //            //if (op.dgv2_update_보유비매(o)) // false returning, the function does nothing
+        //            //    return;
+        //        }
+        //    }
+        //}
 
 
         public static void dgv2_update_보유종목updownsoundandcolor(g.stock_data o, int 보유종목_순서번호, int rowCount)
@@ -407,66 +480,110 @@ namespace New_Tradegy.Library
 
             o.전수익률 = o.수익률;
         }
+        // Chat Gpt Suggestions
+        //        1. Handling Edge Cases and Error Checks
+        //You can add more error-handling and validation in certain parts of your code, especially when working with data that might be incomplete or when iterating through collections like g.m_mapOrder and g.보유종목.Here are some specific suggestions:
 
-        // 일천, 오천, 일만, 십만, 오십만 이상 1/ / 1000 호가 단위, 코스닥은 오만원 이상 100원 단위
-        //public static void dgv2_update_old()
+        //Null Check in CpConclusion_Received(): When you're working with _CpConclusion.GetHeaderValue(), ensure that none of the header values being fetched are null or invalid. For example:
+
+        //csharp
+        //Copy code
+        //string stockCode = _CpConclusion.GetHeaderValue(9)?.ToString();
+        //if (string.IsNullOrEmpty(stockCode)) 
         //{
-        //    lock (g.lockObject)
-        //    {
-        //        int count = 0;
-
-
-        //        foreach (DictionaryEntry de in g.m_mapOrder)
-        //        {
-        //            g.OrderItem data = de.Value as g.OrderItem;
-
-        //            g.매매.dtb.Rows[count][0] = data.stock;
-        //            g.매매.dtb.Rows[count][1] = data.buyorSell;
-        //            g.매매.dtb.Rows[count][2] = data.m_nPrice;
-        //            g.매매.dtb.Rows[count][3] = data.m_nAmt + "/" + data.m_nContAmt;
-        //            count++;
-        //        }
-
-        //        // empty line
-        //        g.매매.dtb.Rows[count][0] = " ";
-        //        g.매매.dtb.Rows[count][1] = " ";
-        //        g.매매.dtb.Rows[count][2] = " ";
-        //        g.매매.dtb.Rows[count][3] = " ";
-        //        count++;
-
-        //        // 보유종목 row
-        //        foreach (var stock in g.보유종목)
-        //        {
-        //            int index = wk.return_index_of_ogldata(stock);
-        //            if (index < 0)
-        //                continue;
-
-        //            g.stock_data o = g.ogl_data[index];
-
-        //            if (o.매수1호가 > 0)
-        //                o.수익률 = (o.매수1호가 - o.장부가) / (double)o.매수1호가 * 100;
-
-        //            double 매수1호가량_매도1호가량_비례 = 0.0;
-        //            if (o.최우선매도호가잔량 > 0)
-        //                매수1호가량_매도1호가량_비례 = (double)o.최우선매수호가잔량 / (double)o.최우선매도호가잔량;
-
-        //            g.매매.dtb.Rows[count][0] = o.stock;
-        //            g.매매.dtb.Rows[count][1] = o.보유량.ToString() + "/" + (o.매수1호가 / 10000.0).ToString("F3");
-        //            g.매매.dtb.Rows[count][2] = o.최우선매수호가잔량.ToString() + "/" + 매수1호가량_매도1호가량_비례.ToString("F1");
-        //            g.매매.dtb.Rows[count][3] = o.수익률.ToString("F2");
-        //            count++;
-        //        }
-
-        //        // empty row
-        //        for (int i = count; i < g.매매.dtb.Rows.Count; i++)
-        //        {
-        //            g.매매.dtb.Rows[i][0] = " ";
-        //            g.매매.dtb.Rows[i][1] = " ";
-        //            g.매매.dtb.Rows[i][2] = " ";
-        //            g.매매.dtb.Rows[i][3] = " ";
-        //        }
-
-        //    }
+        //    // Handle error or log issue
+        //    return;
         //}
+        //DataGridView Row Count: It looks like you're updating g.매매.dtb.Rows[rowCount] without checking if rowCount is within bounds of the DataTable. Ensure that you're not attempting to write data to a row index that doesn't exist.
+
+        //csharp
+        //Copy code
+        //if (g.매매.dtb.Rows.Count > rowCount) 
+        //{
+        //    // Safe to update row
+        //    g.매매.dtb.Rows[rowCount][0] = data.stock;
+        //    g.매매.dtb.Rows[rowCount][1] = data.buyorSell;
+        //    // other updates...
+        //}
+        //2. Improved Status Tracking in CpConclusion_Received()
+        //Currently, when orders are processed(particularly in case "1" for conclusion and case "2" for cancellation), you modify or remove orders from the g.m_mapOrder hashtable.However, if you'd like to track the order status history (conclusion, cancellation, etc.), you can consider introducing a status field in your OrderItem class that marks orders as Cancelled, Concluded, Partially Filled, etc., rather than just removing them:
+
+        //csharp
+        //    Copy code
+        //public class OrderItem
+        //    {
+        //        public string Status { get; set; } // E.g. "Concluded", "Cancelled", etc.
+        //                                           // Other existing fields
+        //    }
+        //    Then, instead of removing the item from g.m_mapOrder, update its status:
+
+        //csharp
+        //Copy code
+        //data.Status = "Cancelled"; // or "Concluded" for partial/full fills
+        //    g.m_mapOrder[nOrdKey] = data;
+        //This will help you maintain a full history in the DataGridView and control how you display canceled or concluded orders.
+
+        //3. Performance Enhancements
+        //When you call dgv2_update(), you're iterating through both the g.m_mapOrder and g.보유종목 collections. If these collections are large, it could potentially slow down the UI update. To optimize this:
+
+        //Batch Update the DataGridView: Instead of updating each row one-by-one, consider updating the DataTable in bulk by preparing the data in memory and then binding it to the DataGridView in one step.This reduces the number of UI redraws.
+
+        //csharp
+        //    Copy code
+        //    g.매매.BeginLoadData();
+        //    // Prepare data
+        //    g.매매.EndLoadData();
+        //4. Concurrency Considerations
+        //If g.m_mapOrder or g.보유종목 are being updated from multiple threads, be cautious about race conditions.You're already using lock (g.lockObject) in dgv2_update(), which is good. Just ensure that all modifications to shared resources like g.m_mapOrder are protected by this lock.
+
+        //5. UI Feedback for Long Operations
+        //If updating the DataGridView takes significant time, consider providing user feedback via a progress bar or status indicator.You could also offload the data fetching and updating to a background thread, using Task.Run or similar, and then invoke the UI update on the main thread:
+
+        //csharp
+        //    Copy code
+        //Task.Run(() =>
+        //{
+        //        // Fetch data and update logic
+        //    }).ContinueWith(t => 
+        //{
+        //        // Update UI on the main thread
+        //        dgv2_update();
+        //    }, TaskScheduler.FromCurrentSynchronizationContext());
+        //6. Simplify Color Logic
+        //You have logic for coloring DataGridView rows based on performance(o.수익률). You could simplify this by storing predefined colors for certain ranges (e.g., positive or negative returns) and applying them directly, which makes the code easier to maintain:
+
+        //csharp
+        //Copy code
+        //Color profitColor = o.수익률 > 0 ? Color.Green : Color.Red;
+        //    g.매매.dgv.Rows [rowCount].DefaultCellStyle.BackColor = profitColor;
+        //7. Keep Orders Sorted by Timestamp or Key
+        //If the orders in g.m_mapOrder need to be displayed in a specific order (e.g., by time of order or by key), you could maintain an ordered structure (like SortedList or SortedDictionary) or apply sorting before displaying them in dgv2_update().
+
+        //By incorporating these improvements, you should see more robust handling of various edge cases, cleaner data management, and potentially better performance in the UI.
+        //        // Orderitem Usage Example
+        #region
+        //OrderItem xyz = new OrderItem();
+        //xyz.m_ordKey = 12345;
+        //xyz.m_ordOrgKey = 1;
+        //g.m_mapOrder[xyz.m_ordKey] = xyz;
+
+        //xyz = new OrderItem();
+        //xyz.m_ordKey = 12346;
+        //xyz.m_ordOrgKey = 0;
+        //g.m_mapOrder[xyz.m_ordKey] = xyz;
+
+        //xyz = new OrderItem();
+        //xyz.m_ordKey = 23456;
+        //g.m_mapOrder[xyz.m_ordKey] = xyz;
+
+        //List<int> keys = g.m_mapOrder.Keys.Cast<int>().ToList();
+        //OrderItem abc = null;
+        //if (keys.Count > 0)
+        //    abc = (OrderItem)g.m_mapOrder[keys[0]];
+
+        //OrderItem bcd = null;
+        //if (keys.Count > 0)
+        //    bcd = (OrderItem)g.m_mapOrder[keys[1]];
+        #endregion
     }
 }

@@ -1,4 +1,15 @@
-20240921 : 
+20241021 : 
+Partial Redraw: Only update the elements that change (headlines, end marks).
+Prioritize Most Active Stocks
+State Comparison: Only redraw elements if there’s a meaningful change.
+Suspend/Resume Layout: Use this to prevent unnecessary redraws and flickering.
+Graphics Buffering: Enable double buffering to improve smoothness.
+real buffling
+	g.chart1.DoubleBuffered = true;
+	dgv.DoubleBuffered(true);
+Adaptive Reshuffling (Optional Improvement):active or not so active
+
+
 
 취소했는 데 팔리는 황당함
 종목 해석 난이(지수부터 하는 것은 ?)

@@ -34,7 +34,7 @@ namespace New_Tradegy
             g.매매.dgv.Location = new Point(0, 0);
             g.매매.dgv.Size = this.Size;
 
-            g.매매.dgv.DataSource = g.제어.dtb;
+            g.매매.dgv.DataSource = g.매매.dtb;
             g.매매.dgv.ColumnHeadersVisible = false;
             g.매매.dgv.RowHeadersVisible = false;
 

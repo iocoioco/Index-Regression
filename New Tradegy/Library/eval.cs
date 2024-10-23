@@ -23,7 +23,7 @@ using static New_Tradegy.Library.g.stock_data;
 //draw_stock      0.33 sec
 
 //KeyPress(chart)	'q'(example)	0.35 sec	
-//	eval_stock		0.02 sec
+//	g.sl calculation		0.02 sec
 
 
 //MouseClick	r1		0.04 sec
@@ -34,7 +34,7 @@ using static New_Tradegy.Library.g.stock_data;
 //		r6		0.40 sec
 //		r7
 //		r8		0.06 sec
-//		r9		0.34 sec (eval_stock & draw_stock)
+//		r9		0.34 sec (g.sl cal. & draw_stock)
 
 //dataGridView2Update 		0.1sec
 
@@ -116,11 +116,11 @@ namespace New_Tradegy.Library
                     {
                         if (j == check_row)
                         {
-                            ps.PostPassing(o, j, true); // eval_stock -> test
+                            ps.PostPassing(o, j, true); // g.sl cal. -> test
                         }
                         else
                         {
-                            ps.PostPassing(o, j, false); // eval_stock -> test
+                            ps.PostPassing(o, j, false); // g.sl cal. -> test
                         }
                     }
 
@@ -132,7 +132,7 @@ namespace New_Tradegy.Library
 
             //Stopwatch stopwatch = new Stopwatch();
             //stopwatch.Start();
-            //eval_stock_등합(); // 29 MilliSeconds
+            //g.sl cal. _등합(); // 29 MilliSeconds
             //stopwatch.Stop();
             //double elapsedTime = stopwatch.ElapsedMilliseconds;
 
@@ -289,7 +289,7 @@ namespace New_Tradegy.Library
 
                 if (g.v.key_string == "닥올" || g.v.key_string == "피올")
                 {
-                    wk.시총순서(g.sl); // eval_stock
+                    wk.시총순서(g.sl); 
                 }
 
                 if (g.q == "a&s")
@@ -302,8 +302,12 @@ namespace New_Tradegy.Library
                     g.sl.Add("KODEX 코스닥150레버리지");
                 }
             }
-
-            g.제어.dtb.Rows[1][1] = g.sl.Count.ToString() + "/" + g.ogl_data.Count.ToString();
+            string newValue = g.sl.Count.ToString() + "/" + g.ogl_data.Count.ToString();
+            if(g.제어.dtb.Rows[1][1].ToString() != newValue)
+            {
+                g.제어.dtb.Rows[1][1] = newValue;
+            }
+            
 
             eval_group();
         }
@@ -502,17 +506,6 @@ namespace New_Tradegy.Library
 
 
                 wk.거분순서(g.oGL_data[i].stocks);
-                //if (g.current_key_char != 'l') // in g.test, the order is not disturbed during forward and backward g.time[1]
-                //{
-                //    // eval_group() called by eval_stock(), 총점 계산 완료되었음
-                //    if (g.oGl_data_selection == "총점")
-                //        g.oGL_data[i].stocks = wk.총점_순서(g.oGL_data[i].stocks);
-                //    else if (g.oGl_data_selection == "푀분")
-                //        g.oGL_data[i].stocks = wk.총점_푀분(g.oGL_data[i].stocks);
-                //    else
-                //        g.oGL_data[i].stocks = wk.총점_순서(g.oGL_data[i].stocks);
-                //}
-
 
                 int maximum_count = 0;
                 foreach (var stock in g.oGL_data[i].stocks)
@@ -591,43 +584,72 @@ namespace New_Tradegy.Library
             }
             #region
 
-
             if (hg.HogaFormNameGivenStock("Form_그룹") != null)
             {
-                for (int i = 0; i < display_count; i++)
+                // Suspend layout to reduce flickering and improve performance
+                g.그룹.dgv.SuspendLayout();
+
+                try
                 {
-                    g.그룹.dtb.Rows[i][0] = g.oGL_data[i].title;
-                    g.그룹.dtb.Rows[i][1] = ((int)g.oGL_data[i].푀분).ToString();
-                    g.그룹.dtb.Rows[i][2] = ((int)g.oGL_data[i].총점).ToString();
+                    for (int i = 0; i < display_count; i++)
+                    {
+                        // Check if the data has actually changed before updating the row
+                        bool hasChanged = g.그룹.dtb.Rows[i][0].ToString() != g.oGL_data[i].title ||
+                                          g.그룹.dtb.Rows[i][1].ToString() != ((int)g.oGL_data[i].푀분).ToString() ||
+                                          g.그룹.dtb.Rows[i][2].ToString() != ((int)g.oGL_data[i].총점).ToString();
+
+                        if (hasChanged)
+                        {
+                            // Only update if the data has changed
+                            g.그룹.dtb.Rows[i][0] = g.oGL_data[i].title;
+                            g.그룹.dtb.Rows[i][1] = ((int)g.oGL_data[i].푀분).ToString();
+                            g.그룹.dtb.Rows[i][2] = ((int)g.oGL_data[i].총점).ToString();
+                        }
+                    }
                 }
-
-                // two groups in a row : not used
-                #region
-                //g.그룹.dtb.Rows[0][0] = g.ogl_data.Count;
-                //g.그룹.dtb.Rows[0][1] = g.sl.Count;
-
-                //// 1st
-                //g.그룹.dtb.Rows[1][0] = g.oGL_data[0].title;
-                //g.그룹.dtb.Rows[1][1] = ((int)g.oGL_data[0].총점).ToString() + "/" +
-                //                               ((int)g.oGL_data[0].푀분).ToString();
-                //// 1nd
-                //g.그룹.dtb.Rows[2][0] = g.oGL_data[1].title;
-                //g.그룹.dtb.Rows[2][1] = ((int)g.oGL_data[1].총점).ToString() + "/" +
-                //                               ((int)g.oGL_data[1].푀분).ToString();
-                //// 3rd
-                //g.그룹.dtb.Rows[0][2] = g.oGL_data[2].title;
-                //g.그룹.dtb.Rows[0][3] = ((int)g.oGL_data[2].총점).ToString() + "/" +
-                //                               ((int)g.oGL_data[2].푀분).ToString();
-                //// 4th
-                //g.그룹.dtb.Rows[1][2] = g.oGL_data[3].title;
-                //g.그룹.dtb.Rows[1][3] = ((int)g.oGL_data[3].총점).ToString() + "/" +
-                //                               ((int)g.oGL_data[3].푀분).ToString();
-                //// 5th
-                //g.그룹.dtb.Rows[2][2] = g.oGL_data[4].title;
-                //g.그룹.dtb.Rows[2][3] = ((int)g.oGL_data[4].총점).ToString() + "/" +
-                //                               ((int)g.oGL_data[4].푀분).ToString();
-                #endregion
+                finally
+                {
+                    // Resume layout to apply the changes and refresh the display
+                    g.그룹.dgv.ResumeLayout();
+                }
             }
+
+            //if (hg.HogaFormNameGivenStock("Form_그룹") != null)
+            //{
+            //    for (int i = 0; i < display_count; i++)
+            //    {
+            //        g.그룹.dtb.Rows[i][0] = g.oGL_data[i].title;
+            //        g.그룹.dtb.Rows[i][1] = ((int)g.oGL_data[i].푀분).ToString();
+            //        g.그룹.dtb.Rows[i][2] = ((int)g.oGL_data[i].총점).ToString();
+            //    }
+
+            //    // two groups in a row : not used
+            //    #region
+            //    //g.그룹.dtb.Rows[0][0] = g.ogl_data.Count;
+            //    //g.그룹.dtb.Rows[0][1] = g.sl.Count;
+
+            //    //// 1st
+            //    //g.그룹.dtb.Rows[1][0] = g.oGL_data[0].title;
+            //    //g.그룹.dtb.Rows[1][1] = ((int)g.oGL_data[0].총점).ToString() + "/" +
+            //    //                               ((int)g.oGL_data[0].푀분).ToString();
+            //    //// 1nd
+            //    //g.그룹.dtb.Rows[2][0] = g.oGL_data[1].title;
+            //    //g.그룹.dtb.Rows[2][1] = ((int)g.oGL_data[1].총점).ToString() + "/" +
+            //    //                               ((int)g.oGL_data[1].푀분).ToString();
+            //    //// 3rd
+            //    //g.그룹.dtb.Rows[0][2] = g.oGL_data[2].title;
+            //    //g.그룹.dtb.Rows[0][3] = ((int)g.oGL_data[2].총점).ToString() + "/" +
+            //    //                               ((int)g.oGL_data[2].푀분).ToString();
+            //    //// 4th
+            //    //g.그룹.dtb.Rows[1][2] = g.oGL_data[3].title;
+            //    //g.그룹.dtb.Rows[1][3] = ((int)g.oGL_data[3].총점).ToString() + "/" +
+            //    //                               ((int)g.oGL_data[3].푀분).ToString();
+            //    //// 5th
+            //    //g.그룹.dtb.Rows[2][2] = g.oGL_data[4].title;
+            //    //g.그룹.dtb.Rows[2][3] = ((int)g.oGL_data[4].총점).ToString() + "/" +
+            //    //                               ((int)g.oGL_data[4].푀분).ToString();
+            //    #endregion
+            //}
 
 
             #endregion

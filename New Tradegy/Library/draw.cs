@@ -23,7 +23,7 @@ namespace New_Tradegy.Library
         // 0, 1(가격), 2, 3(지수합), 4(기관), 5(외인), 6(개인), 7, 8, 9, 10(나스닥), 11(연기금)
         public static Color[] colorKODEX = { Color.White, Color.Red, Color.White, Color.Black, Color.Brown, Color.Magenta, Color.Green, Color.White, Color.White, Color.White, Color.Blue, Color.Brown };
         // short and long time extension or restoration 
-        // and then, dr.draw_chart()
+        // and then, draw
 
         public static void draw_extended_time(int advance_lines)
         {
@@ -72,7 +72,7 @@ namespace New_Tradegy.Library
             // chart1.Series[0].Points.RemoveAt(0);
             // chart1.Series[0].Points.Clear();
             chart1.Series.Clear();
-            chart1.ChartAreas.Clear();
+            chart1.ChartAreas.Clear(); 
             chart1.Annotations.Clear();
             
 
@@ -302,7 +302,7 @@ namespace New_Tradegy.Library
 
 
 
-                    // 나머지 빈 자리 eval_stock 순서대로 
+                    // 나머지 빈 자리 g.sl 순서대로 
                     for (seq = g.gid; seq < g.sl.Count; seq++)
                     {
 
@@ -331,17 +331,6 @@ namespace New_Tradegy.Library
 
 
  
-                    //Parallel.For(0, g.dl.Count, i =>
-                    //            {
-                    //                g.chart1.Invoke(new MethodInvoker(delegate ()
-                    //                {
-                    //                    draw_stock(g.chart1, g.nRow, nCol, i, g.dl[i]); // o&g, kodex_leverage etc.
-                    //                }));
-                    //            });
-
-                    // Start the stopwatch
-                    //Stopwatch stopwatch = new Stopwatch();
-                    //stopwatch.Start();
 
 
 
@@ -808,8 +797,8 @@ namespace New_Tradegy.Library
             for (int i = 1; i < 10; i++) // draw lines of price, amount, intensity
             {
                 // i = 1 price, i = 2 amount, i = 3 intensity, 
-                // i = 8 minute multiple, 9 = center and tick multiple
-                if (i == 4 || i == 5 || i == 6 || i == 7)
+                // 9 = center and tick multiple
+                if (i == 4 || i == 5 || i == 6 || i == 7 || i == 8)
                 {
                     continue;
                 }
@@ -856,11 +845,7 @@ namespace New_Tradegy.Library
                         // value = (int)(Math.Pow(o.x[k, 3], 0.40));
                     }
 
-                    if (i == 8) // minute multiple
-                    {
-                        value = o.x[k, 8] - o.x[k, 9];
-                        value = 0;
-                    }
+                    
 
                     if (i == 9) // tick multiple
                     {
@@ -941,7 +926,7 @@ namespace New_Tradegy.Library
                 int[] id3 = { 4, 5, 6 }; // program, foreign, institute (amount dealt)
                 for (int i = 0; i < id3.Length; i++)
                 {
-                    sid = stock + area + " " + id3[i].ToString();
+                    sid = stock + " " + area + " " + id3[i].ToString();
                     Series t = new Series(sid);
                     chart.Series.Add(t);
 

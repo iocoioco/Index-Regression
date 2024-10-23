@@ -103,7 +103,7 @@ namespace New_Tradegy.Library
 
 
         public static int 일회거래액 = 0;
-        public static object lockObject = new object(); // BLOCK
+        public static readonly object lockObject = new object(); // Make sure it's initialized
         public static int check_time = 0;
         public string start_time = "00:00:00";
 
@@ -197,7 +197,7 @@ namespace New_Tradegy.Library
 
         //public static List<string> ogl = new List<string>();   // total set of single stock list
         public static List<g.stock_data> ogl_data = new List<g.stock_data>();
-        public static List<string> sl = new List<string>();   // selected single stock list from eval_stock
+        public static List<string> sl = new List<string>();   // selected single stock list from g.sl cal.
         public static List<string> dl = new List<string>();   // selected stocks for display
 
 

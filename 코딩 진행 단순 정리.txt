@@ -3,7 +3,7 @@
 
 
 문제
-	- 시초 7222 not start : task_marketeye work task_kospi_kosdaq not work
+
 	- deal_cancel not working : keyboard change to wired
 	- 'd' & number of stocks decrease
 	- cross thread error

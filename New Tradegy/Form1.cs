@@ -17,13 +17,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static New_Tradegy.Library.sc;
 
 //using NLog;
 
 
 
 
-namespace New_Tradegy // added for test on 20230807 1749
+namespace New_Tradegy // added for test on 20241020 0300
 {
 
     public partial class se : Form
@@ -185,88 +186,52 @@ namespace New_Tradegy // added for test on 20230807 1749
             Form_보조_차트.Size = new Size(1920 / 4, 900 / 3);
             Form_보조_차트.Show();
 
-            Task Task_usd_krw = new Task(sc.task_usd_krw); // 시초 13초 후 시작, 60초에 1회씩
-            Task_usd_krw.Start();
-
             if (!g.test && g.workingday) // duration : 0.49 seconds
             {
                 cn.Init_CpConclusion();
 
-                //dl.TradeInit(); // button 1 tr(0)
-                Task Task_deal_profit = new Task(dl.task_deal_profit); // 60초 1회씩
-                Task_deal_profit.Start();
-
-                Task Task_RQTRSB = new Task(task_RQTRSB);
-                Task_RQTRSB.Start();
-
-                //Task Task_kospi_kosdaq = new Task(task_kospi_koksdaq);
-                //Task_kospi_kosdaq.Start();
+                Task task_deal_profit = Task.Run(async () => await dl.task_deal_profit());
 
                 dl.deal_processing();
                 dl.deal_hold(); // Initialize g.보유종목
                 dl.deal_deposit(); // button1 tr(1)
                 subscribe_8091S();
 
-                //subscribe_7221S_KOSPI();
-                //subscribe_7221S_KOSDQ();
+                // updated on 20241020 0300
+                Task Task_marketeye = Task.Run(async () => await mk.task_marketeye());
 
-                timerEvalDraw(); // 0.5초 간격 점검 marketeye_received update되었으면 draw
-                                 // Timer_코스피_코스닥(); // 0.5초 간격 점검 marketeye_received update되었으면 draw
+                // updated on 20241020 0300
+                Task task_us_indices_futures = Task.Run(async () =>
+                {
+                    await sc.task_us_indices_futures();
+                });
 
-                Task Task_marketeye = new Task(mk.task_marketeye);
-                Task_marketeye.Start();
-
-                //Task Task_usd_krw = new Task(sc.task_usd_krw); // 시초 13초 후 시작, 60초에 1회씩
-                //Task_usd_krw.Start();
-
-                Task task_us_indices_futures = new Task(sc.task_us_indices_futures); // 시초 15초 후 시작, 10초에 1회씩
-                task_us_indices_futures.Start();
-
-                Task Task_major_indices = new Task(sc.task_major_indices); // 시초 17초 후 시작, 60초에 1회씩
-                Task_major_indices.Start();
-
-                Task Task_eval_draw = new Task(task_eval_draw); // 시초 17초 후 시작, 60초에 1회씩
-                Task_eval_draw.Start();
-
+                // updated on 20241020 0300
+                Task Task_major_indices = Task.Run(async () =>
+                {
+                    await sc.task_major_indices();
+                });
                 
-                runKOSPIUpdater();
-                runKOSDAQUpdater();
+                // updated on 20241020
+                Task Task_eval_draw = Task.Run(async () => await task_eval_draw());
+
+
+                // updated on 20241020 0300
+                Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
+                Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
 
                 hg.HogaInsert(g.KODEX4[0], 5, 0, 0);
                 hg.HogaInsert(g.KODEX4[2], 5, 1, 0);
-
-
-                //Task Task_bitcoin =
-                //new Task(sc.task_bitcoin);
-                //Task_bitcoin.Start();
-
-                //Task task_commodities_futures = new Task(sc.task_commodities_futures);
-                //task_commodities_futures.Start();
-                //}
             }
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             dr.draw_chart(); // duration : 0.05 ~ 0.086 seconds
 
-            Task task_jsb = new Task(sc.task_jsb);
-            task_jsb.Start();
-
-            //Task task_ikl = new Task(sc.task_ikl);
-            //task_ikl.Start();
+            // updated on 20241020 0300
+            Task taskJsb = Task.Run(async () => await task_jsb());
 
             rd.read_파일관심종목(); // duration 0.000 seconds
 
-            //g.제어.dtb.Rows[0][1] = g.v.key_string;
-
-            
-            // AddSearchTextBox();
-
             ms.Sound("일반", "to jsb");
-
-
-            // Mouse with Moving String
-            //chart1.MouseMove += Chart_MouseMove;
-            //chart1.Paint += Chart_Paint;
-
         }
 
 
@@ -586,40 +551,53 @@ namespace New_Tradegy // added for test on 20230807 1749
             }
         }
 
-        private void task_eval_draw()
+        // updated on 20241020
+        private bool _isRunning = false;
+
+        public async Task task_eval_draw()
         {
-            timerEvalDraw();
-        }
+            // Ensure that this task is not running multiple times
+            if (_isRunning)
+                return;
 
+            _isRunning = true;
 
-        private void timerEvalDraw()
-        {
-            timer_eval_draw.Start();
-            timerEvalDrawTick(null, EventArgs.Empty);
-            timer_eval_draw.Interval = 750;
-            timer_eval_draw.Tick += new EventHandler(timerEvalDrawTick);
-            timer_eval_draw.Enabled = true;
-            timer_eval_draw.Start();
-        }
-
-        private void timerEvalDrawTick(object Sender, EventArgs e) // down update될 때마다
-        {
-            // DateTime date = DateTime.Now; // timerEvalDrawTick
-            int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm")); // timerEvalDrawTick
-            string day = Convert.ToString(DateTime.Today.DayOfWeek);
-
-            if (g.marketeye_count > g.marketeye_count_draw_tick // 평일 0900부터 1530까지 marketeye, eval, draw 작동
-                && HHmm >= 0900 && HHmm <= 1530 &&
-                day != "Sunday" && day != "Saturday")
+            while (true)
             {
-                if (g.marketeye_count % g.v.eval_per_marketeyes == 1)
-                    ev.eval_stock(); // timer_draw_Tick
+                if (IsMarketOpen())
+                {
+                    if (g.marketeye_count > g.marketeye_count_draw_tick)
+                    {
+                        if (g.marketeye_count % g.v.eval_per_marketeyes == 1)
+                        {
+                            ev.eval_stock();  // Evaluate stock conditionally
+                        }
 
-                dr.draw_chart(); // timer_draw_Tick, 0.75sec
-                dr.draw_보조_차트();
-                g.marketeye_count_draw_tick = g.marketeye_count;
+                        dr.draw_chart();  // Draw main chart
+                        dr.draw_보조_차트();  // Draw secondary chart
+
+                        // Update the last draw tick
+                        g.marketeye_count_draw_tick = g.marketeye_count;
+                    }
+                }
+
+                // Wait for 750 milliseconds before the next iteration
+                await Task.Delay(750);
             }
+
+            _isRunning = false;
         }
+
+        // Helper method to check if the market is open
+        private bool IsMarketOpen()
+        {
+            int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
+            string day = DateTime.Today.DayOfWeek.ToString();
+
+            return (HHmm >= 900 && HHmm <= 1530) && (day != "Sunday" && day != "Saturday");
+        }
+
+       
 
         //        안녕하세요.Plus 담당자입니다.
         //1초 마다 다운로드하게 한다는 말이 1초마다 BlockRequest() 를 요청한다는 의미인지요?

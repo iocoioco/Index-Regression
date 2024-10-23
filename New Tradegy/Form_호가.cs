@@ -51,10 +51,9 @@ namespace New_Tradegy
         }
 
 
-        private void Form_KOSPI_KOSDQ_Load(object sender, EventArgs e)
+        private void Form_호가_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
-
 
             this.Size = _size;
             this.Location = _location;
@@ -67,13 +66,7 @@ namespace New_Tradegy
 
             var a = new jp();
 
-
-            
-
-
             a.Generate(_stock, this, _rows, _rowId, _colId);
-
-
         }
     }
 }

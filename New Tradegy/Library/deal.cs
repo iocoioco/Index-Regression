@@ -12,6 +12,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading;
 using CPSYSDIBLib;
+using System.Threading.Tasks;
 
 namespace New_Tradegy.Library
 {
@@ -82,7 +83,20 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void task_deal_profit()
+
+        public static async Task task_deal_profit()
+        {
+            while (true)
+            {
+                // Execute your deal profit logic
+                deal_profit();
+
+                // Wait asynchronously for 60 seconds (non-blocking)
+                await Task.Delay(60 * 1000);
+            }
+        }
+
+        public static void task_deal_profit_old()
         {
             while (true)
             {
@@ -90,6 +104,7 @@ namespace New_Tradegy.Library
                 Thread.Sleep(60 * 1000);
             }
         }
+
         public static int deal_profit()
         {
 
@@ -138,8 +153,11 @@ namespace New_Tradegy.Library
                 {
                     g.deal_profit = g.deal_total_profit;
                 }
-
-                g.제어.dtb.Rows[1][0] = g.deal_profit.ToString();
+                if(g.제어.dtb.Rows[1][0].ToString() != g.deal_profit.ToString())
+                {
+                    g.제어.dtb.Rows[1][0] = g.deal_profit.ToString();
+                }
+                
                 return g.deal_profit;
             }
             return g.deal_profit;
@@ -179,7 +197,11 @@ namespace New_Tradegy.Library
 
             g.예치금 = (int)(Convert.ToInt64(_cptdnew5331a.GetHeaderValue(10)) / 10000); // 현금주문가능금액 
 
-            g.제어.dtb.Rows[0][3] = g.예치금;
+            if(g.제어.dtb.Rows[0][3].ToString() != g.예치금.ToString())
+            {
+                g.제어.dtb.Rows[0][3] = g.예치금.ToString();
+            }
+            
         }
 
         public static void deal_processing() // tr(1)

@@ -15,42 +15,37 @@ namespace New_Tradegy
         private static CPSYSDIBLib.MarketEye _marketeye;
         private static CPUTILLib.CpStockCode _cpstockcode;
 
-        public static void task_marketeye() // duration : 0.5 seconds per one iteration
+        public static async Task task_marketeye()
         {
-            while (true) 
+            while (true)
             {
-                //string path = @"C:\병신\temp.txt";
-                //wr.WriteDuration("F");// 소요시간 계산
-
-                
                 DateTime date = DateTime.Now;
-                int HHmmss = Convert.ToInt32(date.ToString("HHmmss")); // run_marketeye() 
-                int HHmm = Convert.ToInt32(date.ToString("HHmm")); // run_marketeye() 
+                int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
+                int HHmm = Convert.ToInt32(date.ToString("HHmm"));
 
-                // 시작시간 09:00
-                if ((HHmm == 1000 || HHmm == 1100 || HHmm == 1200 ||
-                    HHmm == 1300 || HHmm == 1400 || HHmm == 1521) &&
+                // Trigger at 10:00, 11:00, 12:00, 13:00, 14:00, or 15:21 only once per minute
+                if ((HHmm == 1000 || HHmm == 1100 || HHmm == 1200 || HHmm == 1300 || HHmm == 1400 || HHmm == 1521) &&
                     g.minuteSaveAll != HHmm)
-
-                // 시작시간 10:00
-                //if ((HHmm == 1100 || HHmm == 1200 || HHmm == 1300 ||
-                //HHmm == 1400 || HHmm == 1500 || HHmm == 1621) &&
-                //g.minuteSaveAll != HHmm)
                 {
-                    if(wk.isWorkingHour())
+                    if (wk.isWorkingHour())
                     {
-                        wr.SaveAllStocks();
-                        g.minuteSaveAll = HHmm; // at o'clock or 1521, save only one time during the minute
+                        // Save all stocks once at the mentioned times
+                        await Task.Run(() => wr.SaveAllStocks());  // Use Task.Run for potentially long-running synchronous work
+                        g.minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }
 
-                ms.task_marketeye_alarm(HHmm);
+                // Trigger the marketeye alarm task
+                await Task.Run(() => ms.task_marketeye_alarm(HHmm));
 
-                marketeye();
+                // Call marketeye logic
+                await Task.Run(() => marketeye());
 
-                Thread.Sleep(250); 
+                // Wait 250 milliseconds (non-blocking)
+                await Task.Delay(250);
             }
         }
+
 
         private static void marketeye()
         {

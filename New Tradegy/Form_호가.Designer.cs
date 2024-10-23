@@ -36,8 +36,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1240, 1496);
             this.Name = "Form_호가";
-            this.Text = "Form_KOSPI_KOSDQ";
-            this.Load += new System.EventHandler(this.Form_KOSPI_KOSDQ_Load);
+            this.Text = "Form_호가";
+            this.Load += new System.EventHandler(this.Form_호가_Load);
             this.ResumeLayout(false);
 
         }

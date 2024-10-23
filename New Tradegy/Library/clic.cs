@@ -23,7 +23,6 @@ namespace New_Tradegy.Library
 {
     internal class cl
     {
-
         private static CPUTILLib.CpCybos _cpcybos;
 
         public static string CoordinateMapping(Chart chart, int nRow, int nCol, List<string> displayList, MouseEventArgs e, ref string selection, ref int cellX, ref int cellY)
@@ -136,9 +135,6 @@ namespace New_Tradegy.Library
         }
 
 
-
-
-
         public static Form GetActiveForm()
         {
             // Returns null for an MDI app
@@ -159,6 +155,8 @@ namespace New_Tradegy.Library
             }
             return activeForm;
         }
+
+
         private static int TryGetPrice(string stock, int maxAttempts, int delayMilliseconds)
         {
             int price = 0;
@@ -179,6 +177,7 @@ namespace New_Tradegy.Library
             // Handle the case where a valid price was not obtained
             // throw new Exception("Failed to get a valid price after multiple attempts.");
         }
+
 
         public static void CntlLeftRightAction(Chart chart, string selection, int row_id, int col_id)
         {
@@ -580,7 +579,14 @@ namespace New_Tradegy.Library
 
                         int month = g.date % 10000 / 100;
                         int day = g.date % 10000 % 100;
-                        g.제어.dtb.Rows[0][0] = month.ToString() + "/" + day.ToString();
+                        string newValue = month.ToString() + "/" + day.ToString();
+                        if(g.제어.dtb.Rows[0][0].ToString() != newValue)
+                        {
+                            g.제어.dtb.Rows[0][0] = newValue;
+                        }
+                        
+
+
                     }
                     // h&s 진입
                     else

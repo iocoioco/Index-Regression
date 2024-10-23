@@ -130,7 +130,10 @@ namespace New_Tradegy.Library
                             g.일회거래액 = 0;
                         ms.Sound_돈(g.일회거래액);
 
-                        g.제어.dtb.Rows[0][2] = g.일회거래액;
+                        if(g.제어.dtb.Rows[0][2].ToString() != g.일회거래액.ToString())
+                        {
+                            g.제어.dtb.Rows[0][2] = g.일회거래액.ToString();
+                        }
                     }
                     break; ;
 
@@ -168,7 +171,10 @@ namespace New_Tradegy.Library
                                 g.일회거래액 /= 2;
                             }
                         }
-                        g.제어.dtb.Rows[0][2] = g.일회거래액;
+                        if (g.제어.dtb.Rows[0][2].ToString() != g.일회거래액.ToString())
+                        {
+                            g.제어.dtb.Rows[0][2] = g.일회거래액.ToString();
+                        }
                     }
                     break;
 
@@ -847,10 +853,13 @@ namespace New_Tradegy.Library
             // MOD info date modification
             int month = g.date % 10000 / 100;
             int day = g.date % 10000 % 100;
-            g.제어.dtb.Rows[0][0] = month.ToString() + "/" + day.ToString();
 
-
-            //g.제어.dtb.Rows[0][1] = g.v.key_string; // key input
+            string newValue = month.ToString() + "/" + day.ToString();
+            if (g.제어.dtb.Rows[0][0].ToString() != newValue)
+            {
+                g.제어.dtb.Rows[0][0] = newValue;
+            }
+            
             // 20241007 프편, 종편 추가에 따른 'S' 추가
             string testPost = "1q";
             string testEval = "2twtTyYWW";
