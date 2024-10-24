@@ -15,16 +15,12 @@ namespace New_Tradegy.Library
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
-        public static bool HogaInsert(string stock, int rows, int rowId, int colId)
+        public static bool HogaInsert(string stock)
         {
             if (HogaFormNameGivenStock(stock) != null)
                 return false;
 
             bool inserted = false;
-
-            Size formSize = new Size();
-            Point formLocation = new Point();
-            HogaFormSizeLocation(stock, rowId, colId, rows, ref formSize, ref formLocation);
 
             if (stock == g.KODEX4[0])
             {
@@ -47,7 +43,7 @@ namespace New_Tradegy.Library
             // if a form with stock name exists, locate a new location and return
             
 
-            Form_호가 form_호가 = new Form_호가(stock, formSize, formLocation, rows, rowId, colId);
+            Form_호가 form_호가 = new Form_호가(stock);
            
             
             form_호가.Show();
@@ -113,11 +109,11 @@ namespace New_Tradegy.Library
 
             if (g.jpjds.TryGetValue(stock, out a))
             {
-                int sb = RemainSB();
+                // int sb = RemainSB();
                 DSCBO1Lib.StockJpbid _stockjpbid = (DSCBO1Lib.StockJpbid)a;
                 _stockjpbid.Unsubscribe(); // working
                                            // Key was present; date is set to the value in the dictionary.
-                sb = RemainSB();
+                // sb = RemainSB();
                 Form f = HogaFormNameGivenStock(stock);
                 DataGridView dgv = f.Controls.Find(stock, true).FirstOrDefault() as DataGridView;
                 dgv.Dispose();
@@ -150,21 +146,6 @@ namespace New_Tradegy.Library
                 // Handle the case where the bid chart is not complete
                 return -1;
             }
-
-            //Form F = null;
-            //foreach (Form form in Application.OpenForms)
-            //{
-            //    if (form.Text == stock)
-            //    {
-            //        F = form;
-            //        break;
-            //    }
-            //}
-
-            //if (F == null)
-            //{
-            //    return -1;
-            //}
 
             var d = f.Controls.Find(stock, true);
             if (d == null)

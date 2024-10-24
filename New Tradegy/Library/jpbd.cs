@@ -345,14 +345,14 @@ namespace New_Tradegy.Library
         //public DataTable Dtb { get; set; }
         private DataTable Dtb = new DataTable();
         private DataGridView Dgv = new DataGridView();
-        private int Rows;
+        private int Rows = 5;
         private string Stock;
         private Form F;
         private int RowID, ColId;
 
         StockExchange stockExchange = new StockExchange();
 
-        public void Generate(string stock, Form f, int rows, int rowId, int colId)
+        public void Generate(string stock, Form f)
         {
             if (!g.connected)
             {
@@ -360,9 +360,7 @@ namespace New_Tradegy.Library
             }
 
             Stock = stock;
-            Rows = rows;
-            RowID = rowId;
-            ColId = colId;
+   
 
             F = f;
 
@@ -455,7 +453,7 @@ namespace New_Tradegy.Library
 
         private void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right) // 실수로 오른쪽 눌리는 경우 발생하여 추가
+            if (e.Button == MouseButtons.Right || Rows == 10) // 실수로 오른쪽 눌리는 경우 발생하여 추가
                 return;
 
             int Price = hg.HogaGetValue(Stock, e.RowIndex - Rows, 1);
@@ -597,13 +595,11 @@ namespace New_Tradegy.Library
                         }
                         if (Rows == 5)
                         {
-                            Unsubscribe();
-                            hg.HogaInsert(Stock, 10, RowID, ColId);
+                            Rows = 10;
                         }
                         else
                         {
-                            Unsubscribe();
-                            hg.HogaInsert(Stock, 5, RowID, ColId);
+                            Rows = 5;
                         }
                     }
                     dr.draw_chart();
@@ -802,7 +798,6 @@ namespace New_Tradegy.Library
                 }
             }
         }
-
 
         private void request_호가()
         {
@@ -1114,12 +1109,10 @@ namespace New_Tradegy.Library
             }
         }
 
-
         private void OnDataGirdView1_KeyPress(object sender, KeyPressEventArgs e)
         {
             ky.chart_keypress(e);
         }
-
 
         private int RemainSB()
         {
@@ -1129,7 +1122,6 @@ namespace New_Tradegy.Library
             return _cpcybos.GetLimitRemainCount(CPUTILLib.LIMIT_TYPE.LT_SUBSCRIBE);               // 400건의 요청으로 제한   
         }
 
-
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             // Log the error details to a file or logging system
@@ -1138,7 +1130,6 @@ namespace New_Tradegy.Library
             // Prevent the default error dialog from showing
             e.ThrowException = false;
         }
-
 
         // Method to log error details
         private void LogError(Exception ex)

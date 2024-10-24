@@ -590,33 +590,22 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'J':
-                    g.rqwey_nCol += 1;
+                    g.nCol += 1;
                     break;
 
                 case 'j':
-                    if (g.rqwey_nCol > 3)
+                    if (g.nCol > 3)
                     {
-                        g.rqwey_nCol -= 1;
+                        g.nCol -= 1;
                     }
                     break;
 
                 case 'K':
-                    //if (g.q != "s&s")
-                    //{
-                    //    g.rqwey_nRow += 1;
-                    //}
+                 
                     break;
 
                 case 'k':
-                    //if (g.q != "s&s")
-                    //{
-
-                    //    if (g.rqwey_nRow > 1)
-                    //    {
-                    //        g.rqwey_nRow -= 1;
-                    //    }
-                    //}
-                    //if (g.rqwey_nRow == 0) { g.rqwey_nRow = 1; }
+                    
                     break;
 
                 case 'l':

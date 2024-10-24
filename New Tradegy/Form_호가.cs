@@ -23,40 +23,18 @@ namespace New_Tradegy
         Chart Chart;
 
         string _stock;
-        Point _location;
-        Size _size;
-        int _rows;
-        int _rowId;
-        int _colId;
-        //New_Tradegy.Library.jp _jp;
 
-        //public static Color[] colorKODEX = { Color.White, Color.Red, Color.White, Color.Black, Color.Cyan, Color.Magenta, Color.DarkGreen, Color.White, Color.White, Color.White, Color.Blue, Color.Brown };
-        // short and long time extension or restoration 
-        // and then, dr.draw_chart()
-
-        public Form_호가(string stock, Size formSize, Point formLocation, int rows, int rowId, int colId)  
+        public Form_호가(string stock)  
         {
             InitializeComponent();
 
             _stock = stock;
-            _location = formLocation;
-            _size = formSize;
-            if (_rows == 10)
-            {
-                _size.Height = g.formSize.ch * 22;
-            }
-            _rows = rows;
-            _rowId = rowId;
-            _colId = colId;
         }
 
 
         private void Form_호가_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
-
-            this.Size = _size;
-            this.Location = _location;
 
             this.Text = _stock;
             this.Name = _stock;
@@ -66,7 +44,7 @@ namespace New_Tradegy
 
             var a = new jp();
 
-            a.Generate(_stock, this, _rows, _rowId, _colId);
+            a.Generate(_stock, this);
         }
     }
 }

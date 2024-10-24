@@ -397,7 +397,7 @@ namespace New_Tradegy.Library
 
                         if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2]) // not leverage
                         {
-                            if (!hg.HogaInsert(g.clickedStock, 5, row_id, col_id))
+                            if (!hg.HogaInsert(g.clickedStock))
                             {
                                 return; // not inserted
                             }
@@ -421,7 +421,7 @@ namespace New_Tradegy.Library
                                 else
                                 {
                                     g.호가종목.Add(g.clickedStock);
-                                    hg.HogaInsert(g.clickedStock, 5, row_id, col_id);
+                                    hg.HogaInsert(g.clickedStock);
                                     if (g.관심종목.Contains(g.clickedStock))
                                     {
                                         g.관심종목.Remove(g.clickedStock);
@@ -500,14 +500,14 @@ namespace New_Tradegy.Library
                     {
                         if (g.clickedStock == g.KODEX4[0])
                         {
-                            if (!hg.HogaInsert(g.KODEX4[1], 5, row_id, col_id))
+                            if (!hg.HogaInsert(g.KODEX4[1]))
                             {
                                 return; // not inserted
                             }
                         }
                         if (g.clickedStock == g.KODEX4[2])
                         {
-                            if (!hg.HogaInsert(g.KODEX4[3], 5, row_id, col_id))
+                            if (!hg.HogaInsert(g.KODEX4[3]))
                             {
                                 return; // not inserted
                             }

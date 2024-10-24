@@ -220,8 +220,8 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
 
-                hg.HogaInsert(g.KODEX4[0], 5, 0, 0);
-                hg.HogaInsert(g.KODEX4[2], 5, 1, 0);
+                hg.HogaInsert(g.KODEX4[0]);
+                hg.HogaInsert(g.KODEX4[2]);
             }
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             dr.draw_chart(); // duration : 0.05 ~ 0.086 seconds

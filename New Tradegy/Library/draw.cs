@@ -1,5 +1,6 @@
 ﻿using New_Tradegy.Library;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
@@ -69,269 +70,71 @@ namespace New_Tradegy.Library
         //});
         public static void draw_chart() // duration : 0.008 ~ 0.2 seconds depends g.time[1]
         {
-            // chart1.Series[0].Points.RemoveAt(0);
-            // chart1.Series[0].Points.Clear();
-            chart1.Series.Clear();
-            chart1.ChartAreas.Clear(); 
-            chart1.Annotations.Clear();
-            
-
-
-
-            List<string> 보유호가종목 = new List<string>();   // 클릭된 종목, Toggle로 선택 & 취소
-
-            보유호가종목.Add("KODEX 레버리지");
-            보유호가종목.Add("KODEX 코스닥150레버리지");
-
-
-
-            foreach (string name in g.보유종목) // if g.보유종목 Contains KODEX 
-            {
-                if (!보유호가종목.Contains(name))
-                {
-                    if (!name.Contains("KODEX"))
-                        보유호가종목.Add(name);
-                }
-            }
-
-            //보유호가종목.Add(g.급락종목);
-
-            foreach (string name in g.호가종목) // if g.호가종목 선택시 KODEX 종목 선제외
-            {
-                if (!보유호가종목.Contains(name))
-                {
-                    if (!name.Contains("KODEX"))
-                        보유호가종목.Add(name);
-                }
-            }
-
-            //foreach (string name in g.호가종목) // if g.호가종목 선택시 KODEX 종목 선제외
-            //{
-            //    if (보유호가종목.Contains(name))
-            //    {
-            //        continue;
-            //    }
-            //    보유호가종목.Add(name);
-            //}
-
-
             int seq = 0;
             switch (g.q)
             {
                 case "o&s":
-                    #region
-                    nCol = g.rqwey_nCol;
-                    g.nRow = g.rqwey_nRow;
+                    // KODEX update or Generate ChartArea
+                    // DisplayList : 보유, 호가, 관심 종목
+                    // Check ChartArea for the stocks in DisplayList,
+                    //  if not exist create ChartArea for missing stocks
+                    // Remove ChartArea for not in DisplayList
+                    // Locate ChartArea for the stocks in DisplayList
+                    // Locate Forms with respect to the corresponding ChartArea
 
+                    draw_chart_head();
 
-                    // if g.rqwey_nCol is changed, rearrange 1th column location
-                    if (nCol * g.nRow - 1 != g.dl.Count)
+                    List<string> DisplayList = new List<string>();
+
+                    int HogaCount = 0;
+                    int TotalSpaceCount = g.nRow * (g.nCol - 2);
+                    foreach (string stock in g.보유종목)
                     {
-                        Point point = new Point();
-
-                        FormCollection openForms = System.Windows.Forms.Application.OpenForms;
-                        foreach (Form form in openForms)
+                        if (!DisplayList.Contains(stock) && !stock.Contains("KODEX"))
                         {
-                            int xShift = 0;
-                            if (g.nCol == 10)
-                                xShift += 15;
-                            if (g.nCol == 9)
-                                xShift += 30;
-
-                            if (form.Name.Contains("KODEX") ||
-                                form.Name.Contains("제어") ||
-                                form.Name.Contains("매매"))
-                            {
-                                point = form.Location;
-                                point.X = g.screenWidth / g.rqwey_nCol + xShift;
-                                form.Location = point;
-                            }
+                            DisplayList.Add(stock);
+                            HogaCount++;
                         }
-                    }
-                    g.dl.Clear();
-
-                    g.dl.Add(g.KODEX4[0]);
-                    g.dl.Add(g.KODEX4[2]);
-
-                    for (int i = 0; i < g.v.columnsofoGl_data; i++)
-                    {
-                        if (g.dl.Count == 2 + g.nRow * (nCol - 1))
+                        if (HogaCount + DisplayList.Count >= TotalSpaceCount)
                             break;
-                        if (g.v.columnsofoGl_data > g.oGL_data.Count)
+                    }
+
+                    foreach (string stock in g.호가종목)
+                    {
+                        if (!DisplayList.Contains(stock) && !stock.Contains("KODEX"))
+                        {
+                            DisplayList.Add(stock);
+                            HogaCount++;
+                        }
+                        if (HogaCount + DisplayList.Count >= TotalSpaceCount)
                             break;
-
-                        int nb = 0;
-                        for (int j = 0; j < g.oGL_data[i].stocks.Count; j++)
-                        {
-                            if (!g.dl.Contains(g.oGL_data[i].stocks[j]) &&
-                              !g.보유종목.Contains(g.oGL_data[i].stocks[j]) &&
-                              !g.호가종목.Contains(g.oGL_data[i].stocks[j]))
-                            {
-                                if (!g.dl.Contains(g.oGL_data[i].stocks[j]))
-                                {
-                                    g.dl.Add(g.oGL_data[i].stocks[j]);
-                                    nb++;
-                                }
-                                if (nb == 3)
-                                    break;
-                            }
-                        }
-                        if (nb == 1)
-                        {
-                            g.dl.Add("");
-                            g.dl.Add("");
-                        }
-                        if (nb == 2)
-                        {
-                            g.dl.Add("");
-                        }
                     }
 
-                    for (int i = 1; i < nCol; i++)
+                    foreach (string stock in g.관심종목)
                     {
-                        for (int j = 0; j < g.nRow; j++)
+                        if (!DisplayList.Contains(stock) && !stock.Contains("KODEX"))
                         {
-                            g.dl.Add("");
+                            DisplayList.Add(stock);
                         }
+                        if (HogaCount + DisplayList.Count >= TotalSpaceCount)
+                            break;
                     }
 
 
-                    List<string> 보유호가List = new List<string>();
-                    foreach (string name in g.보유종목)
+                    foreach (string stock in g.sl)
                     {
-
-
-                        if (!g.dl.Contains(name) && !name.Contains("KODEX") && !보유호가List.Contains(name))
-                            보유호가List.Add(name);
+                        if (!DisplayList.Contains(stock) && !stock.Contains("KODEX"))
+                        {
+                            DisplayList.Add(stock);
+                        }
+                        if (HogaCount + DisplayList.Count >= TotalSpaceCount)
+                            break;
                     }
 
-                    //if (!g.dl.Contains(g.급락종목) && !g.급락종목.Contains("KODEX"))
-                    //    g.dl.Add(g.급락종목);
-
-                    foreach (string name in g.호가종목)
+                    while(HogaCount + DisplayList.Count >= TotalSpaceCount)
                     {
-
-
-                        if (!g.dl.Contains(name) && !name.Contains("KODEX") && !보유호가List.Contains(name))
-                            보유호가List.Add(name);
+                        DisplayList.RemoveAt(DisplayList.Count - 1);
                     }
-
-                    int column = 2;
-                    int row = 0;
-
-                    List<Form> forms = hg.FormListGeneralStock();
-                    foreach (var item in 보유호가List)
-                    {
-                        g.dl[g.nRow * column + row - 1] = item;
-                        g.dl[g.nRow * (column + 1) + row - 1] = item + " " + "Form";
-
-                        Form F = hg.HogaFormNameGivenStock(item);
-                        if(F == null)
-                        {
-                            hg.HogaInsert(item, 5, 0, 0);
-                        }
-                        else
-                        {
-                            DataGridView dg = F.Controls.OfType<DataGridView>().FirstOrDefault();
-                            if (dg != null)
-                            {
-                                int rows = 0;
-                                if (dg.RowCount == 12)
-                                    rows = 5;
-                                else
-                                    rows = 10;
-
-                                Size formSize = new Size();
-                                Point formLocation = new Point();
-
-                                hg.HogaFormSizeLocation(item, row, column, rows, ref formSize, ref formLocation);
-                                F.Size = formSize;
-                                F.Location = formLocation;
-                            }
-                        }
-                        //int hogaRows = 5; //?
-                        //hg.HogaInsert(item, hogaRows, row, column); //?
-                        row++;
-                        if (row == 3)
-                        {
-                            column += 2;
-                            if (column >= nCol - 1)
-                            {
-                                break;
-                            }
-                            row = 0;
-                        }
-                    }
-
-                    // if 보유호가 종목 외에 열린 hogaForm 있으면 삭제
-                    List<string> hogaAllStockFormNames = hg.HogaAllStockFormNames();
-                    foreach (var item in hogaAllStockFormNames)
-                    {
-                        if (!보유호가List.Contains(item) && !item.Contains("KODEX"))
-                        {
-                            hg.HogaRemove(item);
-                        }
-                    }
-
-
-                    // 관심종목 빈 자리에 추가
-                    column = 2;
-                    row = 0;
-                    foreach (var item in g.관심종목)
-                        //if (g.dl.Count == 2 + g.nRow * (nCol - 1))
-                        //    break;
-
-                        if (!g.dl.Contains(item) && !g.dl.Contains("KODEX"))
-                        {
-                            bool found = false;
-                            for (int i = 5; i < g.nRow * nCol - 1; i++)
-                            {
-                                if (g.dl[i] == "")
-                                {
-                                    g.dl[i] = item;
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found == false)
-                            {
-                                break;
-                            }
-                        }
-
-
-
-
-                    // 나머지 빈 자리 g.sl 순서대로 
-                    for (seq = g.gid; seq < g.sl.Count; seq++)
-                    {
-
-                        //if (g.dl.Count == 2 + g.nRow * (nCol - 1))
-                        //    break;
-
-                        if (!g.dl.Contains(g.sl[seq]) && !g.dl.Contains("KODEX"))
-                        {
-                            bool found = false;
-                            for (int i = 5; i < g.nRow * nCol - 1; i++)
-                            {
-                                if (g.dl[i] == "")
-                                {
-                                    g.dl[i] = g.sl[seq];
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found == false)
-                            {
-                                break;
-                            }
-                        }
-                    }
-
-
-
- 
-
 
 
                     for (seq = 0; seq < g.dl.Count; seq++)
@@ -707,8 +510,7 @@ namespace New_Tradegy.Library
             int y_min = 100000;
             int y_max = -100000;
 
-            // 크기, 위치 결정
-            draw_size_location(chart, nRow, nCol, seq, location, size);
+
 
             string sid = "";
 
@@ -845,7 +647,7 @@ namespace New_Tradegy.Library
                         // value = (int)(Math.Pow(o.x[k, 3], 0.40));
                     }
 
-                    
+
 
                     if (i == 9) // tick multiple
                     {
@@ -1080,20 +882,19 @@ namespace New_Tradegy.Library
                 o.nrow = rd.read_Stock_Minute(g.date, stock, o.x);
                 ps.post(o); // general_history
             }
-                
-            
+
+
             if (o.nrow < 2)
                 return;
 
-            
+
 
             float[] size = new float[2];
             float[] location = new float[2];
             int y_min = 100000;
             int y_max = -100000;
 
-            // 크기, 위치 결정
-            draw_size_location(chart, nRow, nCol, seq, location, size);
+
 
             string sid = "";
 
@@ -1546,8 +1347,7 @@ namespace New_Tradegy.Library
             int y_min = 100000;
             int y_max = -100000;
 
-            // 크기, 위치 결정
-            draw_size_location(chart, nRow, nCol, seq, location, size);
+
 
             string sid = "";
 
@@ -2087,7 +1887,7 @@ namespace New_Tradegy.Library
             if (o.nrow < 2)
                 return;
 
-            
+
 
             int magnifier_id = -1;
             for (int i = 0; i < g.KODEX4.Count; i++)
@@ -2106,18 +1906,17 @@ namespace New_Tradegy.Library
             int y_min = 100000;
             int y_max = -100000;
 
-            // 크기, 위치 결정
-            draw_size_location(chart, nRow, nCol, seq, location, size);
+
 
             string sid = "";
 
-            
+
 
             // g.draw_shrink_time is controlled by 'o' and 'O'
             int start_time = 0;
             int end_time = g.MAX_ROW;
 
-           
+
 
 
             // The start of area and drawing of stock
@@ -2550,7 +2349,7 @@ namespace New_Tradegy.Library
         {
             if (stock.Contains("KODEX"))
             {
-                if(g.q != "h&s")
+                if (g.q != "h&s")
                     draw_stock_KODEX(chart, nRow, nCol, seq, stock);
                 else
                     draw_stock_KODEX_history(chart, nRow, nCol, seq, stock);
@@ -2559,7 +2358,7 @@ namespace New_Tradegy.Library
             {
                 if (g.q != "h&s" || chart.Name == "char2")
                     draw_stock_general(chart, nRow, nCol, seq, stock);
-                else if(!stock.Contains("KODEX"))
+                else if (!stock.Contains("KODEX"))
                     draw_stock_general_history(chart, nRow, nCol, seq, stock);
             }
         }
@@ -2705,7 +2504,7 @@ namespace New_Tradegy.Library
                 size[0] = 100.0F / nCol;
                 size[1] = 97.0F / nRow;
 
-                
+
 
                 row = seq % nRow;
                 col = seq / nRow;
@@ -3574,24 +3373,6 @@ namespace New_Tradegy.Library
             g.chart1.ChartAreas[area].Position.Height = size[1]; // height
 
 
-
-            /*
-
-            if (g.q != "h&s")
-            {
-                g.chart1.Series.Add(label_title);
-                g.chart1.Legends.Add(new Legend(label_title));
-                g.chart1.Legends[label_title].Position.X = location[0];
-                g.chart1.Legends[label_title].Position.Y = location[1];
-                g.chart1.Legends[label_title].Position.Width = 12.0F;
-                g.chart1.Legends[label_title].Position.Height = 5.0F;// Was 2.5 -> only 2 lines appears
-                g.chart1.Series[label_title].Legend = label_title;
-                g.chart1.Series[label_title].BorderWidth = 1;
-                g.chart1.Series[label_title].IsVisibleInLegend = true;
-                g.chart1.Series[label_title].MarkerBorderWidth = 0;
-            }
-            */
-
             // Legend
 
             int index = wk.return_index_of_ogldata(stock);
@@ -3846,7 +3627,7 @@ namespace New_Tradegy.Library
         public static void draw_foreign_institute_price(int seq, int npts_toplot, string stock)
         {
             //stock = "삼성전자";
-        
+
             string path = @"C:\병신\data\일\\" + stock + ".txt";
             if (!File.Exists(path))
             {
