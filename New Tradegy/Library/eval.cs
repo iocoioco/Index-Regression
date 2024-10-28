@@ -20,7 +20,7 @@ using static New_Tradegy.Library.g.stock_data;
 //elapsedTime += stopwatch.ElapsedMilliseconds;
 #endregion
 
-//draw_stock      0.33 sec
+//draw__stock      0.33 sec
 
 //KeyPress(chart)	'q'(example)	0.35 sec	
 //	g.sl calculation		0.02 sec

@@ -29,6 +29,8 @@ namespace New_Tradegy
             InitializeComponent();
 
             _stock = stock;
+
+        
         }
 
 

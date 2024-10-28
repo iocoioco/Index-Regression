@@ -524,7 +524,7 @@ namespace New_Tradegy
 
 
             g.제어.dgv.Refresh();
-            dr.draw_chart();
+            md.ManageDisplayAndForms();
             dr.draw_보조_차트();
         }
 

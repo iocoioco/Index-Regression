@@ -166,7 +166,7 @@ namespace New_Tradegy
             }
 
             if (eval) ev.eval_stock();
-            if (draw) dr.draw_chart();
+            if (draw) md.ManageDisplayAndForms();
         }
 
 

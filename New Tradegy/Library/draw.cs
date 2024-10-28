@@ -64,10 +64,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        //    Parallel.For(0, g.dl.Count, i =>
-        //                {
-        //                    draw_stock(g.chart1, g.nRow, nCol, i, g.dl[i]); // o&g, kodex_leverage etc.
-        //});
+
         public static void draw_chart() // duration : 0.008 ~ 0.2 seconds depends g.time[1]
         {
             int seq = 0;
@@ -82,7 +79,7 @@ namespace New_Tradegy.Library
                     // Locate ChartArea for the stocks in DisplayList
                     // Locate Forms with respect to the corresponding ChartArea
 
-                    draw_chart_head();
+                   
 
                     List<string> DisplayList = new List<string>();
 
@@ -164,7 +161,7 @@ namespace New_Tradegy.Library
 
 
 
-                    #endregion
+             
                     break;
 
                 case "s&s": // not used
@@ -392,11 +389,11 @@ namespace New_Tradegy.Library
                             break;
                         }
 
-                        foreach (var t in 보유호가종목)
-                        {
-                            if (!g.dl.Contains(t))    // && !g.호가종목.Contains(t)) // 지수, 보유 포함, 관심 제외
-                                g.dl.Add(t);
-                        }
+                        //foreach (var t in 보유호가종목)
+                        //{
+                        //    if (!g.dl.Contains(t))    // && !g.호가종목.Contains(t)) // 지수, 보유 포함, 관심 제외
+                        //        g.dl.Add(t);
+                        //}
 
                         foreach (string stock in a_list) // 0723
                         {
@@ -1483,7 +1480,7 @@ namespace New_Tradegy.Library
                         {
                             double magnifier = 1.0;
                             // double shifter = 0.0;
-                            if (draw_stock_magnifier_shifter(o, i, ref magnifier) == -1) //, ref shifter) == -1)
+                            if (KodexMagnifier(o, i, ref magnifier) == -1) //, ref shifter) == -1)
                                 continue;
 
                             value = (int)(o.x[k, 1] * g.kodex_magnifier[magnifier_id, 0]);
@@ -1612,7 +1609,7 @@ namespace New_Tradegy.Library
 
                 for (int i = 0; i < id_index.Length; i++)
                 {
-                    draw_stock_magnifier_shifter(o, id_index[i], ref magnifier); //, ref shifter); // shift for KODEX
+                    KodexMagnifier(o, id_index[i], ref magnifier); //, ref shifter); // shift for KODEX
                     sid = stock + area + " " + id_index[i].ToString();
                     Series t = new Series(sid);
                     chart.Series.Add(t);
@@ -1972,7 +1969,7 @@ namespace New_Tradegy.Library
                         {
                             double magnifier = 1.0;
                             // double shifter = 0.0;
-                            if (draw_stock_magnifier_shifter(o, i, ref magnifier) == -1) //, ref shifter) == -1)
+                            if (KodexMagnifier(o, i, ref magnifier) == -1) //, ref shifter) == -1)
                                 continue;
 
                             value = (int)(o.x[k, 1] * g.kodex_magnifier[magnifier_id, 0]);
@@ -2101,7 +2098,7 @@ namespace New_Tradegy.Library
 
                 for (int i = 0; i < id_index.Length; i++)
                 {
-                    draw_stock_magnifier_shifter(o, id_index[i], ref magnifier); //, ref shifter); // shift for KODEX
+                    KodexMagnifier(o, id_index[i], ref magnifier); //, ref shifter); // shift for KODEX
                     sid = stock + area + " " + id_index[i].ToString();
                     Series t = new Series(sid);
                     chart.Series.Add(t);
@@ -2356,7 +2353,7 @@ namespace New_Tradegy.Library
             }
             else
             {
-                if (g.q != "h&s" || chart.Name == "char2")
+                if (g.q != "h&s" || chart.Name == "chart2")
                     draw_stock_general(chart, nRow, nCol, seq, stock);
                 else if (!stock.Contains("KODEX"))
                     draw_stock_general_history(chart, nRow, nCol, seq, stock);
@@ -2364,7 +2361,7 @@ namespace New_Tradegy.Library
         }
 
 
-        public static int draw_stock_magnifier_shifter(g.stock_data o, int id,
+        public static int KodexMagnifier(g.stock_data o, int id,
                                                                    ref double magnifier) //, ref double shifter)
         {
             int i = 0;

@@ -149,7 +149,7 @@ namespace New_Tradegy
             else if (e.Control == true && e.KeyCode == Keys.W)
             {
                 g.관심종목.Clear();
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
             }
 
             // 테마 순서 리스트 네이버로부터(^t)
@@ -177,7 +177,7 @@ namespace New_Tradegy
             else if (e.Control == true && e.KeyCode == Keys.M)
             {
                 g.호가종목.Clear();
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
             }
         }
 
@@ -237,7 +237,7 @@ namespace New_Tradegy
                                     g.관심종목.Add(stock1);
                             }
                             this.Text = g.oGL_data[i].title;
-                            dr.draw_chart();
+                            md.ManageDisplayAndForms();
                             return;
                         }
                     }
@@ -274,7 +274,7 @@ namespace New_Tradegy
                                     g.관심종목.Add(stock2);
                             }
                             this.Text = GL_title[i];
-                            dr.draw_chart();
+                            md.ManageDisplayAndForms();
                             return;
                         }
                     }
@@ -293,7 +293,7 @@ namespace New_Tradegy
                             g.관심종목.Add(word);
                     }
                 }
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
             }
         }
 

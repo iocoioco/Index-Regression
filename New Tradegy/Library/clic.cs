@@ -416,7 +416,7 @@ namespace New_Tradegy.Library
                                     // Remove all sell orders with the given stock name
                                     StockExchange.sellOrders.RemoveAll(order => order.Stock == g.clickedStock);
 
-                                    dr.draw_chart();
+                                    md.ManageDisplayAndForms();
                                 }
                                 else
                                 {
@@ -427,7 +427,7 @@ namespace New_Tradegy.Library
                                         g.관심종목.Remove(g.clickedStock);
                                     }
 
-                                    dr.draw_chart();
+                                    md.ManageDisplayAndForms();
                                 }
                             }
                             return;
@@ -454,7 +454,7 @@ namespace New_Tradegy.Library
                                 g.관심종목.Add(g.clickedStock);
                             }
                         }
-                        dr.draw_chart();
+                        md.ManageDisplayAndForms();
                     }
                     break;
 
@@ -694,7 +694,7 @@ namespace New_Tradegy.Library
                 selection == "r6" ||
                 selection == "r9")
             {
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
             }
 
             if (selection == "l1" ||

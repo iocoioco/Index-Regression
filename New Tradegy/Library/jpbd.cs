@@ -360,7 +360,7 @@ namespace New_Tradegy.Library
             }
 
             Stock = stock;
-   
+
 
             F = f;
 
@@ -602,7 +602,7 @@ namespace New_Tradegy.Library
                             Rows = 5;
                         }
                     }
-                    dr.draw_chart();
+                    md.ManageDisplayAndForms();
                     break;
 
                 case 2: // 매수
@@ -677,10 +677,14 @@ namespace New_Tradegy.Library
         {
             //string stockcode = _cpstockcode.NameToCode(Stock);
             //_stockjpbid.SetInputValue(0, stockcode);
+     
+            _stockjpbid.Received -= stockjpbid_Received; // Explicitly detach the event handler
+            _stockjpbid.Unsubscribe();
+            _stockjpbid = null; // Clear reference to help with memory management
+            
+            g.jpjds.Remove(Stock);
             Dgv.Dispose();
             F.Close();
-            _stockjpbid.Unsubscribe();
-            g.jpjds.Remove(Stock);
         }
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added

@@ -880,12 +880,12 @@ namespace New_Tradegy.Library
             // draw1 test
             if (testDraw1.Contains(e.KeyChar) && g.test)
             {
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
             }
             // draw1 test and real
             if (testAndRealDraw1.Contains(e.KeyChar))
             {
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
             }
             // draw2 test
             if (testDraw2.Contains(e.KeyChar) && g.test && g.q != "h&s")

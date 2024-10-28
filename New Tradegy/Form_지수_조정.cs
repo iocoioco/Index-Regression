@@ -121,7 +121,7 @@ namespace New_Tradegy
                 //g.kodex_magnifier[id, jd] = value / 100.0; 
 
                 //c.Value = 100; // working temporarily and return to moved position
-                dr.draw_chart();
+                md.ManageDisplayAndForms();
                 dr.draw_보조_차트();
             }
         }

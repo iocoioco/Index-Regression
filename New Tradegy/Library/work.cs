@@ -306,7 +306,7 @@ namespace New_Tradegy.Library
             int day_1 = g.date % 10000 % 100;
             g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
             ev.eval_stock();
-            dr.draw_chart();
+            md.ManageDisplayAndForms();
             dr.draw_보조_차트();
         }
 

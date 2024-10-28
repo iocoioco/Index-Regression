@@ -261,7 +261,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 if (wk.isStock(searchText) && g.ogl_data.FindIndex(x => x.stock == searchText) >= 0)
                 {
                     g.관심종목.Add(searchText);
-                    dr.draw_chart();
+                    md.ManageDisplayAndForms();
                 }
                 searchTextBox.Text = "";
                 //MessageBox.Show($"Entered text: {searchText}");
@@ -573,7 +573,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                             ev.eval_stock();  // Evaluate stock conditionally
                         }
 
-                        dr.draw_chart();  // Draw main chart
+                        md.ManageDisplayAndForms();
                         dr.draw_보조_차트();  // Draw secondary chart
 
                         // Update the last draw tick
