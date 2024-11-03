@@ -188,7 +188,7 @@ namespace New_Tradegy
             g.제어.dtb.Rows[14][0] = "외돈";
             g.제어.dtb.Rows[14][1] = 2; g.width.외돈 = 2;
             g.제어.dtb.Rows[14][2] = "기관";
-            g.제어.dtb.Rows[14][3] = 1; g.width.기관 = 1;
+            g.제어.dtb.Rows[14][3] = 1; g.width.기관 = 2;
 
             for (int i = 0; i < Columns; i++)
             {

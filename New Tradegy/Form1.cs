@@ -138,8 +138,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.v.Screens = Screen.AllScreens.Count();
             g.chart1 = chart1;
 
-            g.time[0] = 0; ///
-            g.time[1] = g.MAX_ROW; ///
+            g.time[0] = 0; //
+            g.time[1] = g.MAX_ROW; //
 
 
             g.q = "o&s";
@@ -152,14 +152,14 @@ namespace New_Tradegy // added for test on 20241020 0300
             string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
-            rd.read_변수(); ///
-            rd.read_무게(); ///
+            rd.read_변수(); //
+            rd.read_무게(); //
 
             rd.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
 
-            rd.read_or_set_stocks(); /// duration : 0.36 seconds
+            rd.read_or_set_stocks(); // duration : 0.36 seconds
 
-            ms.setting_kodex_magnifier_shifter(); // duration 0.000 seconds
+            //ms.setting_kodex_magnifier_shifter(); // duration 0.000 seconds
 
             // rd.read_누적(g.누적); // not used in marketeye_received
 
@@ -181,10 +181,10 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            Form Form_보조_차트 = new Form_보조_차트(); // duration 0.016 seconds
-            Form_보조_차트.Location = new Point(1920, 0);
-            Form_보조_차트.Size = new Size(1920 / 4, 900 / 3);
-            Form_보조_차트.Show();
+            //Form Form_보조_차트 = new Form_보조_차트(); // duration 0.016 seconds
+            //Form_보조_차트.Location = new Point(1920, 0);
+            //Form_보조_차트.Size = new Size(1920 / 4, 900 / 3);
+            //Form_보조_차트.Show();
 
             if (!g.test && g.workingday) // duration : 0.49 seconds
             {
@@ -220,8 +220,8 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
 
-                hg.HogaInsert(g.KODEX4[0]);
-                hg.HogaInsert(g.KODEX4[2]);
+                //?hg.HogaInsert(g.KODEX4[0]);
+                //?hg.HogaInsert(g.KODEX4[2]);
             }
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             dr.draw_chart(); // duration : 0.05 ~ 0.086 seconds
@@ -230,7 +230,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
 
             rd.read_파일관심종목(); // duration 0.000 seconds
-
+            md.ManageDisplayAndForms();
             ms.Sound("일반", "to jsb");
         }
 

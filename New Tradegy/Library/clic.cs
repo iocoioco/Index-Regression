@@ -550,7 +550,7 @@ namespace New_Tradegy.Library
                            //string url2 = "https://finance.naver.com/item/main.nhn?code=005930";
                            //string url3 = "https://finance.naver.com/item/main.nhn?code=005930";
 
-                    //// Open the URLs in the default browser
+                    // Open the URLs in the default browser
                     //Process.Start(new ProcessStartInfo("cmd", $"/c start {url1}") { CreateNoWindow = true });
                     //Process.Start(new ProcessStartInfo("cmd", $"/c start {url2}") { CreateNoWindow = true });
                     //Process.Start(new ProcessStartInfo("cmd", $"/c start {url3}") { CreateNoWindow = true });

@@ -18,8 +18,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		캠핑카 출국준비.txt = 캠핑카 출국준비.txt
 		코딩 진행 단순 정리.txt = 코딩 진행 단순 정리.txt
 		코딩.txt = 코딩.txt
-		판매자 문의사항.txt = 판매자 문의사항.txt
 		프외배수.txt = 프외배수.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time etc.", "Program Variable and Time etc.", "{3DF9494C-3D57-4742-9E8E-5D67ABF1093F}"
+	ProjectSection(SolutionItems) = preProject
+		keys keyword - eval and draw(test and real).txt = keys keyword - eval and draw(test and real).txt
 	EndProjectSection
 EndProject
 Global
@@ -35,6 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DF9494C-3D57-4742-9E8E-5D67ABF1093F} = {F8C1D470-EFC7-4A19-B359-C02780AD676C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47FE268C-54A8-49F2-8493-0B16F0DF5A7E}

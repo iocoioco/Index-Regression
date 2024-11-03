@@ -528,7 +528,7 @@ namespace New_Tradegy.Library
             int start_time = 0;
             int end_time = -1;
 
-            /// start time 
+            // start time 
             if (o.shrink_draw == true)
             {
                 if (g.test)
@@ -917,7 +917,7 @@ namespace New_Tradegy.Library
             int end_time = g.MAX_ROW;
 
             #region
-            /// start time 
+            // start time 
             //if (o.shrink_draw == true)
             //{
             //    if (g.test)
@@ -2402,7 +2402,7 @@ namespace New_Tradegy.Library
                     return -1; // input mitake
             }
 
-            magnifier = g.k.magnifier[i, j];
+            magnifier = g.kodex_magnifier[i, j];
             //shifter = g.k.shifter[i, j];
 
             return 0;

@@ -899,7 +899,7 @@ namespace New_Tradegy.Library
             Dtb.Rows[2 * Rows + 1][1] = o.dev_avr;
             Dtb.Rows[2 * Rows + 1][2] = o.보유량.ToString() + "/" + o.수익률.ToString("F2");
 
-            deal_호가_추가(); //?
+            deal_호가_추가(); //\
         }
 
         private void deal_호가_추가()

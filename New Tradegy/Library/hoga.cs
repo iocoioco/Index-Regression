@@ -15,6 +15,43 @@ namespace New_Tradegy.Library
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
+        public static bool HogaInsert(string stock, int rows, int rowId, int colId)
+        {
+            bool inserted = false;
+
+            Size formSize = new Size();
+            Point formLocation = new Point();
+            HogaFormSizeLocation(stock, rowId, colId, rows, ref formSize, ref formLocation);
+
+            if (stock == g.KODEX4[0])
+            {
+                HogaRemove(g.KODEX4[1]);
+            }
+            else if (stock == g.KODEX4[1])
+            {
+                HogaRemove(g.KODEX4[0]);
+            }
+            else if (stock == g.KODEX4[2])
+            {
+                HogaRemove(g.KODEX4[3]);
+            }
+            else if (stock == g.KODEX4[3])
+            {
+                HogaRemove(g.KODEX4[2]);
+            }
+            // if a form with stock name exists, locate a new location and return
+            Form f = HogaFormNameGivenStock(stock);
+            if (f != null)
+            {
+                f.Location = formLocation;
+                return false;
+            }
+
+            Form_호가 form_호가 = new Form_호가(stock);
+            form_호가.Show();
+
+            return inserted;
+        }
         public static bool HogaInsert(string stock)
         {
             if (HogaFormNameGivenStock(stock) != null)
@@ -209,7 +246,7 @@ namespace New_Tradegy.Library
             //    }
             //}
 
-            //// Optionally, use a flag to indicate completeness
+            // Optionally, use a flag to indicate completeness
             //if (!form.IsBidChartPopulated)
             //{
             //    return false;

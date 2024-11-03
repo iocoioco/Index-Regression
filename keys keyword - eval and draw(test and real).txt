@@ -1,0 +1,51 @@
+key			test			real		eval		draw	
+
+q			extend time					+/			+/
+Q
+Cntl q	
+w			g.time[1]++					+/			+/
+W			g.time[0] = 0				+/			+/
+			g.time[1] = 1
+Cntl w		Form_무게
+e			Form_보조_차트(그순, 관심)		
+E			Form_보조_차트 (관심)
+r			g.draw_shrink_time -= 10	+/+			+/+
+R			g.draw_shrink_time += 10	+/+			+/+
+t			g.time[1] += 10				+/			+/
+T			g.time[1] -= 10				+/			+/
+y			g.time[1] += 30				+/			+/
+Y			g.time[1] -= 30				+/			+/
+p			g.PeoridNews toggles(d, w, m)
+[			g.draw_selection = 3 Bollinger
+]			g.draw_selection = 2 외인, 기관, 가격
+\			g.draw_selection = 1 일반종목
+
+a           피올 닥올 토글				+/+			+/+
+A           g.add_interest toggles
+Cntl a		wn.Memo_TopMost();
+s           프누 종누 토글				+/+			+/+
+S           프편 종편 토글				+/+			+/+
+Cntl s		현재 시간 기준 저장
+d           푀분 총점 토글				+/+			+/+
+D           배차							+/+			+/+
+f           Form_보조_차트(코피 코닥 관심)	
+g           상순 저순 토글				+/+			+/+
+h           편차 평균 토글				+/+			+/+
+j           g.nCol++					+/+			+/+
+J           g.nCol--					+/+			+/+
+l			g.draw_history_forwards =   +/			+/
+			!g.draw_history_forwards;			
+;			바탕화면 + @"\제어.txt";
+:           @"C:\병신\data\상관.txt";
+\           @"C:\병신\감\메모.txt";
+"           @"C:\병신\data\상관.txt";"
+
+z           g.optimumTrading = !g.optimumTrading;
+x           g.click_trade = !g.click_trade;
+c           all browsers and forms close
+m           g.호가종목.Remove all		+/+			+/+
+M           g.관심종목.Remove all		+/+			+/+
+.           "forwards"					+/			+/
+,           "backwards"					+/			+/
+' '         ""next"						+/+			+/+
+n			"previous"					+/+			+/+

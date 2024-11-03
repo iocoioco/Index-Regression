@@ -397,7 +397,7 @@ namespace New_Tradegy.Library
                     }
                     break;
 
-                case 'Y': ///
+                case 'Y': //
                     if (g.test)
                     {
                         g.time[1] -= 30;
@@ -635,25 +635,6 @@ namespace New_Tradegy.Library
                     filename = @"C:\병신\data\상관.txt";
                     Process.Start(filename);
                     break;
-
-                //case ';': // timer deleted, automatic 1 sec forwards moving, i.e. no need click 'w'
-                //    System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
-
-
-                //    workingRectangle.Width = (int)(g.chart1.Width * 1.1);
-                //    g.chart1.Size = new Size(workingRectangle.Width, (int)(workingRectangle.Height * 0.965));
-                //    //if (!g.test)
-                //    //    return;
-
-                //    //if (TimerCheck.Enabled == false)
-                //    //    TimerCheck.Enabled = true;
-                //    //else
-                //    //    TimerCheck.Enabled = false;
-                //    break;
-
-                //case ':':
-                //    g.chart1.Size = new System.Drawing.Size(2000, 2000);
-                //    break;
                 #endregion
 
                 // Bottom
@@ -830,6 +811,7 @@ namespace New_Tradegy.Library
                     #endregion
             }
 
+            // time correction 
             if (g.time[0] < 0) { g.time[0] = 0; }
             if (g.time[1] <= g.time[0]) { g.time[1] = g.time[0] + 10; }
             if (g.time[1] < 2) { g.time[1] = 2; }
@@ -838,64 +820,41 @@ namespace New_Tradegy.Library
             if (g.gid < 0) { g.gid = 0; }
             if (g.Gid < 0) { g.Gid = 0; }
 
-
-            // MOD info date modification
-            int month = g.date % 10000 / 100;
-            int day = g.date % 10000 % 100;
-
-            string newValue = month.ToString() + "/" + day.ToString();
-            if (g.제어.dtb.Rows[0][0].ToString() != newValue)
-            {
-                g.제어.dtb.Rows[0][0] = newValue;
-            }
+            // Form_보조_차트 was called in the each keys
+            // Main Chart Processing for post, eval, draw
+            string testpost = "1q";
+            string testeval = "qwWrRtTyYasSdDghjJmM., n";
+            string testdraw = "qwWrRtTyYasSdDghjJlmM., n";
             
-            // 20241007 프편, 종편 추가에 따른 'S' 추가
-            string testPost = "1q";
-            string testEval = "2twtTyYWW";
-            string testAndRealEval = "asSdDgh";
 
-            string testDraw1 = "12qwrRtTyYmMWW";
-            string testAndRealDraw1 = "45[]asSdDfghjJkK mMn\\";
+            string realeval = "rRasSdDghjJmM n";
+            string realdraw = "rRasSdDghjJmM n";
 
-            string testDraw2 = "12qwrRtTyYWW";
-            string testAndRealDraw2 = "";
-
-            // post
-            if(testPost.Contains(e.KeyChar))
+            if(g.test) // test
             {
-                ps.post_all();
+                if (testpost.Contains(e.KeyChar))
+                {
+                    ps.post_all();
+                }
+                if (testeval.Contains(e.KeyChar))
+                {
+                    ev.eval_stock();
+                }
+                if (testdraw.Contains(e.KeyChar))
+                {
+                    md.ManageDisplayAndForms();
+                }
             }
-
-            // eval test
-            if (testEval.Contains(e.KeyChar) && g.test)
+            else // real
             {
-                ev.eval_stock();
-            }
-            // eval test and real
-            if (testAndRealEval.Contains(e.KeyChar))
-            {
-                ev.eval_stock(); // chart_keyPress
-            }
-
-            // draw1 test
-            if (testDraw1.Contains(e.KeyChar) && g.test)
-            {
-                md.ManageDisplayAndForms();
-            }
-            // draw1 test and real
-            if (testAndRealDraw1.Contains(e.KeyChar))
-            {
-                md.ManageDisplayAndForms();
-            }
-            // draw2 test
-            if (testDraw2.Contains(e.KeyChar) && g.test && g.q != "h&s")
-            {
-                dr.draw_보조_차트();
-            }
-            // draw2 test and real
-            if (testAndRealDraw2.Contains(e.KeyChar) && g.q != "h&s")
-            {
-                dr.draw_보조_차트();
+                if (realeval.Contains(e.KeyChar))
+                {
+                    ev.eval_stock();
+                }
+                if (realdraw.Contains(e.KeyChar))
+                {
+                    md.ManageDisplayAndForms();
+                }
             }
         }
 

@@ -721,28 +721,26 @@ namespace New_Tradegy.Library
         //}
 
 
-        public static void setting_kodex_magnifier_shifter()
-        {
-            // KODEX 
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (i == 0 || i == 2)
-                    {
-                        if (j == 2)
-                            g.k.magnifier[i, j] = 1.0;
-                        else
-                            g.k.magnifier[i, j] = 1.0;
-                    }
+        //public static void setting_kodex_magnifier_shifter()
+        //{
+        //    // KODEX 
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        for (int j = 0; j < 3; j++)
+        //        {
+        //            if (i == 0 || i == 2)
+        //            {
+        //                if (j == 2)
+        //                    g.k.magnifier[i, j] = 1.0;
+        //                else
+        //                    g.k.magnifier[i, j] = 1.0;
+        //            }
 
-                    else
-                        g.k.magnifier[i, j] = 1.0;
-
-                    //g.k.shifter[i, j] = 0;
-                }
-            }
-        }
+        //            else
+        //                g.k.magnifier[i, j] = 1.0;
+        //        }
+        //    }
+        //}
 
 
 

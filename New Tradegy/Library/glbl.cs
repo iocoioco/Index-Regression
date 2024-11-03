@@ -342,7 +342,7 @@ namespace New_Tradegy.Library
         public static int end_time_before_advance;
         public static bool end_time_extended;
 
-        public static int nCol = 6;
+        public static int nCol = 10;
         public static int nRow = 3;
 
         public static int gid;
@@ -445,21 +445,21 @@ namespace New_Tradegy.Library
         public static variable v = new variable();
 
 
-        public class kodex_magnifier_shifter
-        {
-            //public int[,] shifter = new int[4, 3];
-            // price, money, US
-            public double[,] magnifier = new double[4, 3];
-            // price, money, U
-            public double[,] max_min = new double[4, 2];
-            // i = 0 KODEX 레버리지, i = 1 KODEX 200선물인버스2X
-            // i = 2 KODEX 코스닥150레버리지, i = 3 KODEX 코스닥150레버리지
+        //public class kodex_magnifier_shifter
+        //{
+        //    //public int[,] shifter = new int[4, 3];
+        //    // price, money, US
+        //    public double[,] magnifier = new double[4, 3];
+        //    // price, money, U
+        //    public double[,] max_min = new double[4, 2];
+        //    // i = 0 KODEX 레버리지, i = 1 KODEX 200선물인버스2X
+        //    // i = 2 KODEX 코스닥150레버리지, i = 3 KODEX 코스닥150레버리지
 
-            public double saved_row_percentage = 0.0;
-            public DateTime savedTime;
-            public int index_magnifier_shifter;
-        }
-        public static kodex_magnifier_shifter k = new kodex_magnifier_shifter();
+        //    public double saved_row_percentage = 0.0;
+        //    public DateTime savedTime;
+        //    public int index_magnifier_shifter;
+        //}
+        //public static kodex_magnifier_shifter k = new kodex_magnifier_shifter();
 
         public static double[,] kodex_magnifier = new double[4, 4];
 

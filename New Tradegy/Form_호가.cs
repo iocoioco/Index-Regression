@@ -26,6 +26,7 @@ namespace New_Tradegy
 
         public Form_호가(string stock)  
         {
+         
             InitializeComponent();
 
             _stock = stock;
@@ -36,6 +37,7 @@ namespace New_Tradegy
 
         private void Form_호가_Load(object sender, EventArgs e)
         {
+            
             this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
 
             this.Text = _stock;

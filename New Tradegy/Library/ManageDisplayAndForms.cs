@@ -8,12 +8,17 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using static New_Tradegy.Library.g;
+using System.Security.Cryptography;
 class md
 {
     // 0, 1(가격), 2(수급), 3(체강), 4(프로그램), 5(외인), 6(기관)
-    public static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray, Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
+    private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray, 
+        Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
     // 0, 1(가격), 2, 3(지수합), 4(기관), 5(외인), 6(개인), 7, 8, 9, 10(나스닥), 11(연기금)
-    public static Color[] colorKODEX = { Color.White, Color.Red, Color.White, Color.Black, Color.Brown, Color.Magenta, Color.Green, Color.White, Color.White, Color.White, Color.Blue, Color.Brown };
+    private static Color[] colorKODEX = { Color.White, Color.Red, 
+        Color.White, Color.Black, Color.Brown, Color.Magenta, Color.Green, 
+        Color.White, Color.White, Color.White, Color.Blue, Color.Brown };
     // short and long time extension or restoration 
     // and then, draw
 
@@ -34,8 +39,7 @@ class md
             // Check if the chart area exists; if not, create it
             if (!ChartAreaExists(chart, stock))
             {
-                CreateChartAreaForStock(chart, stock); //? location 
-
+                CreateChartAreaForStock(chart, stock); // location 
             }
             else
             {
@@ -45,20 +49,9 @@ class md
             // Check if the form exists; if not, create it and set the location
             if (!FormExists(stock))
             {
-                Form_호가 form_호가 = new Form_호가(stock);
-                form_호가.Show();
-
-
-                if (stock == "KODEX 레버리지")
-                {
-                    form_호가.Location = new Point(cellWidth, 0);
-                }
-                else
-                {
-                    form_호가.Location = new Point(cellWidth, cellHeight * 2);
-                }
-                // Place in second column
-                form_호가.Size = new Size(cellWidth, cellHeight); // Set the size of the form
+             //?
+                //Form_호가 form_호가 = new Form_호가(stock);
+                //form_호가.Show();
             }
         }
     }
@@ -69,6 +62,7 @@ class md
         hogaCount = 0; // Resets hogaCount
 
         int TotalSpaceCount = g.nRow * (g.nCol - 2);
+        //g.보유종목.Add("삼성전자");//?
         foreach (string stock in g.보유종목)
         {
             if (!displayList.Contains(stock) && !stock.Contains("KODEX"))
@@ -104,6 +98,9 @@ class md
 
         foreach (string stock in g.sl)
         {
+            //?
+            if (displayList.Count == 1) break;
+
             if (!displayList.Contains(stock) && !stock.Contains("KODEX"))
             {
                 displayList.Add(stock);
@@ -112,7 +109,7 @@ class md
                 break;
         }
 
-        while (hogaCount + displayList.Count >= TotalSpaceCount)
+        while (hogaCount + displayList.Count > TotalSpaceCount)
         {
             displayList.RemoveAt(displayList.Count - 1);
         }
@@ -121,13 +118,18 @@ class md
     public static void ManageDisplayAndForms() // for g.chart1
     {
         // First, handle the fixed elements
-        InitializeFixedElements(g.chart1);
+        //? InitializeFixedElements(g.chart1);
+        
+
+
+
+
 
         HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
 
         // Now, handle the rest of the dynamically generated elements as before
         int currentRow = 0;
-        int currentCol = 3; // Start from the third column since first two columns are occupied
+        int currentCol = 2; // Start from the third column since first two columns are occupied
 
         for (int i = 0; i < hogaCount; i++)
         {
@@ -135,7 +137,10 @@ class md
 
             if (!FormExists(stock))
             {
-                CreateFormForStock(stock);
+           //?
+                    //Form_호가 form_호가 = new Form_호가(stock);
+                    //form_호가.Show();
+
             }
 
             if (!ChartAreaExists(g.chart1, stock))
@@ -190,6 +195,7 @@ class md
             }
         }
         ClearUnusedChartAreasAndForms(g.chart1);
+        //g.chart1.Invalidate();
     }
 
     static bool FormExists(string stockName)
@@ -202,16 +208,21 @@ class md
         return false;
     }
 
-    static void CreateFormForStock(string stockName)
-    {
-        Form_호가 form_호가 = new Form_호가(stockName);
-        form_호가.Show();
-    }
 
     static bool ChartAreaExists(Chart chart, string stockName)
     {
-        return chart.ChartAreas.Any(ca => ca.Name == stockName);
+        foreach (var ca in chart.ChartAreas)
+        {
+            Console.WriteLine($"ChartArea Name: {ca.Name}"); // Debug statement
+        }
+        return chart.ChartAreas.Any(ca => ca.Name.Trim().Equals(stockName.Trim(), StringComparison.OrdinalIgnoreCase));
     }
+
+
+    //static bool ChartAreaExists(Chart chart, string stockName)
+    //{
+    //    return chart.ChartAreas.Any(ca => ca.Name == stockName);
+    //}
 
     static void CreateChartAreaForStock(Chart chart, string stockName)
     {
@@ -252,21 +263,24 @@ class md
             case 1: // price
                 j = 0;
                 break;
+            case 3: // Program
+                j = 1;
+                break;
             case 4: // money
             case 5:
             case 6:
             case 11:
-                j = 1;
+                j = 2;
                 break;
             case 10: // US
-                j = 2;
+                j = 3;
                 break;
 
             default:
                 return -1; // input mitake
         }
 
-        magnifier = g.k.magnifier[i, j];
+        magnifier = g.kodex_magnifier[i, j];
 
         return 0;
     }
@@ -323,38 +337,52 @@ class md
         }
     }
 
-    // Function to apply specific styles based on index
-    static void ApplyStyleToSeries(Series series, int index)
+   
+
+    // Function to add series to the chart
+    static void AddSeriesToChart(string sid, Chart chart, string area, Color color, int borderWidth)
+    {
+        Series series = new Series(sid)
+        {
+            ChartArea = area,
+            ChartType = SeriesChartType.Line,
+            XValueType = ChartValueType.Date,
+            IsVisibleInLegend = false,
+            Color = color,
+            BorderWidth = borderWidth
+        };
+        chart.Series.Add(series);
+    }
+
+   
+
+    // Helper function to get color based on index
+    static Color GetColorByIndex(int index)
     {
         switch (index)
         {
-            case 3:
-                series.Color = colorKODEX[3];
-                series.BorderWidth = g.width.프돈;
-                break;
-            case 4:
-                series.Color = colorKODEX[4];
-                series.BorderWidth = 1;
-                break;
-            case 5:
-                series.Color = colorKODEX[5];
-                series.BorderWidth = 1;
-                break;
-            case 6:
-                series.Color = colorKODEX[6];
-                series.BorderWidth = 2;
-                break;
-            case 10:
-                series.Color = colorKODEX[10];
-                series.BorderWidth = 1;
-                break;
-            case 11:
-                series.Color = colorKODEX[11];
-                series.BorderWidth = 1;
-                break;
+            case 1: return colorKODEX[1]; // Price
+            case 4: return colorKODEX[4]; // Program
+            case 5: return colorKODEX[5]; // Foreign
+            case 6: return colorKODEX[6]; // Institute
+            case 10: return colorKODEX[10]; // Nasdaq
+            case 11: return colorKODEX[11]; // Pension
+            default: return colorKODEX[3];
         }
     }
 
+    // Helper function to get border width based on index
+    static int GetBorderWidthByIndex(int index)
+    {
+        switch (index)
+        {
+            case 1: return 2;    // Price
+            case 4: return 2;    // Program
+            case 5: return 2;    // Foreign
+            case 6: return 2;    // Institute
+            default: return 1;
+        }
+    }
     static void CreateChartAreaForStockKodex(Chart chart, string stockName)
     {
 
@@ -431,134 +459,67 @@ class md
 
         // Initialize variables
         int total_number_of_point = 0;
-        int[] dataTypesToDraw = { 1, 9 }; // Data types to draw: price and centerline
+        int[] idIndex = { 1, 3, 4, 5, 6, 10, 11 }; // Data types to draw: price, program, foreign, institute, Nasdaq, pension
 
-        // Iterate over each data type
-        foreach (int i in dataTypesToDraw)
+
+
+        // Handle centerline
+        sid = stockName + " 9"; // Centerline identifier
+
+        Series centerline = new Series(sid)
         {
-            sid = stockName + " " + i.ToString();
+            ChartArea = area,
+            ChartType = SeriesChartType.Line,
+            XValueType = ChartValueType.Date,
+            IsVisibleInLegend = false,
+            Color = Color.Gray,
+            BorderWidth = 1
+        };
+        centerline.Points.AddXY(((int)(o.x[start_time, 0] / g.HUNDRED)).ToString(), 0);
+        centerline.Points.AddXY(((int)(o.x[end_time - 1, 0] / g.HUNDRED)).ToString(), 0);
+        chart.Series.Add(centerline);
 
-            if (i == 9) // Centerline for tick multiple
-            {
-                // Create a fixed centerline at y = 0
-                Series centerlineSeries = new Series(sid)
-                {
-                    ChartArea = area,
-                    ChartType = SeriesChartType.Line,
-                    XValueType = ChartValueType.Date,
-                    IsVisibleInLegend = false,
-                    Color = Color.Gray, // Neutral color for centerline
-                    BorderWidth = 1
-                };
+        
 
-                // Add two points at start and end times, both at y = 0
-                centerlineSeries.Points.AddXY(((int)(o.x[start_time, 0] / g.HUNDRED)).ToString(), 0);
-                centerlineSeries.Points.AddXY(((int)(o.x[end_time - 1, 0] / g.HUNDRED)).ToString(), 0);
+        // Process each data type in idIndex
+        foreach (int dataIndex in idIndex)
+        {
+            sid = stockName + " " + dataIndex.ToString();
 
-                // Add the centerline series to the chart
-                chart.Series.Add(centerlineSeries);
-                continue; // Skip the rest of the loop for the centerline as it has fixed points
-            }
+            AddSeriesToChart(sid, chart, area, GetColorByIndex(dataIndex), GetBorderWidthByIndex(dataIndex));
 
-            // Initialize a new series for the price data type
-            Series t = new Series(sid)
-            {
-                ChartArea = area,
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Date,
-                IsVisibleInLegend = false
-            };
-            chart.Series.Add(t);
-
+            Series series = chart.Series[sid];
             total_number_of_point = 0;
             double magnifier = 1.0;
-            KodexMagnifier(o, i, ref magnifier);
-            // Loop over data points for the price data type
+            KodexMagnifier(o, dataIndex, ref magnifier);
+
             for (int k = start_time; k < end_time; k++)
             {
-                if (o.x[k, 0] == 0) // No data
-                {
-                    break; // Exit if there's no more data to process
-                }
+                if (o.x[k, 0] == 0) break; // No data
 
-                // Directly use the price data (column 1)
-                int value = (int)(o.x[k, 1] * magnifier);
+                // Handle specific data types
+                int value = dataIndex == 10 ? HandleUSIndex(o, k, end_time, start_time, dataIndex) :
+                            (int)(o.x[k, dataIndex] * magnifier);
 
-                t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+                if (dataIndex == 11) value *= 3; // Extra magnification for pension data
+
+                series.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
                 total_number_of_point++;
 
                 y_min = Math.Min(y_min, value);
                 y_max = Math.Max(y_max, value);
             }
 
-            // Only proceed if there are at least 2 points
             if (total_number_of_point < 2)
             {
-                chart.Series.Remove(t); // Remove series with insufficient data
+                chart.Series.Remove(series); // Remove if not enough data
                 continue;
             }
 
-            // Mark data points and apply series styling
-            dr.draw_stock_mark(chart, stockName, start_time, i, total_number_of_point, o.x, t);
-            SetSeriesStyle(t, i, colorGeneral);
+            // Draw stock marker and apply styling
+            dr.draw_stock_mark(chart, stockName, start_time, dataIndex, total_number_of_point, o.x, series);
         }
 
-        // Function to set series style based on data type
-        void SetSeriesStyle(Series series, int dataType, Color[] colors)
-        {
-            if (dataType == 1) // Price
-            {
-                series.Color = colors[1];
-                series.BorderWidth = g.width.가격;
-            }
-        }
-
-        // Additional logic for 수급과장배수 handling
-
-        if (g.v.수급과장배수 != 0)
-        {
-            // KODEX
-
-            double magnifier = 1.0;
-            int[] id_index = { 3, 4, 5, 6, 10, 11 }; // Relevant indices for drawing
-
-            for (int i = 0; i < id_index.Length; i++)
-            {
-                KodexMagnifier(o, id_index[i], ref magnifier); // Adjust magnifier based on stock
-                sid = stockName + " " + id_index[i].ToString();
-
-                // Create new series and add it to the chart
-                Series t = new Series(sid)
-                {
-                    ChartArea = area,
-                    ChartType = SeriesChartType.Line,
-                    XValueType = ChartValueType.Date,
-                    IsVisibleInLegend = false
-                };
-                chart.Series.Add(t);
-
-
-
-                for (int k = start_time; k < end_time; k++)
-                {
-                    if (o.x[k, 0] == 0) break; // Exit if time is 0 (no data)
-
-                    int value = id_index[i] == 10 ? HandleUSIndex(o, k, end_time, start_time, id_index[i]) :
-                                 (int)(o.x[k, id_index[i]] * magnifier);
-
-                    if (id_index[i] == 11) value *= 3; // Extra magnification for pension data
-                    if (o.stock.Contains("인버스") && id_index[i] == 10) value *= -1;
-
-                    t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
-                    y_min = Math.Min(y_min, value);
-                    y_max = Math.Max(y_max, value);
-                }
-
-                // Add marker and apply style based on index
-                draw_stock_mark(chart, stockName, start_time, id_index[i], total_number_of_point, o.x, t);
-                ApplyStyleToSeries(t, id_index[i]);
-            }
-        }
 
 
 
@@ -699,7 +660,7 @@ class md
         int start_time = 0;
         int end_time = -1;
 
-        /// start time 
+        // start time 
         if (o.shrink_draw == true)
         {
             start_time = o.nrow - g.draw_shrink_time;
@@ -904,7 +865,7 @@ class md
         // 3rd x width from x
         // 4th y height from y
         chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 10, 60, 80);
-
+        
 
 
         int chartYMin = (int)Math.Floor(y_min / 100.0) * 100;
@@ -1426,11 +1387,18 @@ class md
 
     private static void AddRectangleAnnotationWithText(Chart chart, string text, RectangleF rect, string chartAreaName, Color textColor, Color backgroundColor)
     {
-        // Check if the chart area with the given name exists, and if not, add it
         if (!chart.ChartAreas.Any(area => area.Name == chartAreaName))
         {
-            chart.ChartAreas.Add(new ChartArea(chartAreaName));
+            MessageBox.Show("Error in ChartArea in AddRectangleAnnotationWithText");
+            return;
         }
+
+
+        // Check if the chart area with the given name exists, and if not, add it
+        //if (chart.Name == "chart2")
+        //{
+        //    rect.X += 3;
+        //}
 
         RectangleAnnotation rectangleAnnotation = new RectangleAnnotation
         {
@@ -1442,19 +1410,22 @@ class md
             BackColor = backgroundColor,
             ForeColor = textColor,
             ClipToChartArea = chartAreaName, // This binds it to the chart area
+            //ClipToChartArea = "", // This binds it to the chart area
             Alignment = ContentAlignment.TopLeft,
             ToolTip = "Rectangle Annotation Tooltip",
-        };
 
-        // Check if a series with the name chartAreaName exists, then anchor it
-        var series = chart.Series.FirstOrDefault(s => s.Name == chartAreaName);
-        if (series != null && series.Points.Count > 0)
-        {
-            rectangleAnnotation.AnchorDataPoint = series.Points[0]; // Adjust as needed for anchoring
-            rectangleAnnotation.AxisXName = chartAreaName + "\\X";
-            rectangleAnnotation.AxisYName = chartAreaName + "\\Y";
-        }
+            // Set position to the top-left corner of the chart area
+            X = rect.X, // Set the annotation's X position
+            Y = rect.Y, // Set the annotation's Y position
+            //AxisXName = "X",
+            //AxisYName = "Y"
+            AxisXName = chartAreaName + "\\X",
+            AxisYName = chartAreaName + "\\Y",
 
+            IsSizeAlwaysRelative = true,
+        }; 
+
+        // Add the annotation to the chart
         chart.Annotations.Add(rectangleAnnotation);
     }
 
@@ -1660,7 +1631,7 @@ class md
             if (annotation is TextAnnotation textAnnotation && textAnnotation.Name == stockName)
             {
                 // Update the annotation text, color, and background color based on the latest data
-                int index = wk.return_index_of_ogldata(stock);
+                int index = wk.return_index_of_ogldata(stockName);
 
 
                 if (index < 0) // 혼합과 ogl_data 등록된 종목만 draw
@@ -1766,17 +1737,24 @@ class md
         // Loop over the chart areas and remove any that are not in the displayList
         foreach (var chartArea in chart.ChartAreas.ToList())
         {
-            if (!displayList.Contains(chartArea.Name))
+            if (!displayList.Contains(chartArea.Name) && !chartArea.Name.Contains("KODEX"))
             {
                 string stockName = chartArea.Name;
-                g.chart1.ChartAreas.Remove(chartArea);
+                
 
+                // Remove all series associated with this chart area
+                var seriesToRemove = chart.Series.Where(s => s.ChartArea == stockName).ToList();
+                foreach (var series in seriesToRemove)
+                {
+                    chart.Series.Remove(series);
+                }
+                chart.ChartAreas.Remove(chartArea);
+
+                // Additional logic for unsubscribing data feeds, closing forms, etc.
                 if (g.jpjds.TryGetValue(stockName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
                 {
-                    // Unsubscribe from data feed
                     _stockjpbid.Unsubscribe();
 
-                    // Find and dispose of the form and DataGridView associated with this stock
                     Form form = HogaFormNameGivenStockName(stockName);
                     if (form != null)
                     {
@@ -1789,14 +1767,15 @@ class md
 
                     // Remove the stock entry from the dictionary
                     g.jpjds.Remove(stockName);
-
-                    itemsRemoved = true;
                 }
+
+                itemsRemoved = true;
             }
         }
 
         return itemsRemoved;
     }
+
 
     // Helper method to find an open form by stock name
     static Form HogaFormNameGivenStockName(string stockName)

@@ -250,7 +250,7 @@ namespace New_Tradegy.Library
 
                 //rd.gen_ogldata_oGLdata(); // 업종 & 상관 : 전일 거래액 순서로
                 //rd.read_절친();
-                //rd.read_or_set_stocks(); /// Form1_Load
+                //rd.read_or_set_stocks(); // Form1_Load
 
                 //g.oGL_data.Clear();
                 // inside g.sl.Clear included and reset to the number of stocks in return_date,

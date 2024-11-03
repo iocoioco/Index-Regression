@@ -130,7 +130,7 @@ namespace New_Tradegy
 
             switch (e.ColumnIndex)
             {
-                case 1: // 체결종목 취소, 취소가 안 되는 이유는 뭘까 //?
+                case 1: // 체결종목 취소, 취소가 안 되는 이유는 뭘까 //\
                     if (g.test)
                         return;
 

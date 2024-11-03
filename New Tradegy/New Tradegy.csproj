@@ -177,6 +177,7 @@
     <Compile Include="Library\deal.cs" />
     <Compile Include="Library\draw.cs" />
     <Compile Include="Library\eval.cs" />
+    <Compile Include="Library\form.cs" />
     <Compile Include="Library\hoga.cs" />
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\ManageDisplayAndForms.cs" />

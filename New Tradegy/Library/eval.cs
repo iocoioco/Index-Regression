@@ -80,7 +80,7 @@ namespace New_Tradegy.Library
                              //o.점수.거분_등수 +
                              o.점수.배차_등수 +
                              o.점수.배합_등수; // +
-                                         //o.점수.그순 * g.s.그룹_wgt; //?
+                                         //o.점수.그순 * g.s.그룹_wgt; //\
             }
         }
 
@@ -341,7 +341,7 @@ namespace New_Tradegy.Library
             //       return false;
             //}
 
-            //// 배플 : 분프외천 음의 종목 배제
+            // 배플 : 분프외천 음의 종목 배제
             //if (g.v.푀플)
             //{
             //    if (o.분프로천[0] + o.분외인천[0] < 0)
@@ -361,18 +361,19 @@ namespace New_Tradegy.Library
                 if (g.v.종가기준추정거래액이상_천만원 > (int)o.종거천)
                     return false;
 
-                // real only 
-                if (!g.test)
-                {
-                    // 호가거래액이상
-                    if (o.매도호가거래액_백만원 < g.v.호가거래액_백만원 &&
-                        o.매수호가거래액_백만원 < g.v.호가거래액_백만원)
-                        return false;
-                }
+                //? real only 
+                //if (!g.test)
+                //{
+                //    // 호가거래액이상
+                //    if (o.매도호가거래액_백만원 < g.v.호가거래액_백만원 &&
+                //        o.매수호가거래액_백만원 < g.v.호가거래액_백만원)
+
+                //        return false; 
+                //}
 
                 // 분당 추정거래대금 일정 이하 제외
-                if (g.v.분당거래액이상_천만원 > o.분거래천[0]) // && o.x[o.nrow -1, 0] > 90100)
-                    return false;
+                //? if (g.v.분당거래액이상_천만원 > o.분거래천[0]) // && o.x[o.nrow -1, 0] > 90100)
+                //    return false;
 
 
                 // 편차 일정 이하 및 배수차 일정 이하 -> 제외
@@ -628,23 +629,23 @@ namespace New_Tradegy.Library
             //    //g.그룹.dtb.Rows[0][0] = g.ogl_data.Count;
             //    //g.그룹.dtb.Rows[0][1] = g.sl.Count;
 
-            //    //// 1st
+            //    // 1st
             //    //g.그룹.dtb.Rows[1][0] = g.oGL_data[0].title;
             //    //g.그룹.dtb.Rows[1][1] = ((int)g.oGL_data[0].총점).ToString() + "/" +
             //    //                               ((int)g.oGL_data[0].푀분).ToString();
-            //    //// 1nd
+            //    // 1nd
             //    //g.그룹.dtb.Rows[2][0] = g.oGL_data[1].title;
             //    //g.그룹.dtb.Rows[2][1] = ((int)g.oGL_data[1].총점).ToString() + "/" +
             //    //                               ((int)g.oGL_data[1].푀분).ToString();
-            //    //// 3rd
+            //    // 3rd
             //    //g.그룹.dtb.Rows[0][2] = g.oGL_data[2].title;
             //    //g.그룹.dtb.Rows[0][3] = ((int)g.oGL_data[2].총점).ToString() + "/" +
             //    //                               ((int)g.oGL_data[2].푀분).ToString();
-            //    //// 4th
+            //    // 4th
             //    //g.그룹.dtb.Rows[1][2] = g.oGL_data[3].title;
             //    //g.그룹.dtb.Rows[1][3] = ((int)g.oGL_data[3].총점).ToString() + "/" +
             //    //                               ((int)g.oGL_data[3].푀분).ToString();
-            //    //// 5th
+            //    // 5th
             //    //g.그룹.dtb.Rows[2][2] = g.oGL_data[4].title;
             //    //g.그룹.dtb.Rows[2][3] = ((int)g.oGL_data[4].총점).ToString() + "/" +
             //    //                               ((int)g.oGL_data[4].푀분).ToString();
@@ -959,125 +960,125 @@ namespace New_Tradegy.Library
             //    }
             //}
 
-            //// old version : not using currently
-            ////public static void EvalKODEX(g.stock_data o)//, int[,] x) 20230818
-            ////{
-            ////    if (o.stock == "KODEX 코스닥150레버리지")
-            ////    {
-            ////        if (g.timeKospiSouned == 0)
-            ////        {
-            ////            g.timeKospiSouned = o.틱의시간[0];
-            ////            g.priceKospiSounded = o.x[o.nrow - 1, 5];
-            ////            return;
-            ////        }
+            // old version : not using currently
+            //public static void EvalKODEX(g.stock_data o)//, int[,] x) 20230818
+            //{
+            //    if (o.stock == "KODEX 코스닥150레버리지")
+            //    {
+            //        if (g.timeKospiSouned == 0)
+            //        {
+            //            g.timeKospiSouned = o.틱의시간[0];
+            //            g.priceKospiSounded = o.x[o.nrow - 1, 5];
+            //            return;
+            //        }
 
-            ////        double elapsed_seconds = ms.total_Seconds(g.timeKospiSouned, o.틱의시간[0]);
+            //        double elapsed_seconds = ms.total_Seconds(g.timeKospiSouned, o.틱의시간[0]);
 
-            ////        if (elapsed_seconds < 33)
-            ////        {
-            ////            return;
-            ////        }
+            //        if (elapsed_seconds < 33)
+            //        {
+            //            return;
+            //        }
 
-            ////        string sound = "";
-            ////        int priceDifference = o.x[o.nrow - 1, 5] - g.priceKospiSounded;
-            ////        g.timeKospiSouned = o.틱의시간[0];
-            ////        g.priceKospiSounded = o.x[o.nrow - 1, 5];
+            //        string sound = "";
+            //        int priceDifference = o.x[o.nrow - 1, 5] - g.priceKospiSounded;
+            //        g.timeKospiSouned = o.틱의시간[0];
+            //        g.priceKospiSounded = o.x[o.nrow - 1, 5];
 
-            ////        if (priceDifference < -150)
-            ////            sound = "qm 150";
-            ////        else if (priceDifference < -130)
-            ////            sound = "qm 130";
-            ////        else if (priceDifference < -110)
-            ////            sound = "qm 110";
-            ////        else if (priceDifference < -90)
-            ////            sound = "qm 90";
-            ////        else if (priceDifference < -70)
-            ////            sound = "qm 70";
-            ////        else if (priceDifference < -50)
-            ////            sound = "qm 50";
-            ////        else if (priceDifference < -30)
-            ////            sound = "qm 30";
-            ////        else if (priceDifference < -10)
-            ////            sound = "qm 10";
-            ////        else if (priceDifference < 10)
-            ////            sound = "qp 10";
-            ////        else if (priceDifference < 30)
-            ////            sound = "qp 30";
-            ////        else if (priceDifference < 50)
-            ////            sound = "qp 50";
-            ////        else if (priceDifference < 70)
-            ////            sound = "qp 70";
-            ////        else if (priceDifference < 90)
-            ////            sound = "qp 90";
-            ////        else if (priceDifference < 110)
-            ////            sound = "qp 110";
-            ////        else if (priceDifference < 130)
-            ////            sound = "qp 130";
-            ////        else
-            ////            sound = "qp 150";
+            //        if (priceDifference < -150)
+            //            sound = "qm 150";
+            //        else if (priceDifference < -130)
+            //            sound = "qm 130";
+            //        else if (priceDifference < -110)
+            //            sound = "qm 110";
+            //        else if (priceDifference < -90)
+            //            sound = "qm 90";
+            //        else if (priceDifference < -70)
+            //            sound = "qm 70";
+            //        else if (priceDifference < -50)
+            //            sound = "qm 50";
+            //        else if (priceDifference < -30)
+            //            sound = "qm 30";
+            //        else if (priceDifference < -10)
+            //            sound = "qm 10";
+            //        else if (priceDifference < 10)
+            //            sound = "qp 10";
+            //        else if (priceDifference < 30)
+            //            sound = "qp 30";
+            //        else if (priceDifference < 50)
+            //            sound = "qp 50";
+            //        else if (priceDifference < 70)
+            //            sound = "qp 70";
+            //        else if (priceDifference < 90)
+            //            sound = "qp 90";
+            //        else if (priceDifference < 110)
+            //            sound = "qp 110";
+            //        else if (priceDifference < 130)
+            //            sound = "qp 130";
+            //        else
+            //            sound = "qp 150";
 
-            ////        ms.Sound("코스피 코스닥", sound);
-            ////    }
-            ////        if (o.stock == "KODEX 코스닥150레버리지")
-            ////    {
-            ////        if (g.timeKosdaqSouned == 0)
-            ////        {
-            ////            g.timeKosdaqSouned = o.틱의시간[0];
-            ////            g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
-            ////            return;
-            ////        }
+            //        ms.Sound("코스피 코스닥", sound);
+            //    }
+            //        if (o.stock == "KODEX 코스닥150레버리지")
+            //    {
+            //        if (g.timeKosdaqSouned == 0)
+            //        {
+            //            g.timeKosdaqSouned = o.틱의시간[0];
+            //            g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
+            //            return;
+            //        }
 
-            ////        double elapsed_seconds = ms.total_Seconds(g.timeKosdaqSouned, o.틱의시간[0]);
+            //        double elapsed_seconds = ms.total_Seconds(g.timeKosdaqSouned, o.틱의시간[0]);
 
-            ////        if(elapsed_seconds < 31)
-            ////        {
-            ////            return; 
-            ////        }
+            //        if(elapsed_seconds < 31)
+            //        {
+            //            return; 
+            //        }
 
-            ////        string sound = "";
-            ////        int priceDifference = o.x[o.nrow - 1, 1] - g.priceKosdaqSounded;
-            ////        g.timeKosdaqSouned = o.틱의시간[0];
-            ////        g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
+            //        string sound = "";
+            //        int priceDifference = o.x[o.nrow - 1, 1] - g.priceKosdaqSounded;
+            //        g.timeKosdaqSouned = o.틱의시간[0];
+            //        g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
 
-            ////        if (priceDifference < -150)
-            ////            sound = "qm 150";
-            ////        else if (priceDifference < -130)
-            ////            sound = "qm 130";
-            ////        else if (priceDifference < -110)
-            ////            sound = "qm 110";
-            ////        else if (priceDifference < -90)
-            ////            sound = "qm 90";
-            ////        else if (priceDifference < -70)
-            ////            sound = "qm 70";
-            ////        else if (priceDifference < -50)
-            ////            sound = "qm 50";
-            ////        else if (priceDifference < -30)
-            ////            sound = "qm 30";
-            ////        else if (priceDifference < -10)
-            ////            sound = "qm 10";
-            ////        else if (priceDifference < 10)
-            ////            sound = "qp 10";
-            ////        else if (priceDifference < 30)
-            ////            sound = "qp 30";
-            ////        else if (priceDifference < 50)
-            ////            sound = "qp 50";
-            ////        else if (priceDifference < 70)
-            ////            sound = "qp 70";
-            ////        else if (priceDifference < 90)
-            ////            sound = "qp 90";
-            ////        else if (priceDifference < 110)
-            ////            sound = "qp 110";
-            ////        else if (priceDifference < 130)
-            ////            sound = "qp 130";
-            ////        else
-            ////            sound = "qp 150";
+            //        if (priceDifference < -150)
+            //            sound = "qm 150";
+            //        else if (priceDifference < -130)
+            //            sound = "qm 130";
+            //        else if (priceDifference < -110)
+            //            sound = "qm 110";
+            //        else if (priceDifference < -90)
+            //            sound = "qm 90";
+            //        else if (priceDifference < -70)
+            //            sound = "qm 70";
+            //        else if (priceDifference < -50)
+            //            sound = "qm 50";
+            //        else if (priceDifference < -30)
+            //            sound = "qm 30";
+            //        else if (priceDifference < -10)
+            //            sound = "qm 10";
+            //        else if (priceDifference < 10)
+            //            sound = "qp 10";
+            //        else if (priceDifference < 30)
+            //            sound = "qp 30";
+            //        else if (priceDifference < 50)
+            //            sound = "qp 50";
+            //        else if (priceDifference < 70)
+            //            sound = "qp 70";
+            //        else if (priceDifference < 90)
+            //            sound = "qp 90";
+            //        else if (priceDifference < 110)
+            //            sound = "qp 110";
+            //        else if (priceDifference < 130)
+            //            sound = "qp 130";
+            //        else
+            //            sound = "qp 150";
 
-            ////        ms.Sound("코스피 코스닥", sound);
-            ////    }
-            ////}
+            //        ms.Sound("코스피 코스닥", sound);
+            //    }
+            //}
 
 
-            //// old version : not using
+            // old version : not using
             //public static void EvalKODEX_not_using4(g.stock_data o)//, int[,] x)
             //{
             //    if (g.test)
@@ -1170,7 +1171,7 @@ namespace New_Tradegy.Library
             //    }
             //}
 
-            //// new verwsion : not used, sound rarely
+            // new verwsion : not used, sound rarely
             //public static void EvalKODEX_not_using2(g.stock_data o)//, int[,] x)
             //{
             //    // !!! 2023 1/9 3:00, naming of index_difference_sound and

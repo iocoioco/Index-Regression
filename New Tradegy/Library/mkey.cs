@@ -287,8 +287,8 @@ namespace New_Tradegy
                 //long 전일대비 = _marketeye.GetDataValue(3, k); // 주의) 반드시 대비부호(2)와 같이 요청을 하여야 함
 
 
-                o.매도1호가 = _marketeye.GetDataValue(8, k); ///
-                o.매수1호가 = _marketeye.GetDataValue(9, k); ///
+                o.매도1호가 = _marketeye.GetDataValue(8, k); //
+                o.매수1호가 = _marketeye.GetDataValue(9, k); //
 
                 o.현재가 = o.매수1호가; // _marketeye.GetDataValue(4, k); // changed on 20220925
                 o.시초가 = _marketeye.GetDataValue(5, k); //5
