@@ -524,7 +524,7 @@ namespace New_Tradegy.Library
         public static score s = new score();
 
 
-
+ 
         public class stock_data
         {
             public class t
@@ -571,6 +571,7 @@ namespace New_Tradegy.Library
             public d deal = new d();
 
             public string stock;
+    
 
             public bool shrink_draw = false;
 

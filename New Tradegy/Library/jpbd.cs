@@ -521,7 +521,6 @@ namespace New_Tradegy.Library
                         str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
                                    " = " + (Price * Amount / 10000).ToString() + "만원";
 
-                        // dr.draw_보조_차트("상관");
                         using (var form = new Form_매수_매도(Stock, "매도 ?", Urgency, g.cancelThreshhold, str))
                         {
                             DialogResult result = form.ShowDialog();
@@ -602,7 +601,6 @@ namespace New_Tradegy.Library
                             Rows = 5;
                         }
                     }
-                    md.ManageDisplayAndForms();
                     break;
 
                 case 2: // 매수

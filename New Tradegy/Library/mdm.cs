@@ -13,17 +13,98 @@ using System.Security.Cryptography;
 class md
 {
     // 0, 1(가격), 2(수급), 3(체강), 4(프로그램), 5(외인), 6(기관)
-    private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray, 
+    private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
         Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
     // 0, 1(가격), 2, 3(지수합), 4(기관), 5(외인), 6(개인), 7, 8, 9, 10(나스닥), 11(연기금)
-    private static Color[] colorKODEX = { Color.White, Color.Red, 
-        Color.White, Color.Black, Color.Brown, Color.Magenta, Color.Green, 
+    private static Color[] colorKODEX = { Color.White, Color.Red,
+        Color.White, Color.Black, Color.Brown, Color.Magenta, Color.Green,
         Color.White, Color.White, Color.White, Color.Blue, Color.Brown };
     // short and long time extension or restoration 
     // and then, draw
 
-    static List<string> displayList = new List<string>();
+    //static List<string> g.dl = new List<string>();
     static int hogaCount = 0;
+
+    public static void mdm() 
+    {
+        // First, handle the fixed elements
+        InitializeFixedElements(g.chart1);
+
+        HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
+
+        // Now, handle the rest of the dynamically generated elements as before
+        int currentRow = 0;
+        int currentCol = 2; // Start from the third column since first two columns are occupied
+
+        for (int i = 0; i < hogaCount; i++) // hogaCount (chartareas and forms)
+        {
+            string stock = g.dl[i];
+
+            if (!FormExists(stock))
+            {
+                Form_호가 form_호가 = new Form_호가(stock);
+                form_호가.Show();
+            }
+
+            if (!ChartAreaExists(g.chart1, stock))
+            {
+                CreateChartAreaForStock(g.chart1, stock);
+            }
+            else
+            {
+                UpdateChartSeries(g.chart1, stock); // includes annotation update too
+            }
+
+            // Relocate chart area and form for hogaCount stocks
+            RelocateChartAreaAndForm(g.chart1, stock, currentRow, currentCol);
+
+            currentRow++;
+            if (currentRow >= g.nRow)
+            {
+                currentRow = 0;
+                currentCol += 2;
+                if (currentCol >= g.nCol)
+                {
+                    break;
+                }
+            }
+        }
+
+        // Handle the remaining chart areas without forms
+        for (int i = hogaCount; i < g.dl.Count; i++)
+        {
+            string stock = g.dl[i];
+
+            if (!ChartAreaExists(g.chart1, stock))
+            {
+                CreateChartAreaForStock(g.chart1, stock);
+            }
+            else
+            {
+                UpdateChartSeries(g.chart1, stock);
+            }
+
+            RelocateChartArea(g.chart1, stock, currentRow, currentCol);
+
+            currentRow++;
+            if (currentRow >= g.nRow)
+            {
+                currentRow = 0;
+                currentCol++;
+                if (currentCol >= g.nCol)
+                {
+                    break;
+                }
+            }
+        }
+        ClearUnusedChartAreasAndAnnotations(g.chart1, g.dl);
+        //g.chart1.Invalidate();
+
+
+        int areasCount = g.chart1.ChartAreas.Count;
+        int annotationsCount = g.chart1.Annotations.Count;
+        int seriesCount = g.chart1.Series.Count;
+    }
 
     static void InitializeFixedElements(Chart chart)
     {
@@ -49,180 +130,67 @@ class md
             // Check if the form exists; if not, create it and set the location
             if (!FormExists(stock))
             {
-             //?
-                //Form_호가 form_호가 = new Form_호가(stock);
-                //form_호가.Show();
+                Form_호가 form_호가 = new Form_호가(stock);
+                form_호가.Show();
+                Form form = HogaFormNameGivenStockName(stock);
             }
         }
     }
 
     static void HogaCountDiplayList()
     {
-        displayList.Clear(); // Clears the list
+        g.dl.Clear(); // Clears the list
         hogaCount = 0; // Resets hogaCount
 
         int TotalSpaceCount = g.nRow * (g.nCol - 2);
-        //g.보유종목.Add("삼성전자");//?
         foreach (string stock in g.보유종목)
         {
-            if (!displayList.Contains(stock) && !stock.Contains("KODEX"))
+            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
             {
-                displayList.Add(stock);
+                g.dl.Add(stock);
                 hogaCount++;
             }
-            if (hogaCount + displayList.Count >= TotalSpaceCount)
+            if (hogaCount + g.dl.Count >= TotalSpaceCount)
                 break;
         }
 
         foreach (string stock in g.호가종목)
         {
-            if (!displayList.Contains(stock) && !stock.Contains("KODEX"))
+            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
             {
-                displayList.Add(stock);
+                g.dl.Add(stock);
                 hogaCount++;
             }
-            if (hogaCount + displayList.Count >= TotalSpaceCount)
+            if (hogaCount + g.dl.Count >= TotalSpaceCount)
                 break;
         }
 
         foreach (string stock in g.관심종목)
         {
-            if (!displayList.Contains(stock) && !stock.Contains("KODEX"))
+            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
             {
-                displayList.Add(stock);
+                g.dl.Add(stock);
             }
-            if (hogaCount + displayList.Count >= TotalSpaceCount)
+            if (hogaCount + g.dl.Count >= TotalSpaceCount)
                 break;
         }
 
 
         foreach (string stock in g.sl)
         {
-            //?
-            if (displayList.Count == 1) break;
-
-            if (!displayList.Contains(stock) && !stock.Contains("KODEX"))
+            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
             {
-                displayList.Add(stock);
+                g.dl.Add(stock);
             }
-            if (hogaCount + displayList.Count >= TotalSpaceCount)
+            if (hogaCount + g.dl.Count >= TotalSpaceCount)
                 break;
         }
 
-        while (hogaCount + displayList.Count > TotalSpaceCount)
+        while (hogaCount + g.dl.Count > TotalSpaceCount)
         {
-            displayList.RemoveAt(displayList.Count - 1);
+            g.dl.RemoveAt(g.dl.Count - 1);
         }
     }
-
-    public static void ManageDisplayAndForms() // for g.chart1
-    {
-        // First, handle the fixed elements
-        //? InitializeFixedElements(g.chart1);
-        
-
-
-
-
-
-        HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
-
-        // Now, handle the rest of the dynamically generated elements as before
-        int currentRow = 0;
-        int currentCol = 2; // Start from the third column since first two columns are occupied
-
-        for (int i = 0; i < hogaCount; i++)
-        {
-            string stock = displayList[i];
-
-            if (!FormExists(stock))
-            {
-           //?
-                    //Form_호가 form_호가 = new Form_호가(stock);
-                    //form_호가.Show();
-
-            }
-
-            if (!ChartAreaExists(g.chart1, stock))
-            {
-                CreateChartAreaForStock(g.chart1, stock);
-            }
-            else
-            {
-                UpdateChartSeries(g.chart1, stock);
-            }
-
-            // Relocate chart area and form for hogaCount stocks
-            RelocateChartAreaAndForm(g.chart1, stock, currentRow, currentCol);
-
-            currentRow++;
-            if (currentRow >= g.nRow)
-            {
-                currentRow = 0;
-                currentCol += 2;
-                if (currentCol >= g.nCol)
-                {
-                    break;
-                }
-            }
-        }
-
-        // Handle the remaining chart areas without forms
-        for (int i = hogaCount; i < displayList.Count; i++)
-        {
-            string stock = displayList[i];
-
-            if (!ChartAreaExists(g.chart1, stock))
-            {
-                CreateChartAreaForStock(g.chart1, stock);
-            }
-            else
-            {
-                UpdateChartSeries(g.chart1, stock);
-            }
-
-            RelocateChartArea(g.chart1, stock, currentRow, currentCol);
-
-            currentRow++;
-            if (currentRow >= g.nRow)
-            {
-                currentRow = 0;
-                currentCol++;
-                if (currentCol >= g.nCol)
-                {
-                    break;
-                }
-            }
-        }
-        ClearUnusedChartAreasAndForms(g.chart1);
-        //g.chart1.Invalidate();
-    }
-
-    static bool FormExists(string stockName)
-    {
-        foreach (Form form in Application.OpenForms)
-        {
-            if (form.Name == stockName)
-                return true;
-        }
-        return false;
-    }
-
-
-    static bool ChartAreaExists(Chart chart, string stockName)
-    {
-        foreach (var ca in chart.ChartAreas)
-        {
-            Console.WriteLine($"ChartArea Name: {ca.Name}"); // Debug statement
-        }
-        return chart.ChartAreas.Any(ca => ca.Name.Trim().Equals(stockName.Trim(), StringComparison.OrdinalIgnoreCase));
-    }
-
-
-    //static bool ChartAreaExists(Chart chart, string stockName)
-    //{
-    //    return chart.ChartAreas.Any(ca => ca.Name == stockName);
-    //}
 
     static void CreateChartAreaForStock(Chart chart, string stockName)
     {
@@ -236,160 +204,12 @@ class md
         }
     }
 
-
-    static int KodexMagnifier(g.stock_data o, int id, ref double magnifier)
-    {
-        int i = 0;
-        int j = 0;
-
-        switch (o.stock)
-        {
-            case "KODEX 레버리지":
-                i = 0;
-                break;
-            case "KODEX 200선물인버스2X":
-                i = 1;
-                break;
-            case "KODEX 코스닥150레버리지":
-                i = 2;
-                break;
-            case "KODEX 코스닥150선물인버스":
-                i = 3;
-                break;
-        }
-
-        switch (id)
-        {
-            case 1: // price
-                j = 0;
-                break;
-            case 3: // Program
-                j = 1;
-                break;
-            case 4: // money
-            case 5:
-            case 6:
-            case 11:
-                j = 2;
-                break;
-            case 10: // US
-                j = 3;
-                break;
-
-            default:
-                return -1; // input mitake
-        }
-
-        magnifier = g.kodex_magnifier[i, j];
-
-        return 0;
-    }
-    // Helper function to handle US index with zero interpolation
-    static int HandleUSIndex(g.stock_data o, int k, int end_time, int start_time, int index)
-    {
-        if (o.x[k, index] == 0 && k != 0)
-        {
-            int upperNonZero = FindNonZeroValue(o, k + 1, end_time, index, true);
-            int lowerNonZero = FindNonZeroValue(o, k - 1, start_time, index, false);
-            return (upperNonZero + lowerNonZero) / 2;
-        }
-        return o.x[k, index];
-    }
-
-    // Function to find the closest non-zero value in the specified direction
-    static int FindNonZeroValue(g.stock_data o, int start, int end, int index, bool forward)
-    {
-        if (forward)
-        {
-            for (int j = start; j < end; j++)
-            {
-                if (o.x[j, index] != 0) return o.x[j, index];
-            }
-        }
-        else
-        {
-            for (int j = start; j >= end; j--)
-            {
-                if (o.x[j, index] != 0) return o.x[j, index];
-            }
-        }
-        return 0;
-    }
-
-    static int GetMagnifierIndex(int index)
-    {
-        switch (index)
-        {
-            case 1:
-                return 0;
-            case 3:
-                return 1;
-            case 4:
-            case 5:
-            case 6:
-                return 2;
-            case 10:
-                return 3;
-            case 11:
-                return 2;
-            default:
-                return -1;
-        }
-    }
-
-   
-
-    // Function to add series to the chart
-    static void AddSeriesToChart(string sid, Chart chart, string area, Color color, int borderWidth)
-    {
-        Series series = new Series(sid)
-        {
-            ChartArea = area,
-            ChartType = SeriesChartType.Line,
-            XValueType = ChartValueType.Date,
-            IsVisibleInLegend = false,
-            Color = color,
-            BorderWidth = borderWidth
-        };
-        chart.Series.Add(series);
-    }
-
-   
-
-    // Helper function to get color based on index
-    static Color GetColorByIndex(int index)
-    {
-        switch (index)
-        {
-            case 1: return colorKODEX[1]; // Price
-            case 4: return colorKODEX[4]; // Program
-            case 5: return colorKODEX[5]; // Foreign
-            case 6: return colorKODEX[6]; // Institute
-            case 10: return colorKODEX[10]; // Nasdaq
-            case 11: return colorKODEX[11]; // Pension
-            default: return colorKODEX[3];
-        }
-    }
-
-    // Helper function to get border width based on index
-    static int GetBorderWidthByIndex(int index)
-    {
-        switch (index)
-        {
-            case 1: return 2;    // Price
-            case 4: return 2;    // Program
-            case 5: return 2;    // Foreign
-            case 6: return 2;    // Institute
-            default: return 1;
-        }
-    }
     static void CreateChartAreaForStockKodex(Chart chart, string stockName)
     {
 
 
         int index = wk.return_index_of_ogldata(stockName);
-        if (index < 0)
-            return;
+
 
 
         if (index < 0) // 혼합과 ogl_data 등록된 종목만 draw
@@ -412,39 +232,31 @@ class md
 
 
 
+
+        //float[] size = new float[2];
+        //float[] location = new float[2];
+
+
         int y_min = 100000;
         int y_max = -100000;
 
         // 크기, 위치 결정
 
-
         string sid = "";
-
 
         if (o.nrow <= 1) // no data yet, i.e. only 0859 
             return;
-
-
-
-
-
-
-
-
 
         // g.draw_shrink_time is controlled by 'o' and 'O'
         int start_time = 0;
         int end_time = -1;
         if (o.shrink_draw == true)
         {
-
-
             start_time = o.nrow - g.draw_shrink_time;
             if (start_time < g.time[0])
             {
                 start_time = g.time[0];
             }
-
         }
         else
         {
@@ -453,7 +265,12 @@ class md
         end_time = o.nrow;
 
 
-        // The start of area and drawing of stock
+        // Check if "ChartArea1" exists and remove it
+        var defaultArea = chart.ChartAreas.FindByName("ChartArea1");
+        if (defaultArea != null)
+        {
+            chart.ChartAreas.Remove(defaultArea);
+        }
         string area = stockName;
         chart.ChartAreas.Add(area); //  error 0인 요소가 있습니다.
 
@@ -464,22 +281,22 @@ class md
 
 
         // Handle centerline
-        sid = stockName + " 9"; // Centerline identifier
+        //sid = stockName + " 9"; // Centerline identifier
 
-        Series centerline = new Series(sid)
-        {
-            ChartArea = area,
-            ChartType = SeriesChartType.Line,
-            XValueType = ChartValueType.Date,
-            IsVisibleInLegend = false,
-            Color = Color.Gray,
-            BorderWidth = 1
-        };
-        centerline.Points.AddXY(((int)(o.x[start_time, 0] / g.HUNDRED)).ToString(), 0);
-        centerline.Points.AddXY(((int)(o.x[end_time - 1, 0] / g.HUNDRED)).ToString(), 0);
-        chart.Series.Add(centerline);
+        //Series centerline = new Series(sid)
+        //{
+        //    ChartArea = area,
+        //    ChartType = SeriesChartType.Line,
+        //    XValueType = ChartValueType.Date,
+        //    IsVisibleInLegend = false,
+        //    Color = Color.Gray,
+        //    BorderWidth = 1
+        //};
+        //centerline.Points.AddXY(((int)(o.x[start_time, 0] / g.HUNDRED)).ToString(), 0);
+        //centerline.Points.AddXY(((int)(o.x[end_time - 1, 0] / g.HUNDRED)).ToString(), 0);
+        //chart.Series.Add(centerline);
 
-        
+
 
         // Process each data type in idIndex
         foreach (int dataIndex in idIndex)
@@ -492,17 +309,22 @@ class md
             total_number_of_point = 0;
             double magnifier = 1.0;
             KodexMagnifier(o, dataIndex, ref magnifier);
-
+            int value = 0;
             for (int k = start_time; k < end_time; k++)
             {
                 if (o.x[k, 0] == 0) break; // No data
 
-                // Handle specific data types
-                int value = dataIndex == 10 ? HandleUSIndex(o, k, end_time, start_time, dataIndex) :
-                            (int)(o.x[k, dataIndex] * magnifier);
+                if (dataIndex == 10)
+                {
+                    // Nasdaq Value is not scraped, if(value == 0), interpolate
+                    value = (int)(HandleUSIndex(o, k, end_time, start_time, dataIndex)
+                        * magnifier);
 
-                if (dataIndex == 11) value *= 3; // Extra magnification for pension data
-
+                }
+                else
+                {
+                    value = (int)(o.x[k, dataIndex] * magnifier);
+                }
                 series.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
                 total_number_of_point++;
 
@@ -550,31 +372,22 @@ class md
         if (chart == g.chart1)
         {
             float cellWidth = 100 / g.nCol;
-            if (stockName == "KODEX 레버리지")
-            {
-                chart.ChartAreas[area].Position = new ElementPosition(0, 0, cellWidth, 50);
-            }
-            else
-            {
-                chart.ChartAreas[area].Position = new ElementPosition(0, 50, cellWidth, 50);
-            }
+            chart.ChartAreas[area].Position = stockName == "KODEX 레버리지" ?
+                new ElementPosition(0, 0, cellWidth, 50) :
+                new ElementPosition(0, 50, cellWidth, 50);
+
         }
         else
         {
             float cellWidth = 100 / 5;
             float cellHeight = 100 / 3;
-            if (stockName == "KODEX 레버리지")
-            {
-                chart.ChartAreas[area].Position = new ElementPosition(0, 0, cellWidth, cellHeight);
-            }
-            else
-            {
-                chart.ChartAreas[area].Position = new ElementPosition(0, cellHeight, cellWidth, cellHeight);
-            }
+            chart.ChartAreas[area].Position = stockName == "KODEX 레버리지" ?
+                new ElementPosition(0, 0, cellWidth, cellHeight) :
+                new ElementPosition(0, cellHeight, cellWidth, cellHeight);
         }
 
         chart.ChartAreas[area].AxisX.LabelStyle.Font
-        = new Font("Arial", 7, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+            = new Font("Arial", 7, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
         chart.ChartAreas[area].AxisY.LabelStyle.Font
             = new Font("Arial", 7, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 
@@ -726,24 +539,25 @@ class md
                         value = GeneralValue(o, k, 3);
                         break;
                     case 9: // tick multiple, centerline
-                        if (total_number_of_point < 2)
-                        {
-                            // Set two points for centerline
-                            t.Points.AddXY(((int)(o.x[start_time, 0] / g.HUNDRED)).ToString(), 0);
-                            t.Points.AddXY(((int)(o.x[end_time - 1, 0] / g.HUNDRED)).ToString(), 0);
-                            total_number_of_point = 2;
-                        }
+                        value = 0;
+                        //if (total_number_of_point < 2)
+                        //{
+                        //    // Set two points for centerline
+                        //    t.Points.AddXY(((int)(o.x[start_time, 0] / g.HUNDRED)).ToString(), 0);
+                        //    t.Points.AddXY(((int)(o.x[end_time - 1, 0] / g.HUNDRED)).ToString(), 0);
+                        //    total_number_of_point = 2;
+                        //}
                         break;
                 }
 
-                if (i != 9) // Skip further processing for centerline as it's already set
-                {
-                    t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
-                    total_number_of_point++;
+                //if (i != 9) // Skip further processing for centerline as it's already set
+                //{
+                t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+                total_number_of_point++;
 
-                    y_min = Math.Min(y_min, value);
-                    y_max = Math.Max(y_max, value);
-                }
+                y_min = Math.Min(y_min, value);
+                y_max = Math.Max(y_max, value);
+                //}
             }
 
             if (total_number_of_point < 2) return;
@@ -837,7 +651,7 @@ class md
         int numLines = 5;
         double annotationHeight;
         double chartAreaHeight;
-        CalculateHeights(g.v.font, numLines, g.nRow, out annotationHeight, out chartAreaHeight);
+        CalculateHeights(g.v.font, numLines, g.nRow, out annotationHeight, out chartAreaHeight); // 5.155, 28.178
 
         Color BackColor = Color.White;
         int[] scoreThresholds = { 90, 70, 50, 30, 10 };
@@ -853,8 +667,9 @@ class md
         float[] location = new float[2];
         location[0] = 0; // X-coordinate (left edge)
         location[1] = 0; // Y-coordinate (top edge)
+
         if (chart == g.chart1)
-            AddRectangleAnnotationWithText(chart, annotation, new RectangleF(location[0], location[1],
+            AddRectangleAnnotationWithText(chart, annotation, new RectangleF(location[0], location[1], // 0, 0
                 100 / g.nCol, (int)annotationHeight + 2), area, Color.Black, BackColor);
         else
             AddRectangleAnnotationWithText(chart, annotation, new RectangleF(location[0], location[1],
@@ -865,7 +680,7 @@ class md
         // 3rd x width from x
         // 4th y height from y
         chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 10, 60, 80);
-        
+
 
 
         int chartYMin = (int)Math.Floor(y_min / 100.0) * 100;
@@ -874,7 +689,7 @@ class md
         chart.ChartAreas[area].AxisY.Maximum = (double)chartYMax;
         chart.ChartAreas[area].AxisX.MajorGrid.Enabled = false;
         chart.ChartAreas[area].AxisY.MajorGrid.Enabled = false;
-        chart.ChartAreas[area].AxisX.Interval = total_number_of_point - 1;
+        chart.ChartAreas[area].AxisX.Interval = total_number_of_point - 1; // total number of point = 2, while mir 0820 -> 217
 
         int yInterval = (int)Math.Ceiling((chartYMax - chartYMin) / 3 / 100.0) * 100;
         chart.ChartAreas[area].AxisY.Interval = yInterval;
@@ -886,8 +701,11 @@ class md
         chart.ChartAreas[area].AxisX.IntervalOffset = 1;
         chart.ChartAreas[area].AxisX.LabelStyle.Enabled = true;
 
-        chart.ChartAreas[area].Position.Width = 100 / g.nCol;
-        chart.ChartAreas[area].Position.Height = 100 / g.nRow;
+        chart.ChartAreas[area].Position.X = location[0]; // 0
+        chart.ChartAreas[area].Position.Y = location[1] + (float)annotationHeight; // 5.155
+        chart.ChartAreas[area].Position.Width = 100 / g.nCol; // 10
+        chart.ChartAreas[area].Position.Height = (float)chartAreaHeight; // 28.178
+
 
 
         chart.ChartAreas[area].AxisX.LabelStyle.Font
@@ -911,6 +729,91 @@ class md
 
     }
 
+    private static void ClearUnusedChartAreasAndAnnotations(Chart chart, List<string> displayedStockList)
+    {
+        displayedStockList.Add(g.KODEX4[0]);
+        displayedStockList.Add(g.KODEX4[2]);
+
+        // Step 1: Remove ChartAreas and corresponding Series not in the displayed list
+        var chartAreasToRemove = chart.ChartAreas
+            .Cast<ChartArea>()
+            .Where(ca => !displayedStockList.Contains(ca.Name)) // ChartArea.Name corresponds to stockName
+            .ToList();
+
+        foreach (var chartArea in chartAreasToRemove)
+        {
+            string stockName = chartArea.Name;
+
+            // Additional logic for unsubscribing data feeds, closing forms, etc.
+            if (g.jpjds.TryGetValue(stockName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
+            {
+                _stockjpbid.Unsubscribe();
+
+                Form form = HogaFormNameGivenStockName(stockName);
+                if (form != null)
+                {
+                    if (form.Controls.Find(stockName, true).FirstOrDefault() is DataGridView dgv)
+                    {
+                        dgv.Dispose();
+                    }
+                    form.Close();
+                }
+
+                // Remove the stock entry from the dictionary
+                g.jpjds.Remove(stockName);
+            }
+
+            // Remove associated Series
+            var seriesToRemove = chart.Series
+                .Cast<Series>()
+                .Where(s => s.ChartArea == chartArea.Name) // Match Series to the ChartArea
+                .ToList();
+
+            foreach (var series in seriesToRemove)
+            {
+                chart.Series.Remove(series);
+            }
+
+            // Remove ChartArea
+            chart.ChartAreas.Remove(chartArea);
+        }
+
+        // Step 2: Remove Annotations not in the displayed list
+        var annotationsToRemove = chart.Annotations
+            .Cast<Annotation>()
+            .Where(ann => !displayedStockList.Contains(ann.Name)) // Annotation.Name corresponds to stockName
+            .ToList();
+
+        foreach (var annotation in annotationsToRemove)
+        {
+            string stockName = annotation.Name;
+
+            // Additional logic for unsubscribing data feeds, closing forms, etc.
+            if (g.jpjds.TryGetValue(stockName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
+            {
+                _stockjpbid.Unsubscribe();
+
+                Form form = HogaFormNameGivenStockName(stockName);
+                if (form != null)
+                {
+                    if (form.Controls.Find(stockName, true).FirstOrDefault() is DataGridView dgv)
+                    {
+                        dgv.Dispose();
+                    }
+                    form.Close();
+                }
+
+                // Remove the stock entry from the dictionary
+                g.jpjds.Remove(stockName);
+            }
+
+            chart.Annotations.Remove(annotation);
+        }
+        displayedStockList.Remove(g.KODEX4[0]);
+        displayedStockList.Remove(g.KODEX4[2]);
+    }
+
+    
     public static string draw_stock_title(Chart chart, g.stock_data o, int[,] x, int start_time, int end_time, int total_nrow)
     {
         string stock = o.stock;
@@ -1385,50 +1288,57 @@ class md
 
     }
 
-    private static void AddRectangleAnnotationWithText(Chart chart, string text, RectangleF rect, string chartAreaName, Color textColor, Color backgroundColor)
+    private static void AddRectangleAnnotationWithText(
+    Chart chart,
+    string text,
+    RectangleF rect,
+    string chartAreaName,
+    Color textColor,
+    Color backgroundColor)
     {
-        if (!chart.ChartAreas.Any(area => area.Name == chartAreaName))
+        // Ensure that the chart layout is recalculated
+        chart.Invalidate();  // This forces the chart to refresh its layout
+
+        // Get the ChartArea's position and size
+        ChartArea chartArea = chart.ChartAreas[chartAreaName];
+        if (chartArea == null)
         {
-            MessageBox.Show("Error in ChartArea in AddRectangleAnnotationWithText");
-            return;
+            throw new ArgumentException($"ChartArea '{chartAreaName}' does not exist.");
         }
 
+        // Calculate position relative to the chart area's dimensions
+        double chartAreaTop = chartArea.Position.Y;
+        double chartAreaLeft = chartArea.Position.X;
+        double chartAreaWidth = chartArea.Position.Width;
+        double chartAreaHeight = chartArea.Position.Height;
 
-        // Check if the chart area with the given name exists, and if not, add it
-        //if (chart.Name == "chart2")
-        //{
-        //    rect.X += 3;
-        //}
+        // Adjust the annotation to appear at the top of the ChartArea
+        double annotationX = chartAreaLeft + (rect.X * chartAreaWidth / 100); // Adjust rect.X relative to ChartArea width
+        double annotationY = chartAreaTop; // Align annotation to the top of the ChartArea
 
+        // Create the annotation
         RectangleAnnotation rectangleAnnotation = new RectangleAnnotation
         {
+            Name = chartAreaName, // assign the same name as area name
             Text = text,
             Font = new Font("Arial", g.v.font),
-            Width = rect.Width,
-            Height = rect.Height,
+            X = annotationX,
+            Y = annotationY,
+            Width = rect.Width * chartAreaWidth / 100, // Adjust rect.Width relative to ChartArea width
+            Height = rect.Height * chartAreaHeight / 100, // Adjust rect.Height relative to ChartArea height
             LineColor = Color.Transparent,
             BackColor = backgroundColor,
             ForeColor = textColor,
-            ClipToChartArea = chartAreaName, // This binds it to the chart area
-            //ClipToChartArea = "", // This binds it to the chart area
-            Alignment = ContentAlignment.TopLeft,
-            ToolTip = "Rectangle Annotation Tooltip",
-
-            // Set position to the top-left corner of the chart area
-            X = rect.X, // Set the annotation's X position
-            Y = rect.Y, // Set the annotation's Y position
-            //AxisXName = "X",
-            //AxisYName = "Y"
+            ClipToChartArea = "", //? chartAreaName,
             AxisXName = chartAreaName + "\\X",
             AxisYName = chartAreaName + "\\Y",
-
-            IsSizeAlwaysRelative = true,
-        }; 
+            Alignment = ContentAlignment.TopLeft,
+            ToolTip = "Rectangle Annotation Tooltip" // Optional: Add tooltip to verify it's being added
+        };
 
         // Add the annotation to the chart
         chart.Annotations.Add(rectangleAnnotation);
     }
-
 
     static void CalculateHeights(float fontSize, int numLines, int numRows, out double annotationHeight, out double chartAreaHeight)
     {
@@ -1520,36 +1430,62 @@ class md
         }
     }
 
-    static int GeneralValue(g.stock_data o, int k, int id)
+    static void UpdateAnnotation(Chart chart, string stockName)
     {
-        int value = 0;
-        switch (id)
+        // Find the annotation associated with the stockName
+        foreach (var annotation in chart.Annotations)
         {
-            case 1:
-                value = o.x[k, 1];
-                break;
-            case 2:
-                value = (int)(Math.Sqrt(o.x[k, 2]) * 10);
-                if (value > 500)
-                    value = 500;
-                break;
-            case 3:
-                value = (int)(Math.Sqrt(o.x[k, 3] / (double)g.HUNDRED) * 10);
-                if (value > 500)
-                    value = 500;
-                break;
-            case 4:
-            case 5:
-            case 6:
-                double multiplier = 1;
-                if (o.x[o.nrow - 1, 7] > g.EPS) // 누적거래량 ! = 0
+            if (annotation is TextAnnotation textAnnotation && textAnnotation.Name == stockName)
+            {
+                // Update the annotation text, color, and background color based on the latest data
+                int index = wk.return_index_of_ogldata(stockName);
+
+
+                if (index < 0) // 혼합과 ogl_data 등록된 종목만 draw
                 {
-                    multiplier = 100.0 / o.x[o.nrow - 1, 7] * g.v.수급과장배수 * o.수급과장배수; // marketeye 
+                    return;
                 }
-                value = (int)(o.x[k, id] * multiplier);
-                break;
+
+                g.stock_data o = g.ogl_data[index];
+
+                string annotationText = draw_stock_title(chart, o, o.x, 0, o.nrow - 1, o.nrow);
+                textAnnotation.Text = annotationText;
+
+                // Update the position of the annotation to remain at the top-left corner of the chart area
+                textAnnotation.X = 0;
+                textAnnotation.Y = 0;
+                textAnnotation.Alignment = ContentAlignment.TopLeft;
+                textAnnotation.AxisXName = $"{stockName}\\X";
+                textAnnotation.AxisYName = $"{stockName}\\Y";
+
+                // Adjust annotation styling based on thresholds
+                int[] scoreThresholds = { 90, 70, 50, 30, 10 };
+                Color[] colors = g.Colors; // Assuming g.Colors array holds your colors
+                for (int i = 0; i < scoreThresholds.Length; i++)
+                {
+                    if (o.점수.총점 > scoreThresholds[i])
+                    {
+                        textAnnotation.BackColor = colors[i];
+                        break;
+                    }
+                }
+                break; // Exit loop once the annotation is updated
+            }
         }
-        return value;
+    }
+
+    static void UpdateChartSeries(Chart chart, string stockName)
+    {
+        if (stockName.Contains("KODEX"))
+        {
+            UpdateChartSeriesKodex(chart, stockName);
+        }
+        else
+        {
+            UpdateChartSeriesGeneral(chart, stockName); // 
+            UpdateAnnotation(chart, stockName);
+        }
+        // Assuming this function modifies the last point or adds a new point
     }
 
     static void UpdateChartSeriesGeneral(Chart chart, string stockName)
@@ -1623,63 +1559,50 @@ class md
         }
     }
 
-    static void UpdateAnnotation(Chart chart, string stockName)
+    static void AddSeriesToChart(string sid, Chart chart, string area, Color color, int borderWidth)
     {
-        // Find the annotation associated with the stockName
-        foreach (var annotation in chart.Annotations)
+        Series series = new Series(sid)
         {
-            if (annotation is TextAnnotation textAnnotation && textAnnotation.Name == stockName)
-            {
-                // Update the annotation text, color, and background color based on the latest data
-                int index = wk.return_index_of_ogldata(stockName);
-
-
-                if (index < 0) // 혼합과 ogl_data 등록된 종목만 draw
-                {
-                    return;
-                }
-
-                g.stock_data o = g.ogl_data[index];
-
-                string annotationText = draw_stock_title(chart, o, o.x, 0, o.nrow - 1, o.nrow);
-                textAnnotation.Text = annotationText;
-
-                // Update the position of the annotation to remain at the top-left corner of the chart area
-                textAnnotation.X = 0;
-                textAnnotation.Y = 0;
-                textAnnotation.Alignment = ContentAlignment.TopLeft;
-                textAnnotation.AxisXName = $"{stockName}\\X";
-                textAnnotation.AxisYName = $"{stockName}\\Y";
-
-                // Adjust annotation styling based on thresholds
-                int[] scoreThresholds = { 90, 70, 50, 30, 10 };
-                Color[] colors = g.Colors; // Assuming g.Colors array holds your colors
-                for (int i = 0; i < scoreThresholds.Length; i++)
-                {
-                    if (o.점수.총점 > scoreThresholds[i])
-                    {
-                        textAnnotation.BackColor = colors[i];
-                        break;
-                    }
-                }
-                break; // Exit loop once the annotation is updated
-            }
-        }
+            ChartArea = area,
+            ChartType = SeriesChartType.Line,
+            XValueType = ChartValueType.Date,
+            IsVisibleInLegend = false,
+            Color = color,
+            BorderWidth = borderWidth
+        };
+        chart.Series.Add(series);
     }
 
-
-    static void UpdateChartSeries(Chart chart, string stockName)
+    static int GeneralValue(g.stock_data o, int k, int id)
     {
-        if (stockName.Contains("KODEX"))
+        int value = 0;
+        switch (id)
         {
-            UpdateChartSeriesKodex(chart, stockName);
+            case 1:
+                value = o.x[k, 1];
+                break;
+            case 2:
+                value = (int)(Math.Sqrt(o.x[k, 2]) * 10);
+                if (value > 500)
+                    value = 500;
+                break;
+            case 3:
+                value = (int)(Math.Sqrt(o.x[k, 3] / (double)g.HUNDRED) * 10);
+                if (value > 500)
+                    value = 500;
+                break;
+            case 4:
+            case 5:
+            case 6:
+                double multiplier = 1;
+                if (o.x[o.nrow - 1, 7] > g.EPS) // 누적거래량 ! = 0
+                {
+                    multiplier = 100.0 / o.x[o.nrow - 1, 7] * g.v.수급과장배수 * o.수급과장배수; // marketeye 
+                }
+                value = (int)(o.x[k, id] * multiplier);
+                break;
         }
-        else
-        {
-            UpdateChartSeriesGeneral(chart, stockName); // 
-            UpdateAnnotation(chart, stockName);
-        }
-        // Assuming this function modifies the last point or adds a new point
+        return value;
     }
 
     static void RelocateChartAreaAndForm(Chart chart, string stockName, int row, int col)
@@ -1695,32 +1618,43 @@ class md
         }
     }
 
-    static void RelocateChartArea(Chart chart, string stockName, int row, int col)
+    private static void RelocateChartArea(Chart chart, string stockName, int row, int col)
     {
-        // Find the chart area by name, if it exists
-        ChartArea chartArea = chart.ChartAreas.FirstOrDefault(ca => ca.Name == stockName);
+        // Get the chart area by stockName
+        ChartArea chartArea = chart.ChartAreas[stockName];
+        if (chartArea == null) throw new ArgumentException($"ChartArea for stock '{stockName}' does not exist.");
 
-        // If the chart area doesn't exist, exit the method
-        if (chartArea == null)
-            return;
 
-        // Calculate the new position and size based on the row and column
-        float newX = (float)(col * (100 / g.nCol));
-        float newY = (float)(row * (100 / g.nRow));
-        float newWidth = (float)(100 / g.nCol);
-        float newHeight = (float)(100 / g.nRow);
+        // Define grid-based positioning
+        int totalRows = g.nRow; // Total rows available
+        int totalCols = g.nCol; // Total columns available
+        float cellWidth = 100f / totalCols; // Width of each grid cell in %
+        float cellHeight = 100f / totalRows; ; // Height of each grid cell in %
+        //float yPosition = row * cellHeight + 5.221F + 2.0F;
+        // Set ChartArea's position
+        chartArea.Position = new ElementPosition(
+            col * cellWidth,    // X position 20
+            row * cellHeight + 5.155F,   // Y position
+            cellWidth,          // Width
+            28.175F //cellHeight       // Height
+        );
 
-        // Check if the new position and size are different from the current settings
-        if (chartArea.Position.X != newX ||
-            chartArea.Position.Y != newY ||
-            chartArea.Position.Width != newWidth ||
-            chartArea.Position.Height != newHeight)
+        // Set InnerPlotPosition for plot area
+        chartArea.InnerPlotPosition = new ElementPosition(
+            20, // Leave a 10% margin on the left
+            10, // Leave a 10% margin at the top
+            60, // Use 80% of the ChartArea's width for the plot
+            80  // Use 80% of the ChartArea's height for the plot
+        );
+
+        // Adjust corresponding Annotation's position (independently)
+        Annotation annotation = chart.Annotations.FirstOrDefault(a => a.Name == stockName);
+        if (annotation is RectangleAnnotation rectangleAnnotation)
         {
-            // Only update if there is a change
-            chartArea.Position.X = newX;
-            chartArea.Position.Y = newY;
-            chartArea.Position.Width = newWidth;
-            chartArea.Position.Height = newHeight;
+            rectangleAnnotation.X = chartArea.Position.X; // Match the ChartArea's X
+            rectangleAnnotation.Y = row * cellHeight; //chartArea.Position.Y; // Place annotation slightly above ChartArea
+            rectangleAnnotation.Width = chartArea.Position.Width; // Match ChartArea's width
+            rectangleAnnotation.Height = 5.155 + 2; // Annotation height (adjust as needed)
         }
     }
 
@@ -1730,52 +1664,36 @@ class md
         form.Top = row * (Screen.PrimaryScreen.Bounds.Height / g.nRow); // Position based on screen height
     }
 
-    static bool ClearUnusedChartAreasAndForms(Chart chart)
+    static int HandleUSIndex(g.stock_data o, int k, int end_time, int start_time, int index)
     {
-        bool itemsRemoved = false;
-
-        // Loop over the chart areas and remove any that are not in the displayList
-        foreach (var chartArea in chart.ChartAreas.ToList())
+        if (o.x[k, index] == 0 && k != 0)
         {
-            if (!displayList.Contains(chartArea.Name) && !chartArea.Name.Contains("KODEX"))
-            {
-                string stockName = chartArea.Name;
-                
-
-                // Remove all series associated with this chart area
-                var seriesToRemove = chart.Series.Where(s => s.ChartArea == stockName).ToList();
-                foreach (var series in seriesToRemove)
-                {
-                    chart.Series.Remove(series);
-                }
-                chart.ChartAreas.Remove(chartArea);
-
-                // Additional logic for unsubscribing data feeds, closing forms, etc.
-                if (g.jpjds.TryGetValue(stockName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
-                {
-                    _stockjpbid.Unsubscribe();
-
-                    Form form = HogaFormNameGivenStockName(stockName);
-                    if (form != null)
-                    {
-                        if (form.Controls.Find(stockName, true).FirstOrDefault() is DataGridView dgv)
-                        {
-                            dgv.Dispose();
-                        }
-                        form.Close();
-                    }
-
-                    // Remove the stock entry from the dictionary
-                    g.jpjds.Remove(stockName);
-                }
-
-                itemsRemoved = true;
-            }
+            int upperNonZero = FindNonZeroValue(o, k + 1, end_time, index, true);
+            int lowerNonZero = FindNonZeroValue(o, k - 1, start_time, index, false);
+            return (upperNonZero + lowerNonZero) / 2;
         }
-
-        return itemsRemoved;
+        return o.x[k, index];
     }
 
+    // Function to find the closest non-zero value in the specified direction
+    static int FindNonZeroValue(g.stock_data o, int start, int end, int index, bool forward)
+    {
+        if (forward)
+        {
+            for (int j = start; j < end; j++)
+            {
+                if (o.x[j, index] != 0) return o.x[j, index];
+            }
+        }
+        else
+        {
+            for (int j = start; j >= 0; j--)
+            {
+                if (o.x[j, index] != 0) return o.x[j, index];
+            }
+        }
+        return 0;
+    }
 
     // Helper method to find an open form by stock name
     static Form HogaFormNameGivenStockName(string stockName)
@@ -1789,6 +1707,123 @@ class md
         }
         return null;
     }
+
+    static bool FormExists(string stockName)
+    {
+        foreach (Form form in Application.OpenForms)
+        {
+            if (form.Name == stockName)
+                return true;
+        }
+        return false;
+    }
+
+    static bool ChartAreaExists(Chart chart, string stockName)
+    {
+        foreach (var ca in chart.ChartAreas)
+        {
+            Console.WriteLine($"ChartArea Name: {ca.Name}"); // Debug statement
+        }
+        return chart.ChartAreas.Any(ca => ca.Name.Trim().Equals(stockName.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
+    static int KodexMagnifier(g.stock_data o, int id, ref double magnifier)
+    {
+        int i = 0;
+        int j = 0;
+
+        switch (o.stock)
+        {
+            case "KODEX 레버리지":
+                i = 0;
+                break;
+            case "KODEX 200선물인버스2X":
+                i = 1;
+                break;
+            case "KODEX 코스닥150레버리지":
+                i = 2;
+                break;
+            case "KODEX 코스닥150선물인버스":
+                i = 3;
+                break;
+        }
+
+        switch (id)
+        {
+            case 1: // price
+                j = 0;
+                break;
+            case 3: // Program
+                j = 1;
+                break;
+            case 4: // money
+            case 5:
+            case 6:
+            case 11:
+                j = 2;
+                break;
+            case 10: // US
+                j = 3;
+                break;
+
+            default:
+                return -1; // input mitake
+        }
+
+        magnifier = g.kodex_magnifier[i, j];
+
+        return 0;
+    }
+
+    static int GetMagnifierIndex(int index)
+    {
+        switch (index)
+        {
+            case 1:
+                return 0;
+            case 3:
+                return 1;
+            case 4:
+            case 5:
+            case 6:
+                return 2;
+            case 10:
+                return 3;
+            case 11:
+                return 2;
+            default:
+                return -1;
+        }
+    }
+
+    // Helper function to get color based on index
+    static Color GetColorByIndex(int index)
+    {
+        switch (index)
+        {
+            case 1: return colorKODEX[1]; // Price
+            case 4: return colorKODEX[4]; // Program
+            case 5: return colorKODEX[5]; // Foreign
+            case 6: return colorKODEX[6]; // Institute
+            case 10: return colorKODEX[10]; // Nasdaq
+            case 11: return colorKODEX[11]; // Pension
+            default: return colorKODEX[3];
+        }
+    }
+
+    // Helper function to get border width based on index
+    static int GetBorderWidthByIndex(int index)
+    {
+        switch (index)
+        {
+            case 1: return 2;    // Price
+            case 4: return 2;    // Program
+            case 5: return 2;    // Foreign
+            case 6: return 2;    // Institute
+            default: return 1;
+        }
+    }
+
 
 }
 

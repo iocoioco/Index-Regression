@@ -2,21 +2,15 @@
 using New_Tradegy.Library;
 //using New_Tradegy.Librarygit;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.sc;
 
 //using NLog;
@@ -111,7 +105,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             if (_cpcybos.IsConnect == 0) // 0 : not connected
             {
-                ChangeMainTitleConnection();
+                ChangeMainTitleConnection(); // repeatedly reconnect, but currently double slashed
             }
             else
                 g.connected = true;
@@ -181,12 +175,12 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            //Form Form_보조_차트 = new Form_보조_차트(); // duration 0.016 seconds
-            //Form_보조_차트.Location = new Point(1920, 0);
-            //Form_보조_차트.Size = new Size(1920 / 4, 900 / 3);
-            //Form_보조_차트.Show();
+            Form Form_보조_차트 = new Form_보조_차트(); // duration 0.016 seconds
+            Form_보조_차트.Location = new Point(1920, 0);
+            Form_보조_차트.Size = new Size(1920 / 4, 900 / 3);
+            Form_보조_차트.Show();
 
-            if (!g.test && g.workingday) // duration : 0.49 seconds
+            if (!g.test && wk.isWorkingHour()) //? wk.isWorkingHour() not correct // duration : 0.49 seconds
             {
                 cn.Init_CpConclusion();
 
@@ -211,27 +205,25 @@ namespace New_Tradegy // added for test on 20241020 0300
                 {
                     await sc.task_major_indices();
                 });
-                
+
                 // updated on 20241020
-                Task Task_eval_draw = Task.Run(async () => await task_eval_draw());
+                // Task Task_eval_draw = Task.Run(async () => await task_eval_draw());
 
 
                 // updated on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
-
-                //?hg.HogaInsert(g.KODEX4[0]);
-                //?hg.HogaInsert(g.KODEX4[2]);
             }
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
-            dr.draw_chart(); // duration : 0.05 ~ 0.086 seconds
+            rd.read_파일관심종목(); // duration 0.000 seconds
+            md.mdm(); // all new, Form_1 start
+            dr.mds(); // all new, Form_1 start
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
-
-            rd.read_파일관심종목(); // duration 0.000 seconds
-            md.ManageDisplayAndForms();
             ms.Sound("일반", "to jsb");
+
+            return;
         }
 
 
@@ -261,7 +253,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 if (wk.isStock(searchText) && g.ogl_data.FindIndex(x => x.stock == searchText) >= 0)
                 {
                     g.관심종목.Add(searchText);
-                    md.ManageDisplayAndForms();
+                    md.mdm(); // not used
                 }
                 searchTextBox.Text = "";
                 //MessageBox.Show($"Entered text: {searchText}");
@@ -573,8 +565,8 @@ namespace New_Tradegy // added for test on 20241020 0300
                             ev.eval_stock();  // Evaluate stock conditionally
                         }
 
-                        md.ManageDisplayAndForms();
-                        dr.draw_보조_차트();  // Draw secondary chart
+                        md.mdm(); // not used, Task task_eval_draw
+                        dr.mds(); // not used, Task task_eval_draw
 
                         // Update the last draw tick
                         g.marketeye_count_draw_tick = g.marketeye_count;
@@ -597,7 +589,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             return (HHmm >= 900 && HHmm <= 1530) && (day != "Sunday" && day != "Saturday");
         }
 
-       
+
 
         //        안녕하세요.Plus 담당자입니다.
         //1초 마다 다운로드하게 한다는 말이 1초마다 BlockRequest() 를 요청한다는 의미인지요?
@@ -670,30 +662,19 @@ namespace New_Tradegy // added for test on 20241020 0300
             // g.date set to the last date(last row and last column) in the drawn chart
 
             g.clickedStock = cl.CoordinateMapping(chart1, g.nRow, g.nCol, g.dl, e, ref selection, ref col_id, ref row_id);
-
-            //cl.chart1_info(e, ref selection, ref xval, ref yval, ref row_percentage,
-            //ref col_percentage, ref row_id, ref col_id, ref col_divider);
-            // ,ref row_percentage_below_xlabel_line);
-            // in 
-
-            // 종목이 클릭되지 않았으면 아래는 해당없음, Return
-            //if (g.clickedStock == null)
-            //{
-            //    return "";
-            //}
+            if (g.clickedStock == null)
+            {
+                return;
+            }
 
             if (Control.ModifierKeys == Keys.Control)
             {
-
-                cl.LeftRightAction(chart1, "l5", row_id, col_id);
-                //Thread.Sleep(100);
                 cl.CntlLeftRightAction(chart1, selection, row_id, col_id);
             }
             else
             {
                 cl.LeftRightAction(chart1, selection, row_id, col_id);
             }
-
 
             SetFocusAndReturn();
         }

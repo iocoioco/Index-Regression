@@ -1,15 +1,6 @@
-﻿using CPUTILLib;
-using New_Tradegy.Library;
+﻿using New_Tradegy.Library;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace New_Tradegy
 {
@@ -26,8 +17,8 @@ namespace New_Tradegy
         public Form_지수_조정(string kospiorKosdaq)
         {
             InitializeComponent();
-            
-            _stock = kospiorKosdaq; 
+
+            _stock = kospiorKosdaq;
         }
 
         private void Form_지수_조정_Load(object sender, EventArgs e)
@@ -74,10 +65,12 @@ namespace New_Tradegy
             }
             this.TopMost = true;
         }
+
         private void Form_지수_조정_Keydown(object sender, KeyEventArgs e)
         {
-            
+
         }
+
         private void 지수_조정_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Escape)
@@ -118,11 +111,15 @@ namespace New_Tradegy
                     }
                 }
                 g.kodex_magnifier[id, jd] *= (value / 100.0);
-                //g.kodex_magnifier[id, jd] = value / 100.0; 
 
-                //c.Value = 100; // working temporarily and return to moved position
-                md.ManageDisplayAndForms();
-                dr.draw_보조_차트();
+                int index = wk.return_index_of_ogldata(g.clickedStock);
+                g.stock_data o = g.ogl_data[index];
+
+                wk.deleteMdmMdsSingle(g.chart1, g.clickedStock);
+                wk.deleteMdmMdsSingle(g.chart2, g.clickedStock);
+                md.mdm(); // single KODEX, HScrollBar_Scroll
+                dr.mds(); // signle KODEX, HScrollBar_Scroll
+
             }
         }
 
@@ -146,7 +143,7 @@ namespace New_Tradegy
 
         }
 
-        
+
         //SQUID size_location() 참조할 것
         //지수 지수 = (지수)Application.OpenForms["지수"];
         //Form_KODEX_.Location = new Point(0, 0);

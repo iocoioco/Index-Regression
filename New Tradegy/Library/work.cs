@@ -20,8 +20,48 @@ namespace New_Tradegy.Library
     {
         static CPUTILLib.CpStockCode _cpstockcode;
 
+        public static void deleteMdmMdsSingle(Chart chartName, string stockName)
+        {
+            // Check if the ChartArea exists
+            if (chartName.ChartAreas.IndexOf(stockName) >= 0)
+            {
+                // Get the ChartArea
+                var chartArea = chartName.ChartAreas[stockName];
+
+                // Remove all series associated with this ChartArea
+                var seriesToRemove = chartName.Series
+                    .Where(s => s.ChartArea == stockName)
+                    .ToList();
+
+                foreach (var series in seriesToRemove)
+                {
+                    chartName.Series.Remove(series);
+                    Console.WriteLine($"Removed series: {series.Name}");
+                }
+
+                // Remove all annotations associated with this ChartArea
+                var annotationsToRemove = chartName.Annotations
+                    .Where(a => a.ClipToChartArea == stockName)
+                    .ToList();
+
+                foreach (var annotation in annotationsToRemove)
+                {
+                    chartName.Annotations.Remove(annotation);
+                    Console.WriteLine($"Removed annotation: {annotation.Name}");
+                }
+
+                // Now remove the ChartArea
+                chartName.ChartAreas.Remove(chartArea);
+                Console.WriteLine($"Removed ChartArea: {stockName}");
+            }
+            else
+            {
+                Console.WriteLine($"ChartArea with name {stockName} does not exist.");
+            }
 
 
+        }
+        // 상관, 보유, 그순, 관심, 코닥, 코피, 절친, 푀손
         public static void 보조_차트_StocksGivenKeyString(string keyString, List<string> displayList, string clickedStock, string clickedTitle)
         {
             switch (keyString)
@@ -212,6 +252,7 @@ namespace New_Tradegy.Library
             }
         }
 
+        // not used
         public static bool Form_exist(string form_name)
         {
             bool form_exist = false;
@@ -306,8 +347,8 @@ namespace New_Tradegy.Library
             int day_1 = g.date % 10000 % 100;
             g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
             ev.eval_stock();
-            md.ManageDisplayAndForms();
-            dr.draw_보조_차트();
+            md.mdm(); // date_backwards_forwards
+            dr.mds(); // date_backwards_forwards
         }
 
 

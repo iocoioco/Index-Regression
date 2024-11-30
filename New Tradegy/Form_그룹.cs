@@ -132,9 +132,6 @@ namespace New_Tradegy
         //}
         public static void 그룹_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) // dgv_CellClick tr(4)
         {
-            bool eval = false;
-            bool draw = false;
-
             g.clickedTitle = g.그룹.dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
             bool found = false;
@@ -154,7 +151,10 @@ namespace New_Tradegy
                     if (index < 0) return;
 
                     g.clickedStock = g.oGL_data[index].stocks[0];
-                    dr.draw_보조_차트("상관");
+
+          
+                    dr.mds("상관"); // 그룹_CellMouseClick
+
                 }
 
                 else
@@ -162,11 +162,9 @@ namespace New_Tradegy
                     string t = "http://google.com/search?q=" + g.clickedTitle
                         + " 주식" + " 뉴스 " + "&tbs=qdr:d"; // qdr:w, m, d, h
                     Process.Start(t);
+                    return;
                 }
             }
-
-            if (eval) ev.eval_stock();
-            if (draw) md.ManageDisplayAndForms();
         }
 
 

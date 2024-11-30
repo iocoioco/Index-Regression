@@ -91,7 +91,7 @@ namespace New_Tradegy.Library
                     {
                         if (g.clickedStock == null)
                             return;
-                        else
+                        else // 제외 파일에 클릭된 종목 추가
                         { 
                             // g.clickeStock를 제외.txt에 추가 : 실수 발생 가능 -> block
                             //string file_name = @"C:\병신\data\제외.txt";
@@ -135,7 +135,7 @@ namespace New_Tradegy.Library
                             g.제어.dtb.Rows[0][2] = g.일회거래액.ToString();
                         }
                     }
-                    break; ;
+                    break;
 
                 case '1':
                     if (g.test) // 긴 시간 앞으로 in draw
@@ -328,15 +328,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'E':
-                    Form_보조_차트 Form_보조_차트_1 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-                    if (Form_보조_차트_1 != null)
-                    {
-                        Form_보조_차트_1.keyString = "관심";
-                        Form_보조_차트_1.Form_보조_차트_DRAW();
-                       // Form_보조_차트_1.TopMost = true;
-                        //Form_보조_차트_1.TopMost = false;
-                    }
-                    g.previousKeyChar = e.KeyChar;
+                    
                     break;
 
                 case 'r':
@@ -551,7 +543,8 @@ namespace New_Tradegy.Library
                     Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
                     list_3 = new List<string> { "코피", "코닥", "관심" };
                     g.v.SpfKeyString = ms.cycleStrings(g.v.SpfKeyString, list_3);
-                    dr.draw_보조_차트(g.v.SpfKeyString);
+                    dr.mds(g.v.SpfKeyString); // 'f' "코피", "코닥", "관심"
+
                     break;
     
                 case 'F':
@@ -827,8 +820,7 @@ namespace New_Tradegy.Library
             string testdraw = "qwWrRtTyYasSdDghjJlmM., n";
             
 
-            string realeval = "rRasSdDghjJmM n";
-            string realdraw = "rRasSdDghjJmM n";
+            string realkeys = "rRasSdDghjJmM n"; // r & R : shrink time changer
 
             if(g.test) // test
             {
@@ -842,18 +834,16 @@ namespace New_Tradegy.Library
                 }
                 if (testdraw.Contains(e.KeyChar))
                 {
-                    md.ManageDisplayAndForms();
+                    md.mdm(); // key multi for test
                 }
             }
             else // real
             {
-                if (realeval.Contains(e.KeyChar))
+                if (realkeys.Contains(e.KeyChar))
                 {
                     ev.eval_stock();
-                }
-                if (realdraw.Contains(e.KeyChar))
-                {
-                    md.ManageDisplayAndForms();
+                    md.mdm(); // key multi for real
+                    dr.mds(); // key multi for real
                 }
             }
         }

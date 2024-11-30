@@ -660,10 +660,10 @@ namespace New_Tradegy.Library
 
             strs = grlines[3].Split(' ');
             g.date = Convert.ToInt32(strs[0]);
-            if (strs[1] == "w" || strs[1] == "W")
-            {
-                g.workingday = true;
-            }
+            //if (strs[1] == "w" || strs[1] == "W")
+            //{
+            //    g.workingday = true;
+            //}
 
             strs = grlines[4].Split(' ');
             g.deal_maximum_loss = Convert.ToInt32(strs[0]);

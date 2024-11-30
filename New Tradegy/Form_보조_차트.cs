@@ -178,7 +178,7 @@ namespace New_Tradegy
 
 
 
-
+        // not used
         private void Chart_MouseMove(object sender, MouseEventArgs e)
         {
             ChartState.ActiveChart = "chart2";
@@ -249,12 +249,8 @@ namespace New_Tradegy
             }
             else
             {
-                //if (g.clickedTitle != g.saved_clickedTitle)
-                //{
-                    displayList.Clear();
-                    wk.보조_차트_StocksGivenKeyString(keyString, displayList, g.clickedStock, g.clickedTitle);
-                //    g.saved_clickedTitle = g.clickedTitle;
-                //}
+                displayList.Clear();
+                wk.보조_차트_StocksGivenKeyString(keyString, displayList, g.clickedStock, g.clickedTitle);
             }
 
             if (keyString == "상관")
@@ -307,7 +303,6 @@ namespace New_Tradegy
             //this.BringToFront();
         }
 
-
         public void Form_보조_차트_DRAW(string stock)
         {
             if (displayList.Count == nRow * nCol)
@@ -321,7 +316,6 @@ namespace New_Tradegy
             nCol = 4;
             nRow = 3;
 
-           
             displayList.Add(stock);
 
             dr.draw_stock(chart2, nRow, nCol, displayList.Count - 1, stock);
@@ -332,16 +326,8 @@ namespace New_Tradegy
             g.chart2.Series.Clear();
             g.chart2.ChartAreas.Clear();
             g.chart2.Annotations.Clear();
-            
+
         }
-
-
-
-
-
-      
-
-
 
         private void chart2_MouseClick(object sender, MouseEventArgs e)
         {
@@ -353,14 +339,20 @@ namespace New_Tradegy
 
             //chart2_info(e, ref selection, ref xval, ref yval, ref row_percentage,
             //    ref col_percentage, ref row_id, ref col_id, ref col_divider);
+
+            // displayList is cl's local global variable
             g.clickedStock = cl.CoordinateMapping(chart2, nRow, nCol, displayList, e, ref selection, ref col_id, ref row_id);
+            if (g.clickedStock == null)
+            {
+                return;
+            }
 
 
             if (Control.ModifierKeys == Keys.Control)
             {
 
-                cl.LeftRightAction(chart2, "l5", row_id, col_id);
-                //Thread.Sleep(100);
+                // cl.LeftRightAction(chart2, "l5", row_id, col_id);
+                // Thread.Sleep(100);
                 cl.CntlLeftRightAction(chart2, selection, row_id, col_id);
             }
             else
@@ -445,7 +437,7 @@ namespace New_Tradegy
 
 
 
-        
+
 
         // Import the necessary functions from user32.dll
         [DllImport("user32.dll")]

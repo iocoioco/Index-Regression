@@ -1,16 +1,8 @@
-﻿using New_Tradegy;
-using New_Tradegy.Library;
+﻿using New_Tradegy.Library;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace New_Tradegy
@@ -35,7 +27,7 @@ namespace New_Tradegy
 
             this.Location = new Point(g.screenWidth / g.rqwey_nCol + 15, g.formSize.ch * 12); // + 30 remove from width
 
-           
+
 
             g.제어.dtb = new DataTable();
             g.제어.dgv = new DataGridView();
@@ -199,7 +191,6 @@ namespace New_Tradegy
 
         private void 제어_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-
             if (e.RowIndex < 5)
             {
                 switch (e.RowIndex)
@@ -257,12 +248,10 @@ namespace New_Tradegy
                         g.제어.dtb.Rows[4][1] = g.v.q_advance_lines;
                         break;
                 }
+                return;
             }
             else
             {
-
-
-
                 string clickedVariable = "";
                 int clickedValue = 0;
                 bool upper = true;
@@ -272,20 +261,16 @@ namespace New_Tradegy
                     clickedValue = Convert.ToInt32(g.제어.dgv.Rows[e.RowIndex].Cells[e.ColumnIndex + 1].Value.ToString());
                     upper = false;
                 }
-
                 else
                 {
                     clickedVariable = g.제어.dgv.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString();
                     clickedValue = Convert.ToInt32(g.제어.dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
                     upper = true;
                 }
-
-
                 if (clickedValue < 0) // Empty Click
                 {
                     return;
                 }
-
 
                 switch (clickedVariable)
                 {
@@ -297,7 +282,7 @@ namespace New_Tradegy
                             return;
                         }
                         g.v.종가기준추정거래액이상_천만원 = newValue * 10; // 억원을 천만원으로
-                        g.제어.dtb.Rows[5][1] = newValue; 
+                        g.제어.dtb.Rows[5][1] = newValue;
                         break;
 
                     case "분거":
@@ -352,7 +337,7 @@ namespace New_Tradegy
                             return;
                         }
                         g.v.시총이상 = newValue;
-                        g.제어.dtb.Rows[7][3] = newValue;  
+                        g.제어.dtb.Rows[7][3] = newValue;
                         break;
 
                     case "수과":
@@ -395,18 +380,18 @@ namespace New_Tradegy
                         {
                             return;
                         }
-                        g.v.eval_per_marketeyes = newValue; 
+                        g.v.eval_per_marketeyes = newValue;
                         g.제어.dtb.Rows[9][3] = newValue;
                         break;
 
-                        // font and pixel used
-                        // 7   9.31
-                        // 8   10.64
-                        // 9   11.97
-                        // 10  13.30
-                        // 11  14.63
-                        // 12  15.96
-                        // 13  17.29
+                    // font and pixel used
+                    // 7   9.31
+                    // 8   10.64
+                    // 9   11.97
+                    // 10  13.30
+                    // 11  14.63
+                    // 12  15.96
+                    // 13  17.29
                     case "Main":
                         array = new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 };
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
@@ -416,29 +401,7 @@ namespace New_Tradegy
                         }
                         g.v.font = (float)(newValue / 2.0F);
                         g.제어.dtb.Rows[10][1] = newValue;
-                        break; 
-
-                    //case "Form":
-                    //    array = new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 };
-                    //    newValue = FindNewValueFromArray(array, clickedValue, upper);
-                    //    if (newValue < 0)
-                    //    {
-                    //        return;
-                    //    }
-                    //    g.v.font = (float)(newValue / 2.0F);
-                    //    g.제어.dtb.Rows[10][3] = newValue;
-                        //break;
-
-                    //case "mms":
-                    //    array = new int[] { 500, 750, 1000, 1500, 2250, 3000 }; // mms
-                    //    newValue = FindNewValueFromArray(array, clickedValue, upper);
-                    //    if (newValue < 0)
-                    //    {
-                    //        return;
-                    //    }
-                    //    g.marketeye_sleep_seconds = newValue;
-                    //    g.제어.dtb.Rows[11][1] = newValue;
-                    //    break;
+                        break;
 
                     case "보유":
                         array = new int[] { 10, 50, 100, 250, 500, 1000 };
@@ -520,12 +483,8 @@ namespace New_Tradegy
                 }
             }
 
-
-
-
             g.제어.dgv.Refresh();
-            md.ManageDisplayAndForms();
-            dr.draw_보조_차트();
+            
         }
 
         private int FindNewValueFromArray(int[] array, int clickedValue, bool upper)

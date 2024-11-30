@@ -145,11 +145,15 @@ namespace New_Tradegy
                 dr.draw_chart();
             }
 
-            // 호가종목 제거
+            // 관심종목 제거
             else if (e.Control == true && e.KeyCode == Keys.W)
             {
+                foreach(string stockName in g.관심종목)
+                {
+                    wk.deleteMdmMdsSingle(g.chart1, stockName);
+                }
                 g.관심종목.Clear();
-                md.ManageDisplayAndForms();
+                md.mdm(); // g.관심종목.Clear()
             }
 
             // 테마 순서 리스트 네이버로부터(^t)
@@ -174,10 +178,15 @@ namespace New_Tradegy
                 richTextBox1.Text = text;
                 richTextBox1.Select(0, 0);
             }
+            // 호가종목 제거
             else if (e.Control == true && e.KeyCode == Keys.M)
             {
+                foreach (string stockName in g.호가종목)
+                {
+                    wk.deleteMdmMdsSingle(g.chart1, stockName);
+                }
                 g.호가종목.Clear();
-                md.ManageDisplayAndForms();
+                md.mdm(); // Memo, g.호가종목.Clear();
             }
         }
 
@@ -230,14 +239,20 @@ namespace New_Tradegy
                     {
                         if (g.oGL_data[i].title.Contains(words[1]))
                         {
+                            foreach (string stockName in g.관심종목)
+                            {
+                                wk.deleteMdmMdsSingle(g.chart1, stockName);
+                            }
                             g.관심종목.Clear();
                             foreach (var stock1 in g.oGL_data[i].stocks)
                             {
                                 if (!g.관심종목.Contains(stock1) && wk.return_index_of_ogldata(stock1) >= 0)
+                                {
                                     g.관심종목.Add(stock1);
+                                }
                             }
                             this.Text = g.oGL_data[i].title;
-                            md.ManageDisplayAndForms();
+                            md.mdm(); // Memo, 선택된 상관 전체 관심종목 
                             return;
                         }
                     }
@@ -267,6 +282,10 @@ namespace New_Tradegy
                     {
                         if (GL_title[i] == words[0])
                         {
+                            foreach (string stockName in g.관심종목)
+                            {
+                                wk.deleteMdmMdsSingle(g.chart1, stockName);
+                            }
                             g.관심종목.Clear();
                             foreach (var stock2 in GL[i])
                             {
@@ -274,7 +293,7 @@ namespace New_Tradegy
                                     g.관심종목.Add(stock2);
                             }
                             this.Text = GL_title[i];
-                            md.ManageDisplayAndForms();
+                            md.mdm(); // Memo, 관심종목 제거 및 추가
                             return;
                         }
                     }
@@ -293,7 +312,7 @@ namespace New_Tradegy
                             g.관심종목.Add(word);
                     }
                 }
-                md.ManageDisplayAndForms();
+                md.mdm(); // Memo, 관심종목 추가
             }
         }
 

@@ -361,7 +361,7 @@ namespace New_Tradegy.Library
                 if (g.v.종가기준추정거래액이상_천만원 > (int)o.종거천)
                     return false;
 
-                //? real only 
+          //?
                 //if (!g.test)
                 //{
                 //    // 호가거래액이상
@@ -372,7 +372,7 @@ namespace New_Tradegy.Library
                 //}
 
                 // 분당 추정거래대금 일정 이하 제외
-                //? if (g.v.분당거래액이상_천만원 > o.분거래천[0]) // && o.x[o.nrow -1, 0] > 90100)
+                // if (g.v.분당거래액이상_천만원 > o.분거래천[0]) // && o.x[o.nrow -1, 0] > 90100)
                 //    return false;
 
 

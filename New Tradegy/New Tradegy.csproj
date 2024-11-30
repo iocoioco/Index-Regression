@@ -180,7 +180,7 @@
     <Compile Include="Library\form.cs" />
     <Compile Include="Library\hoga.cs" />
     <Compile Include="Library\jpbd.cs" />
-    <Compile Include="Library\ManageDisplayAndForms.cs" />
+    <Compile Include="Library\mdm.cs" />
     <Compile Include="Library\sell.cs" />
     <Compile Include="Library\temp.cs" />
     <Compile Include="Library\test.cs" />

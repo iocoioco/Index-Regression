@@ -114,21 +114,57 @@ namespace New_Tradegy.Library
             if (chart.Name == "chart1")
             {
                 if (g.q == "h&s")
+                {
                     clickedStock = g.clickedStock;
+                }
                 else
-                    if (cellX == 0)
-                    clickedStock = displayList[cellY];
-                else
-                    clickedStock = displayList[nRow * cellX + cellY - 1]; // first col -1, second col -3
+                {
+                    if (cellX == 0) // first column
+                    {
+                        if (cellY == 0)
+                        {
+                            clickedStock = g.KODEX4[0];
+                        }
+                            
+                        else
+                        {
+                            clickedStock = g.KODEX4[2];
+                        }
+                    }
+                    else if(cellX == 1) // second column
+                    {
+                        clickedStock = null;
+                    }
+                    else // from third column
+                    {
+                        int sequence = (cellX - 2) * nRow + cellY;
+                        if (sequence < displayList.Count)
+                        {
+                            clickedStock = displayList[sequence];
+                        }
+                        else
+                        {
+                            clickedStock = null;
+                        }
+                    }
+                }
             }
-            else
+            else // chart2
             {
                 if (g.q == "h&s")
+                {
                     clickedStock = g.clickedStock;
+                }
                 else // including "h&g"
                 {
                     if (nRow * cellX + cellY < displayList.Count)
+                    {
                         clickedStock = displayList[nRow * cellX + cellY];
+                    }
+                    else
+                    {
+                        clickedStock = null;
+                    }
                 }
             }
             return clickedStock;
@@ -185,9 +221,6 @@ namespace New_Tradegy.Library
             {
                 case "l1":
                     // int Price = hg.HogaGetValue(g.clickedStock, -1, 2); // -1 : 매도1호가 라인, 1 : column
-
-
-
                     int Price = TryGetPrice(g.clickedStock, 5, 100); // Try up to 5 times with 100 millisecond delay
                     if (Price < 0) return;
 
@@ -198,7 +231,6 @@ namespace New_Tradegy.Library
                     }
 
                     ms.Sound_돈(g.일회거래액);
-
 
                     str = "";
                     if (g.confirm_buy)
@@ -227,10 +259,7 @@ namespace New_Tradegy.Library
                             }
                         }
                     }
-
                     dl.deal_exec("매수", g.clickedStock, Amount, Price, "01"); // Cntl + l1 
-
-
                     break;
 
                 case "l2":
@@ -416,7 +445,7 @@ namespace New_Tradegy.Library
                                     // Remove all sell orders with the given stock name
                                     StockExchange.sellOrders.RemoveAll(order => order.Stock == g.clickedStock);
 
-                                    md.ManageDisplayAndForms();
+                      
                                 }
                                 else
                                 {
@@ -426,8 +455,6 @@ namespace New_Tradegy.Library
                                     {
                                         g.관심종목.Remove(g.clickedStock);
                                     }
-
-                                    md.ManageDisplayAndForms();
                                 }
                             }
                             return;
@@ -454,7 +481,7 @@ namespace New_Tradegy.Library
                                 g.관심종목.Add(g.clickedStock);
                             }
                         }
-                        md.ManageDisplayAndForms();
+                   
                     }
                     break;
 
@@ -500,14 +527,14 @@ namespace New_Tradegy.Library
                     {
                         if (g.clickedStock == g.KODEX4[0])
                         {
-                            if (!hg.HogaInsert(g.KODEX4[1]))
+                            if (!hg.HogaInsert(g.KODEX4[1])) // Hoga of g.KODEX4[0] removed in the routine
                             {
                                 return; // not inserted
                             }
                         }
                         if (g.clickedStock == g.KODEX4[2])
                         {
-                            if (!hg.HogaInsert(g.KODEX4[3]))
+                            if (!hg.HogaInsert(g.KODEX4[3])) // Hoga of g.KODEX4[2] removed in the routine
                             {
                                 return; // not inserted
                             }
@@ -580,11 +607,11 @@ namespace New_Tradegy.Library
                         int month = g.date % 10000 / 100;
                         int day = g.date % 10000 % 100;
                         string newValue = month.ToString() + "/" + day.ToString();
-                        if(g.제어.dtb.Rows[0][0].ToString() != newValue)
+                        if (g.제어.dtb.Rows[0][0].ToString() != newValue)
                         {
                             g.제어.dtb.Rows[0][0] = newValue;
                         }
-                        
+
 
 
                     }
@@ -619,7 +646,7 @@ namespace New_Tradegy.Library
                     {
                         sr.r3_display_lines(chart, g.clickedStock, row_id, col_id);
                     }
-                        
+
                     //wk.BringToFront();
 
                     break;
@@ -658,54 +685,50 @@ namespace New_Tradegy.Library
 
                         if (form?.KeyString == "상관" || form?.KeyString == "절친")
                         {
-                            dr.draw_보조_차트(form?.KeyString);
+                            dr.mds(form?.KeyString);
                         }
                         else
                         {
-                            dr.draw_보조_차트("상관");
+                            dr.mds("상관");
                         }
                     }
                     break;
             }
 
-            if (
-                selection == "l4" ||
-                 selection == "l5")
+            if (g.test &&
+                (selection == "l4" ||
+                 selection == "l5"))
             {
                 ps.post_all(); // clic l4, l5
             }
 
-            if (
-                selection == "l7" ||
-                selection == "l9")
+            if (g.test &&
+                (selection == "l7" ||
+                selection == "l9"))
             {
                 ev.eval_stock();
             }
 
-            if (selection == "l1" ||
-               selection == "l2" ||
-                selection == "l3" ||
-               selection == "l4" ||
-               selection == "l5" ||
-                selection == "l7" ||
-                selection == "l8" ||
-                selection == "l9" ||
-                selection == "r5" ||
-                selection == "r6" ||
+            if (selection == "l1" || // shrink or not
+               selection == "l2" || // inc. multiplier
+               selection == "l5" || // add or remove 호가
+               selection == "l6" || // add or remove 관심 
+                selection == "l8" || // dec. multiplier
+             
                 selection == "r9")
             {
-                md.ManageDisplayAndForms();
+                wk.deleteMdmMdsSingle(g.chart1, g.clickedStock);
+                md.mdm(); // single click, not checked
             }
 
             if (selection == "l1" ||
              selection == "l2" ||
-             selection == "l3" ||
-             selection == "l4" ||
              selection == "l5" ||
-              selection == "l7" ||
-              selection == "l8" ||
-              selection == "l9")
-            { dr.draw_보조_차트(); }
+              selection == "l8")
+            {
+                wk.deleteMdmMdsSingle(g.chart2, g.clickedStock); 
+                dr.mds(); // single click, not checked
+            } 
 
             //wk.BringToFront();
             Form f = null;

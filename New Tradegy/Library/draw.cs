@@ -45,7 +45,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void draw_보조_차트()
+        public static void mds()
         {
             Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
             if (Form_보조_차트 != null)
@@ -54,7 +54,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void draw_보조_차트(string keystring)
+        public static void mds(string keystring)
         {
             Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
             if (Form_보조_차트 != null)
@@ -79,7 +79,7 @@ namespace New_Tradegy.Library
                     // Locate ChartArea for the stocks in DisplayList
                     // Locate Forms with respect to the corresponding ChartArea
 
-                   
+
 
                     List<string> DisplayList = new List<string>();
 
@@ -128,7 +128,7 @@ namespace New_Tradegy.Library
                             break;
                     }
 
-                    while(HogaCount + DisplayList.Count >= TotalSpaceCount)
+                    while (HogaCount + DisplayList.Count >= TotalSpaceCount)
                     {
                         DisplayList.RemoveAt(DisplayList.Count - 1);
                     }
@@ -161,7 +161,7 @@ namespace New_Tradegy.Library
 
 
 
-             
+
                     break;
 
                 case "s&s": // not used
@@ -1277,8 +1277,55 @@ namespace New_Tradegy.Library
             chartAreaHeight = totalRowHeightPercentage - annotationHeight;
         }
 
+        private static void AddRectangleAnnotationWithText(
+    Chart chart,
+    string text,
+    RectangleF rect,
+    string chartAreaName,
+    Color textColor,
+    Color backgroundColor)
+        {
+            // Get the chart area
+            ChartArea chartArea = chart.ChartAreas[chartAreaName];
+            if (chartArea == null)
+            {
+                throw new ArgumentException($"ChartArea '{chartAreaName}' does not exist.");
+            }
 
-        private static void AddRectangleAnnotationWithText(Chart chart, string text, RectangleF rect, string chartAreaName, Color textColor, Color backgroundColor)
+            // Calculate position relative to the chart area's dimensions
+            double chartAreaTop = chartArea.Position.Y;
+            double chartAreaLeft = chartArea.Position.X;
+            double chartAreaWidth = chartArea.Position.Width;
+            double chartAreaHeight = chartArea.Position.Height;
+
+            // Adjust the annotation to appear at the top of the ChartArea
+            double annotationX = chartAreaLeft + (rect.X * chartAreaWidth / 100); // Adjust rect.X relative to ChartArea width
+            double annotationY = chartAreaTop; // Align annotation to the top of the ChartArea
+
+            RectangleAnnotation rectangleAnnotation = new RectangleAnnotation
+            {
+                Text = text,
+                Font = new Font("Arial", g.v.font),
+                X = annotationX,
+                Y = annotationY,
+                Width = rect.Width * chartAreaWidth / 100, // Adjust rect.Width relative to ChartArea width
+                Height = rect.Height * chartAreaHeight / 100, // Adjust rect.Height relative to ChartArea height
+                LineColor = Color.Transparent,
+                BackColor = backgroundColor,
+                ForeColor = textColor,
+                ClipToChartArea = chartAreaName,
+                AxisXName = chartAreaName + "\\X",
+                AxisYName = chartAreaName + "\\Y",
+                Alignment = ContentAlignment.TopLeft,
+                ToolTip = "Rectangle Annotation Tooltip" // Optional: Add tooltip to verify it's being added
+            };
+
+            // Add the annotation to the chart
+            chart.Annotations.Add(rectangleAnnotation);
+        }
+
+
+        private static void AddRectangleAnnotationWithText_old(Chart chart, string text, RectangleF rect, string chartAreaName, Color textColor, Color backgroundColor)
         {
             // X and Y Coordinates: Relative to the chart's axes units.
             // Width and Height: Also in chart's axes units, not pixels.

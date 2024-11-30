@@ -43,8 +43,8 @@ namespace New_Tradegy.Library
 
         public static void TradeInit()
         {
-            //if (wk.isWorkingHour() == false) // ? 
-            // return;
+            if (wk.isWorkingHour() == false) // ? 
+             return;
 
             if (_checkedTradeInit)
                 return;
