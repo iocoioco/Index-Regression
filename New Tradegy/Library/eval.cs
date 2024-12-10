@@ -93,7 +93,7 @@ namespace New_Tradegy.Library
                     string stock = o.stock;
                     if (o.nrow < 2)
                         continue;
-                    ps.post(o);
+                    ps.post(o); // test
 
                     o.pass.previousPriceHigh = int.MinValue;
                     o.pass.previousPriceLow = null;
@@ -157,14 +157,15 @@ namespace New_Tradegy.Library
                 else
                     check_row = o.nrow - 1;
 
-
-                // inclusion check
-                if (!ev.eval_inclusion(o))
+                // inclusion check for test
+                // inclusion check done in post() for real 
+                if(g.test)
                 {
-                    continue;
+                    if (!ev.eval_inclusion(o))
+                    {
+                        continue;
+                    }
                 }
-
-
 
                 // 레버리지 외 지수관련 모두 continue;
                 if ((g.KODEX4.Contains(stock) && !stock.Contains("레버리지")) ||
@@ -195,11 +196,10 @@ namespace New_Tradegy.Library
                         최대급락 = o.점수.급락;
                         g.급락종목 = stock;
                     }
-
+                    
                     switch (g.v.key_string)
                     {
                         case "총점":
-
                             value = o.점수.총점; 
                             //value = o.점수.등합;
                             break;

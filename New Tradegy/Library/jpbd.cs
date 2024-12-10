@@ -1,4 +1,5 @@
 ﻿using CPTRADELib;
+using OpenQA.Selenium.BiDi.Modules.Input;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -343,12 +344,12 @@ namespace New_Tradegy.Library
         private DSCBO1Lib.StockJpbid2 _stockjpbid2;
 
         //public DataTable Dtb { get; set; }
-        private DataTable Dtb = new DataTable();
-        private DataGridView Dgv = new DataGridView();
+        private DataTable Dtb;
+        private DataGridView Dgv;
         private int Rows = 5;
         private string Stock;
         private Form F;
-        private int RowID, ColId;
+        
 
         StockExchange stockExchange = new StockExchange();
 
@@ -368,6 +369,8 @@ namespace New_Tradegy.Library
             int w1 = 50;
             int w2 = 61;
             int ch = 28;
+            Dtb = new DataTable();
+            Dgv = new DataGridView();
 
             Dtb.Columns.Add("매도");
             Dtb.Columns.Add("호가");
@@ -399,11 +402,11 @@ namespace New_Tradegy.Library
 
             Dgv.DataError += (s, e) => wr.DataGridView_DataError(s, e, "jpjd Dgv");
             Dgv.DataError += new DataGridViewDataErrorEventHandler(dataGridView1_DataError);
-            Dgv.Location = new Point(0, 0);
+            Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None; 
+            Dgv.Location = new Point(100, 0);
             Dgv.Size = new Size(w0 + w1 + w2, F.Height);
 
             Dgv.Name = stock;
-
 
             Dgv.DataSource = Dtb;
             Dgv.ColumnHeadersVisible = false;
@@ -417,7 +420,7 @@ namespace New_Tradegy.Library
             Dgv.ForeColor = Color.Black;
             Dgv.ScrollBars = ScrollBars.None;
             Dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            //Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             Dgv.AllowUserToResizeColumns = false;
             Dgv.AllowUserToResizeRows = false;
 
@@ -425,28 +428,62 @@ namespace New_Tradegy.Library
             Dgv.AllowUserToDeleteRows = false;
             Dgv.Dock = System.Windows.Forms.DockStyle.Fill;
 
-            Dgv.Name = stock;
+      
             Dgv.ReadOnly = true;
             Dgv.RowHeadersVisible = false;
             Dgv.ColumnHeadersVisible = false;
             Dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 
             Dgv.TabIndex = 1;
-
             Dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(Dgv_CellMouseClick);
-
-
             Dgv.KeyPress += OnDataGirdView1_KeyPress;
-
+ 
             f.Controls.Add(Dgv);
+
 
             Dgv.DataSource = Dtb;
 
             f.TopMost = true;
+           
 
             Dgv.Columns[0].Width = w0;
             Dgv.Columns[1].Width = w1;
             Dgv.Columns[2].Width = w2;
+
+
+
+
+            // Ensure no docking overrides sizing
+            //Dgv.Dock = DockStyle.None;
+
+            //// Explicitly set size and location
+            //Dgv.Size = new Size(w0 + w1 + w2, F.Height);
+            //Dgv.Location = new Point(0, 0);
+
+            //// Form properties
+            f.AutoScaleMode = AutoScaleMode.None;
+            f.FormBorderStyle = FormBorderStyle.None;
+            //f.Padding = new Padding(0);
+            f.Controls.Add(Dgv);
+            
+            //// Debugging output
+            //Console.WriteLine($"Initial Dgv Size: {Dgv.Size}");
+            //Console.WriteLine($"Initial Form Size: {f.Size}, ClientSize: {f.ClientSize}");
+
+            //// Handle the form's Shown event to verify size changes after rendering
+            //f.Shown += (s, e) =>
+            //{
+            //    Console.WriteLine($"After Shown - Dgv Size: {Dgv.Size}");
+            //    Console.WriteLine($"After Shown - Form Size: {f.Size}, ClientSize: {f.ClientSize}");
+            //};
+
+            //// Additional step: Force the DataGridView to redraw
+            //Dgv.Invalidate();
+            //f.Invalidate();
+
+
+
+
 
             request_호가();
         }

@@ -125,13 +125,13 @@ namespace New_Tradegy.Library
                         {
                             clickedStock = g.KODEX4[0];
                         }
-                            
+
                         else
                         {
                             clickedStock = g.KODEX4[2];
                         }
                     }
-                    else if(cellX == 1) // second column
+                    else if (cellX == 1) // second column
                     {
                         clickedStock = null;
                     }
@@ -354,6 +354,10 @@ namespace New_Tradegy.Library
                     {
                         o.shrink_draw = true;
                     }
+                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
+                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
+                    md.mdm(); // single stock shrink_draw ?
+                    dr.mds(); // single stock shrink_draw ?
                     break;
 
                 case "l2":
@@ -378,12 +382,16 @@ namespace New_Tradegy.Library
                         Form_지수_조정_.Location = new Point((int)(w / 6), h / 2 - h / 4 / 2);
                         Form_지수_조정_.Size = new Size(w / 4, h / 4);
                         Form_지수_조정_.Show();
-                        //Form_지수_조정_.TopMost = true;
+
                         return;
                     }
                     else
                     {
                         o.수급과장배수 *= 1.5;
+                        wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
+                        wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
+                        md.mdm(); // single 수급과장배수 조정
+                        dr.mds(); // single 수급과장배수 조정
                     }
                     break;
 
@@ -411,24 +419,20 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l5":
-                    if (!g.connected) // 시간 뒤로 (테스트)
+                    if (!g.connected)
                     {
-                        if (g.end_time_before_advance == 0) // time extension
+                        if (g.end_time_before_advance == 0)
                             dr.draw_extended_time(g.v.Q_advance_lines);
                         else
                             dr.draw_extended_time(0);
                     }
                     else
                     {
-
-                        // KODEX 레버리지 호가창
-
-
-                        if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2]) // not leverage
+                        if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2])
                         {
                             if (!hg.HogaInsert(g.clickedStock))
                             {
-                                return; // not inserted
+                                return;
                             }
                         }
                         else
@@ -438,14 +442,10 @@ namespace New_Tradegy.Library
                                 if (g.호가종목.Contains(g.clickedStock))
                                 {
                                     g.호가종목.Remove(g.clickedStock);
-
-                                    // Remove all buy orders with the given stock name
+                                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, true);
+                                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, true);
                                     StockExchange.buyOrders.RemoveAll(order => order.Stock == g.clickedStock);
-
-                                    // Remove all sell orders with the given stock name
                                     StockExchange.sellOrders.RemoveAll(order => order.Stock == g.clickedStock);
-
-                      
                                 }
                                 else
                                 {
@@ -457,9 +457,12 @@ namespace New_Tradegy.Library
                                     }
                                 }
                             }
-                            return;
+                            break;
                         }
                     }
+                    
+                    md.mdm();
+                    dr.mds();
                     break;
 
                 case "l6":
@@ -481,7 +484,7 @@ namespace New_Tradegy.Library
                                 g.관심종목.Add(g.clickedStock);
                             }
                         }
-                   
+                        md.mdm(); // 호가, 관심 종목 추가 & 제거
                     }
                     break;
 
@@ -505,14 +508,13 @@ namespace New_Tradegy.Library
 
                 case "l8":
                     o.수급과장배수 *= 0.66;
+                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
+                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
+                    md.mdm(); // single 수급과장배수 조정
+                    dr.mds(); // single 수급과장배수 조정
                     break;
 
                 case "l9": // g.time[1]++
-
-                    //if (g.clickedStock.Contains("KODEX 레버리지"))
-                    //    wn.Memo_TopMost();
-                    //else 
-
                     if (g.test)
                     {
                         g.time[1]--;
@@ -683,9 +685,9 @@ namespace New_Tradegy.Library
 
                         Form_보조_차트 form = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
 
-                        if (form?.KeyString == "상관" || form?.KeyString == "절친")
+                        if (form?.keyString == "상관" || form?.keyString == "절친")
                         {
-                            dr.mds(form?.KeyString);
+                            dr.mds(form?.keyString);
                         }
                         else
                         {
@@ -710,25 +712,28 @@ namespace New_Tradegy.Library
             }
 
             if (selection == "l1" || // shrink or not
+
                selection == "l2" || // inc. multiplier
+               selection == "l8" || // dec. multiplier
+
                selection == "l5" || // add or remove 호가
-               selection == "l6" || // add or remove 관심 
-                selection == "l8" || // dec. multiplier
-             
-                selection == "r9")
+               selection == "l6") // add or remove 관심
             {
-                wk.deleteMdmMdsSingle(g.chart1, g.clickedStock);
+   
                 md.mdm(); // single click, not checked
             }
 
             if (selection == "l1" ||
              selection == "l2" ||
-             selection == "l5" ||
-              selection == "l8")
+             selection == "l8" ||
+            selection == "r9")
             {
-                wk.deleteMdmMdsSingle(g.chart2, g.clickedStock); 
-                dr.mds(); // single click, not checked
-            } 
+      
+                if (selection == "r9")
+                    dr.mds("상관");
+                else
+                    dr.mds(); // single click, not checked
+            }
 
             //wk.BringToFront();
             Form f = null;

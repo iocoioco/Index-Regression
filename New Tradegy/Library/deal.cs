@@ -43,13 +43,19 @@ namespace New_Tradegy.Library
 
         public static void TradeInit()
         {
+            return;
             if (wk.isWorkingHour() == false) // ? 
              return;
 
             if (_checkedTradeInit)
                 return;
 
-            _cptdutil = new CpTdUtil();
+
+            if (_cptdutil == null)
+            {
+                _cptdutil = new CpTdUtil();
+            }
+
 
             int rv = _cptdutil.TradeInit(0);
             if (rv == 0)

@@ -98,7 +98,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         {
             g.MachineName = Environment.MachineName;
 
-            _cpcybos = null;
+            //_cpcybos = null; after blocking g.connected becomes true
 
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
@@ -121,7 +121,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 chart1.Location = new Point(0, 0);
             }
-
             else
                 chart1.Location = new Point(0, 0);
 
@@ -168,19 +167,47 @@ namespace New_Tradegy // added for test on 20241020 0300
             Form Form_매매 = new Form_매매(); // work
             Form_매매.Show();
 
-
-
             Form Form_그룹 = new Form_그룹(); // grup
             Form_그룹.Show();
 
 
 
-            Form Form_보조_차트 = new Form_보조_차트(); // duration 0.016 seconds
-            Form_보조_차트.Location = new Point(1920, 0);
-            Form_보조_차트.Size = new Size(1920 / 4, 900 / 3);
-            Form_보조_차트.Show();
 
-            if (!g.test && wk.isWorkingHour()) //? wk.isWorkingHour() not correct // duration : 0.49 seconds
+
+
+            Form Form_보조_차트 = new Form_보조_차트
+            {
+                Size = new Size(1920 / 4, 900 / 3),
+                StartPosition = FormStartPosition.Manual // Prevent Windows from overriding the location
+            };
+
+            if (Screen.AllScreens.Length == 1)
+            {
+                Form_보조_차트.Location = new Point(0, 0); // Single monitor
+            }
+            else
+            {
+                Form_보조_차트.Location = new Point(1920, 0); // Dual monitor
+            }
+
+            // Show the form and ensure location remains as set
+            Form_보조_차트.Show();
+            Form_보조_차트.Location = new Point(0, 0); // Reapply location to handle potential adjustments
+
+            // Log final location
+            int x = Form_보조_차트.Location.X;
+            int y = Form_보조_차트.Location.Y;
+
+            Form_보조_차트.BringToFront();
+
+            Form_보조_차트.AutoScaleMode = AutoScaleMode.Dpi;
+
+
+
+
+
+
+            if (!g.test) // && wk.isWorkingHour()) //? wk.isWorkingHour() not correct // duration : 0.49 seconds
             {
                 cn.Init_CpConclusion();
 
@@ -269,17 +296,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-        // Mouse with Moving String
-        private void Chart_MouseMove(object sender, MouseEventArgs e)
-        {
-            ChartState.ActiveChart = "chart1";
-            ChartState.Chart1MousePosition = new Point(e.X + 100, e.Y + 10);
-            ChartState.Chart2MousePosition = null;
-
-            chart1.Invalidate(); // Trigger the Paint event to redraw chart1
-            Form_보조_차트.Instance?.InvalidateChart2();
-        }
-
+        
         private void Chart_Paint(object sender, PaintEventArgs e)
         {
             if (ChartState.ActiveChart == "chart1")
@@ -600,6 +617,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void subscribe_8091S()
         {
+            return;
             _cpsvr8091s = new DSCBO1Lib.CpSvr8091S();
             _cpsvr8091s.Received += new DSCBO1Lib._IDibEvents_ReceivedEventHandler(_cpsvr8091s_Received);
 
@@ -683,41 +701,44 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void ChangeMainTitleConnection()
         {
-            //_cpcybos = null;
-            //_cpcybos = new CPUTILLib.CpCybos();
+            _cpcybos = null;
+            _cpcybos = new CPUTILLib.CpCybos();
 
-            //if (_cpcybos.IsConnect == 1)
-            //{
-            //    if (_timerConnection != null)
-            //    {
-            //        _timerConnection.Stop();
-            //        _timerConnection.Dispose();
-            //        _timerConnection = null;
-            //    }
+            if (_cpcybos.IsConnect == 1)
+            {
+                if (_timerConnection != null)
+                {
+                    _timerConnection.Stop();
+                    _timerConnection.Dispose();
+                    _timerConnection = null;
+                }
 
-            //    _timerCount = 0;
+                _timerCount = 0;
 
-            //    //menuStrip1.BackColor = Color.FromArgb(228, 254, 226);
+                // menuStrip1.BackColor = Color.FromArgb(228, 254, 226);
 
-            //    //Invoke(new MethodInvoker(ConnectionCompleted));
-            //    this.Text = "대신증권 플러스에 연결되었습니다";
-            //    //MessageBox.Show("대신증권 플러스에 연결되었습니다.");
+                Invoke(new MethodInvoker(ConnectionCompleted));
 
-            //    //LoadStockCodes();
-            //}
-            //else
-            //{
-            //    this.Text = "대신증권 플러스 Sample for C# (연결 안됨)";
-            //    RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\Creon\\dstarter");
-            //    string path = key.GetValue("path").ToString();
-            //    Process.Start(path + "\\coStarter.exe", "/prj:cp");
-            //    if (_timerCount == 0)
-            //    {
-            //        //DialogConnection dialog = new DialogConnection();
-            //        //dialog.SetParent(this);
-            //        //dialog.ShowDialog(this);
-            //    }
-            //}
+                MessageBox.Show("대신증권 플러스에 연결되었습니다.");
+
+                // LoadStockCodes();
+            }
+            else
+            {
+                this.Text = "대신증권 플러스 Sample for C# (연결 안됨)";
+
+                if (_timerCount == 0)
+                {
+                    //DialogConnection dialog = new DialogConnection();
+                    //dialog.SetParent(this);
+                    //dialog.ShowDialog(this);
+                }
+            }
+        }
+
+        public void ConnectionCompleted()
+        {
+            this.Text = "대신증권 플러스 Sample for C# (연결 완료)";
         }
 
         private static void CpCybos_OnDisconnect()

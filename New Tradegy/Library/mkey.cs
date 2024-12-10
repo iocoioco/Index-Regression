@@ -30,16 +30,16 @@ namespace New_Tradegy
                     if (wk.isWorkingHour())
                     {
                         // Save all stocks once at the mentioned times
-                        await Task.Run(() => wr.SaveAllStocks());  // Use Task.Run for potentially long-running synchronous work
+                        await wr.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
                         g.minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }
 
                 // Trigger the marketeye alarm task
-                await Task.Run(() => ms.task_marketeye_alarm(HHmm));
+                await ms.task_marketeye_alarm(HHmm);
 
                 // Call marketeye logic
-                await Task.Run(() => marketeye());
+                await marketeye();
 
                 // Wait 250 milliseconds (non-blocking)
                 await Task.Delay(250);
@@ -47,7 +47,7 @@ namespace New_Tradegy
         }
 
 
-        private static void marketeye()
+        private static async Task marketeye()
         {
             /*
 			0 code string
@@ -252,7 +252,7 @@ namespace New_Tradegy
         }
 
 
-        private static void _marketeye_received() // 100 MilliSecond for array_size 30 & for array_size 60
+        private static async void _marketeye_received() // 100 MilliSecond for array_size 30 & for array_size 60
         {
             DateTime date = DateTime.Now;
             int HHmm = Convert.ToInt32(date.ToString("HHmm")); // run_task_read_eval_score()
@@ -268,6 +268,7 @@ namespace New_Tradegy
             dynamic fieldname = _marketeye.GetHeaderValue(1); // name of data ... 프로그램매수 등
             int count = (int)_marketeye.GetHeaderValue(2); // number of stock downloaded
 
+            List <string> stockList = new System.Collections.Generic.List<string>();
 
             for (int k = 0; k < count; k++)
             {
@@ -588,6 +589,8 @@ namespace New_Tradegy
                 ps.post(o); // marketeye_received()
                 ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
 
+                stockList.Add(o.stock);
+
                 if (g.보유종목.Contains(o.stock)) // 보유종목 중 Form_호가 사용하지 않고 있는 경우 대비
                 {
                     cn.dgv2_update(); // marketeye_received()
@@ -609,8 +612,12 @@ namespace New_Tradegy
             q = g.ogl_data[index];
             g.코스닥지수 = q.x[q.nrow - 1, 1];
             
-            ps.post_지수_프외_배차_합산();
-            
+            ps.post_코스닥_코스피_프외_순매수_배차_합산();
+
+            ev.eval_stock(); // 12 milliseconds, position changing every marketeye_received
+            md.mdm();
+            dr.mds();
+
             g.marketeye_count++;
 
 

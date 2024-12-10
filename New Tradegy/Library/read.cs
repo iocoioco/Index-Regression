@@ -400,7 +400,7 @@ namespace New_Tradegy.Library
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             if (g.ogl_data[index].x[0, 3] > 1000)
-                ps.post_지수_프외_배차_합산_382();
+                ps.post_코스닥_코스피_프외_순매수_배차_합산_382();
         }
 
         // 업종, 10억이상, 상관, 상관, 통계

@@ -34,7 +34,7 @@ namespace New_Tradegy.Library
             e.ThrowException = false;
         }
 
-        public static void SaveAllStocks()
+        public static async Task SaveAllStocks()
         {
             if (g.test) // never save during test
                 return;

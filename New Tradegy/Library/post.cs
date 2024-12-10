@@ -729,7 +729,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void post_지수_프외_배차_합산_382()
+        public static void post_코스닥_코스피_프외_순매수_배차_합산_382()
         {
             int index;
 
@@ -770,7 +770,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void post_지수_프외_배차_합산()
+        public static void post_코스닥_코스피_프외_순매수_배차_합산()
         {
             g.코스피매수배 = 0;
             g.코스피매도배 = 0;
@@ -807,23 +807,33 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void post(g.stock_data o)
+        public static bool post(g.stock_data o)
         {
             if ((o.stock.Contains("KODEX") && !o.stock.Contains("레버리지")) ||
                 o.stock.Contains("KODSEF") ||
                 o.stock.Contains("TIGER") ||
                 o.stock.Contains("KBSTAR") ||
-                o.stock.Contains("HANARO")) return;
+                o.stock.Contains("HANARO"))
+            {
+                return false;
+            }
 
             int check_row = g.test ? Math.Min(g.time[1] - 1, o.nrow - 1) : o.nrow - 1;
 
             post_minute(o, check_row);
-            o.점수.총점 = post_score(o, check_row);
 
+            // Maybe no need to do post_minute(o, check_row)
+            // for "KODEX 코스닥150레버리지", "KODEX 레버리지"
             if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
             {
                 if (!g.test) ev.EvalKODEX(o);
+                return false;
             }
+            
+            o.점수.총점 = post_score(o, check_row);
+
+            // inclusion test after post_minute(o, check_row);
+            return ev.eval_inclusion(o);
         }
 
         public static void PostPassing(g.stock_data o, int checkRow, bool add)
@@ -856,7 +866,6 @@ namespace New_Tradegy.Library
                         {
                             g.관심종목.RemoveAt(0);
                         }
-
                         g.관심종목.Add(o.stock);
                     }
                 }
@@ -1570,6 +1579,7 @@ namespace New_Tradegy.Library
             }
         }
 
+        // not used
         // 특정조건을 만족하면 관심에 추가
         public static void marketeye_received_틱프로천_ebb_tide(g.stock_data o)
         {
@@ -1611,8 +1621,6 @@ namespace New_Tradegy.Library
 
                 //if (o.pass.pass_level == 2 && o.분배수차[0] > 100 && o.분거래천[0] > 50)
                 //    add = true;
-
-
             }
         }
 
@@ -1633,8 +1641,8 @@ namespace New_Tradegy.Library
             o.기누천 = o.x[check_row, 6] * money_factor;
             o.거누천 = o.x[check_row, 7] * money_factor;
             o.종거천 = o.x[check_row, 7] * money_factor * wk.누적거래액환산율(o.x[check_row, 0]); // 혼합, 계산은 하되 사용하지 않음
-            o.매도호가거래액_백만원 = (int)(o.최우선매도호가잔량 * money_factor * 10); // used in stock inclusion 
-            o.매수호가거래액_백만원 = (int)(o.최우선매수호가잔량 * money_factor * 10); // used in stock inclusion 
+            o.매도호가거래액_백만원 = (int)(o.최우선매도호가잔량 * money_factor * 10); 
+            o.매수호가거래액_백만원 = (int)(o.최우선매수호가잔량 * money_factor * 10); 
 
             // 혼합, 아래 계산은 하되 사용하지 않음
             if (g.test)

@@ -28,6 +28,8 @@ namespace New_Tradegy.Library
 
         public static void Init_CpConclusion()
         {
+            return;
+
             _CpConclusion = new DSCBO1Lib.CpConclusion();
             _CpConclusion.Received +=
                 new DSCBO1Lib._IDibEvents_ReceivedEventHandler(CpConclusion_Received);

@@ -148,10 +148,6 @@ namespace New_Tradegy
             // 관심종목 제거
             else if (e.Control == true && e.KeyCode == Keys.W)
             {
-                foreach(string stockName in g.관심종목)
-                {
-                    wk.deleteMdmMdsSingle(g.chart1, stockName);
-                }
                 g.관심종목.Clear();
                 md.mdm(); // g.관심종목.Clear()
             }
@@ -181,10 +177,6 @@ namespace New_Tradegy
             // 호가종목 제거
             else if (e.Control == true && e.KeyCode == Keys.M)
             {
-                foreach (string stockName in g.호가종목)
-                {
-                    wk.deleteMdmMdsSingle(g.chart1, stockName);
-                }
                 g.호가종목.Clear();
                 md.mdm(); // Memo, g.호가종목.Clear();
             }
@@ -241,7 +233,7 @@ namespace New_Tradegy
                         {
                             foreach (string stockName in g.관심종목)
                             {
-                                wk.deleteMdmMdsSingle(g.chart1, stockName);
+                                wk.deleteChartAreaAnnotation(g.chart1, stockName, true, true);
                             }
                             g.관심종목.Clear();
                             foreach (var stock1 in g.oGL_data[i].stocks)
@@ -284,7 +276,7 @@ namespace New_Tradegy
                         {
                             foreach (string stockName in g.관심종목)
                             {
-                                wk.deleteMdmMdsSingle(g.chart1, stockName);
+                                wk.deleteChartAreaAnnotation(g.chart1, stockName, true, true);
                             }
                             g.관심종목.Clear();
                             foreach (var stock2 in GL[i])

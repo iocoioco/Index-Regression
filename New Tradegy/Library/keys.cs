@@ -322,8 +322,6 @@ namespace New_Tradegy.Library
                         List<string> list_6= new List<string> { "그순", "관심" };
                         Form_보조_차트.keyString = ms.cycleStrings(Form_보조_차트.keyString, list_6);
                         Form_보조_차트.Form_보조_차트_DRAW();
-                        //Form_보조_차트.TopMost = true;
-                        //Form_보조_차트.TopMost = false;
                     }
                     break;
 
@@ -532,7 +530,6 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
-                    
                     break;
 
                 case 'D':
@@ -544,7 +541,6 @@ namespace New_Tradegy.Library
                     list_3 = new List<string> { "코피", "코닥", "관심" };
                     g.v.SpfKeyString = ms.cycleStrings(g.v.SpfKeyString, list_3);
                     dr.mds(g.v.SpfKeyString); // 'f' "코피", "코닥", "관심"
-
                     break;
     
                 case 'F':
@@ -843,13 +839,8 @@ namespace New_Tradegy.Library
                 {
                     ev.eval_stock();
                     md.mdm(); // key multi for real
-                    dr.mds(); // key multi for real
                 }
             }
         }
-
-       
-       
     }
-
 }

@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -523,7 +524,7 @@ namespace New_Tradegy.Library
             MessageBox.Show(message);
         }
 
-        public static void task_marketeye_alarm(int HHmm)
+        public static async Task task_marketeye_alarm(int HHmm)
         {
             int[] alarm_HHmm = { 1000, 1030, 1450, 1455, 1500, 1505, 1510, 1515, 1520, 1525, 1528, 1529 };
 

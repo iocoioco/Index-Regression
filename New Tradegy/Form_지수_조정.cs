@@ -115,8 +115,8 @@ namespace New_Tradegy
                 int index = wk.return_index_of_ogldata(g.clickedStock);
                 g.stock_data o = g.ogl_data[index];
 
-                wk.deleteMdmMdsSingle(g.chart1, g.clickedStock);
-                wk.deleteMdmMdsSingle(g.chart2, g.clickedStock);
+                wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false); // KODEX
+                wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false); // KODEX
                 md.mdm(); // single KODEX, HScrollBar_Scroll
                 dr.mds(); // signle KODEX, HScrollBar_Scroll
 

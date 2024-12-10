@@ -20,7 +20,7 @@ namespace New_Tradegy.Library
     {
         static CPUTILLib.CpStockCode _cpstockcode;
 
-        public static void deleteMdmMdsSingle(Chart chartName, string stockName)
+        public static void deleteChartAreaAnnotation(Chart chartName, string stockName, bool DeleteChartArea, bool DeleteAnnoation)
         {
             // Check if the ChartArea exists
             if (chartName.ChartAreas.IndexOf(stockName) >= 0)
@@ -28,228 +28,37 @@ namespace New_Tradegy.Library
                 // Get the ChartArea
                 var chartArea = chartName.ChartAreas[stockName];
 
-                // Remove all series associated with this ChartArea
-                var seriesToRemove = chartName.Series
-                    .Where(s => s.ChartArea == stockName)
-                    .ToList();
-
-                foreach (var series in seriesToRemove)
+                if (DeleteAnnoation)
                 {
-                    chartName.Series.Remove(series);
-                    Console.WriteLine($"Removed series: {series.Name}");
+                    var annotationsToRemove = chartName.Annotations.Where(a => a.Name == stockName).ToList();
+
+                    foreach (var annotation in annotationsToRemove)
+                    {
+                        chartName.Annotations.Remove(annotation); // Remove the annotation from the chart
+                    }
                 }
 
-                // Remove all annotations associated with this ChartArea
-                var annotationsToRemove = chartName.Annotations
-                    .Where(a => a.ClipToChartArea == stockName)
-                    .ToList();
-
-                foreach (var annotation in annotationsToRemove)
+                if (DeleteChartArea)
                 {
-                    chartName.Annotations.Remove(annotation);
-                    Console.WriteLine($"Removed annotation: {annotation.Name}");
-                }
+                    // Remove all series associated with this ChartArea
+                    var seriesToRemove = chartName.Series
+                        .Where(s => s.ChartArea == stockName)
+                        .ToList();
 
-                // Now remove the ChartArea
-                chartName.ChartAreas.Remove(chartArea);
-                Console.WriteLine($"Removed ChartArea: {stockName}");
+                    foreach (var series in seriesToRemove)
+                    {
+                        chartName.Series.Remove(series);
+                        //Console.WriteLine($"Removed series: {series.Name}");
+                    }
+                    chartName.ChartAreas.Remove(chartArea);
+                }
             }
             else
             {
-                Console.WriteLine($"ChartArea with name {stockName} does not exist.");
+                //Console.WriteLine($"ChartArea with name {stockName} does not exist.");
             }
 
 
-        }
-        // 상관, 보유, 그순, 관심, 코닥, 코피, 절친, 푀손
-        public static void 보조_차트_StocksGivenKeyString(string keyString, List<string> displayList, string clickedStock, string clickedTitle)
-        {
-            switch (keyString)
-            {
-                case "지수":
-                    for (int i = 0; i < 2; i++)
-                    {
-                        if (!displayList.Contains(g.KODEX4[i]))
-                        {
-                            displayList.Add(g.KODEX4[i]);
-                        }
-                    }
-                    break;
-                case "보유":
-                    foreach (string s in g.보유종목)
-                    {
-                        if (!displayList.Contains(s))
-                        {
-                            displayList.Add(s);
-                        }
-                    }
-                    break;
-
-                case "그순":
-                    if (g.oGL_data.Count > 0)
-                    {
-                        for (int i = 0; i < 5; i++)
-                        {
-                            int added_count = 0;
-                            foreach (string s in g.oGL_data[i].stocks)
-                            {
-                                if (!displayList.Contains(s))
-                                {
-                                    displayList.Add(s);
-                                }
-                                else
-                                {
-                                    displayList.Add("");
-                                }
-                                if (++added_count == 3)
-                                {
-                                    break;
-                                }
-                            }
-                            for (int j = added_count; j < 3; j++)
-                            {
-                                displayList.Add("");
-                            }
-                        }
-                    }
-                    break;
-
-                case "상관":
-                    int indexOfoGLdata = -1;
-                    for (int i = 0; i < g.oGL_data.Count; i++)
-                    {
-                        if (g.oGL_data[i].title == clickedTitle)
-                        {
-                            indexOfoGLdata = i;
-                            break;
-                        }
-                    }
-                    if (indexOfoGLdata >= 0)
-                    {
-                        foreach (string s in g.oGL_data[indexOfoGLdata].stocks)
-                        {
-                            if (!displayList.Contains(s))
-                                displayList.Add(s);
-                        }
-                    }
-                    break;
-
-                case "절친":
-                    int index절친 = wk.return_index_of_ogldata(g.clickedStock);
-                    if (index절친 < 0) // KODEX 제외
-                    {
-                    }
-                    else
-                    {
-                        if (g.ogl_data[index절친].절친.Count > 0)
-                        {
-                            displayList.Add(g.clickedStock);
-
-                            string stock = "";
-                            foreach (var line in g.ogl_data[index절친].절친)
-                            {
-                                string[] words = line.Split('\t');
-                                if (words.Length == 2)
-                                    stock = words[1]; // words[0] 절친정도 수치 : 0.5 이상 양호
-
-                                if (!displayList.Contains(stock))
-                                    displayList.Add(stock);
-
-                            }
-                        }
-                    }
-                    break;
-
-                case "관심":
-                    rd.read_파일관심종목();
-                    foreach (string s in g.파일관심종목)
-                    {
-                        if (!displayList.Contains(s))
-                        {
-                            displayList.Add(s);
-                        }
-                    }
-                    break;
-
-                case "코피":
-                    displayList.Add("KODEX 레버리지");
-                    displayList.Add("KODEX 코스닥150레버리지");
-                    foreach (string s in g.kospi_mixed.stock) { displayList.Add(s); }
-                    break;
-
-                case "코닥":
-                    displayList.Add("KODEX 레버리지");
-                    displayList.Add("KODEX 코스닥150레버리지");
-                    foreach (string s in g.kosdaq_mixed.stock) { displayList.Add(s); }
-                    break;
-
-                case "닥올":
-                case "피올":
-                    ev.eval_stock();
-                    foreach (string s in g.sl)
-                    {
-                        if (!displayList.Contains(s))
-                        {
-                            displayList.Add(s);
-                        }
-                    }
-                    break;
-
-                case "푀손":
-                    var a_tuple = new List<Tuple<double, string>> { };
-
-                    foreach (var o in g.ogl_data)
-                    {
-                        string stock = o.stock;
-                        // if (!o.included) continue; Blocked on 20240406
-                        // 레버리지 외 지수관련 모두 continue;
-                        if (g.KODEX4.Contains(stock) ||
-                        stock.Contains("KOSEF") ||
-                        stock.Contains("HANARO") ||
-                        stock.Contains("TIGER") ||
-                        stock.Contains("KBSTAR") ||
-                        stock.Contains("혼합") ||
-                        g.보유종목.Contains(stock) ||
-                        g.호가종목.Contains(stock))
-                        {
-                            continue;
-                        }
-
-                        int check_row = 0;
-                        if (g.test)
-                        {
-                            check_row = g.time[1] - 1;
-                            if (check_row > o.nrow - 1)
-                                check_row = o.nrow - 1;
-                        }
-                        else
-                            check_row = o.nrow - 1;
-                        if (o.nrow < 2 || o.x[check_row, 4] < 0)
-                            continue;
-
-
-
-                        double value = 0.0;
-                        {
-                            for (int i = check_row - 1; i >= 1; i--)
-                            {
-                                //분간 프돈 매수 -> (현재가 - (후분가 + 전분가) / 2) * 분간프돈매수량 * 전일종가
-                                value += (o.x[check_row, 1] - (o.x[i, 1] + o.x[i - 1, 1]) / 2.0) / 100.0 *
-                                    (o.x[i, 4] - o.x[i - 1, 4]) * o.전일종가 / g.억원;
-                            }
-                        }
-                        a_tuple.Add(Tuple.Create(value, stock));
-                    }
-                    a_tuple = a_tuple.OrderBy(t => t.Item1).ToList();
-
-                    foreach (var t in a_tuple)
-                    {
-
-                        if (!displayList.Contains(t.Item2))
-                            displayList.Add(t.Item2);
-                    }
-                    break;
-            }
         }
 
         // not used
@@ -1609,7 +1418,7 @@ namespace New_Tradegy.Library
                 code = new String(code.Where(Char.IsDigit).ToArray());
                 basestring += code;
                 //OpenTabBySelenium(basestring);
-                Process.Start("chrome.exe",  basestring);
+                Process.Start("chrome.exe", basestring);
             }
         }
 
@@ -1620,12 +1429,12 @@ namespace New_Tradegy.Library
         {
             // Initialize ChromeDriver
             var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\병신\mis\New Tradegy\bin\Debug");
-     
-        IWebDriver driver = new ChromeDriver(chromeDriverService);
+
+            IWebDriver driver = new ChromeDriver(chromeDriverService);
             //IWebDriver driver = new ChromeDriver();
 
             // Set an explicit wait (e.g., wait up to 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));CacheVirtualItemsEventArgs:
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10)); CacheVirtualItemsEventArgs:
 
             // Open the first URL
             driver.Navigate().GoToUrl("http://google.com");
