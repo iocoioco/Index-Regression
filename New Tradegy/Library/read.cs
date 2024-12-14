@@ -301,7 +301,7 @@ namespace New_Tradegy.Library
                     }
                     if (words[0].Contains(":"))
                     {
-                        current_time = ms.time_to_int(words[0]);
+                        current_time = mc.time_to_int(words[0]);
                     }
                     else
                     {

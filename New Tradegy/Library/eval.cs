@@ -86,6 +86,176 @@ namespace New_Tradegy.Library
 
         public static void eval_stock() // 12 MilliSeconds
         {
+            var group = new HashSet<string> { "닥올", "피올", "편차", "평균" };
+            if (group.Contains(g.v.key_string))
+                return;
+
+            var a_tuple = new List<Tuple<double, string>> { };
+            int sequence_number = 0;
+
+            double 최대급락 = 3000;
+
+            foreach (var o in g.ogl_data)
+            {
+                if (!o.included || o.nrow < 2) continue;
+
+                string stock = o.stock;
+
+                int check_row = 0;
+                if (g.test)
+                {
+                    check_row = g.time[1] - 1;
+                    if (check_row > o.nrow - 1)
+                        check_row = o.nrow - 1;
+                }
+                else
+                    check_row = o.nrow - 1;
+
+                // 레버리지 외 지수관련 및 보유종목, 호가종목, 관심종목  continue;
+                if ((g.KODEX4.Contains(stock) && !stock.Contains("레버리지")) ||
+                    stock.Contains("KODEX") ||
+                    stock.Contains("KOSEF") ||
+                    stock.Contains("HANARO") ||
+                    stock.Contains("TIGER") ||
+                    stock.Contains("KBSTAR") ||
+                    stock.Contains("혼합") ||
+                    g.보유종목.Contains(stock) ||
+                    g.호가종목.Contains(stock) ||
+                    g.관심종목.Contains(stock))
+                {
+                    continue;
+                }
+
+
+                double value = 0.0;
+                if (g.q == "a&s" || g.q == "s&s")
+                    value = sequence_number++;
+                else
+                {
+                    // 급락 + 분배수차 플러스 + 프외 플러스 + 가격 양전
+                    if (o.점수.급락 < 최대급락 &&
+                   o.분배수차[0] >= 0 && o.분프로천[0] + o.분외인천[0] > 0 &&
+                   o.x[check_row, 1] - o.x[check_row - 1, 1] >= 0)
+                    {
+                        최대급락 = o.점수.급락;
+                        g.급락종목 = stock;
+                    }
+
+                    switch (g.v.key_string)
+                    {
+                        case "총점":
+                            value = o.점수.총점;
+                            //value = o.점수.등합;
+                            break;
+
+                        case "닥올":
+                        case "피올":
+                            value = sequence_number++;
+                            break;
+
+                        case "프누":
+                            value = o.프누천 + o.외누천;
+                            break;
+                        case "종누":
+                            value = o.종거천;
+                            break;
+                        case "프편":
+                            value = (o.프누천 + o.외누천) / o.통계.프분_dev;
+                            break;
+                        case "종편":
+                            value = o.종거천 / o.통계.프분_dev;
+                            break;
+
+                        case "푀분":// 분당프로그램(천만원)
+                            value = o.분프로천[0] + o.분외인천[0];// 20220720;
+                                                          //value = o.점수.푀분;// 20220728;
+                            break;
+                        case "배차": // 배수차
+                            value = o.분배수차[0];
+                            break;
+
+                        case "가증": // price jump
+                            value = o.x[check_row, 1] - o.x[check_row - 1, 1];
+                            break;
+                        case "분거": // 분거천 순서
+                            value = o.분거래천[0];
+                            break;
+
+                        case "상순": // higher price order
+                            value = o.x[check_row, 1];
+                            break;
+                        case "저순": // lower price order
+                            value = o.x[check_row, 1] * -1.0;
+                            break;
+
+                        case "편차":
+                            value = o.dev;
+                            break;
+                        case "평균":
+                            value = o.avr;
+                            break;
+                    }
+                }
+                a_tuple.Add(Tuple.Create(value, stock));
+            }
+
+
+
+            if (!g.q.Contains("&g")) // in group no evaluation 
+            {
+                //if (g.v.key_string == "총점")
+                //{
+                //    a_tuple = a_tuple.OrderBy(t => t.Item1).ToList();
+                //}
+                //else
+                //{
+                a_tuple = a_tuple.OrderByDescending(t => t.Item1).ToList();
+
+                //}
+            }
+
+            if (a_tuple.Count < 30)
+            {
+
+            }
+
+            lock (g.lockObject)
+            {
+                g.sl.Clear();
+
+                foreach (var item in a_tuple)
+                {
+                    if (!g.sl.Contains(item.Item2))
+                    {
+                        g.sl.Add(item.Item2);
+                    }
+                }
+
+                if (g.v.key_string == "닥올" || g.v.key_string == "피올")
+                {
+                    wk.시총순서(g.sl);
+                }
+
+                if (g.q == "a&s")
+                {
+                    g.sl.Remove("KODEX 레버리지"); // 전체적으로 지수의 흐름을 보고 단타를 치기위함
+                    g.sl.Remove("KODEX 200선물인버스2X");
+                    g.sl.Remove("KODEX 코스닥150레버리지");
+                    g.sl.Remove("KODEX 코스닥150선물인버스");
+                    g.sl.Add("KODEX 레버리지"); // 전체적으로 지수의 흐름을 보고 단타를 치기위함
+                    g.sl.Add("KODEX 코스닥150레버리지");
+                }
+            }
+            string newValue = g.sl.Count.ToString() + "/" + g.ogl_data.Count.ToString();
+            if (g.제어.dtb.Rows[1][1].ToString() != newValue)
+            {
+                g.제어.dtb.Rows[1][1] = newValue;
+            }
+        }
+
+
+        public static void eval_stock_20241214() // 12 MilliSeconds
+        {
             if (g.test) // 실제 run 에서는 post() 에서 합산됨
             {
                 foreach (var o in g.ogl_data)
@@ -159,12 +329,13 @@ namespace New_Tradegy.Library
 
                 // inclusion check for test
                 // inclusion check done in post() for real 
-                if(g.test)
+                if (!g.test) //!
                 {
                     if (!ev.eval_inclusion(o))
                     {
                         continue;
                     }
+                    ps.post(o); // test
                 }
 
                 // 레버리지 외 지수관련 모두 continue;
@@ -196,11 +367,11 @@ namespace New_Tradegy.Library
                         최대급락 = o.점수.급락;
                         g.급락종목 = stock;
                     }
-                    
+
                     switch (g.v.key_string)
                     {
                         case "총점":
-                            value = o.점수.총점; 
+                            value = o.점수.총점;
                             //value = o.점수.등합;
                             break;
 
@@ -224,7 +395,7 @@ namespace New_Tradegy.Library
 
                         case "푀분":// 분당프로그램(천만원)
                             value = o.분프로천[0] + o.분외인천[0];// 20220720;
-                            //value = o.점수.푀분;// 20220728;
+                                                          //value = o.점수.푀분;// 20220728;
                             break;
                         case "배차": // 배수차
                             value = o.분배수차[0];
@@ -289,7 +460,7 @@ namespace New_Tradegy.Library
 
                 if (g.v.key_string == "닥올" || g.v.key_string == "피올")
                 {
-                    wk.시총순서(g.sl); 
+                    wk.시총순서(g.sl);
                 }
 
                 if (g.q == "a&s")
@@ -303,17 +474,11 @@ namespace New_Tradegy.Library
                 }
             }
             string newValue = g.sl.Count.ToString() + "/" + g.ogl_data.Count.ToString();
-            if(g.제어.dtb.Rows[1][1].ToString() != newValue)
+            if (g.제어.dtb.Rows[1][1].ToString() != newValue)
             {
                 g.제어.dtb.Rows[1][1] = newValue;
             }
-            
-
-            eval_group();
         }
-
-
-
 
         public static bool eval_inclusion(g.stock_data o)
         {
@@ -361,7 +526,7 @@ namespace New_Tradegy.Library
                 if (g.v.종가기준추정거래액이상_천만원 > (int)o.종거천)
                     return false;
 
-          //?
+                //?
                 //if (!g.test)
                 //{
                 //    // 호가거래액이상
@@ -445,7 +610,7 @@ namespace New_Tradegy.Library
 
                 g.priceKospiSounded = o.x[o.nrow - 1, 1];
 
-                ms.Sound("코스피 코스닥", sound);
+                mc.Sound("코스피 코스닥", sound);
             }
             if (o.stock == "KODEX 코스닥150레버리지")
             {
@@ -481,7 +646,7 @@ namespace New_Tradegy.Library
 
                 g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
 
-                ms.Sound("코스피 코스닥", sound);
+                mc.Sound("코스피 코스닥", sound);
             }
         }
 
@@ -720,7 +885,7 @@ namespace New_Tradegy.Library
             //        else
             //            sound = "qp 150";
 
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //    if (o.stock == "KODEX 코스닥150레버리지")
             //    {
@@ -776,7 +941,7 @@ namespace New_Tradegy.Library
             //        else
             //            sound = "pp 150";
 
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //}
 
@@ -900,7 +1065,7 @@ namespace New_Tradegy.Library
             //        else
             //            sound = "qp 150";
 
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //    if (o.stock == "KODEX 코스닥150레버리지")
             //    {
@@ -956,7 +1121,7 @@ namespace New_Tradegy.Library
             //        else
             //            sound = "pp 150";
 
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //}
 
@@ -1017,7 +1182,7 @@ namespace New_Tradegy.Library
             //        else
             //            sound = "qp 150";
 
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //        if (o.stock == "KODEX 코스닥150레버리지")
             //    {
@@ -1073,7 +1238,7 @@ namespace New_Tradegy.Library
             //        else
             //            sound = "qp 150";
 
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //}
 
@@ -1125,7 +1290,7 @@ namespace New_Tradegy.Library
             //        {
             //            sound = "";
             //        }
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
 
             //    if (o.stock == "KODEX 코스닥150레버리지")
@@ -1167,7 +1332,7 @@ namespace New_Tradegy.Library
             //        {
             //            sound = "";
             //        }
-            //        ms.Sound("코스피 코스닥", sound);
+            //        mc.Sound("코스피 코스닥", sound);
             //    }
             //}
 
@@ -1214,7 +1379,7 @@ namespace New_Tradegy.Library
             //    else if (분당가격차 < -g.v.index_difference_sound[0])
             //        sound = "DOWN";
 
-            //    ms.Sound("코스피 코스닥", sound);
+            //    mc.Sound("코스피 코스닥", sound);
 
             //    g.check_time = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
             //}

@@ -36,7 +36,7 @@ namespace New_Tradegy
                 }
 
                 // Trigger the marketeye alarm task
-                await ms.task_marketeye_alarm(HHmm);
+                await mc.task_marketeye_alarm(HHmm);
 
                 // Call marketeye logic
                 await marketeye();
@@ -268,7 +268,7 @@ namespace New_Tradegy
             dynamic fieldname = _marketeye.GetHeaderValue(1); // name of data ... 프로그램매수 등
             int count = (int)_marketeye.GetHeaderValue(2); // number of stock downloaded
 
-            List <string> stockList = new System.Collections.Generic.List<string>();
+            List <g.stock_data> Download_ogl_data_List = new System.Collections.Generic.List<g.stock_data>();
 
             for (int k = 0; k < count; k++)
             {
@@ -280,6 +280,7 @@ namespace New_Tradegy
                     continue;
 
                 g.stock_data o = g.ogl_data[indey];
+                Download_ogl_data_List.Add(o);
 
                 //string stock = o.stock;
 
@@ -381,7 +382,7 @@ namespace New_Tradegy
 
                 // BLOCKED
                 int before_time_6int = o.x[comparison_row, 0];
-                double totalSeconds = ms.total_Seconds(before_time_6int, HHmmss);
+                double totalSeconds = mc.total_Seconds(before_time_6int, HHmmss);
                 double multiple_factor;
                 if (totalSeconds > g.EPS && o.일평균거래량 > 100)
                 {
@@ -478,7 +479,7 @@ namespace New_Tradegy
                 // MDF 20230302
                 // tick data setting
                 // BLOCKED
-                totalSeconds = ms.total_Seconds(o.틱의시간[0], HHmmss); // second can be zero, oops
+                totalSeconds = mc.total_Seconds(o.틱의시간[0], HHmmss); // second can be zero, oops
                 double 틱매수체결배수 = 0.0;
                 double 틱매도체결배수 = 0.0;
                 if (totalSeconds > g.EPS)
@@ -586,16 +587,7 @@ namespace New_Tradegy
                     o.분배수합[1] = o.분매수배[1] + o.분매도배[1];
                 }
 
-                ps.post(o); // marketeye_received()
-                ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
-
-                stockList.Add(o.stock);
-
-                if (g.보유종목.Contains(o.stock)) // 보유종목 중 Form_호가 사용하지 않고 있는 경우 대비
-                {
-                    cn.dgv2_update(); // marketeye_received()
-                    marketeye_received_보유종목_푀분의매수매도_소리내기(o); // this is from mip
-                }
+                o.downloaded = true;
 
                 // ps.marketeye_received_틱프로천_ebb_tide(o); // not defined clearly, so return doing nothing
                 // do not know what is going on in the routine,
@@ -603,6 +595,7 @@ namespace New_Tradegy
                 // ms.marketeye_record_변곡(o);
 
             }
+            ps.post_real(Download_ogl_data_List);
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];
@@ -613,10 +606,6 @@ namespace New_Tradegy
             g.코스닥지수 = q.x[q.nrow - 1, 1];
             
             ps.post_코스닥_코스피_프외_순매수_배차_합산();
-
-            ev.eval_stock(); // 12 milliseconds, position changing every marketeye_received
-            md.mdm();
-            dr.mds();
 
             g.marketeye_count++;
 
@@ -753,57 +742,7 @@ namespace New_Tradegy
             }
         }
 
-        public static void marketeye_received_보유종목_푀분의매수매도_소리내기(g.stock_data o)
-        {
-            if (o.보유량 * o.전일종가 < 200000) // 보유액 20,000 이하이면 무시하고 return
-                return;
-
-            double sound_indicater = 0;
-
-            // 소리
-            #region
-            if (Math.Abs(o.틱프로천[0]) > 0.1 || Math.Abs(o.틱외인천[0]) > 0.1)
-            {
-                string sound = "";
-                int 보유종목_순서번호 = -1;
-                for (int i = 0; i < 3; i++)
-                {
-                    if (g.보유종목[i] == o.stock)
-                    {
-                        보유종목_순서번호 = i;
-                        if (i == 0)
-                            sound = "one ";
-                        else if (i == 1)
-                            sound = "two ";
-                        else
-                            sound = "three ";
-                        break;
-                    }
-                }
-                if (보유종목_순서번호 < 0)
-                    return;
-
-                if (o.통계.프분_dev > 0)
-                {
-                    sound_indicater = (o.틱프로천[0] + o.틱외인천[0]) / o.통계.프분_dev;
-                    if (sound_indicater > 2) sound += "buyest";
-                    else if (sound_indicater > 1) sound += "buyer";
-                    else if (sound_indicater > 0) sound += "buy";
-                    else if (sound_indicater > -1) sound += "sell";
-                    else if (sound_indicater > -2) sound += "seller";
-                    else sound += "sellest";
-
-                }
-                ms.Sound("가", sound);
-            }
-            #endregion
-
-            // 비상매도
-            // 푀틱 매도 푀분 매도 가 하락
-            // 푀틱 매수 푀분 매수 배차 음, 가 하락
-            // 배차 음 가 하락 (누군가 던지고 있다)
-            // 피로도
-        }
+        
 
     }
 }

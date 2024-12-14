@@ -95,7 +95,7 @@ namespace New_Tradegy.Library
                     g.date = return_date;
                 }
 
-                ms.Sound("time", "date backwards");
+                mc.Sound("time", "date backwards");
 
 
                 //rd.gen_ogldata_oGLdata(); // 업종 & 상관 : 전일 거래액 순서로
@@ -123,7 +123,7 @@ namespace New_Tradegy.Library
                     g.date = return_date;
                 }
 
-                ms.Sound("time", "date forwards");
+                mc.Sound("time", "date forwards");
 
 
                 //g.ogl_data.Clear();
@@ -155,9 +155,9 @@ namespace New_Tradegy.Library
             int month_1 = g.date % 10000 / 100;
             int day_1 = g.date % 10000 % 100;
             g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
-            ev.eval_stock();
-            md.mdm(); // date_backwards_forwards
-            dr.mds(); // date_backwards_forwards
+            ev.eval_stock(); // date backwards forwards
+            mm.ManageChart1(); // date_backwards_forwards
+            mm.ManageChart2(); // date_backwards_forwards
         }
 
 

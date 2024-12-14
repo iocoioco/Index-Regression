@@ -75,7 +75,7 @@ namespace New_Tradegy.Library
                 File.WriteAllText(file, str);
             }
 
-            ms.Sound("일반", "done");
+            mc.Sound("일반", "done");
         }
 
         public static double WriteDuration(string fromorTo) // 소요시간 계산

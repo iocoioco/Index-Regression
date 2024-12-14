@@ -11,7 +11,8 @@ using System.Security.Cryptography.X509Certificates;
 using static New_Tradegy.Library.g;
 using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-class md
+using System.Xml.Linq;
+class mm
 {
     // 0, 1(가격), 2(수급), 3(체강), 4(프로그램), 5(외인), 6(기관)
     private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
@@ -25,7 +26,9 @@ class md
 
     //static List<string> g.dl = new List<string>();
     static int hogaCount = 0;
-    
+
+    static List<string> stocksWithBid = new List<string>();
+
     static float cellWidth = 100f / g.nCol;
     static float cellHeight = 100f / g.nRow;
 
@@ -40,7 +43,15 @@ class md
 
     static int formWidth = g.screenWidth / g.nCol;    // Position based on screen width
     static int formHeight = g.screenHeight / g.nRow;
+    static int DgvCellHeight = 28;
 
+    public Form _parent;
+
+    // Constructor to accept the parent form
+    public void ParentPassing(Form parent)
+    {
+        _parent = parent;
+    }
 
     static void InitializeFixedElements(Chart chart)
     {
@@ -61,42 +72,25 @@ class md
                 UpdateChartSeries(chart, stock, g.nRow, g.nCol); // Modify the endpoint for existing chart area
             }
 
+            Form form = fm.FindFormByName("se");
             // Check if the form exists; if not, create it and set the location
-            if (!FormExists(stock))
+            if (!fm.DoesDataGridViewExist(form, stock))
             {
+                var a = new jp();
 
-                Form_호가 form_호가 = new Form_호가(stock);
-                form_호가.Show();
-                Form form = HogaFormNameGivenStockName(stock);
-                Size a = form.Size; // was 273 530
-                Point b = form.Location;
+                DataGridView Dgv = a.Generate(stock);
 
+                Dgv.Height = DgvCellHeight * 11;
 
-                DataGridView dgvs = form.Controls
-               .OfType<DataGridView>()          // Get all DataGridView controls
-               .FirstOrDefault(dgv => dgv.Name == form.Name);
-
-
-              
-                form.Size = new Size(dgvWidth, dgvHeight);
-                dgvs.Size = new Size(dgvWidth, dgvHeight);
-                dgvs.Location = new Point(formWidth * 1, 0);
-
-                if (i ==0)
-                    form.Location = new Point(formWidth * 1, formHeight * 0);
+                if (i == 0)
+                    Dgv.Location = new Point(dgvWidth * 1, formHeight * 0 - DgvCellHeight);
                 else
-                    form.Location = new Point(formWidth * 1, formHeight * 2);
+                    Dgv.Location = new Point(dgvWidth * 1, formHeight * 2 - DgvCellHeight);
 
-                // form.FormBorderStyle = FormBorderStyle.None;
 
-                //int borderWidth = (form.Width - form.ClientSize.Width) / 2; // Typically left and right borders
-                //dgvs.Location = new Point(-borderWidth, dgvs.Location.Y);
-
-                // form.Padding = new Padding(0);
             }
         }
     }
-
 
     // Use SuspendLayout and ResumeLayout to batch updates on the chart.
     // Use data binding for the chart's Series if possible, avoiding manual updates.
@@ -128,33 +122,30 @@ class md
         chart.Invalidate();   // Redraw chart
     }
 
-    public static void mdm()
+    public static void ManageChart1()
     {
         // First, handle the fixed elements
         InitializeFixedElements(g.chart1);
 
-
-        
-
-        
-        
-
-
-
         HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
-        ClearUnusedChartAreasAndAnnotations(g.chart1, g.dl);
+
         // Now, handle the rest of the dynamically generated elements as before
         int currentRow = 0;
         int currentCol = 2; // Start from the third column since first two columns are occupied
 
-        for (int i = 0; i < hogaCount; i++) // hogaCount (chartareas and forms)
+        for (int i = 0; i < stocksWithBid.Count; i++) // hogaCount (chartareas and forms)
         {
-            string stock = g.dl[i];
+            string stock = stocksWithBid[i];
 
-            if (!FormExists(stock))
+            Form form = fm.FindFormByName("se");
+            // Check if the form exists; if not, create it and set the location
+            if (!fm.DoesDataGridViewExist(form, stock))
             {
-                Form_호가 form_호가 = new Form_호가(stock);
-                form_호가.Show();
+                var a = new jp();
+
+                DataGridView dgv = a.Generate(stock);
+
+                dgv.Height = DgvCellHeight * 11;
             }
 
             if (!ChartAreaExists(g.chart1, stock))
@@ -166,8 +157,8 @@ class md
                 UpdateChartSeries(g.chart1, stock, g.nRow, g.nCol); // includes annotation update too
             }
 
-            // Relocate chart area and form for hogaCount stocks
-            RelocateChartAreaAndForm(g.chart1, stock, currentRow, currentCol);
+            // Relocate chart area and dataGridView for hogaCount stocks
+            RelocateChartAreaAndDataGridView(g.chart1, stock, currentRow, currentCol);
 
             currentRow++;
             if (currentRow >= g.nRow)
@@ -181,97 +172,145 @@ class md
             }
         }
 
-        // Handle the remaining chart areas without forms
-        for (int i = hogaCount; i < g.dl.Count; i++)
-        {
-            string stock = g.dl[i];
-
-            if (!ChartAreaExists(g.chart1, stock))
-            {
-                CreateChartAreaForStock(g.chart1, stock, g.nRow, g.nCol);
-            }
-            else
-            {
-                UpdateChartSeries(g.chart1, stock, g.nRow, g.nCol);
-            }
-
-            RelocateChartArea(g.chart1, stock, currentRow, currentCol);
-
-            currentRow++;
-            if (currentRow >= g.nRow)
-            {
-                currentRow = 0;
-                currentCol++;
-                if (currentCol >= g.nCol)
-                {
-                    break;
-                }
-            }
-        }
-        ClearUnusedChartAreasAndAnnotations(g.chart1, g.dl);
-        //g.chart1.Invalidate();
-
-
         int areasCount = g.chart1.ChartAreas.Count;
         int annotationsCount = g.chart1.Annotations.Count;
         int seriesCount = g.chart1.Series.Count;
+
+        // Handle the remaining chart areas without forms
+        for (int i = 0; i < g.dl.Count; i++)
+        {
+            string stock = g.dl[i];
+            if (wk.isStock(stock) && !stocksWithBid.Contains(stock))
+            {
+                if (!ChartAreaExists(g.chart1, stock))
+                {
+                    CreateChartAreaForStock(g.chart1, stock, g.nRow, g.nCol);
+                }
+                else
+                {
+                    UpdateChartSeries(g.chart1, stock, g.nRow, g.nCol);
+                }
+
+                RelocateChartArea(g.chart1, stock, i % g.nRow, i / g.nRow + 2);
+            }
+        }
+        ClearUnusedChartAreasAndAnnotations(g.chart1, g.dl);
+        ClearUnusedDataGridViews(g.chart1, stocksWithBid);
+        //g.chart1.Invalidate();
+
+
+        areasCount = g.chart1.ChartAreas.Count;
+        annotationsCount = g.chart1.Annotations.Count;
+        seriesCount = g.chart1.Series.Count;
+    }
+
+    public static void ManageChart2()
+    {
+        Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
+        if (Form_보조_차트 != null)
+        {
+            Form_보조_차트.Form_보조_차트_DRAW();
+        }
+    }
+
+    public static void ManageChart2(string keystring)
+    {
+        Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
+        if (Form_보조_차트 != null)
+        {
+            Form_보조_차트.keyString = keystring;
+            Form_보조_차트.Form_보조_차트_DRAW();
+        }
     }
 
 
-
-   
     static void HogaCountDiplayList()
     {
-        g.dl.Clear(); // Clears the list
-        hogaCount = 0; // Resets hogaCount
+        hogaCount = 0;
+        stocksWithBid.Clear();
+        g.dl.Clear(); // Clear the list
 
-        int TotalSpaceCount = g.nRow * (g.nCol - 2);
-        foreach (string stock in g.보유종목)
+        //g.보유종목.Add("a");
+        //g.보유종목.Add("b");
+        //g.보유종목.Add("c");
+        //g.보유종목.Add("d");
+        //g.호가종목.Add("e");
+
+        int TotalSpaceCount = g.nRow * (g.nCol - 2); // Total available slots in the grid
+
+        // Create lists for stocks with and without bid spaces
+        // Stocks from 보유종목 and 호가종목
+        List<string> remainingStocks = new List<string>();   // Stocks from g.sl (fill empty slots)
+
+        // Helper function to add stocks with bid spaces
+        void AddStocksWithBid(IEnumerable<string> stockList)
         {
-            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
+            foreach (string stock in stockList)
             {
-                g.dl.Add(stock);
-                hogaCount++;
+                if (!stocksWithBid.Contains(stock) && !stock.Contains("KODEX"))
+                {
+                    stocksWithBid.Add(stock);
+                }
             }
-            if (hogaCount + g.dl.Count >= TotalSpaceCount)
-                break;
         }
 
-        foreach (string stock in g.호가종목)
+        // Add stocks from 보유종목 and 호가종목 (with bid spaces)
+        AddStocksWithBid(g.보유종목);
+        AddStocksWithBid(g.호가종목);
+
+        for (int i = 0; i < TotalSpaceCount; i++)
         {
-            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
-            {
-                g.dl.Add(stock);
-                hogaCount++;
-            }
-            if (hogaCount + g.dl.Count >= TotalSpaceCount)
-                break;
+            g.dl.Add("empty");
         }
 
-        foreach (string stock in g.관심종목)
+        // 보유종목, 호가종목
+        int rowCount = 0;
+        for (int i = 0; i < stocksWithBid.Count; i++)
         {
-            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
-            {
-                g.dl.Add(stock);
-            }
-            if (hogaCount + g.dl.Count >= TotalSpaceCount)
-                break;
+            int Row = i % g.nRow;
+            int Col = i / g.nRow;
+            g.dl[(Col * 2 + 0) * g.nRow + Row] = stocksWithBid[i];
+            g.dl[(Col * 2 + 1) * g.nRow + Row] = "";
+            hogaCount++;
         }
 
-
-        foreach (string stock in g.sl)
+        // 관심종목
+        int 관심Count = 0;
+        for (int i = 0; i < TotalSpaceCount; i++)
         {
-            if (!g.dl.Contains(stock) && !stock.Contains("KODEX"))
+            if (g.dl[i] != "empty")
+                continue;
+
+            if(관심Count < g.관심종목.Count)
             {
-                g.dl.Add(stock);
+                g.dl[i] = g.관심종목[관심Count++];
             }
-            if (hogaCount + g.dl.Count >= TotalSpaceCount)
+            else
+            {
                 break;
+            }
         }
 
-        while (hogaCount + g.dl.Count > TotalSpaceCount)
+        // eval_stock 종목
+        int slCount = g.gid;
+        for (int i = 0; i < TotalSpaceCount; i++)
         {
-            g.dl.RemoveAt(g.dl.Count - 1);
+            if (g.dl[i] != "empty")
+                continue;
+
+            for (int j = slCount; j < g.sl.Count; j++)
+            {
+                if (g.dl.Contains(g.sl[j]))
+                {
+                    continue;
+                }
+                else
+                {
+                    g.dl[i] = g.sl[j];
+                    slCount = j + 1;
+                    break;
+                }
+            }
         }
     }
 
@@ -575,12 +614,28 @@ class md
 
 
         // 단일가거래 종목은 차트 포함시키지 않음
+        // 동신건설 거래정지 종목으로 return
         if (o.x[end_time - 1, 3] == 0)
             return;
 
         // The start of area and drawing of stock
         string area = stockName;
-        chart.ChartAreas.Add(area);
+
+
+        if (chart.InvokeRequired)
+        {
+            chart.Invoke(new Action(() =>
+            {
+                // Update the chart here
+                chart.ChartAreas.Add(area);
+            }));
+        }
+        else
+        {
+            // Update the chart here
+            chart.ChartAreas.Add(area);
+        }
+        
 
         int total_number_of_point = 0;
         int[] dataTypesToDraw = { 1, 2, 3, 9 }; // Only price, amount, intensity, and centerline
@@ -597,7 +652,26 @@ class md
                 XValueType = ChartValueType.Date,
                 IsVisibleInLegend = false
             };
-            chart.Series.Add(t);
+
+
+
+
+            if (chart.InvokeRequired)
+            {
+                chart1.Invoke(new Action(() =>
+                {
+                    // Update the chart here
+                    chart.Series.Add(t);
+                }));
+            }
+            else
+            {
+                // Update the chart here
+                chart.Series.Add(t);
+            }
+
+
+            
 
             total_number_of_point = 0;
 
@@ -635,7 +709,26 @@ class md
 
                 //if (i != 9) // Skip further processing for centerline as it's already set
                 //{
-                t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+
+
+                if (chart.InvokeRequired)
+                {
+                    chart.Invoke(new Action(() =>
+                    {
+                        // Update the chart here
+                        t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+                    }));
+                }
+                else
+                {
+                    // Update the chart here
+                    t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+                }
+
+
+
+
+                
                 total_number_of_point++;
 
                 y_min = Math.Min(y_min, value);
@@ -805,6 +898,79 @@ class md
 
     }
 
+    public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
+    {
+        if (chart == g.chart1)
+        {
+            stockswithbid.Add(g.KODEX4[0]);
+            stockswithbid.Add(g.KODEX4[2]);
+        }
+
+        List<string> notInStocksWithBid = new List<string>();
+
+        // Get the target form
+        Form se = Application.OpenForms["se"];
+        if (se == null)
+        {
+            MessageBox.Show("Form 'se' is not open.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        // Iterate through all controls in the form
+        foreach (Control control in se.Controls)
+        {
+            // Check if the control is a DataGridView
+            if (control is DataGridView dataGridView)
+            {
+                // Check if the DataGridView name is not in stocksWithBid
+                if (!stockswithbid.Contains(dataGridView.Name))
+                {
+                    notInStocksWithBid.Add(dataGridView.Name);
+                }
+            }
+        }
+
+        // Safely handle unsubscriptions and removal
+        List<string> keysToRemove = new List<string>();
+        foreach (var dgvName in notInStocksWithBid)
+        {
+            // Unsubscribe and dispose
+            if (g.jpjds.TryGetValue(dgvName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
+            {
+                try
+                {
+                    _stockjpbid.Unsubscribe();
+
+                    // Find the DataGridView and dispose of it
+                    Form form = fm.FindFormByName("se");
+                    DataGridView dgv = fm.FindDataGridViewByName(form, dgvName);
+
+                    if (dgv != null)
+                    {
+                        dgv.Dispose();
+                    }
+
+                    // Mark for removal
+                    keysToRemove.Add(dgvName);
+                }
+                catch (Exception ex)
+                {
+                    // Log or handle errors gracefully
+                    MessageBox.Show($"Error while processing {dgvName}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        // Remove from dictionary after iteration
+        foreach (var key in keysToRemove)
+        {
+            g.jpjds.Remove(key);
+        }
+
+        stockswithbid.Remove(g.KODEX4[0]);
+        stockswithbid.Remove(g.KODEX4[2]);
+    }
+
     public static void ClearUnusedChartAreasAndAnnotations(Chart chart, List<string> displayedStockList)
     {
         if (chart == g.chart1)
@@ -823,25 +989,6 @@ class md
         foreach (var chartArea in chartAreasToRemove)
         {
             string stockName = chartArea.Name;
-
-            // Additional logic for unsubscribing data feeds, closing forms, etc.
-            if (g.jpjds.TryGetValue(stockName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
-            {
-                _stockjpbid.Unsubscribe();
-
-                Form form = HogaFormNameGivenStockName(stockName);
-                if (form != null)
-                {
-                    if (form.Controls.Find(stockName, true).FirstOrDefault() is DataGridView dgv)
-                    {
-                        dgv.Dispose();
-                    }
-                    form.Close();
-                }
-
-                // Remove the stock entry from the dictionary
-                g.jpjds.Remove(stockName);
-            }
 
             // Remove associated Series
             var seriesToRemove = chart.Series
@@ -867,26 +1014,6 @@ class md
         foreach (var annotation in annotationsToRemove)
         {
             string stockName = annotation.Name;
-
-            // Additional logic for unsubscribing data feeds, closing forms, etc.
-            if (g.jpjds.TryGetValue(stockName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
-            {
-                _stockjpbid.Unsubscribe();
-
-                Form form = HogaFormNameGivenStockName(stockName);
-                if (form != null)
-                {
-                    if (form.Controls.Find(stockName, true).FirstOrDefault() is DataGridView dgv)
-                    {
-                        dgv.Dispose();
-                    }
-                    form.Close();
-                }
-
-                // Remove the stock entry from the dictionary
-                g.jpjds.Remove(stockName);
-            }
-
             chart.Annotations.Remove(annotation);
         }
 
@@ -1490,7 +1617,19 @@ class md
                 // If the series has fewer points, add missing points
                 for (int i = seriesPoints; i < totalPoints; i++)
                 {
-                    series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(), o.x[i, int.Parse(suffix)]);
+                    if (chart.InvokeRequired)
+                    {
+                        chart.Invoke(new Action(() =>
+                        {
+                            // Update the chart here
+                            series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(), o.x[i, int.Parse(suffix)]);
+                        }));
+                    }
+                    else
+                    {
+                        // Update the chart here
+                        series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(), o.x[i, int.Parse(suffix)]);
+                    }
                 }
             }
         }
@@ -1535,7 +1674,29 @@ class md
                 g.stock_data o = g.ogl_data[index];
 
                 string annotationText = draw_stock_title(chart, o, o.x, 0, o.nrow - 1, o.nrow);
-                textAnnotation.Text = annotationText;
+
+
+
+
+
+                if (chart.InvokeRequired)
+                {
+                    chart.Invoke(new Action(() =>
+                    {
+                        // Update the chart here
+                        textAnnotation.Text = annotationText;
+                    }));
+                }
+                else
+                {
+                    // Update the chart here
+                    textAnnotation.Text = annotationText;
+                }
+
+
+
+
+                
 
                 // Update the position of the annotation to remain at the top-left corner of the chart area
                 textAnnotation.X = 0;
@@ -1562,6 +1723,12 @@ class md
 
     public static void UpdateChartSeries(Chart chart, string stockName, int nRow, int nCol)
     {
+        int index = wk.return_index_of_ogldata(stockName);
+        if (index < 0) return;
+        g.stock_data o = g.ogl_data[index];
+        if (!g.test && !o.downloaded)
+            return;
+
         if (stockName.Contains("KODEX"))
         {
             UpdateChartSeriesKodex(chart, stockName);
@@ -1571,7 +1738,7 @@ class md
             UpdateChartSeriesGeneral(chart, stockName); // 
             UpdateAnnotation(chart, stockName);
         }
-        // Assuming this function modifies the last point or adds a new point
+        if(!g.test) o.downloaded = false;
     }
 
     public static void UpdateChartSeriesGeneral(Chart chart, string stockName)
@@ -1691,25 +1858,32 @@ class md
         return value;
     }
 
-    static void RelocateChartAreaAndForm(Chart chart, string stockName, int row, int col)
+    static void RelocateChartAreaAndDataGridView(Chart chart, string stockName, int row, int col)
     {
         // Set position and size of the chart area based on row and column
         RelocateChartArea(chart, stockName, row, col);
 
         // Also set the position of the form next to it
-        Form form = Application.OpenForms[stockName];
-        if (form != null)
+        Form form = fm.FindFormByName("se");
+        DataGridView dgv = fm.FindDataGridViewByName(form, stockName);
+        if (dgv != null)
         {
-            RelocateForm(form, row, col + 1); // Form is placed in the column next to the chart area
+            RelocateDataGridView(dgv, row, col + 1); // Form is placed in the column next to the chart area
         }
     }
 
     private static void RelocateChartArea(Chart chart, string stockName, int row, int col)
     {
+        ChartArea chartArea;
         // Get the chart area by stockName
-        ChartArea chartArea = chart.ChartAreas[stockName];
-        if (chartArea == null) throw new ArgumentException($"ChartArea for stock '{stockName}' does not exist.");
-
+        try
+        {
+            chartArea = chart.ChartAreas[stockName];
+        }
+        catch (KeyNotFoundException)
+        {
+            return;
+        }
 
         // Define grid-based positioning
         int totalRows = g.nRow; // Total rows available
@@ -1744,10 +1918,10 @@ class md
         }
     }
 
-    static void RelocateForm(Form form, int row, int col)
+    static void RelocateDataGridView(DataGridView dgv, int row, int col)
     {
-        form.Left = col * (Screen.PrimaryScreen.Bounds.Width / g.nCol); // Position based on screen width
-        form.Top = row * (Screen.PrimaryScreen.Bounds.Height / g.nRow); // Position based on screen height
+        dgv.Left = col * (Screen.PrimaryScreen.Bounds.Width / g.nCol); // Position based on screen width
+        dgv.Top = row * (Screen.PrimaryScreen.Bounds.Height / g.nRow); // Position based on screen height
     }
 
     static int HandleUSIndex(g.stock_data o, int k, int end_time, int start_time, int index)
@@ -1779,29 +1953,6 @@ class md
             }
         }
         return 0;
-    }
-
-    // Helper method to find an open form by stock name
-    static Form HogaFormNameGivenStockName(string stockName)
-    {
-        foreach (Form form in Application.OpenForms)
-        {
-            if (form.Name == stockName)
-            {
-                return form;
-            }
-        }
-        return null;
-    }
-
-    static bool FormExists(string stockName)
-    {
-        foreach (Form form in Application.OpenForms)
-        {
-            if (form.Name == stockName)
-                return true;
-        }
-        return false;
     }
 
     public static bool ChartAreaExists(Chart chart, string stockName)

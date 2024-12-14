@@ -117,8 +117,8 @@ namespace New_Tradegy
 
                 wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false); // KODEX
                 wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false); // KODEX
-                md.mdm(); // single KODEX, HScrollBar_Scroll
-                dr.mds(); // signle KODEX, HScrollBar_Scroll
+                mm.ManageChart1(); // single KODEX, HScrollBar_Scroll
+                mm.ManageChart2(); // signle KODEX, HScrollBar_Scroll
 
             }
         }

@@ -23,25 +23,25 @@ namespace New_Tradegy // added for test on 20241020 0300
 
     public partial class se : Form
     {
-        private Point mousePosition;
+        // private Point mousePosition;
 
-        private static CPUTILLib.CpStockCode _cpstockcode;
+        // private static CPUTILLib.CpStockCode _cpstockcode;
 
         private static CPUTILLib.CpCybos _cpcybos;
 
         //static DSCBO1Lib.StockMst2 _stockmst2;
         private static CPSYSDIBLib.CpSvrNew7222 _cpsvrnew7222;
-        private static CPSYSDIBLib.CpSvrNew7221S _cpsvrnew7221s;
-        private static DSCBO1Lib.CpFore8311 _cpfore8311;
+        // private static CPSYSDIBLib.CpSvrNew7221S _cpsvrnew7221s;
+        // private static DSCBO1Lib.CpFore8311 _cpfore8311;
         private DSCBO1Lib.CpSvr8091S _cpsvr8091s;
         private DataTable dt = new DataTable();
 
         private System.Timers.Timer _timerConnection;
         private int _timerCount;
 
-        static CPUTILLib.CpCodeMgr _cpcodemgr;
+        // static CPUTILLib.CpCodeMgr _cpcodemgr;
 
-        static CPSYSDIBLib.CpSvrNew7043 _cpsvrnew7043; //거래소,코스닥 등락현황(상한,하한,상승,하락 등등)데이터를 요청
+        // static CPSYSDIBLib.CpSvrNew7043 _cpsvrnew7043; //거래소,코스닥 등락현황(상한,하한,상승,하락 등등)데이터를 요청
 
         private static TextBox searchTextBox;
 
@@ -78,7 +78,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             //ts.지수합계점검();
             //return;
 
-            ms.Sound("일반", "by 2032");
+            mc.Sound("일반", "by 2032");
         }
 
 
@@ -96,6 +96,8 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //md.ParentPassing(this);
+
             g.MachineName = Environment.MachineName;
 
             //_cpcybos = null; after blocking g.connected becomes true
@@ -243,12 +245,12 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             rd.read_파일관심종목(); // duration 0.000 seconds
-            md.mdm(); // all new, Form_1 start
-            dr.mds(); // all new, Form_1 start
+            mm.ManageChart1(); // all new, Form_1 start
+            mm.ManageChart2(); // all new, Form_1 start
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
-            ms.Sound("일반", "to jsb");
+            mc.Sound("일반", "to jsb");
 
             return;
         }
@@ -280,7 +282,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 if (wk.isStock(searchText) && g.ogl_data.FindIndex(x => x.stock == searchText) >= 0)
                 {
                     g.관심종목.Add(searchText);
-                    md.mdm(); // not used
+                    mm.ManageChart1(); // not used
                 }
                 searchTextBox.Text = "";
                 //MessageBox.Show($"Entered text: {searchText}");
@@ -546,15 +548,15 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 if (GetRemainRQ() == 0)
                 {
-                    ms.Sound("일반", "no request");
+                    mc.Sound("일반", "no request");
                 }
                 if (GetRemainTR() == 0)
                 {
-                    ms.Sound("일반", "no trade");
+                    mc.Sound("일반", "no trade");
                 }
                 if (GetRemainSB() == 0)
                 {
-                    ms.Sound("일반", "no subscribe");
+                    mc.Sound("일반", "no subscribe");
                 }
                 Thread.Sleep(1000);
             }
@@ -582,8 +584,8 @@ namespace New_Tradegy // added for test on 20241020 0300
                             ev.eval_stock();  // Evaluate stock conditionally
                         }
 
-                        md.mdm(); // not used, Task task_eval_draw
-                        dr.mds(); // not used, Task task_eval_draw
+                        mm.ManageChart1(); // not used, Task task_eval_draw
+                        mm.ManageChart2(); // not used, Task task_eval_draw
 
                         // Update the last draw tick
                         g.marketeye_count_draw_tick = g.marketeye_count;

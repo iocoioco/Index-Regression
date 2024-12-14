@@ -109,13 +109,13 @@ namespace New_Tradegy
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                if (!md.ChartAreaExists(g.chart2, stock))
+                if (!mm.ChartAreaExists(g.chart2, stock))
                 {
-                    md.CreateChartAreaForStock(g.chart2, stock, g.nRow, g.nCol);
+                    mm.CreateChartAreaForStock(g.chart2, stock, g.nRow, g.nCol);
                 }
                 else
                 {
-                    md.UpdateChartSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
+                    mm.UpdateChartSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
                 }
             }
 
@@ -125,7 +125,7 @@ namespace New_Tradegy
             int seriesCount = g.chart2.Series.Count;
 
             RelocateChartAreasAndAnnotations();
-            md.ClearUnusedChartAreasAndAnnotations(chart2, displayList);
+            mm.ClearUnusedChartAreasAndAnnotations(chart2, displayList);
 
             areasCount = g.chart2.ChartAreas.Count;
             areasCount = g.chart2.Annotations.Count;
@@ -301,18 +301,7 @@ namespace New_Tradegy
                     foreach (string s in g.kosdaq_mixed.stock) { displayList.Add(s); }
                     break;
 
-                case "닥올":
-                case "피올":
-                    ev.eval_stock();
-                    foreach (string s in g.sl)
-                    {
-                        if (!displayList.Contains(s))
-                        {
-                            displayList.Add(s);
-                        }
-                    }
-                    break;
-
+                
                 case "푀손":
                     var a_tuple = new List<Tuple<double, string>> { };
 
@@ -440,17 +429,17 @@ namespace New_Tradegy
 
                 if (stockData.Stock.Contains("KODEX"))
                 {
-                    md.UpdateChartSeriesKodex(g.chart2, stockData.Stock);
+                    mm.UpdateChartSeriesKodex(g.chart2, stockData.Stock);
                 }
                 else
                 {
-                    md.UpdateChartSeriesGeneral(g.chart2, stockData.Stock);
+                    mm.UpdateChartSeriesGeneral(g.chart2, stockData.Stock);
                 }
 
                 // Update or add annotation
                 if (!stockData.Stock.Contains("KODEX"))
                 {
-                    md.UpdateAnnotation(g.chart2, stockData.Stock);
+                    mm.UpdateAnnotation(g.chart2, stockData.Stock);
                 }
             }
 

@@ -45,25 +45,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void mds()
-        {
-            Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
-            if (Form_보조_차트 != null)
-            {
-                Form_보조_차트.Form_보조_차트_DRAW();
-            }
-        }
-
-        public static void mds(string keystring)
-        {
-            Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
-            if (Form_보조_차트 != null)
-            {
-                Form_보조_차트.keyString = keystring;
-                Form_보조_차트.Form_보조_차트_DRAW();
-            }
-        }
-
+        
 
         public static void draw_chart() // duration : 0.008 ~ 0.2 seconds depends g.time[1]
         {
@@ -486,7 +468,7 @@ namespace New_Tradegy.Library
 
         public static void draw_stock_general(Chart chart, int nRow, int nCol, int seq, string stock)
         {
-            int chart_id = ms.sender_to_chart_id(chart.Name);
+            int chart_id = mc.sender_to_chart_id(chart.Name);
 
             int index = wk.return_index_of_ogldata(stock);
 
@@ -861,7 +843,7 @@ namespace New_Tradegy.Library
             //    Array.Copy(x, copy_x, x.Length);
             //}
 
-            int chart_id = ms.sender_to_chart_id(chart.Name);
+            int chart_id = mc.sender_to_chart_id(chart.Name);
 
             int index = wk.return_index_of_ogldata(stock);
 
@@ -1360,7 +1342,7 @@ namespace New_Tradegy.Library
 
         public static void draw_stock_KODEX(Chart chart, int nRow, int nCol, int seq, string stock)
         {
-            int chart_id = ms.sender_to_chart_id(chart.Name);
+            int chart_id = mc.sender_to_chart_id(chart.Name);
 
             int index = wk.return_index_of_ogldata(stock);
             if (index < 0)
@@ -1903,7 +1885,7 @@ namespace New_Tradegy.Library
 
         public static void draw_stock_KODEX_history(Chart chart, int nRow, int nCol, int seq, string stock)
         {
-            int chart_id = ms.sender_to_chart_id(chart.Name);
+            int chart_id = mc.sender_to_chart_id(chart.Name);
 
             int index = wk.return_index_of_ogldata(stock);
 
@@ -2457,7 +2439,7 @@ namespace New_Tradegy.Library
 
         public static void draw_size_location(Chart chart, int nRow, int nCol, int seq, float[] location, float[] size)
         {
-            int chart_id = ms.sender_to_chart_id(chart.Name); // 1, 2, 
+            int chart_id = mc.sender_to_chart_id(chart.Name); // 1, 2, 
             int row;
             int col;
 

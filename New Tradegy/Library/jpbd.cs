@@ -343,35 +343,30 @@ namespace New_Tradegy.Library
         private DSCBO1Lib.StockJpbid _stockjpbid;
         private DSCBO1Lib.StockJpbid2 _stockjpbid2;
 
-        //public DataTable Dtb { get; set; }
         private DataTable Dtb;
         private DataGridView Dgv;
         private int Rows = 5;
         private string Stock;
-        private Form F;
+
         
 
         StockExchange stockExchange = new StockExchange();
 
-        public void Generate(string stock, Form f)
+        public DataGridView Generate(string stock)
         {
             if (!g.connected)
             {
-                return;
+                return null;
             }
 
             Stock = stock;
 
-
-            F = f;
-
             int w0 = 61;
             int w1 = 50;
             int w2 = 61;
-            int ch = 28;
+            int CellHeight = 27;
             Dtb = new DataTable();
-            Dgv = new DataGridView();
-
+            
             Dtb.Columns.Add("매도");
             Dtb.Columns.Add("호가");
             Dtb.Columns.Add("매수");
@@ -380,7 +375,19 @@ namespace New_Tradegy.Library
             {
                 Dtb.Rows.Add("", "", "");
             }
+            
+            Dgv = new DataGridView();
 
+            Dgv.DataSource = Dtb;
+
+            if (Dtb.Columns.Count == 0)
+            {
+                throw new InvalidOperationException("DataTable does not have any columns.");
+            }
+
+            BindingSource bindingSource = new BindingSource();
+            bindingSource.DataSource = Dtb;
+            Dgv.DataSource = bindingSource;
 
             string stockcode = _cpstockcode.NameToCode(stock);
             _stockjpbid = new DSCBO1Lib.StockJpbid();
@@ -390,30 +397,28 @@ namespace New_Tradegy.Library
 
             _stockjpbid.Subscribe();
 
-
             if (!g.jpjds.ContainsKey(stock))
             {
                 g.jpjds.Add(stock, _stockjpbid);
             }
             else
             {
-                return;
+                return null;
             }
 
             Dgv.DataError += (s, e) => wr.DataGridView_DataError(s, e, "jpjd Dgv");
             Dgv.DataError += new DataGridViewDataErrorEventHandler(dataGridView1_DataError);
             Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None; 
             Dgv.Location = new Point(100, 0);
-            Dgv.Size = new Size(w0 + w1 + w2, F.Height);
+            Dgv.Size = new Size(w0 + w1 + w2, 530);
 
             Dgv.Name = stock;
 
-            Dgv.DataSource = Dtb;
             Dgv.ColumnHeadersVisible = false;
             Dgv.RowHeadersVisible = false;
             int fontsize = 9;
 
-            int CellHeight = ch;
+       
             Dgv.DefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
             Dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
             Dgv.RowTemplate.Height = CellHeight;
@@ -426,8 +431,7 @@ namespace New_Tradegy.Library
 
             Dgv.AllowUserToAddRows = false;
             Dgv.AllowUserToDeleteRows = false;
-            Dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-
+            Dgv.Dock = System.Windows.Forms.DockStyle.None;
       
             Dgv.ReadOnly = true;
             Dgv.RowHeadersVisible = false;
@@ -437,55 +441,19 @@ namespace New_Tradegy.Library
             Dgv.TabIndex = 1;
             Dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(Dgv_CellMouseClick);
             Dgv.KeyPress += OnDataGirdView1_KeyPress;
- 
-            f.Controls.Add(Dgv);
 
-
-            Dgv.DataSource = Dtb;
-
-            f.TopMost = true;
-           
+            Form form = fm.FindFormByName("se");
+            form.Controls.Add(Dgv);
 
             Dgv.Columns[0].Width = w0;
             Dgv.Columns[1].Width = w1;
             Dgv.Columns[2].Width = w2;
 
-
-
-
-            // Ensure no docking overrides sizing
-            //Dgv.Dock = DockStyle.None;
-
-            //// Explicitly set size and location
-            //Dgv.Size = new Size(w0 + w1 + w2, F.Height);
-            //Dgv.Location = new Point(0, 0);
-
-            //// Form properties
-            f.AutoScaleMode = AutoScaleMode.None;
-            f.FormBorderStyle = FormBorderStyle.None;
-            //f.Padding = new Padding(0);
-            f.Controls.Add(Dgv);
-            
-            //// Debugging output
-            //Console.WriteLine($"Initial Dgv Size: {Dgv.Size}");
-            //Console.WriteLine($"Initial Form Size: {f.Size}, ClientSize: {f.ClientSize}");
-
-            //// Handle the form's Shown event to verify size changes after rendering
-            //f.Shown += (s, e) =>
-            //{
-            //    Console.WriteLine($"After Shown - Dgv Size: {Dgv.Size}");
-            //    Console.WriteLine($"After Shown - Form Size: {f.Size}, ClientSize: {f.ClientSize}");
-            //};
-
-            //// Additional step: Force the DataGridView to redraw
-            //Dgv.Invalidate();
-            //f.Invalidate();
-
-
-
-
-
             request_호가();
+
+            Dgv.BringToFront();
+
+            return Dgv;
         }
 
         private void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -548,7 +516,7 @@ namespace New_Tradegy.Library
                         Amount = 1;
                     }
 
-                    ms.Sound_돈(g.일회거래액);
+                    mc.Sound_돈(g.일회거래액);
                     int Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[0].Width * 100) : 100;
 
 
@@ -665,7 +633,7 @@ namespace New_Tradegy.Library
                         Amount = 1;
                     }
 
-                    ms.Sound_돈(g.일회거래액);
+                    mc.Sound_돈(g.일회거래액);
                     Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[0].Width * 100) : 100;
 
                     str = "";
@@ -719,7 +687,7 @@ namespace New_Tradegy.Library
             
             g.jpjds.Remove(Stock);
             Dgv.Dispose();
-            F.Close();
+       
         }
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
@@ -1037,7 +1005,7 @@ namespace New_Tradegy.Library
             {
                 if (o.매도1호가 >= o.deal.upperPassingPrice)
                 {
-                    ms.Sound("일반", "passing upper"); // StopLoss[1]
+                    mc.Sound("일반", "passing upper"); // StopLoss[1]
                     o.deal.upperPassingPrice = 0;
                 }
             }
@@ -1047,7 +1015,7 @@ namespace New_Tradegy.Library
             {
                 if (o.매수1호가 <= o.deal.lowerPassingPrice)
                 {
-                    ms.Sound("일반", "passing lower"); // Stop Loss[0]
+                    mc.Sound("일반", "passing lower"); // Stop Loss[0]
                     o.deal.lowerPassingPrice = 0;
                 }
             }

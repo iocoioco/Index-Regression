@@ -717,7 +717,7 @@ namespace New_Tradegy.Library
         //    if (numberofstock == 0)
         //        return;
 
-        //    ms.Sound_돈(g.일회거래액);
+        //    mc.Sound_돈(g.일회거래액);
 
         //    //g.trade_waiting t = new g.trade_waiting();
 

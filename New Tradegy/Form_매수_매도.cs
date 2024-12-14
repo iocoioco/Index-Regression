@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml.Linq;
 using static New_Tradegy.Library.g;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -47,9 +48,10 @@ namespace New_Tradegy
             richTextBox1.SelectionLength = blockLength;
             richTextBox1.SelectionBackColor = Color.FromArgb(235, 255, 255);
 
-            Form F = hg.FormContainGivenString(stock);
+            Form se = (Form)Application.OpenForms["se"];
+            DataGridView dgv = fm.FindDataGridViewByName(se, stock);
             this.Size = new Size(g.screenWidth / 5, 405);
-            this.Location = new Point(F.Location.X + g.screenWidth / g.nCol, F.Location.Y);
+            this.Location = new Point(dgv.Location.X + g.screenWidth / g.nCol, dgv.Location.Y);
 
             richTextBox1.Location = new Point(0, 0);
             richTextBox1.Size = this.Size;

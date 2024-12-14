@@ -10,6 +10,57 @@ namespace New_Tradegy.Library
 {
     internal class fm
     {
+        public static Form FindFormByName(string formName)
+        {
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form.Name == formName)
+                {
+                    return form;
+                }
+            }
+            return null; // Form not found
+        }
+
+        
+
+        public static bool DoesDataGridViewExist(Form form, string dataGridViewName)
+        {
+            // Iterate through all controls in the form
+            foreach (Control control in form.Controls)
+            {
+                // Check if the control is a DataGridView and has the specified Name
+                if (control is DataGridView dgv && control.Name == dataGridViewName)
+                {
+                    return true; // Found the DataGridView
+                }
+            }
+
+            return false; // DataGridView not found
+        }
+
+        public static DataGridView FindDataGridViewByName(Control parent, string name)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (control is DataGridView dgv && control.Name == name)
+                {
+                    return dgv; // Found the DataGridView
+                }
+
+                // If the control has children, search recursively
+                if (control.HasChildren)
+                {
+                    var childResult = FindDataGridViewByName(control, name);
+                    if (childResult != null)
+                    {
+                        return childResult;
+                    }
+                }
+            }
+            return null; // Not found
+        }
+
         public void PositionFormBasedOnPercentage(Form mainForm, Form form, float leftPercentage, float topPercentage, float widthPercentage, float heightPercentage)
         {
             // Get the main form's dimensions using the passed form

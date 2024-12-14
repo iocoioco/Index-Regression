@@ -35,6 +35,123 @@ namespace New_Tradegy.Library
 {
     public class ps
     {
+        public static void ManageChart1Safe()
+        {
+            Form se = (Form)Application.OpenForms["se"];
+            if (se.InvokeRequired)
+            {
+                se.Invoke(new Action(mm.ManageChart1));
+            }
+            else
+            {
+                mm.ManageChart1();
+            }
+        }
+        public static void ManageChart2Safe()
+        {
+            Form Form_보조_차트 = (Form)Application.OpenForms["Form_보조_차트"];
+            if (Form_보조_차트.InvokeRequired)
+            {
+                Form_보조_차트.Invoke(new Action(mm.ManageChart2));
+            }
+            else
+            {
+                mm.ManageChart2();
+            }
+        }
+
+        public static void post_real(List<g.stock_data> Download_ogl_data_List)
+        {
+            // marketeye_received(), post (inclusion), 
+            foreach (var o in Download_ogl_data_List) 
+            {
+                ps.post(o); 
+                ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
+
+                if (g.보유종목.Contains(o.stock)) // 보유종목 중 Form_호가 사용하지 않고 있는 경우 대비
+                {
+                    cn.dgv2_update(); // marketeye_received()
+                    marketeye_received_보유종목_푀분의매수매도_소리내기(o); // this is from mip
+                }
+            }
+            ev.eval_stock();
+            ev.eval_group();
+
+
+
+
+
+            ManageChart1Safe();
+            ManageChart2Safe();
+
+        }
+
+        public static void post_test()
+        {
+            foreach (var o in g.ogl_data)
+            {
+                ps.post(o); // marketeye_received()
+                ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
+            }
+            ev.eval_stock();
+            ev.eval_group();
+            mm.ManageChart1();
+            mm.ManageChart2();
+            
+        }
+
+        public static void marketeye_received_보유종목_푀분의매수매도_소리내기(g.stock_data o)
+        {
+            if (o.보유량 * o.전일종가 < 200000) // 보유액 20,000 이하이면 무시하고 return
+                return;
+
+            double sound_indicater = 0;
+
+            // 소리
+            #region
+            if (Math.Abs(o.틱프로천[0]) > 0.1 || Math.Abs(o.틱외인천[0]) > 0.1)
+            {
+                string sound = "";
+                int 보유종목_순서번호 = -1;
+                for (int i = 0; i < 3; i++)
+                {
+                    if (g.보유종목[i] == o.stock)
+                    {
+                        보유종목_순서번호 = i;
+                        if (i == 0)
+                            sound = "one ";
+                        else if (i == 1)
+                            sound = "two ";
+                        else
+                            sound = "three ";
+                        break;
+                    }
+                }
+                if (보유종목_순서번호 < 0)
+                    return;
+
+                if (o.통계.프분_dev > 0)
+                {
+                    sound_indicater = (o.틱프로천[0] + o.틱외인천[0]) / o.통계.프분_dev;
+                    if (sound_indicater > 2) sound += "buyest";
+                    else if (sound_indicater > 1) sound += "buyer";
+                    else if (sound_indicater > 0) sound += "buy";
+                    else if (sound_indicater > -1) sound += "sell";
+                    else if (sound_indicater > -2) sound += "seller";
+                    else sound += "sellest";
+
+                }
+                mc.Sound("가", sound);
+            }
+            #endregion
+
+            // 비상매도
+            // 푀틱 매도 푀분 매도 가 하락
+            // 푀틱 매수 푀분 매수 배차 음, 가 하락
+            // 배차 음 가 하락 (누군가 던지고 있다)
+            // 피로도
+        }
+
         public static double post_score(g.stock_data o, int check_row)
         {
 
@@ -188,13 +305,13 @@ namespace New_Tradegy.Library
             //if (분전배수차평균 < 1 && 분간가격상승 > 100 && g.add_interest)
             //{
             //    ADD = true;
-            //    ms.Sound("","silence added");
+            //    mc.Sound("","silence added");
             //}
 
             //if (o.틱프돈천[0] > g.v.틱간프로그램매수이상 && g.add_interest)
             //{
             //    ADD = true;
-            //    ms.Sound("","program added");
+            //    mc.Sound("","program added");
             //}
 
 
@@ -463,7 +580,7 @@ namespace New_Tradegy.Library
             //        //        //}
             //        //        g.호가종목.Insert(0, o.stock); // 첫번째 삽입
 
-            //        //        ms.Sound("","호가종목추가");
+            //        //        mc.Sound("","호가종목추가");
 
             //        //        //if (g.test) // 추후 삭제
             //        //        //{
@@ -716,19 +833,6 @@ namespace New_Tradegy.Library
 
         }
 
-
-        public static void post_all()
-        {
-            foreach (var o in g.ogl_data) // o used previously
-            {
-                int indey = wk.return_index_of_ogldata(o.stock);
-                if (indey < 0) continue;
-
-                g.stock_data p = g.ogl_data[indey];
-                ps.post(p); // l4 : advance short time
-            }
-        }
-
         public static void post_코스닥_코스피_프외_순매수_배차_합산_382()
         {
             int index;
@@ -807,7 +911,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static bool post(g.stock_data o)
+        public static void post(g.stock_data o)
         {
             if ((o.stock.Contains("KODEX") && !o.stock.Contains("레버리지")) ||
                 o.stock.Contains("KODSEF") ||
@@ -815,7 +919,8 @@ namespace New_Tradegy.Library
                 o.stock.Contains("KBSTAR") ||
                 o.stock.Contains("HANARO"))
             {
-                return false;
+                o.included = false;
+                return;
             }
 
             int check_row = g.test ? Math.Min(g.time[1] - 1, o.nrow - 1) : o.nrow - 1;
@@ -827,13 +932,14 @@ namespace New_Tradegy.Library
             if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
             {
                 if (!g.test) ev.EvalKODEX(o);
-                return false;
+                o.included = false;
+                return;
             }
             
             o.점수.총점 = post_score(o, check_row);
 
             // inclusion test after post_minute(o, check_row);
-            return ev.eval_inclusion(o);
+            o.included = ev.eval_inclusion(o);
         }
 
         public static void PostPassing(g.stock_data o, int checkRow, bool add)
@@ -850,7 +956,7 @@ namespace New_Tradegy.Library
                 // 새로운 가격이 previous high보다 크고 previous low가 있는 경우
                 if (o.x[checkRow, 1] > o.pass.previousPriceLow.Value)
                 {
-                    //ms.Sound("일반", "done");
+                    //mc.Sound("일반", "done");
                     // previous high가 새로운 가격으로 업데이트되고 previous low가 없어짐
                     o.pass.previousPriceHigh = o.x[checkRow, 1]; previousPriceReset = true;
                     o.pass.previousPriceLow = null;
@@ -898,7 +1004,6 @@ namespace New_Tradegy.Library
             if (o.pass.previousPriceHigh > o.pass.year)
                 o.pass.yearStatus = 1;
         }
-
         // 통계 적용
         public static void post_score_급락(g.stock_data o, int check_row)
         {
@@ -938,8 +1043,6 @@ namespace New_Tradegy.Library
 
             o.점수.급상 = rise_value;
         }
-
-
         // 통계 적용하지 않은 원본 상태
         public static double post_score_20230824(g.stock_data o)
         {
@@ -1008,13 +1111,13 @@ namespace New_Tradegy.Library
             //if (분전배수차평균 < 1 && 분간가격상승 > 100 && g.add_interest)
             //{
             //    ADD = true;
-            //    ms.Sound("","silence added");
+            //    mc.Sound("","silence added");
             //}
 
             //if (o.틱프돈천[0] > g.v.틱간프로그램매수이상 && g.add_interest)
             //{
             //    ADD = true;
-            //    ms.Sound("","program added");
+            //    mc.Sound("","program added");
             //}
 
 
@@ -1283,7 +1386,7 @@ namespace New_Tradegy.Library
             //        //        //}
             //        //        g.호가종목.Insert(0, o.stock); // 첫번째 삽입
 
-            //        //        ms.Sound("","호가종목추가");
+            //        //        mc.Sound("","호가종목추가");
 
             //        //        //if (g.test) // 추후 삭제
             //        //        //{
@@ -1535,7 +1638,6 @@ namespace New_Tradegy.Library
 
 
         }
-
         // 배점 기준 보간으로 배점 계산
         public static void post_score_interpolation(List<List<double>> s,
             double 성적, ref double 획득점수)
@@ -1578,7 +1680,6 @@ namespace New_Tradegy.Library
                 }
             }
         }
-
         // not used
         // 특정조건을 만족하면 관심에 추가
         public static void marketeye_received_틱프로천_ebb_tide(g.stock_data o)
@@ -1623,7 +1724,6 @@ namespace New_Tradegy.Library
                 //    add = true;
             }
         }
-
 
         public static void post_minute(g.stock_data o, int check_row) // 
         {
@@ -1687,7 +1787,7 @@ namespace New_Tradegy.Library
                         break;
                     }
 
-                    elapsed_seconds = ms.total_Seconds(o.틱의시간[i], o.틱의시간[0]); // from time to time
+                    elapsed_seconds = mc.total_Seconds(o.틱의시간[i], o.틱의시간[0]); // from time to time
                     if (elapsed_seconds > g.postInterval) // if over 30 seconds elapsed
                     {
                         selected_time = i;
@@ -1701,7 +1801,7 @@ namespace New_Tradegy.Library
 
                 if (selected_time > 0) // more than one tick
                 {
-                    double total_seconds = ms.total_Seconds(o.틱의시간[selected_time], o.틱의시간[0]); // from time to time
+                    double total_seconds = mc.total_Seconds(o.틱의시간[selected_time], o.틱의시간[0]); // from time to time
                     if (total_seconds == 0)
                         return;
 
@@ -1712,7 +1812,7 @@ namespace New_Tradegy.Library
                         if (!g.관심종목.Contains(o.stock))
                         {
                             //g.관심종목.Add(o.stock);
-                            //ms.Sound("일반", "v i");
+                            //mc.Sound("일반", "v i");
                         }
                     }
                     int amount_dealt_program = o.틱프로량[0] - o.틱프로량[selected_time];
@@ -1803,7 +1903,5 @@ namespace New_Tradegy.Library
 
             return 1;
         }
-
-
     }
 }

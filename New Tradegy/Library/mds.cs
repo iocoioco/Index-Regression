@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace New_Tradegy.Library
 {
-    internal class mds
+    internal class ms
     {
 
         // 0, 1(가격), 2(수급), 3(체강), 4(프로그램), 5(외인), 6(기관)
@@ -25,7 +25,7 @@ namespace New_Tradegy.Library
         //static List<string> g.dl = new List<string>();
         static int hogaCount = 0;
 
-        public static void manangeChart2()
+        public static void ManageChart2()
         {
             // First, handle the fixed elements
             InitializeFixedElements(g.chart1);
@@ -56,7 +56,7 @@ namespace New_Tradegy.Library
                 }
 
                 // Relocate chart area and form for hogaCount stocks
-                RelocateChartAreaAndForm(g.chart1, stock, currentRow, currentCol);
+                RelocateChartAreaAndDataGridView(g.chart1, stock, currentRow, currentCol);
 
                 currentRow++;
                 if (currentRow >= g.nRow)
@@ -1602,7 +1602,7 @@ namespace New_Tradegy.Library
             return value;
         }
 
-        static void RelocateChartAreaAndForm(Chart chart, string stockName, int row, int col)
+        static void RelocateChartAreaAndDataGridView(Chart chart, string stockName, int row, int col)
         {
             // Set position and size of the chart area based on row and column
             RelocateChartArea(chart, stockName, row, col);

@@ -457,7 +457,7 @@ namespace New_Tradegy.Library
                     posfix_up_down = " down";
 
                 sound += posfix_up_down;
-                ms.Sound("가", sound);
+                mc.Sound("가", sound);
             }
 
 

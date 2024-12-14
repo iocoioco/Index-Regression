@@ -172,86 +172,43 @@ namespace New_Tradegy.Library
         {
             int return_value = -1;
 
-            Form_호가 f = (Form_호가)Application.OpenForms[stock];
-            if (f == null)
+            Form se = fm.FindFormByName("se");
+            DataGridView dgv = fm.FindDataGridViewByName(se, stock);
+            if (dgv == null)
             {
                 return -1;
             }
 
-            if (!IsBidChartComplete(f))
+            if (!IsBidChartComplete(dgv))
             {
                 // Handle the case where the bid chart is not complete
                 return -1;
             }
 
-            var d = f.Controls.Find(stock, true);
-            if (d == null)
-            {
-                return -1;
-            }
 
-            DataGridView dg = null;
-            foreach (var aa in d)
-            {
-                if (aa.Name == stock)
-                {
-                    dg = (DataGridView)aa;
-                    break;
-                }
-            }
-            if (dg == null)
-            {
-                return -1;
-            }
-
-            int a = (dg.RowCount - 2) / 2 + rowShift; // 매수1호가 -> rowShift = 0
-            if (a >= dg.RowCount - 2) // 호가 하단 3개 Row 호가 없음, 잘못 클릭으로 처리
+            int a = (dgv.RowCount - 2) / 2 + rowShift; // 매수1호가 -> rowShift = 0
+            if (a >= dgv.RowCount - 2) // 호가 하단 3개 Row 호가 없음, 잘못 클릭으로 처리
             {
                 return -1;
             }
             else
             {
-                return return_value = wk.return_integer_from_mixed_string(dg.Rows[a].Cells[column].Value.ToString());
+                return return_value = wk.return_integer_from_mixed_string(dgv.Rows[a].Cells[column].Value.ToString());
             }
         }
 
         // Method to check if the bid chart is complete
-        private static bool IsBidChartComplete(Form_호가 form)
+        private static bool IsBidChartComplete(DataGridView dgv)
         {
-            // Find the DataGridView control within the form
-            DataGridView dg = form.Controls.OfType<DataGridView>().FirstOrDefault();
-            if (dg == null)
+            if (dgv == null)
             {
                 return false;
             }
 
-            // Check if the DataGridView has the expected number of rows
-            //if (dg.RowCount < EXPECTED_ROW_COUNT)
-            //{
-            //    return false;
-            //}dg.RowCount != 12
-            if (dg.RowCount != 12 && dg.RowCount != 22)
+            if (dgv.RowCount != 12 && dgv.RowCount != 22)
             {
                 return false;
             }
-
-            // Check if specific key cells contain valid data
-            //int KEY_COLUMN_INDEX = 2;
-            //for (int i = 0; i < dg.RowCount; i++)
-            //{
-            //    if (dg.Rows[i].Cells[KEY_COLUMN_INDEX].Value == null ||
-            //        string.IsNullOrWhiteSpace(dg.Rows[i].Cells[KEY_COLUMN_INDEX].Value.ToString()))
-            //    {
-            //        return false;
-            //    }
-            //}
-
-            // Optionally, use a flag to indicate completeness
-            //if (!form.IsBidChartPopulated)
-            //{
-            //    return false;
-            //}
-
             return true;
         }
 

@@ -14,7 +14,7 @@ namespace New_Tradegy
     public partial class Form_매매 : Form
     {
         int Rows = 11;
-        int Columns = 4;
+
         int fontSize = 8;
         public Form_매매()
         {
@@ -137,7 +137,7 @@ namespace New_Tradegy
                     if (e.RowIndex < g.m_mapOrder.Count)
                     {
                         dl.DealCancelRowIndex(e.RowIndex); // work_CellMouseClick
-                        ms.Sound("Keys", "cancel");
+                        mc.Sound("Keys", "cancel");
                     }
                     break;
 

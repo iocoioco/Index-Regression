@@ -19,8 +19,8 @@ namespace New_Tradegy
 {
     public partial class Form_호가 : Form
     {
-        private static CPUTILLib.CpCybos _cpcybos;
-        Chart Chart;
+        // private static CPUTILLib.CpCybos _cpcybos;
+        // Chart Chart;
 
         string _stock;
 
@@ -48,7 +48,7 @@ namespace New_Tradegy
 
             var a = new jp();
 
-            a.Generate(_stock, this);
+            a.Generate(_stock);
         }
     }
 }

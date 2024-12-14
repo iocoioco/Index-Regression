@@ -153,7 +153,7 @@ namespace New_Tradegy
                     g.clickedStock = g.oGL_data[index].stocks[0];
 
           
-                    dr.mds("상관"); // 그룹_CellMouseClick
+                    mm.ManageChart2("상관"); // 그룹_CellMouseClick
 
                 }
 

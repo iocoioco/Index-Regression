@@ -76,7 +76,7 @@ namespace New_Tradegy.Library
         {
             if ((short)e.KeyChar > 127)
             {
-                ms.Sound("Keys", "Korean");
+                mc.Sound("Keys", "Korean");
                 return;
             }
 
@@ -107,7 +107,7 @@ namespace New_Tradegy.Library
                     }
                     else
                     {
-                        ms.Sound("Keys", "cancel");
+                        mc.Sound("Keys", "cancel");
                         List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
 
                         for (int i = g.m_mapOrder.Count - 1; i >= 0; i--)
@@ -128,7 +128,7 @@ namespace New_Tradegy.Library
                             g.일회거래액 = 100;
                         else
                             g.일회거래액 = 0;
-                        ms.Sound_돈(g.일회거래액);
+                        mc.Sound_돈(g.일회거래액);
 
                         if(g.제어.dtb.Rows[0][2].ToString() != g.일회거래액.ToString())
                         {
@@ -154,7 +154,7 @@ namespace New_Tradegy.Library
                             g.일회거래액 = 500;
                         else
                             g.일회거래액 *= 2;
-                        ms.Sound_돈(g.일회거래액);
+                        mc.Sound_돈(g.일회거래액);
                         if (g.일회거래액 > 4000)
                         {
                             string caption1 = "일회거래액";
@@ -216,7 +216,7 @@ namespace New_Tradegy.Library
                         string buySell = "매수";
                         if(!wk.isStock(stock))
                         {
-                            ms.Sound("돈", "not hoga");
+                            mc.Sound("돈", "not hoga");
                             return;
                         }
                         int 거래가격 = hg.HogaGetValue(stock, -1, 1); // 0 : 매도1호가 라인, 1 : 호가 column
@@ -230,9 +230,9 @@ namespace New_Tradegy.Library
                         g.confirm_sell = !g.confirm_sell;
 
                         if (g.confirm_sell)
-                            ms.Sound("Keys", "confirm sell");
+                            mc.Sound("Keys", "confirm sell");
                         else
-                            ms.Sound("Keys", "no confirm sell");
+                            mc.Sound("Keys", "no confirm sell");
                     
                     break;
 
@@ -320,7 +320,7 @@ namespace New_Tradegy.Library
                     if (Form_보조_차트 != null)
                     {
                         List<string> list_6= new List<string> { "그순", "관심" };
-                        Form_보조_차트.keyString = ms.cycleStrings(Form_보조_차트.keyString, list_6);
+                        Form_보조_차트.keyString = mc.cycleStrings(Form_보조_차트.keyString, list_6);
                         Form_보조_차트.Form_보조_차트_DRAW();
                     }
                     break;
@@ -427,18 +427,18 @@ namespace New_Tradegy.Library
                     if (g.PeoridNews == 'd')
                     {
                         g.PeoridNews = 'w';
-                        ms.Sound("일반", "news week");
+                        mc.Sound("일반", "news week");
                     }
                         
                     else if (g.PeoridNews == 'w')
                     {
                         g.PeoridNews = 'm';
-                        ms.Sound("일반", "news month");
+                        mc.Sound("일반", "news month");
                     }
                     else
                     {
                         g.PeoridNews = 'd';
-                        ms.Sound("일반", "news day");
+                        mc.Sound("일반", "news day");
                     }
                     break;
 
@@ -464,7 +464,7 @@ namespace New_Tradegy.Library
                 #region
                 case 'a':
                     List<string> list = new List<string> {  "피올", "닥올" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list);
+                    g.v.key_string = mc.cycleStrings(g.v.key_string, list);
 
                     g.v.columnsofoGl_data = 0; // number of column for group = 0
                     g.q = "o&s";
@@ -479,9 +479,9 @@ namespace New_Tradegy.Library
 
                     g.add_interest = !g.add_interest;
                     if (g.add_interest)
-                        ms.Sound("일반", "add interest");
+                        mc.Sound("일반", "add interest");
                     else
-                        ms.Sound("일반", "no add interest");
+                        mc.Sound("일반", "no add interest");
                     break;
 
                 case '\u0001': // Cntl + A
@@ -490,7 +490,7 @@ namespace New_Tradegy.Library
 
                 case 's':
                     List<string> list_2 = new List<string> { "프누", "종누" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_2);
+                    g.v.key_string = mc.cycleStrings(g.v.key_string, list_2);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
@@ -499,7 +499,7 @@ namespace New_Tradegy.Library
 
                 case 'S':
                     List<string> list_3 = new List<string> { "프편", "종편" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_3);
+                    g.v.key_string = mc.cycleStrings(g.v.key_string, list_3);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
@@ -512,7 +512,7 @@ namespace New_Tradegy.Library
                         string caption = "Save all stocks ?";
                         string message = "모든 파일 현재 시간 기준 저장";
                         string default_option = "No";
-                        string result = ms.message(caption, message, default_option);
+                        string result = mc.message(caption, message, default_option);
 
                         if (result == "Yes")
                             wr.SaveAllStocks();
@@ -525,7 +525,7 @@ namespace New_Tradegy.Library
 
                 case 'd':
                     List<string> list_7 = new List<string> { "푀분", "총점" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_7);
+                    g.v.key_string = mc.cycleStrings(g.v.key_string, list_7);
                     g.q = "o&s"; 
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
@@ -539,8 +539,8 @@ namespace New_Tradegy.Library
                 case 'f':
                     Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
                     list_3 = new List<string> { "코피", "코닥", "관심" };
-                    g.v.SpfKeyString = ms.cycleStrings(g.v.SpfKeyString, list_3);
-                    dr.mds(g.v.SpfKeyString); // 'f' "코피", "코닥", "관심"
+                    g.v.SpfKeyString = mc.cycleStrings(g.v.SpfKeyString, list_3);
+                    mm.ManageChart2(g.v.SpfKeyString); // 'f' "코피", "코닥", "관심"
                     break;
     
                 case 'F':
@@ -556,7 +556,7 @@ namespace New_Tradegy.Library
             
                 case 'g':
                     List<string> list_4 = new List<string> { "상순", "저순" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_4);
+                    g.v.key_string = mc.cycleStrings(g.v.key_string, list_4);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
@@ -568,7 +568,7 @@ namespace New_Tradegy.Library
 
                 case 'h':
                     List<string> list_5 = new List<string> { "편차", "평균" };
-                    g.v.key_string = ms.cycleStrings(g.v.key_string, list_5);
+                    g.v.key_string = mc.cycleStrings(g.v.key_string, list_5);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
@@ -631,9 +631,9 @@ namespace New_Tradegy.Library
                 case 'z':
                     g.optimumTrading = !g.optimumTrading;
                     if (g.optimumTrading)
-                        ms.Sound("돈", "optimum");
+                        mc.Sound("돈", "optimum");
                     else
-                        ms.Sound("돈", "non optimum");
+                        mc.Sound("돈", "non optimum");
                     break;
 
                 case 'Z':
@@ -647,13 +647,13 @@ namespace New_Tradegy.Library
                         g.click_trade = !g.click_trade;
                         if (g.click_trade)
                         {
-                            ms.Sound("Keys", "click trade");
+                            mc.Sound("Keys", "click trade");
                             g.제어.dgv.Rows[0].DefaultCellStyle.BackColor = Color.Red;
                         }
 
                         else
                         {
-                            ms.Sound("Keys", "no click trade");
+                            mc.Sound("Keys", "no click trade");
                             g.제어.dgv.Rows[0].DefaultCellStyle.BackColor = Color.White;
                         }
                     }
@@ -725,9 +725,9 @@ namespace New_Tradegy.Library
                     {
                         case "o&s":
                             int count = g.보유종목.Count + g.호가종목.Count;
-                            if (g.gid + ((g.nCol - 1) * g.nRow - count) < g.sl.Count)
+                            if (g.gid + ((g.nCol - 2) * g.nRow - count) < g.sl.Count)
                             {
-                                g.gid += (g.nCol - 1) * g.nRow - count;
+                                g.gid += (g.nCol - 2) * g.nRow - count;
                             }
                             else
                             {
@@ -765,9 +765,9 @@ namespace New_Tradegy.Library
                         case "o&s":
                             //case "e&s":
                             int count = g.보유종목.Count + g.호가종목.Count; // 지수종목
-                            if (g.gid - ((g.nCol - 1) * g.nRow - count) >= 0)
+                            if (g.gid - ((g.nCol - 2) * g.nRow - count) >= 0)
                             {
-                                g.gid -= (g.nCol - 1) * g.nRow - count;
+                                g.gid -= (g.nCol - 2) * g.nRow - count;
                             }
                             else
                             {
@@ -822,7 +822,7 @@ namespace New_Tradegy.Library
             {
                 if (testpost.Contains(e.KeyChar))
                 {
-                    ps.post_all();
+                    ps.post_test();
                 }
                 if (testeval.Contains(e.KeyChar))
                 {
@@ -830,7 +830,7 @@ namespace New_Tradegy.Library
                 }
                 if (testdraw.Contains(e.KeyChar))
                 {
-                    md.mdm(); // key multi for test
+                    mm.ManageChart1(); // key multi for test
                 }
             }
             else // real
@@ -838,7 +838,7 @@ namespace New_Tradegy.Library
                 if (realkeys.Contains(e.KeyChar))
                 {
                     ev.eval_stock();
-                    md.mdm(); // key multi for real
+                    mm.ManageChart1(); // key multi for real
                 }
             }
         }

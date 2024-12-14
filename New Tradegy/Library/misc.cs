@@ -16,7 +16,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace New_Tradegy.Library
 {
-    public class ms
+    public class mc
     {
         static CPUTILLib.CpStockCode _cpstockcode;
 
@@ -65,37 +65,37 @@ namespace New_Tradegy.Library
                 switch (total_amount)
                 {
                     case 0:
-                        ms.Sound("돈", "single stock opt");
+                        mc.Sound("돈", "single stock opt");
                         break;
                     case 100:
-                        ms.Sound("돈", "one hundred opt");
+                        mc.Sound("돈", "one hundred opt");
                         break;
                     case 500:
-                        ms.Sound("돈", "five hundred opt");
+                        mc.Sound("돈", "five hundred opt");
                         break;
                     case 1000:
-                        ms.Sound("돈", "one thousand opt");
+                        mc.Sound("돈", "one thousand opt");
                         break;
                     case 2000:
-                        ms.Sound("돈", "two thousand opt");
+                        mc.Sound("돈", "two thousand opt");
                         break;
                     case 4000:
-                        ms.Sound("돈", "four thousand opt");
+                        mc.Sound("돈", "four thousand opt");
                         break;
                     case 8000:
-                        ms.Sound("돈", "eight thousand opt");
+                        mc.Sound("돈", "eight thousand opt");
                         break;
                     case 16000:
-                        ms.Sound("돈", "sixteen thousand opt");
+                        mc.Sound("돈", "sixteen thousand opt");
                         break;
                     case 32000:
-                        ms.Sound("돈", "thirty two thousand opt");
+                        mc.Sound("돈", "thirty two thousand opt");
                         break;
                     case 64000:
-                        ms.Sound("돈", "sixty four thousand opt");
+                        mc.Sound("돈", "sixty four thousand opt");
                         break;
                     default:
-                        ms.Sound("돈", "limit exceed opt");
+                        mc.Sound("돈", "limit exceed opt");
                         break;
                 }
             }
@@ -104,37 +104,37 @@ namespace New_Tradegy.Library
                 switch (total_amount)
                 {
                     case 0:
-                        ms.Sound("돈", "single stock");
+                        mc.Sound("돈", "single stock");
                         break;
                     case 100:
-                        ms.Sound("돈", "one hundred");
+                        mc.Sound("돈", "one hundred");
                         break;
                     case 500:
-                        ms.Sound("돈", "five hundred");
+                        mc.Sound("돈", "five hundred");
                         break;
                     case 1000:
-                        ms.Sound("돈", "one thousand");
+                        mc.Sound("돈", "one thousand");
                         break;
                     case 2000:
-                        ms.Sound("돈", "two thousand");
+                        mc.Sound("돈", "two thousand");
                         break;
                     case 4000:
-                        ms.Sound("돈", "four thousand");
+                        mc.Sound("돈", "four thousand");
                         break;
                     case 8000:
-                        ms.Sound("돈", "eight thousand");
+                        mc.Sound("돈", "eight thousand");
                         break;
                     case 16000:
-                        ms.Sound("돈", "sixteen thousand");
+                        mc.Sound("돈", "sixteen thousand");
                         break;
                     case 32000:
-                        ms.Sound("돈", "thirty two thousand");
+                        mc.Sound("돈", "thirty two thousand");
                         break;
                     case 64000:
-                        ms.Sound("돈", "sixty four thousand");
+                        mc.Sound("돈", "sixty four thousand");
                         break;
                     default:
-                        ms.Sound("돈", "limit exceed");
+                        mc.Sound("돈", "limit exceed");
                         break;
                 }
             }
@@ -321,7 +321,7 @@ namespace New_Tradegy.Library
                 {
                     return i - 1;
                 }
-                double elapsed_seconds = ms.total_Seconds(o.틱의시간[0], o.틱의시간[i]); // if elapsed_secons > 30, then return the index
+                double elapsed_seconds = mc.total_Seconds(o.틱의시간[0], o.틱의시간[i]); // if elapsed_secons > 30, then return the index
                 if (elapsed_seconds > 30)
                     return i;
             }
@@ -538,28 +538,28 @@ namespace New_Tradegy.Library
                     g.alamed_hhmm = HHmm;
                     if (HHmm == 1000)
                     {
-                        ms.Sound("time", "taiwan open");
+                        mc.Sound("time", "taiwan open");
                         g.제어.dtb.Rows[13][1] = 2; 
                         g.width.가격 = 2;
                     }
                     else if (HHmm == 1030)
-                        ms.Sound("time", "china open");
+                        mc.Sound("time", "china open");
                     else if (HHmm == 1450)
-                        ms.Sound("time", "30");
+                        mc.Sound("time", "30");
                     else if (HHmm == 1455)
-                        ms.Sound("time", "25");
+                        mc.Sound("time", "25");
                     else if (HHmm == 1500)
-                        ms.Sound("time", "20");
+                        mc.Sound("time", "20");
                     else if (HHmm == 1505)
-                        ms.Sound("time", "15");
+                        mc.Sound("time", "15");
                     else if (HHmm == 1510)
-                        ms.Sound("time", "10");
+                        mc.Sound("time", "10");
                     else if (HHmm == 1515)
-                        ms.Sound("time", "5");
+                        mc.Sound("time", "5");
                     else if (HHmm == 1518)
-                        ms.Sound("time", "2");
+                        mc.Sound("time", "2");
                     else if (HHmm == 1519)
-                        ms.Sound("time", "1");
+                        mc.Sound("time", "1");
                 }
             }
         }

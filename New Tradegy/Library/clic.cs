@@ -230,7 +230,7 @@ namespace New_Tradegy.Library
                         Amount = 1;
                     }
 
-                    ms.Sound_돈(g.일회거래액);
+                    mc.Sound_돈(g.일회거래액);
 
                     str = "";
                     if (g.confirm_buy)
@@ -356,8 +356,8 @@ namespace New_Tradegy.Library
                     }
                     wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
                     wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
-                    md.mdm(); // single stock shrink_draw ?
-                    dr.mds(); // single stock shrink_draw ?
+                    mm.ManageChart1(); // single stock shrink_draw ?
+                    mm.ManageChart2(); // single stock shrink_draw ?
                     break;
 
                 case "l2":
@@ -390,8 +390,8 @@ namespace New_Tradegy.Library
                         o.수급과장배수 *= 1.5;
                         wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
                         wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
-                        md.mdm(); // single 수급과장배수 조정
-                        dr.mds(); // single 수급과장배수 조정
+                        mm.ManageChart1(); // single 수급과장배수 조정
+                        mm.ManageChart2(); // single 수급과장배수 조정
                     }
                     break;
 
@@ -442,15 +442,15 @@ namespace New_Tradegy.Library
                                 if (g.호가종목.Contains(g.clickedStock))
                                 {
                                     g.호가종목.Remove(g.clickedStock);
-                                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, true);
-                                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, true);
-                                    StockExchange.buyOrders.RemoveAll(order => order.Stock == g.clickedStock);
-                                    StockExchange.sellOrders.RemoveAll(order => order.Stock == g.clickedStock);
+                                    //wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, true);
+                                    //wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, true);
+                                    //StockExchange.buyOrders.RemoveAll(order => order.Stock == g.clickedStock);
+                                    //StockExchange.sellOrders.RemoveAll(order => order.Stock == g.clickedStock);
                                 }
                                 else
                                 {
                                     g.호가종목.Add(g.clickedStock);
-                                    hg.HogaInsert(g.clickedStock);
+                                   // hg.HogaInsert(g.clickedStock);
                                     if (g.관심종목.Contains(g.clickedStock))
                                     {
                                         g.관심종목.Remove(g.clickedStock);
@@ -461,8 +461,8 @@ namespace New_Tradegy.Library
                         }
                     }
                     
-                    md.mdm();
-                    dr.mds();
+                    mm.ManageChart1();
+                    mm.ManageChart2();
                     break;
 
                 case "l6":
@@ -484,7 +484,7 @@ namespace New_Tradegy.Library
                                 g.관심종목.Add(g.clickedStock);
                             }
                         }
-                        md.mdm(); // 호가, 관심 종목 추가 & 제거
+                        mm.ManageChart1(); // 호가, 관심 종목 추가 & 제거
                     }
                     break;
 
@@ -510,8 +510,8 @@ namespace New_Tradegy.Library
                     o.수급과장배수 *= 0.66;
                     wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
                     wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
-                    md.mdm(); // single 수급과장배수 조정
-                    dr.mds(); // single 수급과장배수 조정
+                    mm.ManageChart1(); // single 수급과장배수 조정
+                    mm.ManageChart2(); // single 수급과장배수 조정
                     break;
 
                 case "l9": // g.time[1]++
@@ -687,11 +687,11 @@ namespace New_Tradegy.Library
 
                         if (form?.keyString == "상관" || form?.keyString == "절친")
                         {
-                            dr.mds(form?.keyString);
+                            mm.ManageChart2(form?.keyString);
                         }
                         else
                         {
-                            dr.mds("상관");
+                            mm.ManageChart2("상관");
                         }
                     }
                     break;
@@ -701,7 +701,7 @@ namespace New_Tradegy.Library
                 (selection == "l4" ||
                  selection == "l5"))
             {
-                ps.post_all(); // clic l4, l5
+                ps.post_test(); // clic l4, l5
             }
 
             if (g.test &&
@@ -720,7 +720,7 @@ namespace New_Tradegy.Library
                selection == "l6") // add or remove 관심
             {
    
-                md.mdm(); // single click, not checked
+                mm.ManageChart1(); // single click, not checked
             }
 
             if (selection == "l1" ||
@@ -730,14 +730,13 @@ namespace New_Tradegy.Library
             {
       
                 if (selection == "r9")
-                    dr.mds("상관");
+                    mm.ManageChart2("상관");
                 else
-                    dr.mds(); // single click, not checked
+                    mm.ManageChart2(); // single click, not checked
             }
 
             //wk.BringToFront();
-            Form f = null;
-            f = hg.FormContainGivenString("se");
+            Form f = (Form)Application.OpenForms["se"];
             if (f != null)
             {
                 f.Activate();

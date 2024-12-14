@@ -646,7 +646,7 @@ namespace New_Tradegy.Library
                 if ((HHmm % 100 == 59 || HHmm % 100 == 29) && g.alamed_hhmm != HHmm)
                 {
                     // Play sound and update the last alerted time
-                    ms.Sound("일반", "to jsb");
+                    mc.Sound("일반", "to jsb");
                     g.alamed_hhmm = HHmm;
 
                     // Wait asynchronously for 59 seconds before checking again
