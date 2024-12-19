@@ -23,10 +23,20 @@ namespace New_Tradegy
 
         private void Form_매매_Load(object sender, EventArgs e)
         {
+            //this.Size = new Size(g.screenWidth / g.nCol - 20, g.formSize.ch * 3);
+            //int a = g.screenHeight;
+
+            //this.Location = new Point(g.screenWidth / g.nCol + 10, g.screenHeight / 3); // + 30 remove from width
+
+
+
+
+
+
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
             this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
-            this.Size = new Size(g.screenWidth / g.rqwey_nCol - scrollbarWidth, g.formSize.ch * 9 + 14);
-            this.Location = new Point(g.screenWidth / g.rqwey_nCol + 20, g.formSize.ch * 15); // + 30 deleted from width
+            this.Size = new Size(g.screenWidth / g.nCol - scrollbarWidth - 3, g.formSize.ch * 10 - 7);
+            this.Location = new Point(g.screenWidth / g.rqwey_nCol + 10, g.screenHeight / 3 + g.formSize.ch * 3 + 3); // + 30 deleted from width
 
 
             g.매매.dgv = new DataGridView();

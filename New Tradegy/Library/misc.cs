@@ -528,9 +528,6 @@ namespace New_Tradegy.Library
         {
             int[] alarm_HHmm = { 1000, 1030, 1450, 1455, 1500, 1505, 1510, 1515, 1520, 1525, 1528, 1529 };
 
-
-
-
             for (int i = 0; i < alarm_HHmm.Length; i++)
             {
                 if (HHmm == alarm_HHmm[i] && HHmm != g.alamed_hhmm)

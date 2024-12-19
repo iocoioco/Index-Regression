@@ -20,7 +20,7 @@ namespace New_Tradegy.Library
     {
         static CPUTILLib.CpStockCode _cpstockcode;
 
-        public static void deleteChartAreaAnnotation(Chart chartName, string stockName, bool DeleteChartArea, bool DeleteAnnoation)
+        public static void deleteChartAreaAnnotation(Chart chartName, string stockName)
         {
             // Check if the ChartArea exists
             if (chartName.ChartAreas.IndexOf(stockName) >= 0)
@@ -28,18 +28,14 @@ namespace New_Tradegy.Library
                 // Get the ChartArea
                 var chartArea = chartName.ChartAreas[stockName];
 
-                if (DeleteAnnoation)
-                {
+            
                     var annotationsToRemove = chartName.Annotations.Where(a => a.Name == stockName).ToList();
 
                     foreach (var annotation in annotationsToRemove)
                     {
                         chartName.Annotations.Remove(annotation); // Remove the annotation from the chart
                     }
-                }
-
-                if (DeleteChartArea)
-                {
+           
                     // Remove all series associated with this ChartArea
                     var seriesToRemove = chartName.Series
                         .Where(s => s.ChartArea == stockName)
@@ -52,7 +48,7 @@ namespace New_Tradegy.Library
                     }
                     chartName.ChartAreas.Remove(chartArea);
                 }
-            }
+            
             else
             {
                 //Console.WriteLine($"ChartArea with name {stockName} does not exist.");

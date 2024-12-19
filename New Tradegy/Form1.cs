@@ -116,15 +116,17 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.screenWidth = workingRectangle.Width;
             g.screenHeight = workingRectangle.Height;
 
-            chart1.Size = new Size(workingRectangle.Width, (int)(workingRectangle.Height) - 10);
+            chart1.Size = new Size(workingRectangle.Width, (int)(workingRectangle.Height) - 20);
             if (g.MachineName == "HP")
             {
                 this.Location = new Point(0, 0);
-
                 chart1.Location = new Point(0, 0);
             }
             else
+            {
                 chart1.Location = new Point(0, 0);
+            }
+                
 
             // workingRectangle.Width = (int)(chart1.Width * 1.5);
 
@@ -177,32 +179,32 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            Form Form_보조_차트 = new Form_보조_차트
-            {
-                Size = new Size(1920 / 4, 900 / 3),
-                StartPosition = FormStartPosition.Manual // Prevent Windows from overriding the location
-            };
+            Form Form_보조_차트 = new Form_보조_차트();
+            //{
+            //    Size = new Size(1920 / 4, 900 / 3),
+            //    StartPosition = FormStartPosition.Manual // Prevent Windows from overriding the location
+            //};
 
-            if (Screen.AllScreens.Length == 1)
-            {
-                Form_보조_차트.Location = new Point(0, 0); // Single monitor
-            }
-            else
-            {
-                Form_보조_차트.Location = new Point(1920, 0); // Dual monitor
-            }
+            //if (Screen.AllScreens.Length == 1)
+            //{
+            //    Form_보조_차트.Location = new Point(0, 0); // Single monitor
+            //}
+            //else
+            //{
+            //    Form_보조_차트.Location = new Point(1920, 0); // Dual monitor
+            //}
 
-            // Show the form and ensure location remains as set
+            //// Show the form and ensure location remains as set
             Form_보조_차트.Show();
-            Form_보조_차트.Location = new Point(0, 0); // Reapply location to handle potential adjustments
+            // Form_보조_차트.Location = new Point(0, 0); // Reapply location to handle potential adjustments
 
             // Log final location
-            int x = Form_보조_차트.Location.X;
-            int y = Form_보조_차트.Location.Y;
+            //int x = Form_보조_차트.Location.X;
+            //int y = Form_보조_차트.Location.Y;
 
-            Form_보조_차트.BringToFront();
+            //Form_보조_차트.BringToFront();
 
-            Form_보조_차트.AutoScaleMode = AutoScaleMode.Dpi;
+            //Form_보조_차트.AutoScaleMode = AutoScaleMode.Dpi;
 
 
 
@@ -218,7 +220,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 dl.deal_processing();
                 dl.deal_hold(); // Initialize g.보유종목
                 dl.deal_deposit(); // button1 tr(1)
-                subscribe_8091S();
+                // subscribe_8091S(); 회원사별 종목 매수현황
 
                 // updated on 20241020 0300
                 Task Task_marketeye = Task.Run(async () => await mk.task_marketeye());
@@ -246,7 +248,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             rd.read_파일관심종목(); // duration 0.000 seconds
             mm.ManageChart1(); // all new, Form_1 start
-            mm.ManageChart2(); // all new, Form_1 start
+            //? mm.ManageChart2(); // all new, Form_1 start
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
@@ -595,8 +597,6 @@ namespace New_Tradegy // added for test on 20241020 0300
                 // Wait for 750 milliseconds before the next iteration
                 await Task.Delay(750);
             }
-
-            _isRunning = false;
         }
 
         // Helper method to check if the market is open
@@ -619,7 +619,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void subscribe_8091S()
         {
-            return;
+            
             _cpsvr8091s = new DSCBO1Lib.CpSvr8091S();
             _cpsvr8091s.Received += new DSCBO1Lib._IDibEvents_ReceivedEventHandler(_cpsvr8091s_Received);
 
@@ -669,9 +669,9 @@ namespace New_Tradegy // added for test on 20241020 0300
         private void chart1_MouseClick(object sender, MouseEventArgs e)
         {
             string selection = "";
-            double xval = 0.0, yval = 0.0;
-            double row_percentage = 0.0, col_percentage = 0.0;
-            double col_divider = 0.0;
+     
+        
+
             int row_id = 0, col_id = 0;
             //double row_percentage_below_xlabel_line = 0.0;
 

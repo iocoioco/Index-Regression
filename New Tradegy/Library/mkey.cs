@@ -34,12 +34,14 @@ namespace New_Tradegy
                         g.minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }
+                if(wk.isWorkingHour())
+                {
+                    // Trigger the marketeye alarm task
+                    await mc.task_marketeye_alarm(HHmm);
 
-                // Trigger the marketeye alarm task
-                await mc.task_marketeye_alarm(HHmm);
-
-                // Call marketeye logic
-                await marketeye();
+                    // Call marketeye logic
+                    await marketeye();
+                }
 
                 // Wait 250 milliseconds (non-blocking)
                 await Task.Delay(250);

@@ -62,42 +62,27 @@ namespace New_Tradegy.Library
 
         public static void post_real(List<g.stock_data> Download_ogl_data_List)
         {
-            // marketeye_received(), post (inclusion), 
-            foreach (var o in Download_ogl_data_List) 
-            {
-                ps.post(o); 
-                ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
+            ev.eval_stock();
+            ev.eval_group();
 
+            foreach (var o in Download_ogl_data_List)
+            {
                 if (g.보유종목.Contains(o.stock)) // 보유종목 중 Form_호가 사용하지 않고 있는 경우 대비
                 {
                     cn.dgv2_update(); // marketeye_received()
                     marketeye_received_보유종목_푀분의매수매도_소리내기(o); // this is from mip
                 }
             }
-            ev.eval_stock();
-            ev.eval_group();
-
-
-
-
-
             ManageChart1Safe();
             ManageChart2Safe();
-
         }
 
         public static void post_test()
         {
-            foreach (var o in g.ogl_data)
-            {
-                ps.post(o); // marketeye_received()
-                ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
-            }
             ev.eval_stock();
             ev.eval_group();
             mm.ManageChart1();
             mm.ManageChart2();
-            
         }
 
         public static void marketeye_received_보유종목_푀분의매수매도_소리내기(g.stock_data o)
@@ -919,7 +904,6 @@ namespace New_Tradegy.Library
                 o.stock.Contains("KBSTAR") ||
                 o.stock.Contains("HANARO"))
             {
-                o.included = false;
                 return;
             }
 
@@ -932,14 +916,13 @@ namespace New_Tradegy.Library
             if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
             {
                 if (!g.test) ev.EvalKODEX(o);
-                o.included = false;
+               
                 return;
             }
             
             o.점수.총점 = post_score(o, check_row);
 
-            // inclusion test after post_minute(o, check_row);
-            o.included = ev.eval_inclusion(o);
+          
         }
 
         public static void PostPassing(g.stock_data o, int checkRow, bool add)
@@ -1682,48 +1665,48 @@ namespace New_Tradegy.Library
         }
         // not used
         // 특정조건을 만족하면 관심에 추가
-        public static void marketeye_received_틱프로천_ebb_tide(g.stock_data o)
-        {
-            if (o.stock.Contains("혼합") || o.stock.Contains("KODEX"))
-                return;
+        //public static void marketeye_received_틱프로천_ebb_tide(g.stock_data o)
+        //{
+        //    if (o.stock.Contains("혼합") || o.stock.Contains("KODEX"))
+        //        return;
 
-            if (g.add_interest) // g.add_insterest default -> false in glbl.c
-            {
-                Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-                if (Form_보조_차트 != null)
-                {
-                    if (!ev.eval_inclusion(o) || o.틱프로천[0] <= 0) // not included or o.틱프로천[0] <= 0, return
-                        return;
+        //    if (g.add_interest) // g.add_insterest default -> false in glbl.c
+        //    {
+        //        Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
+        //        if (Form_보조_차트 != null)
+        //        {
+        //            if (!ev.eval_inclusion(o) || o.틱프로천[0] <= 0) // not included or o.틱프로천[0] <= 0, return
+        //                return;
 
-                    bool add_stock = false;
-                    for (int i = 1; i < g.틱_array_size; i++)
-                    {
-                        if (o.틱프로천[i] < 0)
-                        {
-                            add_stock = true;
-                            break;
-                        }
-                    }
+        //            bool add_stock = false;
+        //            for (int i = 1; i < g.틱_array_size; i++)
+        //            {
+        //                if (o.틱프로천[i] < 0)
+        //                {
+        //                    add_stock = true;
+        //                    break;
+        //                }
+        //            }
 
-                    if (add_stock)
-                        Form_보조_차트.Form_보조_차트_DRAW(o.stock);
-                }
+        //            if (add_stock)
+        //                Form_보조_차트.Form_보조_차트_DRAW(o.stock);
+        //        }
 
-                // bool add = false;
+        //        // bool add = false;
 
-                //if (o.틱프로천[0] + o.틱외인천[0] > 100)
-                //    add = true;
+        //        //if (o.틱프로천[0] + o.틱외인천[0] > 100)
+        //        //    add = true;
 
-                //if (o.분프로천[0] + o.분외인천[0] > 300)
-                //    add = true;
+        //        //if (o.분프로천[0] + o.분외인천[0] > 300)
+        //        //    add = true;
 
-                //if (o.분거래천[0] > 1000)
-                //    add = true;
+        //        //if (o.분거래천[0] > 1000)
+        //        //    add = true;
 
-                //if (o.pass.pass_level == 2 && o.분배수차[0] > 100 && o.분거래천[0] > 50)
-                //    add = true;
-            }
-        }
+        //        //if (o.pass.pass_level == 2 && o.분배수차[0] > 100 && o.분거래천[0] > 50)
+        //        //    add = true;
+        //    }
+        //}
 
         public static void post_minute(g.stock_data o, int check_row) // 
         {

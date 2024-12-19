@@ -354,10 +354,10 @@ namespace New_Tradegy.Library
                     {
                         o.shrink_draw = true;
                     }
-                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
-                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
-                    mm.ManageChart1(); // single stock shrink_draw ?
-                    mm.ManageChart2(); // single stock shrink_draw ?
+                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
+                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock);
+                    mm.ManageChart1(); // l1, single stock shrink_draw ?
+                    mm.ManageChart2(); // l1, single stock shrink_draw ?
                     break;
 
                 case "l2":
@@ -388,10 +388,10 @@ namespace New_Tradegy.Library
                     else
                     {
                         o.수급과장배수 *= 1.5;
-                        wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
-                        wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
-                        mm.ManageChart1(); // single 수급과장배수 조정
-                        mm.ManageChart2(); // single 수급과장배수 조정
+                        wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
+                        wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock);
+                        mm.ManageChart1(); // l2, single 수급과장배수 조정
+                        mm.ManageChart2(); // l2, single 수급과장배수 조정
                     }
                     break;
 
@@ -430,10 +430,11 @@ namespace New_Tradegy.Library
                     {
                         if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2])
                         {
-                            if (!hg.HogaInsert(g.clickedStock))
-                            {
-                                return;
-                            }
+                            wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
+                            if (g.clickedStock == g.KODEX4[0]) mm.fixedStocks[0] = g.KODEX4[1];
+                            if (g.clickedStock == g.KODEX4[1]) mm.fixedStocks[0] = g.KODEX4[0];
+                            if (g.clickedStock == g.KODEX4[2]) mm.fixedStocks[1] = g.KODEX4[3];
+                            if (g.clickedStock == g.KODEX4[3]) mm.fixedStocks[1] = g.KODEX4[2];
                         }
                         else
                         {
@@ -442,15 +443,12 @@ namespace New_Tradegy.Library
                                 if (g.호가종목.Contains(g.clickedStock))
                                 {
                                     g.호가종목.Remove(g.clickedStock);
-                                    //wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, true);
-                                    //wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, true);
                                     //StockExchange.buyOrders.RemoveAll(order => order.Stock == g.clickedStock);
                                     //StockExchange.sellOrders.RemoveAll(order => order.Stock == g.clickedStock);
                                 }
                                 else
                                 {
                                     g.호가종목.Add(g.clickedStock);
-                                   // hg.HogaInsert(g.clickedStock);
                                     if (g.관심종목.Contains(g.clickedStock))
                                     {
                                         g.관심종목.Remove(g.clickedStock);
@@ -459,10 +457,11 @@ namespace New_Tradegy.Library
                             }
                             break;
                         }
+                        
                     }
-                    
-                    mm.ManageChart1();
-                    mm.ManageChart2();
+
+                    mm.ManageChart1(); // l5
+                    mm.ManageChart2(); // l5
                     break;
 
                 case "l6":
@@ -508,8 +507,8 @@ namespace New_Tradegy.Library
 
                 case "l8":
                     o.수급과장배수 *= 0.66;
-                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock, true, false);
-                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock, true, false);
+                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
+                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock);
                     mm.ManageChart1(); // single 수급과장배수 조정
                     mm.ManageChart2(); // single 수급과장배수 조정
                     break;
@@ -527,20 +526,7 @@ namespace New_Tradegy.Library
                     }
                     else
                     {
-                        if (g.clickedStock == g.KODEX4[0])
-                        {
-                            if (!hg.HogaInsert(g.KODEX4[1])) // Hoga of g.KODEX4[0] removed in the routine
-                            {
-                                return; // not inserted
-                            }
-                        }
-                        if (g.clickedStock == g.KODEX4[2])
-                        {
-                            if (!hg.HogaInsert(g.KODEX4[3])) // Hoga of g.KODEX4[2] removed in the routine
-                            {
-                                return; // not inserted
-                            }
-                        }
+                        
                     }
                     break;
 

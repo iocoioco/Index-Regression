@@ -14,7 +14,7 @@ namespace New_Tradegy
 {
     public partial class Form_보조_차트 : Form
     {
-        private int Cell_Height = 30;
+        private int dataGridView1Height = 22;
         public int nRow;
         public int nCol;
 
@@ -25,6 +25,28 @@ namespace New_Tradegy
         public Form_보조_차트()
         {
             InitializeComponent();
+
+            this.FormBorderStyle = FormBorderStyle.None; // Remove the default title bar
+            Panel titleBar = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 50,
+                BackColor = Color.LightGray // Customize appearance
+            };
+            this.Controls.Add(titleBar);
+
+            //// Add the DataGridView to the custom title bar
+            //DataGridView dgv = new DataGridView
+            //{
+            //    Dock = DockStyle.Fill,
+            //    ColumnCount = 3
+            //};
+            //dgv.Columns[0].Name = "상관";
+            //dgv.Columns[1].Name = "보유";
+            //dgv.Columns[2].Name = "그순";
+
+            titleBar.Controls.Add(dataGridView1); // Add DataGridView to the title bar
+
         }
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
@@ -46,29 +68,25 @@ namespace New_Tradegy
         {
             if (g.MachineName == "HP")
             {
-                this.Size = new Size(964, 1039);
-                this.Location = new Point(-1920 / 2, 0);
-                chart2.Size = new Size(this.Width, this.Height - Cell_Height);
-                chart2.Location = new Point(0, 0);
+                this.Location = new Point(-g.screenWidth / 2, 0);
             }
             else
             {
-                this.Size = new Size(964, 1039);
-                this.Location = new Point(1910, 0);
-                chart2.Size = new Size(1920 / 2, 995);
-                chart2.Location = new Point(0, 0);
+                this.Location = new Point(g.screenWidth, 0); //?
             }
-
-            dataGridView1.Size = new Size(this.Width, Cell_Height);
+            this.Size = new Size(g.screenWidth / 2, g.screenHeight);
+            chart2.Size = new Size(this.Width, this.Height);
+            chart2.Location = new Point(0, dataGridView1Height);
+            dataGridView1.Size = new Size(this.Width, dataGridView1Height);
             dataGridView1.Location = new Point(0, 0);
         }
 
         private void ConfigureDataGridView()
         {
             dataGridView1.DataError += (s, f) => wr.DataGridView_DataError(s, f, "보조차트 dgv");
-            dataGridView1.DefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);
-            dataGridView1.RowTemplate.Height = Cell_Height;
+            dataGridView1.DefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
+            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
+            dataGridView1.RowTemplate.Height = dataGridView1Height;
             dataGridView1.ForeColor = Color.Black;
             dataGridView1.ScrollBars = ScrollBars.None;
         }
@@ -90,6 +108,7 @@ namespace New_Tradegy
             {
                 dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 dataGridView1.Columns[i].Width = this.Width / 8;
+                dataGridView1.Height = dataGridView1Height;
             }
         }
 
@@ -109,22 +128,26 @@ namespace New_Tradegy
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                if (!mm.ChartAreaExists(g.chart2, stock))
+                if (!mm.ChartAreaExists(g.chart2, stock) || mm.isTotalPointsEqualSeriesPoints(g.chart2, stock) == 1)
                 {
+                    mm.ClearChartAreaAndAnnotations(g.chart2, stock);
                     mm.CreateChartAreaForStock(g.chart2, stock, g.nRow, g.nCol);
                 }
-                else
+                else if(mm.isTotalPointsEqualSeriesPoints(g.chart2, stock) == 0)
                 {
                     mm.UpdateChartSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
                 }
+                else
+                {
+                    continue;
+                }
             }
-
 
             int areasCount = g.chart2.ChartAreas.Count;
             int annotationsCount = g.chart2.Annotations.Count;
             int seriesCount = g.chart2.Series.Count;
 
-            RelocateChartAreasAndAnnotations();
+            RelocateChart2AreasAndAnnotations();
             mm.ClearUnusedChartAreasAndAnnotations(chart2, displayList);
 
             areasCount = g.chart2.ChartAreas.Count;
@@ -134,15 +157,79 @@ namespace New_Tradegy
             dataGridView1.Refresh();
 
             g.chart2.Invalidate();
-            g.chart2.Refresh();
         }
 
-        public void RelocateChartAreasAndAnnotations()
+        public void RelocateChart2AreasAndAnnotations()
+        {
+            int totalAreas = Math.Min(displayList.Count, nRow * nCol);
+            float cellWidth = 100.0F / nCol; // Width percentage per column
+            float cellHeight = 100.0F / nRow; // Height percentage per row
+            float annotationHeight = 5.155F;
+            for (int i = 0; i < totalAreas; i++)
+            {
+                string stock = displayList[i];
+                string areaName = stock;
+
+                // Calculate row and column
+                int row = i % nRow;
+                int col = i / nRow;
+
+                // Calculate chart area position
+                float x = col * cellWidth;
+                float y = row * cellHeight;
+
+
+                // Relocate the ChartArea
+                if (chart2.ChartAreas.IndexOf(areaName) >= 0)
+                {
+                    var chartArea = chart2.ChartAreas[areaName];
+                    if (areaName.Contains("KODEX"))
+                    {
+                        chartArea.Position = new ElementPosition(
+                        x,    // X position 20
+                        y,   // Y position
+                        cellWidth,          // Width
+                        cellHeight); //cellHeight       // Height
+
+                    }
+                    else
+                    {
+                        chartArea.Position = new ElementPosition(
+                        x,    // X position 20
+                        y + 5.155F,   // Y position
+                        cellWidth,          // Width
+                        28.175F); //cellHeight       // Height
+                    }
+                    
+                    // Set InnerPlotPosition for plot area
+                    chartArea.InnerPlotPosition = new ElementPosition(
+                        5, // Leave a 10% margin on the left
+                        10, // Leave a 10% margin at the top
+                        75, // Use 80% of the ChartArea's width for the plot
+                        80  // Use 80% of the ChartArea's height for the plot
+                    );
+
+                    // Adjust corresponding Annotation's position (independently)
+                    Annotation annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
+                    if (annotation is RectangleAnnotation rectangleAnnotation)
+                    {
+                        rectangleAnnotation.X = chartArea.Position.X; // Match the ChartArea's X
+                        rectangleAnnotation.Y = row * cellHeight; //chartArea.Position.Y; // Place annotation slightly above ChartArea
+                        rectangleAnnotation.Width = chartArea.Position.Width; // Match ChartArea's width
+                        rectangleAnnotation.Height = 5.155 + 2; // Annotation height (adjust as needed)
+                    }
+                }
+
+
+            }
+            chart2.Invalidate(); // Redraw the chart
+        }
+        public void RelocateChart2AreasAndAnnotations_old()
         {
             int totalAreas = Math.Min(displayList.Count, nRow * nCol);
             double cellWidth = 100.0 / nCol; // Width percentage per column
             double cellHeight = 100.0 / nRow; // Height percentage per row
-            float annotationHeight = 5.15F;
+            float annotationHeight = 5.155F;
             for (int i = 0; i < totalAreas; i++)
             {
                 string stock = displayList[i];
@@ -161,20 +248,41 @@ namespace New_Tradegy
                 if (chart2.ChartAreas.IndexOf(areaName) >= 0)
                 {
                     var chartArea = chart2.ChartAreas[areaName];
-                    chartArea.Position = new ElementPosition((float)x, (float)(y + annotationHeight),
+                    if (areaName.Contains("KODEX"))
+                    {
+                        chartArea.Position = new ElementPosition((float)x, (float)(y),
+                        (float)cellWidth, (float)(cellHeight));
+                    }
+                    else
+                    {
+                        var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
+
+                        if (annotation != null)
+                        {
+                            // Explicitly cast to TextAnnotation
+                            if (annotation is TextAnnotation textAnnotation)
+                            {
+                                string text = textAnnotation.Text; // Now safe to access Text
+                                annotationHeight = text.Split('\n').Length - 1 + 1;
+
+                                annotation.X = x;
+                                annotation.Y = y;
+                                annotation.Width = 20;
+                                //annotation.Height = annotationHeight;
+
+                                chartArea.Position = new ElementPosition((float)x, (float)(y + annotationHeight),
+                                        (float)cellWidth, (float)(cellHeight - annotationHeight));
+                            }
+                        }
+
+                        chartArea.Position = new ElementPosition((float)x, (float)(y + annotationHeight),
                         (float)cellWidth, (float)(cellHeight - annotationHeight));
+                    }
+
+                    chartArea.InnerPlotPosition = new ElementPosition(5, 3, 55, 87);
                 }
 
-                // Relocate annotations associated with this ChartArea
 
-                var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
-
-                if (annotation != null)
-                {
-                    annotation.X = x;
-                    annotation.Y = y + 3;
-                    annotation.Width = 20;
-                }
             }
             chart2.Invalidate(); // Redraw the chart
         }
@@ -301,7 +409,7 @@ namespace New_Tradegy
                     foreach (string s in g.kosdaq_mixed.stock) { displayList.Add(s); }
                     break;
 
-                
+
                 case "푀손":
                     var a_tuple = new List<Tuple<double, string>> { };
 
@@ -361,24 +469,24 @@ namespace New_Tradegy
 
 
         // not used
-        public void Form_보조_차트_DRAW(string stock)
-        {
-            if (displayList.Count == nRow * nCol)
-            {
-                ChartClear();
-                displayList.Clear();
-            }
+        //public void Form_보조_차트_DRAW(string stock)
+        //{
+        //    if (displayList.Count == nRow * nCol)
+        //    {
+        //        ChartClear();
+        //        displayList.Clear();
+        //    }
 
-            if (displayList.Contains(stock)) { return; }
+        //    if (displayList.Contains(stock)) { return; }
 
-            nCol = 4;
-            nRow = 3;
+        //    nCol = 4;
+        //    nRow = 3;
 
 
-            displayList.Add(stock);
+        //    displayList.Add(stock);
 
-            dr.draw_stock(chart2, nRow, nCol, displayList.Count - 1, stock);
-        }
+        //    dr.draw_stock(chart2, nRow, nCol, displayList.Count - 1, stock);
+        //}
 
         private void UpdateFormTitle()
         {
@@ -421,30 +529,30 @@ namespace New_Tradegy
         /// Updates stock data selectively based on the provided stock data list.
         /// </summary>
         /// <param name="updatedStocks">List of updated stock data.</param>
-        public void UpdateStockData(List<StockPoint> updatedStocks)
-        {
-            foreach (var stockData in updatedStocks)
-            {
-                if (!displayList.Contains(stockData.Stock)) continue;
+        //public void UpdateStockData(List<StockPoint> updatedStocks)
+        //{
+        //    foreach (var stockData in updatedStocks)
+        //    {
+        //        if (!displayList.Contains(stockData.Stock)) continue;
 
-                if (stockData.Stock.Contains("KODEX"))
-                {
-                    mm.UpdateChartSeriesKodex(g.chart2, stockData.Stock);
-                }
-                else
-                {
-                    mm.UpdateChartSeriesGeneral(g.chart2, stockData.Stock);
-                }
+        //        if (stockData.Stock.Contains("KODEX"))
+        //        {
+        //            mm.UpdateChartSeriesKodex(g.chart2, stockData.Stock);
+        //        }
+        //        else
+        //        {
+        //            mm.UpdateChartSeriesGeneral(g.chart2, stockData.Stock);
+        //        }
 
-                // Update or add annotation
-                if (!stockData.Stock.Contains("KODEX"))
-                {
-                    mm.UpdateAnnotation(g.chart2, stockData.Stock);
-                }
-            }
+        //        // Update or add annotation
+        //        if (!stockData.Stock.Contains("KODEX"))
+        //        {
+        //            mm.UpdateAnnotation(g.chart2, stockData.Stock);
+        //        }
+        //    }
 
-            g.chart2.Invalidate(); // Redraw the chart
-        }
+        //    g.chart2.Invalidate(); // Redraw the chart
+        //}
 
         private void chart2_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -480,13 +588,13 @@ namespace New_Tradegy
 
         private void Form_보조_차트_ResizeEnd(object sender, EventArgs e)
         {
-            chart2.Size = new Size((int)(this.Width), (int)(this.Height - Cell_Height));
-            chart2.Location = new Point(0, 0);
+            chart2.Size = new Size((int)(this.Width), (int)(this.Height - dataGridView1Height));
+            chart2.Location = new Point(0, dataGridView1Height);
 
 
 
 
-            dataGridView1.Size = new Size(this.Width, Cell_Height);
+            dataGridView1.Size = new Size(this.Width, dataGridView1Height);
             dataGridView1.Location = new Point(0, 0);
             dtb.Rows[0][0] = "상관";
             dtb.Rows[0][1] = "보유";

@@ -22,10 +22,10 @@ namespace New_Tradegy
         private void Form_제어_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Size = new Size(g.screenWidth / 11, g.formSize.ch * 3);
+            this.Size = new Size(g.screenWidth / g.nCol - 20, g.formSize.ch * 3);
             int a = g.screenHeight;
 
-            this.Location = new Point(g.screenWidth / g.rqwey_nCol + 15, g.formSize.ch * 12); // + 30 remove from width
+            this.Location = new Point(g.screenWidth / g.nCol + 10, g.screenHeight / 3 + 2); // + 30 remove from width
 
 
 

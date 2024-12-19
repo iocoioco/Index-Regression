@@ -409,8 +409,8 @@ namespace New_Tradegy.Library
             Dgv.DataError += (s, e) => wr.DataGridView_DataError(s, e, "jpjd Dgv");
             Dgv.DataError += new DataGridViewDataErrorEventHandler(dataGridView1_DataError);
             Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None; 
-            Dgv.Location = new Point(100, 0);
-            Dgv.Size = new Size(w0 + w1 + w2, 530);
+            Dgv.Location = new Point(120, 0);
+            Dgv.Size = new Size(w0 + w1 + w2, CellHeight * 13);
 
             Dgv.Name = stock;
 

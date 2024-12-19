@@ -782,7 +782,7 @@ namespace New_Tradegy.Library
             // 2nd y of left corner of 
             // 3rd x width from x
             // 4th y height from y
-            chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 10, 60, 80);
+            chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(0, 10, 100, 80);
 
 
 
@@ -1181,7 +1181,7 @@ namespace New_Tradegy.Library
             // 2nd y of left corner of 
             // 3rd x width from x
             // 4th y height from y
-            chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 10, 60, 80);
+            chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(0, 10, 100, 80);
 
 
 

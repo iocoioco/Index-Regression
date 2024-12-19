@@ -579,7 +579,7 @@ namespace New_Tradegy.Library
 
             public List<string> 절친 = new List<string>();
 
-            public bool included = false;
+       
             public bool downloaded = false;
 
             public string code; //0

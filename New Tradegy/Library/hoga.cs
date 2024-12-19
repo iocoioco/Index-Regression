@@ -150,11 +150,11 @@ namespace New_Tradegy.Library
                 DSCBO1Lib.StockJpbid _stockjpbid = (DSCBO1Lib.StockJpbid)a;
                 _stockjpbid.Unsubscribe(); // working
                                            // Key was present; date is set to the value in the dictionary.
-                // sb = RemainSB();
-                Form f = HogaFormNameGivenStock(stock);
+                                           // sb = RemainSB();
+                Form f = fm.FindFormByName("se");
                 DataGridView dgv = f.Controls.Find(stock, true).FirstOrDefault() as DataGridView;
                 dgv.Dispose();
-                f.Close();
+    
                 if (g.jpjds.ContainsKey(stock))
                 {
                     g.jpjds.Remove(stock);
