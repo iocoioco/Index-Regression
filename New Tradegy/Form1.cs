@@ -258,23 +258,23 @@ namespace New_Tradegy // added for test on 20241020 0300
         }
 
 
-        private void AddSearchTextBox()
-        {
-            // Create a new TextBox instance
-            searchTextBox = new TextBox(); // Assign to the class-level field
+        //private void AddSearchTextBox()
+        //{
+        //    // Create a new TextBox instance
+        //    searchTextBox = new TextBox(); // Assign to the class-level field
 
-            // Set properties of the TextBox
-            searchTextBox.Location = new Point(0, 0); // Set the location on the form
-            searchTextBox.Size = new Size(150, 20); // Set the size of the TextBox
-            searchTextBox.Name = "searchTextBox"; // Set the name of the TextBox
+        //    // Set properties of the TextBox
+        //    searchTextBox.Location = new Point(0, 0); // Set the location on the form
+        //    searchTextBox.Size = new Size(150, 20); // Set the size of the TextBox
+        //    searchTextBox.Name = "searchTextBox"; // Set the name of the TextBox
 
-            // Optionally, add event handlers for the TextBox
-            searchTextBox.KeyPress += new KeyPressEventHandler(SearchTextBox_KeyPress);
+        //    // Optionally, add event handlers for the TextBox
+        //    searchTextBox.KeyPress += new KeyPressEventHandler(SearchTextBox_KeyPress);
 
-            // Add the TextBox to the form's Controls collection
-            g.chart1.Controls.Add(searchTextBox);
-            searchTextBox.Text = "";
-        }
+        //    // Add the TextBox to the form's Controls collection
+        //    g.chart1.Controls.Add(searchTextBox);
+        //    searchTextBox.Text = "";
+        //}
 
         private static void SearchTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
