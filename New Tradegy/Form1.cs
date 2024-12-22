@@ -112,6 +112,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             else
                 g.connected = true;
 
+
+
             System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
             g.screenWidth = workingRectangle.Width;
             g.screenHeight = workingRectangle.Height;
