@@ -899,7 +899,7 @@ class mm
         return chart.ChartAreas[area];
     }
 
-    public static void MarkKodex(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    public static void MarkKodex(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, Series t) // i (가격, 수급, 체강 순으로 Series)
     {
         // { 1, 3, 4, 5, 6, 10, 11 }; price, program, foreign, institute, individua, Nasdaq, pension
         // draw mark for price, amount, intensity
@@ -1093,7 +1093,7 @@ class mm
 
     }
 
-    public static void MarkGeneral(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    public static void MarkGeneral(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, Series t) // i (가격, 수급, 체강 순으로 Series)
     {
         // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
         // draw mark for price, amount, intensity
@@ -1115,6 +1115,7 @@ class mm
         {
             if (i == 1) // price
             {
+               
                 int p_id = m - start_time; // g.time[0] != 0, shifting needed
                 int price_change = x[m, 1] - x[m - 1, 1];
 
@@ -1160,6 +1161,7 @@ class mm
 
             if (g.q != "h&s")
             {
+                int price_change = x[m, 1] - x[m - 1, 1]; //?
                 int mark_size = 0;
 
                 if (o.분거래천[0] < 10)
@@ -1226,7 +1228,7 @@ class mm
         // magenta and cyan cross mark on the lines of amount and intensity
         if (i == 2 || i == 3)
         {
-
+            int m = 0; //?
             if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
                                                              //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
             {
@@ -1248,7 +1250,7 @@ class mm
 
     }
 
-    public static void LabelGeneral(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series))
+    public static void LabelGeneral(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, Series t) // i (가격, 수급, 체강 순으로 Series))
     {
         // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
         // 1, 4, 5 extened label
@@ -1314,7 +1316,7 @@ class mm
             t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
     }
 
-    public static void LabelKodex(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t)
+    public static void LabelKodex(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, Series t)
     {
         // { 1, 3, 4, 5, 6, 10, 11 }; price, program, foreign, institute, individua, Nasdaq, pension
         // all are extended label upto 4, or 5
@@ -2564,7 +2566,7 @@ class mm
         chart.Invalidate();   // Redraw chart
     }
 
-    public static void draw_stock_mark_old(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    public static void draw_stock_mark_old(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, Series t) // i (가격, 수급, 체강 순으로 Series)
     {
         // draw mark for price, amount, intensity
         // npts : total number of o.x[,], end_xid : end x id of o.x[,]
