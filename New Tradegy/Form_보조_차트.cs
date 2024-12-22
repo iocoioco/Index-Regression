@@ -128,19 +128,16 @@ namespace New_Tradegy
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                if (!mm.ChartAreaExists(g.chart2, stock) || mm.isTotalPointsEqualSeriesPoints(g.chart2, stock))
+                if (!mm.ChartAreaExists(g.chart2, stock))
                 {
                     mm.ClearChartAreaAndAnnotations(g.chart2, stock);
                     mm.CreateChartAreaForStock(g.chart2, stock, g.nRow, g.nCol);
                 }
-                else if(mm.isTotalPointsEqualSeriesPoints(g.chart2, stock))
+                else
                 {
                     mm.UpdateChartSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
                 }
-                else
-                {
-                    continue;
-                }
+        
             }
 
             int areasCount = g.chart2.ChartAreas.Count;
