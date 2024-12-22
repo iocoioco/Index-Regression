@@ -112,6 +112,8 @@ class mm
             Form form = fm.FindFormByName("se");
             if (!fm.DoesDataGridViewExist(form, stock))
             {
+                if (!g.connected) continue;//?
+
                 var a = new jp();
 
                 DataGridView Dgv = a.Generate(stock);
@@ -896,6 +898,488 @@ class mm
 
         return chart.ChartAreas[area];
     }
+
+    public static void MarkKodex(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    {
+        // { 1, 3, 4, 5, 6, 10, 11 }; price, program, foreign, institute, individua, Nasdaq, pension
+        // draw mark for price, amount, intensity
+        // npts : total number of o.x[,], end_xid : end x id of o.x[,]
+        int index = wk.return_index_of_ogldata(stock);
+
+        if (index < 0)
+            return;
+
+        bool KODEX = false;
+        if (g.KODEX4.Contains(stock))
+            KODEX = true;
+
+
+        g.stock_data o = g.ogl_data[index];
+
+
+        if (total_number_of_point == 0) { return; }
+        string[] difference = new string[7];
+        int k;
+
+
+        int end_id = start_time + total_number_of_point - 1;
+        // if price increases more than the specified value, than circle mark
+        for (int m = start_time + 1; m <= end_id; m++)
+        {
+            if (i == 1) // price
+            {
+                int p_id = m - start_time; // g.time[0] != 0, shifting needed
+                int price_change = x[m, 1] - x[m - 1, 1];
+
+                if (KODEX)
+                {
+                    price_change = x[m, 1] - x[m - 1, 1];
+                    if (price_change >= 20) // KODEX 가격 변화가 20 이상 상승하는 경우 Circle로 표시
+                    {
+                        if (price_change > 40)
+                        {
+                            t.Points[p_id].MarkerColor = Color.Blue; // KODEX
+                        }
+                        else if (price_change > 30)
+                        {
+                            t.Points[p_id].MarkerColor = Color.Green; // KODEX
+                        }
+                        else
+                        {
+                            t.Points[p_id].MarkerColor = Color.Red; // KODEX
+                        }
+                        t.Points[p_id].MarkerSize = 7;
+                        t.Points[p_id].MarkerStyle = MarkerStyle.Circle;
+                    }
+                }
+                else
+                {
+                    if (price_change >= 100)
+                    {
+                        if (price_change > 300)
+                        {
+                            t.Points[p_id].MarkerColor = Color.Black;
+                        }
+
+                        else if (price_change > 200)
+                            t.Points[p_id].MarkerColor = Color.Blue;
+                        else if (price_change > 150)
+                            t.Points[p_id].MarkerColor = Color.Green;
+                        else
+                            t.Points[p_id].MarkerColor = Color.Red;
+
+                        t.Points[p_id].MarkerSize = 6;
+                        t.Points[p_id].MarkerStyle = MarkerStyle.Cross;
+                    }
+
+                    if (x[m, 0] >= 90200) // 시간이 9:02 이후 배수 차이가 100 이상일 때
+                    {
+                        int multiple_difference = x[m, 8] - x[m, 9]; // 배수 차이 
+                        if (multiple_difference > 100)
+                        {
+
+                            t.Points[p_id].MarkerSize = 9;
+                            t.Points[p_id].MarkerStyle = MarkerStyle.Circle;
+
+                            if (multiple_difference > 500)
+                                t.Points[p_id].MarkerColor = Color.Black;
+                            else if (multiple_difference > 300)
+                                t.Points[p_id].MarkerColor = Color.Blue;
+                            else if (multiple_difference > 200)
+                                t.Points[p_id].MarkerColor = Color.Green;
+                            else
+                                t.Points[p_id].MarkerColor = Color.Red;
+                        }
+                    }
+                }
+
+                if (g.q != "h&s")
+                {
+                    int mark_size = 0;
+
+                    if (o.분거래천[0] < 10)
+                    {
+                    }
+                    else if (o.분거래천[0] < 50)
+                    {
+                        t.Points[0].MarkerColor = Color.Red;
+                        mark_size = 10;
+                    }
+                    else if (o.분거래천[0] < 100)
+                    {
+                        t.Points[0].MarkerColor = Color.Red;
+                        mark_size = 15;
+                    }
+                    else if (o.분거래천[0] < 200)
+                    {
+                        t.Points[0].MarkerColor = Color.Green;
+                        mark_size = 15;
+                    }
+                    else if (o.분거래천[0] < 300)
+                    {
+                        t.Points[0].MarkerColor = Color.Green;
+                        mark_size = 20;
+                    }
+                    else if (o.분거래천[0] < 500)
+                    {
+                        t.Points[0].MarkerColor = Color.Blue;
+                        mark_size = 20;
+                    }
+                    else if (o.분거래천[0] < 800)
+                    {
+                        t.Points[0].MarkerColor = Color.Blue;
+                        mark_size = 30;
+                    }
+                    else if (o.분거래천[0] < 1200)
+                    {
+                        t.Points[0].MarkerColor = Color.Black;
+                        mark_size = 30;
+                    }
+                    else if (o.분거래천[0] < 1700)
+                    {
+                        t.Points[0].MarkerColor = Color.Black;
+                        mark_size = 40;
+                    }
+                    else
+                    {
+                        t.Points[0].MarkerColor = Color.Black;
+                        mark_size = 50;
+                    }
+
+                    if (g.q == "kodex_leverage_single" || g.q == "kodex_inverse_single")
+                        t.Points[0].MarkerSize = mark_size * 5;
+                    else
+                        t.Points[0].MarkerSize = mark_size;
+
+                    if (price_change >= 0)
+                        t.Points[0].MarkerStyle = MarkerStyle.Circle;
+                    else
+                        t.Points[0].MarkerStyle = MarkerStyle.Cross;
+                }
+            }
+
+            // magenta and cyan cross mark on the lines of amount and intensity
+            if ((i == 2 || i == 3) && !KODEX)
+            {
+                if (KODEX)
+                {
+
+                }
+
+                else // 일반
+                {
+                    if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
+                                                                     //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
+                    {
+                        int sequence_id = m - start_time;
+                        if (i == 2)
+                        {
+
+                            t.Points[sequence_id].MarkerColor = Color.Magenta; // amount
+                        }
+                        else
+                        {
+                            t.Points[sequence_id].MarkerColor = Color.Cyan;  // intensity
+                        }
+
+                        t.Points[sequence_id].MarkerStyle = MarkerStyle.Cross;
+                        t.Points[sequence_id].MarkerSize = 7;
+                    }
+                }
+            }
+        }
+
+
+
+    }
+
+    public static void MarkGeneral(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    {
+        // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
+        // draw mark for price, amount, intensity
+        // npts : total number of o.x[,], end_xid : end x id of o.x[,]
+        int index = wk.return_index_of_ogldata(stock);
+
+        if (index < 0)
+            return;
+
+        g.stock_data o = g.ogl_data[index];
+
+        if (total_number_of_point == 0) { return; }
+        string[] difference = new string[7];
+        int k;
+
+        int end_id = start_time + total_number_of_point - 1;
+        // if price increases more than the specified value, than circle mark
+        for (int m = start_time + 1; m <= end_id; m++)
+        {
+            if (i == 1) // price
+            {
+                int p_id = m - start_time; // g.time[0] != 0, shifting needed
+                int price_change = x[m, 1] - x[m - 1, 1];
+
+
+                if (price_change >= 100)
+                {
+                    if (price_change > 300)
+                    {
+                        t.Points[p_id].MarkerColor = Color.Black;
+                    }
+
+                    else if (price_change > 200)
+                        t.Points[p_id].MarkerColor = Color.Blue;
+                    else if (price_change > 150)
+                        t.Points[p_id].MarkerColor = Color.Green;
+                    else
+                        t.Points[p_id].MarkerColor = Color.Red;
+
+                    t.Points[p_id].MarkerSize = 6;
+                    t.Points[p_id].MarkerStyle = MarkerStyle.Cross;
+                }
+
+                if (x[m, 0] >= 90200) // 시간이 9:02 이후 배수 차이가 100 이상일 때
+                {
+                    int multiple_difference = x[m, 8] - x[m, 9]; // 배수 차이 
+                    if (multiple_difference > 100)
+                    {
+
+                        t.Points[p_id].MarkerSize = 9;
+                        t.Points[p_id].MarkerStyle = MarkerStyle.Circle;
+
+                        if (multiple_difference > 500)
+                            t.Points[p_id].MarkerColor = Color.Black;
+                        else if (multiple_difference > 300)
+                            t.Points[p_id].MarkerColor = Color.Blue;
+                        else if (multiple_difference > 200)
+                            t.Points[p_id].MarkerColor = Color.Green;
+                        else
+                            t.Points[p_id].MarkerColor = Color.Red;
+                    }
+                }
+            }
+
+            if (g.q != "h&s")
+            {
+                int mark_size = 0;
+
+                if (o.분거래천[0] < 10)
+                {
+                }
+                else if (o.분거래천[0] < 50)
+                {
+                    t.Points[0].MarkerColor = Color.Red;
+                    mark_size = 10;
+                }
+                else if (o.분거래천[0] < 100)
+                {
+                    t.Points[0].MarkerColor = Color.Red;
+                    mark_size = 15;
+                }
+                else if (o.분거래천[0] < 200)
+                {
+                    t.Points[0].MarkerColor = Color.Green;
+                    mark_size = 15;
+                }
+                else if (o.분거래천[0] < 300)
+                {
+                    t.Points[0].MarkerColor = Color.Green;
+                    mark_size = 20;
+                }
+                else if (o.분거래천[0] < 500)
+                {
+                    t.Points[0].MarkerColor = Color.Blue;
+                    mark_size = 20;
+                }
+                else if (o.분거래천[0] < 800)
+                {
+                    t.Points[0].MarkerColor = Color.Blue;
+                    mark_size = 30;
+                }
+                else if (o.분거래천[0] < 1200)
+                {
+                    t.Points[0].MarkerColor = Color.Black;
+                    mark_size = 30;
+                }
+                else if (o.분거래천[0] < 1700)
+                {
+                    t.Points[0].MarkerColor = Color.Black;
+                    mark_size = 40;
+                }
+                else
+                {
+                    t.Points[0].MarkerColor = Color.Black;
+                    mark_size = 50;
+                }
+
+                if (g.q == "kodex_leverage_single" || g.q == "kodex_inverse_single")
+                    t.Points[0].MarkerSize = mark_size * 5;
+                else
+                    t.Points[0].MarkerSize = mark_size;
+
+                if (price_change >= 0)
+                    t.Points[0].MarkerStyle = MarkerStyle.Circle;
+                else
+                    t.Points[0].MarkerStyle = MarkerStyle.Cross;
+            }
+        }
+
+        // magenta and cyan cross mark on the lines of amount and intensity
+        if (i == 2 || i == 3)
+        {
+
+            if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
+                                                             //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
+            {
+                int sequence_id = m - start_time;
+                if (i == 2)
+                {
+
+                    t.Points[sequence_id].MarkerColor = Color.Magenta; // amount
+                }
+                else
+                {
+                    t.Points[sequence_id].MarkerColor = Color.Cyan;  // intensity
+                }
+
+                t.Points[sequence_id].MarkerStyle = MarkerStyle.Cross;
+                t.Points[sequence_id].MarkerSize = 7;
+            }
+        }
+
+    }
+
+    public static void LabelGeneral(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series))
+    {
+        // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
+        // 1, 4, 5 extened label
+        // 2, 3 only 1 label
+        // 6 no label
+        int end_id = total_number_of_point - 1;
+        int index = wk.return_index_of_ogldata(stock);
+
+        if (index < 0)
+            return;
+
+        g.stock_data o = g.ogl_data[index];
+
+        string string_to_add;
+        int d = 0;
+
+        switch (i)
+        {
+            case 1:
+            case 4:
+            case 5:
+                // intitail data setting
+                if (i == 1)
+                    t.Points[total_number_of_point - 1].Label = "      " + x[end_id, i].ToString();
+                else if (i == 4)
+                    t.Points[total_number_of_point - 1].Label = o.프누천.ToString("F1");
+                else if (i == 5)
+                    t.Points[total_number_of_point - 1].Label = o.외누천.ToString("F1");
+
+                // following data setting
+                for (int k = 0; k < 4; k++)
+                {
+                    if (end_id - k - 1 < 0)
+                        break;
+
+                    if (i == 1)
+                        d = x[end_id - k, i] - x[end_id - k - 1, i];
+                    else if (i == 4)
+                        d = (int)Math.Round(o.분프로천[k] - o.분프로천[k - 1]);
+                    else if (i == 5)
+                        d = (int)Math.Round(o.분외인천[k] - o.분외인천[k - 1]);
+
+                    if (d >= 0 && k >= 1)
+                        t.Points[total_number_of_point - 1].Label += "+" + d.ToString();
+                    else
+                        t.Points[total_number_of_point - 1].Label += d.ToString();
+                }
+                break;
+            case 2:
+            case 3:
+                t.Points[total_number_of_point - 1].Label = o.x[end_id, i].ToString();
+                break;
+            case 6:
+                return;
+        }
+
+        t.Color = colorGeneral[i];
+
+        // working
+        if (chart.Name == "chart1")
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))); // Calibri
+        else
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+    }
+
+    public static void LabelKodex(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t)
+    {
+        // { 1, 3, 4, 5, 6, 10, 11 }; price, program, foreign, institute, individua, Nasdaq, pension
+        // all are extended label upto 4, or 5
+
+        int index = wk.return_index_of_ogldata(stock);
+
+        if (index < 0)
+            return;
+
+        g.stock_data o = g.ogl_data[index];
+
+
+        int end_id = total_number_of_point - 1;
+        int d = 0;
+
+        switch (i)
+        {
+            case 1:
+            case 4:
+            case 5:
+                // intitail data setting
+                if (i == 1)
+                    t.Points[total_number_of_point - 1].Label = "      " + x[end_id, i].ToString();
+                else if (i == 4)
+                    t.Points[total_number_of_point - 1].Label = o.프누천.ToString("F1");
+                else if (i == 5)
+                    t.Points[total_number_of_point - 1].Label = o.외누천.ToString("F1");
+
+                // following data setting
+                for (int k = 0; k < 4; k++)
+                {
+                    if (end_id - k - 1 < 0)
+                        break;
+
+                    if (i == 1)
+                        d = x[end_id - k, i] - x[end_id - k - 1, i];
+                    else if (i == 4)
+                        d = (int)Math.Round(o.분프로천[k] - o.분프로천[k - 1]);
+                    else if (i == 5)
+                        d = (int)Math.Round(o.분외인천[k] - o.분외인천[k - 1]);
+
+                    if (d >= 0 && k >= 1)
+                        t.Points[total_number_of_point - 1].Label += "+" + d.ToString();
+                    else
+                        t.Points[total_number_of_point - 1].Label += d.ToString();
+                }
+                break;
+            case 2:
+            case 3:
+                t.Points[total_number_of_point - 1].Label = o.x[end_id, i].ToString();
+                break;
+            case 6:
+                return;
+        }
+
+        t.Color = colorKODEX[i];
+
+
+        // working
+        if (chart.Name == "chart1")
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))); // Calibri
+        else
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+    }
+
 
     public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
     {
@@ -2079,5 +2563,299 @@ class mm
         chart.ResumeLayout(); // Resume layout updates
         chart.Invalidate();   // Redraw chart
     }
+
+    public static void draw_stock_mark_old(Chart chart, string stock, int start_time, int i, int total_number_of_point, int[,] x, WinFormsCharting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    {
+        // draw mark for price, amount, intensity
+        // npts : total number of o.x[,], end_xid : end x id of o.x[,]
+        int index = wk.return_index_of_ogldata(stock);
+
+        if (index < 0)
+            return;
+
+        bool KODEX = false;
+        if (g.KODEX4.Contains(stock))
+            KODEX = true;
+
+
+        g.stock_data o = g.ogl_data[index];
+
+
+        if (total_number_of_point == 0) { return; }
+        string[] difference = new string[7];
+        int k;
+
+
+        int end_id = start_time + total_number_of_point - 1;
+        // if price increases more than the specified value, than circle mark
+        for (int m = start_time + 1; m <= end_id; m++)
+        {
+            if (i == 1) // price
+            {
+                int p_id = m - start_time; // g.time[0] != 0, shifting needed
+                int price_change = x[m, 1] - x[m - 1, 1];
+
+                if (KODEX)
+                {
+                    price_change = x[m, 1] - x[m - 1, 1];
+                    if (price_change >= 20) // KODEX 가격 변화가 20 이상 상승하는 경우 Circle로 표시
+                    {
+                        if (price_change > 40)
+                        {
+                            t.Points[p_id].MarkerColor = Color.Blue; // KODEX
+                        }
+                        else if (price_change > 30)
+                        {
+                            t.Points[p_id].MarkerColor = Color.Green; // KODEX
+                        }
+                        else
+                        {
+                            t.Points[p_id].MarkerColor = Color.Red; // KODEX
+                        }
+                        t.Points[p_id].MarkerSize = 7;
+                        t.Points[p_id].MarkerStyle = MarkerStyle.Circle;
+                    }
+                }
+                else
+                {
+                    if (price_change >= 100)
+                    {
+                        if (price_change > 300)
+                        {
+                            t.Points[p_id].MarkerColor = Color.Black;
+                        }
+
+                        else if (price_change > 200)
+                            t.Points[p_id].MarkerColor = Color.Blue;
+                        else if (price_change > 150)
+                            t.Points[p_id].MarkerColor = Color.Green;
+                        else
+                            t.Points[p_id].MarkerColor = Color.Red;
+
+                        t.Points[p_id].MarkerSize = 6;
+                        t.Points[p_id].MarkerStyle = MarkerStyle.Cross;
+                    }
+
+                    if (x[m, 0] >= 90200) // 시간이 9:02 이후 배수 차이가 100 이상일 때
+                    {
+                        int multiple_difference = x[m, 8] - x[m, 9]; // 배수 차이 
+                        if (multiple_difference > 100)
+                        {
+
+                            t.Points[p_id].MarkerSize = 9;
+                            t.Points[p_id].MarkerStyle = MarkerStyle.Circle;
+
+                            if (multiple_difference > 500)
+                                t.Points[p_id].MarkerColor = Color.Black;
+                            else if (multiple_difference > 300)
+                                t.Points[p_id].MarkerColor = Color.Blue;
+                            else if (multiple_difference > 200)
+                                t.Points[p_id].MarkerColor = Color.Green;
+                            else
+                                t.Points[p_id].MarkerColor = Color.Red;
+                        }
+                    }
+                }
+
+                if (g.q != "h&s")
+                {
+                    int mark_size = 0;
+
+                    if (o.분거래천[0] < 10)
+                    {
+                    }
+                    else if (o.분거래천[0] < 50)
+                    {
+                        t.Points[0].MarkerColor = Color.Red;
+                        mark_size = 10;
+                    }
+                    else if (o.분거래천[0] < 100)
+                    {
+                        t.Points[0].MarkerColor = Color.Red;
+                        mark_size = 15;
+                    }
+                    else if (o.분거래천[0] < 200)
+                    {
+                        t.Points[0].MarkerColor = Color.Green;
+                        mark_size = 15;
+                    }
+                    else if (o.분거래천[0] < 300)
+                    {
+                        t.Points[0].MarkerColor = Color.Green;
+                        mark_size = 20;
+                    }
+                    else if (o.분거래천[0] < 500)
+                    {
+                        t.Points[0].MarkerColor = Color.Blue;
+                        mark_size = 20;
+                    }
+                    else if (o.분거래천[0] < 800)
+                    {
+                        t.Points[0].MarkerColor = Color.Blue;
+                        mark_size = 30;
+                    }
+                    else if (o.분거래천[0] < 1200)
+                    {
+                        t.Points[0].MarkerColor = Color.Black;
+                        mark_size = 30;
+                    }
+                    else if (o.분거래천[0] < 1700)
+                    {
+                        t.Points[0].MarkerColor = Color.Black;
+                        mark_size = 40;
+                    }
+                    else
+                    {
+                        t.Points[0].MarkerColor = Color.Black;
+                        mark_size = 50;
+                    }
+
+                    if (g.q == "kodex_leverage_single" || g.q == "kodex_inverse_single")
+                        t.Points[0].MarkerSize = mark_size * 5;
+                    else
+                        t.Points[0].MarkerSize = mark_size;
+
+                    if (price_change >= 0)
+                        t.Points[0].MarkerStyle = MarkerStyle.Circle;
+                    else
+                        t.Points[0].MarkerStyle = MarkerStyle.Cross;
+                }
+            }
+
+            // magenta and cyan cross mark on the lines of amount and intensity
+            if ((i == 2 || i == 3) && !KODEX)
+            {
+                if (KODEX)
+                {
+
+                }
+
+                else // 일반
+                {
+                    if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
+                                                                     //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
+                    {
+                        int sequence_id = m - start_time;
+                        if (i == 2)
+                        {
+
+                            t.Points[sequence_id].MarkerColor = Color.Magenta; // amount
+                        }
+                        else
+                        {
+                            t.Points[sequence_id].MarkerColor = Color.Cyan;  // intensity
+                        }
+
+                        t.Points[sequence_id].MarkerStyle = MarkerStyle.Cross;
+                        t.Points[sequence_id].MarkerSize = 7;
+                    }
+                }
+            }
+        }
+
+        //Label of price, amount and intensity at the end point
+        if (i == 1 || i == 2 || i == 3 ||
+            (i == 4) ||
+            (i == 5) || // && stock.Contains("KODEX")) || 20220723
+            (i == 6 && KODEX) ||
+            (i == 10 && KODEX) ||
+
+            (i == 11 && KODEX))
+        {
+
+            int plus_count = 0;
+            int sum = 0;
+
+            if (i == 3)
+            {
+                if (KODEX)
+                    t.Points[total_number_of_point - 1].Label = "      " + ((int)(x[end_id, i])).ToString();
+                else
+                    t.Points[total_number_of_point - 1].Label = "      " + ((int)(x[end_id, i] / g.HUNDRED)).ToString();
+            }
+            else if (i == 4 && !KODEX)
+                t.Points[total_number_of_point - 1].Label = o.프누천.ToString("F1");
+            else if (i == 5 && !KODEX)
+                t.Points[total_number_of_point - 1].Label = o.외누천.ToString("F1");
+            else
+                t.Points[total_number_of_point - 1].Label = "      " + x[end_id, i].ToString();
+
+            // Curve End Label
+            for (k = 0; k < 4; k++)
+            {
+                if (end_id - k - 1 < 0)
+                    break;
+
+                int d = 0;
+                if (i == 3) // 2020/0801/1013. due to intensity = 0 display problem
+                {
+                    if (KODEX)
+                        d = (int)(x[end_id - k, i]) - (int)(x[end_id - k - 1, i]);
+                    else
+                        d = (int)(x[end_id - k, i] / g.HUNDRED) - (int)(x[end_id - k - 1, i] / g.HUNDRED);
+                }
+
+                else if (i == 4 && !KODEX)
+                    d = (int)Math.Round(o.분프로천[k]); // 20220723
+                else if (i == 5 && !KODEX)
+                    d = (int)Math.Round(o.분외인천[k]); // 20220723
+                else
+                    d = x[end_id - k, i] - x[end_id - k - 1, i]; // difference
+
+                if (k < 5)
+                {
+                    if (d > 0)
+                        plus_count++;
+
+                    if (d < 0)
+                        plus_count--;
+
+                    sum += d;
+                }
+
+
+                if (d >= 0)
+                    difference[k] = "+" + d.ToString();
+                else
+                    difference[k] = d.ToString();
+
+                if (difference[k] != null)
+                {
+                    if ((i != 2 && i != 3) || KODEX)
+                        t.Points[total_number_of_point - 1].Label += difference[k];
+
+                    if (i == 2)
+                        t.LabelForeColor = colorGeneral[2];    // label of amount
+
+                    if (i == 3)
+                        if (KODEX)
+                            t.LabelForeColor = colorKODEX[3];
+                        else
+                            t.LabelForeColor = colorGeneral[3];   // label of intensity
+
+                    if (i == 1 || i == 4 || i == 5 || i == 6)
+                    {
+                        if (KODEX)
+                            t.LabelForeColor = colorKODEX[i];
+                        else
+                        {
+                            t.LabelForeColor = colorGeneral[i];
+
+                        }
+                    }
+
+                    if (i == 10 || i == 11)
+                        t.LabelForeColor = colorKODEX[i];
+                }
+            }
+        }
+
+        // working
+        if (chart.Name == "chart1")
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))); // Calibri
+        else
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+    }
+
 }
 
