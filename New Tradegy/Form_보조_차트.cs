@@ -72,7 +72,7 @@ namespace New_Tradegy
             }
             else
             {
-                this.Location = new Point(g.screenWidth, 0); //?
+                this.Location = new Point(g.screenWidth, 0);
             }
             this.Size = new Size(g.screenWidth / 2, g.screenHeight);
             chart2.Size = new Size(this.Width, this.Height);

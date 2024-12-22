@@ -93,9 +93,9 @@ class mm
             // Check if the chart area exists; if not, create it\
             if (ChartAreaExists(chart, stock))
             {
-                if(isTotalPointsEqualSeriesPoints(chart, stock))
+                if (isTotalPointsEqualSeriesPoints(chart, stock))
                 {
-                    UpdateChartSeries(chart, stock, g.nRow, g.nCol); 
+                    UpdateChartSeries(chart, stock, g.nRow, g.nCol);
                 }
                 else
                 {
@@ -112,7 +112,7 @@ class mm
             Form form = fm.FindFormByName("se");
             if (!fm.DoesDataGridViewExist(form, stock))
             {
-                if (!g.connected) continue;//?
+                if (!g.connected) continue;
 
                 var a = new jp();
 
@@ -148,29 +148,28 @@ class mm
 
     //Use libraries like LiveCharts or SciChart, which are optimized for high-performance data visualization.
 
-    
+
 
     public static void ManageChart1()
     {
         // First, handle the fixed elements
-        for (int i = 0; i < 100; i++)
-        {
-            InitializeFixedElements(g.chart1);
-        }
-        
+
+        // InitializeFixedElements(g.chart1);
+
+
 
 
         HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
 
-        //g.dl.Clear();
-        //g.dl.Add("오픈엣지테크놀로지");
-        //int index = wk.return_index_of_ogldata("오픈엣지테크놀로지");
-        //g.stock_data o = g.ogl_data[index];
+        g.dl.Clear();
+        g.dl.Add("오픈엣지테크놀로지");
+        int index = wk.return_index_of_ogldata("오픈엣지테크놀로지");
+        g.stock_data o = g.ogl_data[index];
 
-        //o.nrow = 53;
-        //ps.post(o);
+        o.nrow = 5;
+        ps.post(o);
 
-
+        
 
 
         // Now, handle the rest of the dynamically generated elements as before
@@ -1115,7 +1114,7 @@ class mm
         {
             if (i == 1) // price
             {
-               
+
                 int p_id = m - start_time; // g.time[0] != 0, shifting needed
                 int price_change = x[m, 1] - x[m - 1, 1];
 
@@ -1223,28 +1222,29 @@ class mm
                 else
                     t.Points[0].MarkerStyle = MarkerStyle.Cross;
             }
-        }
 
-        // magenta and cyan cross mark on the lines of amount and intensity
-        if (i == 2 || i == 3)
-        {
-            int m = 0; //?
-            if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
-                                                             //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
+
+            // magenta and cyan cross mark on the lines of amount and intensity
+            if (i == 2 || i == 3)
             {
-                int sequence_id = m - start_time;
-                if (i == 2)
-                {
 
-                    t.Points[sequence_id].MarkerColor = Color.Magenta; // amount
-                }
-                else
+                if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
+                                                                 //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
                 {
-                    t.Points[sequence_id].MarkerColor = Color.Cyan;  // intensity
-                }
+                    int sequence_id = m - start_time;
+                    if (i == 2)
+                    {
 
-                t.Points[sequence_id].MarkerStyle = MarkerStyle.Cross;
-                t.Points[sequence_id].MarkerSize = 7;
+                        t.Points[sequence_id].MarkerColor = Color.Magenta; // amount
+                    }
+                    else
+                    {
+                        t.Points[sequence_id].MarkerColor = Color.Cyan;  // intensity
+                    }
+
+                    t.Points[sequence_id].MarkerStyle = MarkerStyle.Cross;
+                    t.Points[sequence_id].MarkerSize = 7;
+                }
             }
         }
 
@@ -2011,7 +2011,7 @@ class mm
             ForeColor = textColor,
             //ClipToChartArea = chartAreaName, // Must match the target ChartArea's name
 
-            ClipToChartArea = "", //? chartAreaName,
+            ClipToChartArea = "", // chartAreaName,
             AxisXName = chartAreaName + "\\X",
             AxisYName = chartAreaName + "\\Y",
             Alignment = ContentAlignment.TopLeft,
@@ -2246,13 +2246,13 @@ class mm
                         chart.Invoke(new Action(() =>
                         {
                             series.Points.AddXY(xValue, yValue);
-                            draw_stock_mark(chart, stockName, i, int.Parse(suffix), 2, o.x, series);
+                            MarkGeneral(chart, stockName, i, int.Parse(suffix), 2, o.x, series);
                         }));
                     }
                     else
                     {
                         series.Points.AddXY(xValue, yValue);
-                        draw_stock_mark(chart, stockName, i, int.Parse(suffix), 2, o.x, series);
+                        MarkGeneral(chart, stockName, i, int.Parse(suffix), 2, o.x, series);
                     }
                 }
             }
@@ -2267,13 +2267,15 @@ class mm
                     chart.Invoke(new Action(() =>
                     {
                         series.Points[seriesPoints - 1].SetValueXY(xValue, yValue);
-                        draw_stock_mark(chart, stockName, seriesPoints - 1, int.Parse(suffix), 2, o.x, series);
+                        MarkGeneral(chart, stockName, 0, int.Parse(suffix), totalPoints, o.x, series);
+                        LabelGeneral(chart, stockName, 0, int.Parse(suffix), totalPoints, o.x, series);
                     }));
                 }
                 else
                 {
                     series.Points[seriesPoints - 1].SetValueXY(xValue, yValue);
-                    draw_stock_mark(chart, stockName, seriesPoints - 1, int.Parse(suffix), 2, o.x, series);
+                    MarkGeneral(chart, stockName, 0, int.Parse(suffix), totalPoints, o.x, series);
+                    LabelGeneral(chart, stockName, 0, int.Parse(suffix), totalPoints, o.x, series);
                 }
             }
         }
