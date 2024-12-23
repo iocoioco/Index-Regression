@@ -86,7 +86,7 @@ namespace New_Tradegy.Library
                     if (g.time[1] >= 382)
                         g.time[1] = 382;
 
-                    dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
+                    //dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
                 }
 
             }
@@ -206,7 +206,7 @@ namespace New_Tradegy.Library
                     if (g.time[1] >= 382)
                         g.time[1] = 382;
 
-                    dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
+                    //dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
 
                 }
                 return;

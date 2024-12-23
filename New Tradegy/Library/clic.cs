@@ -411,9 +411,9 @@ namespace New_Tradegy.Library
                     if (g.test) // 짧은 시간 앞으로 in draw(테스트)
                     {
                         if (g.end_time_before_advance == 0) // time extension
-                            dr.draw_extended_time(g.v.q_advance_lines);
+                            mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
                         else
-                            dr.draw_extended_time(0);
+                            mm.MinuteAdvanceRetreat(0);
                         // wk.BringToFront();
                     }
                     break;
@@ -422,9 +422,9 @@ namespace New_Tradegy.Library
                     if (!g.connected)
                     {
                         if (g.end_time_before_advance == 0)
-                            dr.draw_extended_time(g.v.Q_advance_lines);
+                            mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
-                            dr.draw_extended_time(0);
+                            mm.MinuteAdvanceRetreat(0);
                     }
                     else
                     {

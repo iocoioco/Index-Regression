@@ -467,7 +467,7 @@ class mm
             }
 
             // Draw stock marker and apply styling
-            dr.draw_stock_mark(chart, stockName, start_time, dataIndex, EndPoint, o.x, series);
+            MarkGeneral(chart, stockName, start_time + 1, dataIndex, EndPoint, o.x, series);
         }
 
         // Remove the y-axis labels
@@ -2188,6 +2188,25 @@ class mm
         chart.Invalidate();   // Redraw chart
     }
 
-   
+ 
+        public static void MinuteAdvanceRetreat(int AdvanceLines)
+    {
+        if (AdvanceLines == 0)
+        {
+            g.time[1] = g.end_time_before_advance;
+            g.end_time_before_advance = 0;
+            g.end_time_extended = false;
+        }
+        else
+        {
+            g.end_time_before_advance = g.time[1];
+            g.time[1] += AdvanceLines; // expedient
+            if (g.time[1] > g.MAX_ROW)
+                g.time[1] = g.MAX_ROW;
+
+            g.end_time_extended = true;
+        }
+    }
+
 }
 

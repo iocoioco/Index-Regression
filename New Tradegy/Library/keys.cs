@@ -141,9 +141,9 @@ namespace New_Tradegy.Library
                     if (g.test) // 긴 시간 앞으로 in draw
                     {
                         if (g.end_time_before_advance == 0) // time extension
-                            dr.draw_extended_time(g.v.Q_advance_lines);
+                            mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
-                            dr.draw_extended_time(0);
+                            mm.MinuteAdvanceRetreat(0);
                     }
                     else
                     {
@@ -260,9 +260,9 @@ namespace New_Tradegy.Library
                     if (g.test) // 짧은 시간 앞으로 in draw(테스트)
                     {
                         if (g.end_time_before_advance == 0) // time extension
-                            dr.draw_extended_time(g.v.q_advance_lines);
+                            mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
                         else
-                            dr.draw_extended_time(0);
+                            mm.MinuteAdvanceRetreat(0);
                     }
                     //else // 매도
                     //    dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "매도", g.일회거래액); // chart1KeyPress in tr(3)
