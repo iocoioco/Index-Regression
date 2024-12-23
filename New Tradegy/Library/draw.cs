@@ -2901,6 +2901,7 @@ namespace New_Tradegy.Library
                         //}
                     }
 
+
                     else // 일반
                     {
                         if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded

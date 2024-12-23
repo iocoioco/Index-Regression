@@ -142,7 +142,7 @@ namespace New_Tradegy
                             g.관심종목.Add(stock);
                     }
                 }
-                dr.draw_chart();
+                //dr.draw_chart();
             }
 
             // 관심종목 제거
