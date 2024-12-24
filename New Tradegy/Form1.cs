@@ -213,7 +213,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            if (!g.test) // && wk.isWorkingHour()) //? wk.isWorkingHour() not correct // duration : 0.49 seconds
+            if (g.connected) 
             {
                 cn.Init_CpConclusion();
 
@@ -250,7 +250,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             rd.read_파일관심종목(); // duration 0.000 seconds
             mm.ManageChart1(); // all new, Form_1 start
-            //? mm.ManageChart2(); // all new, Form_1 start
+            //?  chart1 only plot ... mm.ManageChart2(); // all new, Form_1 start
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
