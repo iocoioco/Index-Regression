@@ -91,7 +91,7 @@ namespace New_Tradegy
             g.제어.dtb.Rows[0][2] = g.일회거래액;
             g.제어.dtb.Rows[0][3] = g.예치금;
 
-            if (!g.test)
+            if (g.connected)
             {
                 dl.deal_profit();
             }

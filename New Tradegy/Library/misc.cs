@@ -609,7 +609,7 @@ namespace New_Tradegy.Library
             Stream FS = new FileStream(temp_file, FileMode.CreateNew, FileAccess.Write);
             StreamWriter sw = new System.IO.StreamWriter(FS, System.Text.Encoding.Default);
 
-            if (g.test)
+            if (!g.connected)
             {
                 int[,] x = new int[g.MAX_ROW, 12];
                 int nrow = rd.read_Stock_Minute(date, stock, x);

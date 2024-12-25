@@ -124,7 +124,7 @@ namespace New_Tradegy.Library
                     ps.post(o);
                     // ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
                     int check_row = 0;
-                    if (g.test)
+                    if (!g.connected)
                     {
                         check_row = g.time[1] - 1;
                         if (check_row > o.nrow - 1)
@@ -367,7 +367,7 @@ namespace New_Tradegy.Library
                     g.stock_data o = g.ogl_data[index];
 
                     int current_time = 0;
-                    if (g.test)
+                    if (!g.connected)
                         current_time = g.time[1] - 1;
                     else
                         current_time = o.nrow - 1;
@@ -421,7 +421,7 @@ namespace New_Tradegy.Library
 
             // 표에 입력
             int display_count = g.oGL_data.Count;
-            if (!g.test)
+            if (!g.connected)
             {
                 if (g.oGL_data.Count > 9)
                 {
@@ -635,7 +635,7 @@ namespace New_Tradegy.Library
             //        true_or_false = false;
 
             //    // real only 
-            //    if (!g.test)
+            //    if (g.connected)
             //    {
             //        // 호가거래액이상
             //        if (o.매도호가거래액_백만원 < g.v.호가거래액_백만원 &&
@@ -926,7 +926,7 @@ namespace New_Tradegy.Library
             // old version : not using
             //public static void EvalKODEX_not_using4(g.stock_data o)//, int[,] x)
             //{
-            //    if (g.test)
+            //    if (!g.connected)
             //        return;
 
 

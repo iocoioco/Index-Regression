@@ -17,7 +17,7 @@ namespace New_Tradegy.Library
 
         public static void testing()
         {
-            g.test = true;
+            g.connected = false;
             g.q = "h&s";
 
             testing_상한가다음날종가매수후그다음날장중수익시매도();

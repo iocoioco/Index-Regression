@@ -400,7 +400,7 @@ namespace New_Tradegy.Library
                     //    wn.Memo_TopMost();
                     //else 
 
-                    if (g.test)
+                    if (!g.connected)
                     {
                         g.time[0] = 0;
                         g.time[1] = g.MAX_ROW;
@@ -408,7 +408,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l4":
-                    if (g.test) // 짧은 시간 앞으로 in draw(테스트)
+                    if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
                     {
                         if (g.end_time_before_advance == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
@@ -488,7 +488,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l7": // g.time[1]++
-                    if (g.test)
+                    if (!g.connected)
                     {
                         g.time[1]++;
                         if (g.time[1] > g.MAX_ROW)
@@ -514,7 +514,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l9": // g.time[1]++
-                    if (g.test)
+                    if (!g.connected)
                     {
                         g.time[1]--;
                         if (g.time[1] < 2)
@@ -581,7 +581,7 @@ namespace New_Tradegy.Library
                         g.Gid = g.saved_Gid;
                         g.date = g.saved_date;
 
-                        if (g.test)
+                        if (!g.connected)
                         {
                             g.time[0] = g.saved_time[0];
                             g.time[1] = g.saved_time[1];
@@ -613,7 +613,7 @@ namespace New_Tradegy.Library
                         g.saved_date = g.date;
                         g.moving_reference_date = g.date;
 
-                        if (g.test)
+                        if (!g.connected)
                         {
                             g.saved_time[0] = g.time[0];
                             g.saved_time[1] = g.time[1];
@@ -683,14 +683,14 @@ namespace New_Tradegy.Library
                     break;
             }
 
-            if (g.test &&
+            if (!g.connected &&
                 (selection == "l4" ||
                  selection == "l5"))
             {
                 ps.post_test(); // clic l4, l5
             }
 
-            if (g.test &&
+            if (!g.connected &&
                 (selection == "l7" ||
                 selection == "l9"))
             {

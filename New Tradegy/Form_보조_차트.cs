@@ -428,14 +428,17 @@ namespace New_Tradegy
                         }
 
                         int check_row = 0;
-                        if (g.test)
+                        if (g.connected)
+                        {
+                            check_row = o.nrow - 1;
+                        }
+                        else
                         {
                             check_row = g.time[1] - 1;
                             if (check_row > o.nrow - 1)
                                 check_row = o.nrow - 1;
                         }
-                        else
-                            check_row = o.nrow - 1;
+                            
                         if (o.nrow < 2 || o.x[check_row, 4] < 0)
                             continue;
 

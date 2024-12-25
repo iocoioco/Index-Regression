@@ -141,7 +141,7 @@ namespace New_Tradegy
             switch (e.ColumnIndex)
             {
                 case 1: // 체결종목 취소, 취소가 안 되는 이유는 뭘까 //\
-                    if (g.test)
+                    if (!g.connected)
                         return;
 
                     if (e.RowIndex < g.m_mapOrder.Count)
@@ -152,7 +152,7 @@ namespace New_Tradegy
                     break;
 
                 case 2: // 매도 Blocked
-                    if (!g.test)
+                    if (g.connected)
                     {
                         string buySell = "매도";
                         int 거래가격 = hg.HogaGetValue(stock, 0, 1); // 0 : 매수1호가 라인, 1 : column
@@ -168,7 +168,7 @@ namespace New_Tradegy
                     break;
 
                 case 3: // 매수 Blocked 
-                    if (!g.test)
+                    if (g.connected)
                     {
                         string buySell = "매수";
                         int 거래가격 = hg.HogaGetValue(stock, -1, 1); // 0 : 매수1호가 라인, 1 : column

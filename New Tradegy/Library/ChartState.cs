@@ -28,11 +28,11 @@ namespace New_Tradegy.Library
    
 
             Color[] colors = new Color[3];
-            int check_row = g.test ? g.time[1] - 1 : 0;
+            int check_row = !g.connected ? g.time[1] - 1 : 0;
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];
-            if (!g.test)
+            if (g.connected)
                 check_row = q.nrow - 1;
 
             string sign = q.x[check_row, 1] < q.x[check_row - 1, 1] ? " - " : " + ";
@@ -41,7 +41,7 @@ namespace New_Tradegy.Library
 
             index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
             q = g.ogl_data[index];
-            if (!g.test)
+            if (g.connected)
                 check_row = q.nrow - 1;
 
             sign = q.x[check_row, 1] < q.x[check_row - 1, 1] ? " - " : " + ";

@@ -172,7 +172,7 @@ namespace New_Tradegy.Library
 
         public static void deal_deposit() // tr(1)
         {
-            if (g.test)
+            if (!g.connected)
                 return;
 
             TradeInit();
@@ -212,7 +212,7 @@ namespace New_Tradegy.Library
 
         public static void deal_processing() // tr(1)
         {
-            if (g.test)
+            if (!g.connected)
                 return;
 
             TradeInit();
@@ -282,7 +282,7 @@ namespace New_Tradegy.Library
 
         public static void deal_hold() // tr(1)
         {
-            if (g.test)
+            if (!g.connected)
                 return;
 
             TradeInit();
@@ -416,7 +416,7 @@ namespace New_Tradegy.Library
         //주문관리(취소 주문)
         public static void DealCancelRowIndex(int rowindex) // tr(1)
         {
-            if (g.test)
+            if (!g.connected)
                 return;
 
             TradeInit();
@@ -473,7 +473,7 @@ namespace New_Tradegy.Library
         // called when the amount of stock is less than that of selling
         public static void DealCancelStock(string stock) // tr(1)
         {
-            if (g.test)
+            if (!g.connected)
                 return;
 
             TradeInit();
@@ -508,7 +508,7 @@ namespace New_Tradegy.Library
         // not used
         private string deal_correct(long 원주문번호, string stock, long 주문수량, long 주문단가) // tr(1)
         {
-            if (g.test)
+            if (!g.connected)
                 return "";
 
             TradeInit();
@@ -711,7 +711,7 @@ namespace New_Tradegy.Library
         //public static void deal_trade_최적거래(string buyorsell, string stock,
         //long numberofstock, long price, string 주문조건구분, string 주문호가구분) // tr(1)
         //{
-        //    if (g.test)
+        //    if (!g.connected)
         //        return;
 
         //    if (numberofstock == 0)

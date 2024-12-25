@@ -19,7 +19,7 @@ namespace New_Tradegy
         {
             InitializeComponent();
           
-            if(!g.test)
+            if(g.connected)
                 this.FormClosed += new FormClosedEventHandler(Form_그룹_FormClosed);
         }
 
@@ -67,13 +67,14 @@ namespace New_Tradegy
             g.그룹.dgv.RowTemplate.Height = g.formSize.ch;
             g.그룹.dgv.ForeColor = Color.Black;
 
-            if(g.test)
+            if(g.connected)
             {
-                g.그룹.dgv.ScrollBars = ScrollBars.Vertical;
+                g.그룹.dgv.ScrollBars = ScrollBars.None;
+                
             }
             else
             {
-                g.그룹.dgv.ScrollBars = ScrollBars.None;
+                g.그룹.dgv.ScrollBars = ScrollBars.Vertical;
             }
             
             g.그룹.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
@@ -103,7 +104,7 @@ namespace New_Tradegy
             g.그룹.dtb.Columns.Add("2");
            
             int rows = g.oGL_data.Count;
-            if (!g.test)
+            if (g.connected)
             {
                 rows = 9;
             }
@@ -115,13 +116,13 @@ namespace New_Tradegy
 
             for (int i = 0; i < 3; i++)
             {
-                if(g.test)
+                if(g.connected)
                 {
-                    g.그룹.dgv.Columns[i].Width = this.Width / 3 - 10;
+                    g.그룹.dgv.Columns[i].Width = this.Width / 3 - 6;
                 }
                 else
                 {
-                    g.그룹.dgv.Columns[i].Width = this.Width / 3 - 6;
+                    g.그룹.dgv.Columns[i].Width = this.Width / 3 - 10;
                 }
             }
         }

@@ -36,7 +36,8 @@ namespace New_Tradegy.Library
 
         public static async Task SaveAllStocks()
         {
-            if (g.test) // never save during test
+
+          if (!g.connected) // never save during test
                 return;
 
             rd.read_write_kodex_magnifier("write");
@@ -566,7 +567,7 @@ namespace New_Tradegy.Library
 
         //public static void SaveAllStocks()
         //{
-        //    if (g.test) // never save in test
+        //    if (!g.connected) // never save in test
         //        return;
 
         //    string path = @"C:\병신\분" + "\\" + g.date.ToString();
