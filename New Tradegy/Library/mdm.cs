@@ -961,7 +961,7 @@ class mm
             {
                 case 1: // Price
                     t.Color = colorGeneral[1];
-                    t.BorderWidth = g.width.가격;
+                    t.BorderWidth = g.LineWidth;
                     break;
                 case 2: // Amount
                     t.Color = colorGeneral[2];
@@ -1021,15 +1021,15 @@ class mm
             {
                 case 4: // Program
                     t.Color = colorGeneral[4];
-                    t.BorderWidth = g.width.프돈;
+                    t.BorderWidth = g.LineWidth;
                     break;
                 case 5: // Foreign
                     t.Color = colorGeneral[5];
-                    t.BorderWidth = g.width.외돈;
+                    t.BorderWidth = g.LineWidth;
                     break;
                 case 6: // Institute
                     t.Color = colorGeneral[6];
-                    t.BorderWidth = g.width.기관;
+                    t.BorderWidth = g.LineWidth;
                     break;
                 default:
                     break;
@@ -2114,11 +2114,11 @@ class mm
     {
         switch (index)
         {
-            case 1: return g.width.가격;    // Price
-            case 4: return g.width.가격;    // Program
-            case 5: return g.width.가격;    // Foreign
-            case 6: return g.width.가격;    // Institute
-            default: return g.width.가격;
+            case 1: return g.LineWidth;    // Price
+            case 4: return g.LineWidth;    // Program
+            case 5: return g.LineWidth;    // Foreign
+            case 6: return g.LineWidth;    // Institute
+            default: return 1;
         }
     }
 

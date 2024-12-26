@@ -577,6 +577,8 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'H':
+                    if (!g.connected)
+                        g.draw_history_forwards = !g.draw_history_forwards;
                     break;
 
                 case 'J':
@@ -599,8 +601,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'l':
-                    if (!g.connected)
-                        g.draw_history_forwards = !g.draw_history_forwards;
+                    
                     break;
 
                 case ';':

@@ -541,9 +541,9 @@ namespace New_Tradegy.Library
                                 }
                                 else
                                 {
-                                    Urgency = form.The_urgency;
-                                    g.cancelThreshhold = form.The_cancelthreshhold;
-                                    stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                                    //Urgency = form.The_urgency;
+                                    //g.cancelThreshhold = form.The_cancelthreshhold;
+                                    //stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
                                 }
                             }
                             else
@@ -660,9 +660,9 @@ namespace New_Tradegy.Library
                                 }
                                 else
                                 {
-                                    Urgency = form.The_urgency;
-                                    g.cancelThreshhold = form.The_cancelthreshhold;
-                                    stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                                    //Urgency = form.The_urgency;
+                                    //g.cancelThreshhold = form.The_cancelthreshhold;
+                                    //stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
                                 }
                             }
                             else

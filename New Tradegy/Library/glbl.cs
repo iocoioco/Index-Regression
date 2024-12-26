@@ -111,11 +111,7 @@ namespace New_Tradegy.Library
         public static int MAX_ROW = 382; // XX 382 -> 500
         public static int saved_nrow;
 
-        public class w
-        {
-            public int 가격, 프돈, 외돈, 기관;
-        }
-        public static w width = new w();
+        public static int LineWidth = 2;
 
         public class form_size
         {

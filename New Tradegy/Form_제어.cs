@@ -171,16 +171,9 @@ namespace New_Tradegy
             g.제어.dtb.Rows[12][3] = "1"; g.v.배플 = 1;
 
             // Row 13
-            g.제어.dtb.Rows[13][0] = "가격";
-            g.제어.dtb.Rows[13][1] = 2; g.width.가격 = 2;
-            g.제어.dtb.Rows[13][2] = "프돈";
-            g.제어.dtb.Rows[13][3] = 2; g.width.프돈 = 2;
-
-            // Roiw 14
-            g.제어.dtb.Rows[14][0] = "외돈";
-            g.제어.dtb.Rows[14][1] = 2; g.width.외돈 = 2;
-            g.제어.dtb.Rows[14][2] = "기관";
-            g.제어.dtb.Rows[14][3] = 1; g.width.기관 = 2;
+            g.제어.dtb.Rows[13][0] = "선폭";
+            g.제어.dtb.Rows[13][1] = 2; g.LineWidth = 2;
+           
 
             for (int i = 0; i < Columns; i++)
             {
@@ -437,17 +430,14 @@ namespace New_Tradegy
                             g.제어.dtb.Rows[12][3] = "0";
                         break;
 
-                    case "가격":
+                    case "선폭":
                         array = new int[] { 1, 2, 3 };
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)
                         {
                             return;
                         }
-                        g.width.가격 = newValue;
-                        g.width.프돈 = newValue;
-                        g.width.외돈 = newValue;
-                        g.width.기관 = newValue;
+                        g.LineWidth = newValue;
                         g.제어.dtb.Rows[13][1] = newValue;
 
                         g.chart1.Series.Clear();
@@ -456,42 +446,9 @@ namespace New_Tradegy
                         g.chart2.Series.Clear();
                         g.chart2.ChartAreas.Clear();
                         g.chart2.Annotations.Clear();
-                        break;
 
-                    case "프돈":
-                        return;
-                        array = new int[] { 1, 2, 3 };
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.width.프돈 = newValue;
-                        g.제어.dtb.Rows[13][3] = newValue;
-                        break;
-
-                    case "외돈":
-                        return;
-                        array = new int[] { 1, 2, 3 };
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.width.외돈 = newValue;
-                        g.제어.dtb.Rows[14][1] = newValue;
-                        break;
-
-                    case "기관":
-                        return;
-                        array = new int[] { 1, 2, 3 };
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.width.기관 = newValue;
-                        g.제어.dtb.Rows[14][3] = newValue;
+                        mm.ManageChart1(); 
+                        mm.ManageChart2(); 
                         break;
                 }
             }

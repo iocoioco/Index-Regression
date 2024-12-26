@@ -1234,7 +1234,7 @@ namespace New_Tradegy.Library
                         g.kospi_mixed.stock.Add(stock);
                         string t = words[3].Trim(new Char[] { '%', '(', ')' });
                         double d = Convert.ToDouble(t);
-                        g.kospi_mixed.weight.Add(d);
+                        g.kospi_mixed.weight.Add(d); // 22 items sum 38.21
                         kospi_weight_sum += d;
                         kospi_mixed_stock_count++;
                     }
@@ -1244,13 +1244,15 @@ namespace New_Tradegy.Library
                         g.kosdaq_mixed.stock.Add(stock);
                         string t = words[3].Trim(new Char[] { '%', '(', ')' });
                         double d = Convert.ToDouble(t);
-                        g.kosdaq_mixed.weight.Add(d);
+                        g.kosdaq_mixed.weight.Add(d); // 24 items sum 38.47
                         kosdaq_weight_sum += d;
                         kosdaq_mixed_stock_count++;
                     }
                 }
             }
 
+            g.kospi_mixed.weight = AdjustToSumOne(g.kospi_mixed.weight);
+            g.kosdaq_mixed.weight = AdjustToSumOne(g.kosdaq_mixed.weight);
             //g.평불종목.Add("코스피혼합");
             //g.평불종목.Add("코스닥혼합");
 
@@ -1268,6 +1270,28 @@ namespace New_Tradegy.Library
             g.지수종목.Add("KODEX 200선물인버스2X");
             g.지수종목.Add("KODEX 코스닥150레버리지");
             g.지수종목.Add("KODEX 코스닥150선물인버스");
+        }
+
+        static List<double> AdjustToSumOne(List<double> numbers)
+        {
+            // Calculate the sum of the List
+            double sum = 0;
+            foreach (double num in numbers)
+            {
+                sum += num;
+            }
+
+            // Create a new List to hold adjusted values
+            List<double> adjustedNumbers = new List<double>();
+
+            // Adjust each number proportionally so the sum becomes 1.0
+            foreach (double num in numbers)
+            {
+                adjustedNumbers.Add(num / sum);
+            }
+
+            // Return the adjusted List
+            return adjustedNumbers;
         }
 
         // not used

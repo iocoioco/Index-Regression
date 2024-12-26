@@ -536,8 +536,6 @@ namespace New_Tradegy.Library
                     if (HHmm == 1000)
                     {
                         mc.Sound("time", "taiwan open");
-                        g.제어.dtb.Rows[13][1] = 2; 
-                        g.width.가격 = 2;
                     }
                     else if (HHmm == 1030)
                         mc.Sound("time", "china open");
