@@ -445,10 +445,21 @@ namespace New_Tradegy
                             return;
                         }
                         g.width.가격 = newValue;
+                        g.width.프돈 = newValue;
+                        g.width.외돈 = newValue;
+                        g.width.기관 = newValue;
                         g.제어.dtb.Rows[13][1] = newValue;
+
+                        g.chart1.Series.Clear();
+                        g.chart1.ChartAreas.Clear();
+                        g.chart1.Annotations.Clear();
+                        g.chart2.Series.Clear();
+                        g.chart2.ChartAreas.Clear();
+                        g.chart2.Annotations.Clear();
                         break;
 
                     case "프돈":
+                        return;
                         array = new int[] { 1, 2, 3 };
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)
@@ -460,6 +471,7 @@ namespace New_Tradegy
                         break;
 
                     case "외돈":
+                        return;
                         array = new int[] { 1, 2, 3 };
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)
@@ -467,10 +479,11 @@ namespace New_Tradegy
                             return;
                         }
                         g.width.외돈 = newValue;
-                        g.제어.dtb.Rows[14][0] = newValue;
+                        g.제어.dtb.Rows[14][1] = newValue;
                         break;
 
                     case "기관":
+                        return;
                         array = new int[] { 1, 2, 3 };
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)

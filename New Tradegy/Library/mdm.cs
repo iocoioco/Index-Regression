@@ -1630,20 +1630,17 @@ class mm
         }
 
 
-        if (!g.KODEX4.Contains(stock))
-        {
             if (o.oGL_sequence_id < 0) // 종목이 그룹 안에 없을 경우 종목 이름 뒤 한 칸 띄고 'x' 표시
                 stock_title += "%";
             else
                 stock_title += " ";
             stock_title += Math.Round(o.종거천 / 10.0) + "  " +
 
-                               (o.프누천 / 10.0).ToString("F2") + "  " +
-                               (o.외누천 / 10.0).ToString("F2") + "  " +
-                               (o.기누천 / 10.0).ToString("F0");
-        }
-                (o.프누천 / 10.0).ToString("F2");
+                               (o.프누천 / 10.0).ToString("F1") + "  " +
+                               (o.외누천 / 10.0).ToString("F1") + "  " +
+                               (o.기누천 / 10.0).ToString("F1");
 
+                
 
         stock_title += ("\n" + AnnotationGeneralMinute(o, x, start_time, end_time));
 
@@ -1738,7 +1735,7 @@ class mm
 
 
         // x[k, 8 & 9]
-        for (int i = end_time - 1; i >= end_time - 5; i--)
+        for (int i = end_time; i >= end_time - 4; i--)
         {
             if (i < 1)
             {
@@ -2117,11 +2114,11 @@ class mm
     {
         switch (index)
         {
-            case 1: return 2;    // Price
-            case 4: return 2;    // Program
-            case 5: return 2;    // Foreign
-            case 6: return 2;    // Institute
-            default: return 1;
+            case 1: return g.width.가격;    // Price
+            case 4: return g.width.가격;    // Program
+            case 5: return g.width.가격;    // Foreign
+            case 6: return g.width.가격;    // Institute
+            default: return g.width.가격;
         }
     }
 

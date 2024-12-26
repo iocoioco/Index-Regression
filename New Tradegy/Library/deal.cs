@@ -43,7 +43,7 @@ namespace New_Tradegy.Library
 
         public static void TradeInit()
         {
-            return;
+           
             if (wk.isWorkingHour() == false) // ? 
              return;
 
