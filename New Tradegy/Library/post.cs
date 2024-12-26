@@ -62,7 +62,11 @@ namespace New_Tradegy.Library
 
         public static void post_real(List<g.stock_data> Download_ogl_data_List)
         {
-            ev.eval_stock();
+            foreach (var o in Download_ogl_data_List)
+            {
+                post(o);
+            }
+                ev.eval_stock();
             ev.eval_group();
 
             foreach (var o in Download_ogl_data_List)
@@ -907,7 +911,7 @@ namespace New_Tradegy.Library
                 return;
             }
 
-            int check_row = g.test ? Math.Min(g.time[1] - 1, o.nrow - 1) : o.nrow - 1;
+            int check_row = !g.connected ? Math.Min(g.time[1] - 1, o.nrow - 1) : o.nrow - 1;
 
             post_minute(o, check_row);
 
@@ -915,8 +919,7 @@ namespace New_Tradegy.Library
             // for "KODEX 코스닥150레버리지", "KODEX 레버리지"
             if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
             {
-                if (!g.test) ev.EvalKODEX(o);
-               
+                if (g.connected) ev.EvalKODEX(o);
                 return;
             }
             

@@ -284,6 +284,7 @@ namespace New_Tradegy.Library
                     if (!g.connected) // 시간 앞으로 (테스트)
                     {
                         g.time[1]++;
+
                         if (g.time[1] > g.MAX_ROW)
                         {
                             g.time[0] = 0;

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Forms.VisualStyles;
 using static New_Tradegy.Library.g;
 using static New_Tradegy.Library.g.stock_data;
 
@@ -56,7 +57,6 @@ class mm
         _parent = parent;
     }
 
-
     // no stockName or Seriese          return -1
     // if totalPoints == SeriesePoints  return 0
     // if totalPoints > seriesePoints   return 1
@@ -86,8 +86,7 @@ class mm
     //        return false;
     //}
 
-
-    static void KodexStock(Chart chart)
+    static void IndexStocks(Chart chart)
     {
         for (int i = 0; i < fixedStocks.Length; i++)
         {
@@ -96,11 +95,11 @@ class mm
             // Check if the chart area exists; if not, create it\
             if (ChartAreaExists(chart, stock))
             {
-                UpdateChartSeries(chart, stock, g.nRow, g.nCol);
+                UpdateSeries(chart, stock, g.nRow, g.nCol);
             }
             else
             {
-                CreateChartAreaForStock(chart, stock, g.nRow, g.nCol); // location 
+                AreaStocks(chart, stock, g.nRow, g.nCol); // location 
             }
 
             // Check if the form exists; if not, create it and set the location
@@ -121,6 +120,8 @@ class mm
                     Dgv.Location = new Point((g.screenWidth / g.nCol) + 10, (g.screenHeight / g.nRow) * 2 - 4 * 2);
             }
         }
+        g.chart1.Invalidate();
+
         int areasCount = g.chart1.ChartAreas.Count;
         int annotationsCount = g.chart1.Annotations.Count;
         int seriesCount = g.chart1.Series.Count;
@@ -230,18 +231,28 @@ class mm
     public static void ManageChart1()
     {
         // First, handle the fixed elements
-        KodexStock(g.chart1);
+
+        //int index = wk.return_index_of_ogldata("KODEX 레버리지");
+        //g.stock_data o = g.ogl_data[index];
+        //o.nrow = 7;
+
+        //index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
+        //o = g.ogl_data[index];
+        //o.nrow = 7;
+
+        IndexStocks(g.chart1);
+
 
         HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
 
 
 
         //g.dl.Clear();
-        //g.dl.Add("오픈엣지테크놀로지");
-        //int index = wk.return_index_of_ogldata("오픈엣지테크놀로지");
-        //g.stock_data o = g.ogl_data[index];
+        //g.dl.Add("삼성전자");
+        //index = wk.return_index_of_ogldata("삼성전자");
+        //o = g.ogl_data[index];
 
-        //o.nrow = 45;
+        //o.nrow = 11;
         //ps.post(o);
 
 
@@ -267,16 +278,16 @@ class mm
             // Check if the chart area exists; if not, create it\
             if (ChartAreaExists(g.chart1, stock))
             {
-                UpdateChartSeries(g.chart1, stock, g.nRow, g.nCol);
+                UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
             }
             else
             {
                 ClearChartAreaAndAnnotations(g.chart1, stock);
-                CreateChartAreaForStock(g.chart1, stock, g.nRow, g.nCol); // location 
+                AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
             }
 
             // Relocate chart area and dataGridView for hogaCount stocks
-            RelocateChart1AreaAndDataGridView(g.chart1, stock, currentRow, currentCol);
+            RelocateChartDgv(g.chart1, stock, currentRow, currentCol);
 
             currentRow++;
             if (currentRow >= g.nRow)
@@ -305,17 +316,17 @@ class mm
                 {
                     //if (isTotalPointsEqualSeriesPoints(g.chart1, stock))
                     //{
-                    UpdateChartSeries(g.chart1, stock, g.nRow, g.nCol);
+                    UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
                     //}
                     //else
                     //{
                     //    ClearChartAreaAndAnnotations(g.chart1, stock);
-                    //    CreateChartAreaForStock(g.chart1, stock, g.nRow, g.nCol); // location 
+                    //    AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
                     //}
                 }
                 else
                 {
-                    CreateChartAreaForStock(g.chart1, stock, g.nRow, g.nCol); // location 
+                    AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
                 }
 
                 RelocateChart1Area(g.chart1, stock, i % g.nRow, i / g.nRow + 2);
@@ -329,6 +340,227 @@ class mm
         areasCount = g.chart1.ChartAreas.Count;
         annotationsCount = g.chart1.Annotations.Count;
         seriesCount = g.chart1.Series.Count;
+    }
+
+    public static void SeriesKodex(Chart chart, string stockName)
+    {
+        // Find the index of the stock data in ogl_data
+        int index = wk.return_index_of_ogldata(stockName);
+        if (index < 0)
+        {
+            return; // Exit if the stock is not found
+        }
+
+        // Get the data for the stock
+        g.stock_data o = g.ogl_data[index];
+        int totalPoints = o.nrow;
+
+        // Update or add points for each series in "KODEX" stock
+        string[] seriesNames = { "1", "3", "4", "5", "6", "10", "11" };
+
+        // Iterate over each series name and update
+        foreach (string suffix in seriesNames)
+        {
+            double magnifier = 1.0;
+            KodexMagnifier(o, Convert.ToInt32(suffix), ref magnifier);
+
+            string seriesName = stockName + " " + suffix;
+            if (chart.Series.IndexOf(seriesName) == -1)
+                continue; // Skip if series not found
+
+            System.Windows.Forms.DataVisualization.Charting.Series series = chart.Series[seriesName];
+            int seriesPoints = series.Points.Count;
+
+            if (seriesPoints == totalPoints)
+            {
+
+                // If series has the same number of points, replace the last point
+                series.Points[totalPoints - 1].SetValueXY(((int)(o.x[seriesPoints - 1, 0] / g.HUNDRED)).ToString(),
+                o.x[totalPoints - 1, int.Parse(suffix)] * magnifier);
+
+                //series.Points[totalPoints - 1].Label = null; // null current point label
+                LabelKodex(chart, series);
+                MarkKodex(chart, totalPoints - 1, series);
+
+            }
+            else
+
+
+            {
+                // If the series has fewer points, add missing points
+                for (int i = seriesPoints; i < totalPoints; i++)
+                {
+                    if (chart.InvokeRequired)
+                    {
+                        chart.Invoke(new Action(() =>
+                        {
+                            // Update the chart here
+                            series.Points[i - 1].Label = null; // null previous point label
+                            series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(),
+                                o.x[i, int.Parse(suffix)] * magnifier);
+
+                            LabelKodex(chart, series);
+                            MarkKodex(chart, i, series);
+                        }));
+                    }
+                    else
+                    {
+                        // Update the chart here
+                        series.Points[i - 1].Label = null; // null previous point label
+                        series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(),
+                            o.x[i, int.Parse(suffix)] * magnifier);
+
+                        LabelKodex(chart, series);
+                        MarkKodex(chart, i, series);
+                    }
+                }
+            }
+            seriesPoints = series.Points.Count;
+        }
+
+        // Update or add points for "stockName 9" - the centerline
+        string centerlineSeriesName = stockName + " 9";
+        if (chart.Series.IndexOf(centerlineSeriesName) != -1)
+        {
+            System.Windows.Forms.DataVisualization.Charting.Series centerlineSeries = chart.Series[centerlineSeriesName];
+
+            if (centerlineSeries.Points.Count == 2)
+            {
+                // Replace the last point with the updated x value and y = 0
+                centerlineSeries.Points[1].SetValueXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
+            }
+            else
+            {
+                // Clear and add two points if somehow not two points (should be consistent with two points)
+                centerlineSeries.Points.Clear();
+                centerlineSeries.Points.AddXY(((int)(o.x[0, 0] / g.HUNDRED)).ToString(), 0);
+                centerlineSeries.Points.AddXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
+            }
+        }
+
+        chart.ChartAreas[stockName].AxisX.LabelStyle.Enabled = true;
+        chart.ChartAreas[stockName].AxisX.MajorGrid.Enabled = false;
+        chart.ChartAreas[stockName].AxisX.Interval = totalPoints - 1; // total number of point = 2, while mir 0820 -> 217
+        chart.ChartAreas[stockName].AxisX.IntervalOffset = 1;
+    }
+    public static void SeriesGeneral(Chart chart, string stockName)
+    {
+        // Find the index of the stock data in ogl_data
+        int index = wk.return_index_of_ogldata(stockName);
+        if (index < 0)
+        {
+            return; // Exit if the stock is not found
+        }
+
+        // Get the data for the stock
+        g.stock_data o = g.ogl_data[index];
+        int totalPoints = o.nrow;
+
+        // Update or add points for each series in "General" stock
+        string[] seriesNames = { "1", "2", "3", "4", "5", "6" };
+
+        // Get the number of data points in the "stockName 1" series
+        string baseSeriesName = stockName + " 1";
+        if (chart.Series.IndexOf(baseSeriesName) == -1)
+            return; // Exit if the base series does not exist
+
+        System.Windows.Forms.DataVisualization.Charting.Series baseSeries = chart.Series[baseSeriesName];
+        int seriesPoints = baseSeries.Points.Count;
+
+        // Update or add points for "stockName 1" and other series in seriesNames
+        foreach (string suffix in seriesNames)
+        {
+            string seriesName = stockName + " " + suffix;
+            if (chart.Series.IndexOf(seriesName) == -1)
+                continue; // Skip if series not found
+
+            System.Windows.Forms.DataVisualization.Charting.Series series = chart.Series[seriesName];
+            //series.Points[seriesPoints - 1].Label = string.Empty;
+
+            if (seriesPoints < totalPoints)
+            {
+                // Add new points with updated X and Y values
+                for (int i = seriesPoints; i < totalPoints; i++)
+                {
+                    string xValue = ((int)(o.x[i, 0] / g.HUNDRED)).ToString();
+                    int yValue = GeneralValue(o, i, int.Parse(suffix));  //o.x[i, int.Parse(suffix)]; // Y-axis (value)
+
+                    //series.Points[i - 1].Label = string.Empty;
+                    if (chart.InvokeRequired)
+                    {
+                        chart.Invoke(new Action(() =>
+                        {
+                            series.Points[i - 1].Label = null; // null previous point label
+                            series.Points.AddXY(xValue, yValue); // new point add
+                            LabelGeneral(chart, series);
+                            MarkGeneral(chart, seriesPoints - 1, series);
+                        }));
+                    }
+                    else
+                    {
+                        series.Points[i - 1].Label = null; // null previous point label
+                        series.Points.AddXY(xValue, yValue); // new point add
+                        LabelGeneral(chart, series);
+                        MarkGeneral(chart, seriesPoints - 1, series);
+                    }
+                }
+            }
+            else if (seriesPoints == totalPoints && totalPoints > 0)
+            {
+                // Replace the last point's Y value and X-axis (to ensure time progresses)
+                string xValue = ((int)(o.x[seriesPoints - 1, 0] / g.HUNDRED)).ToString();
+                int yValue = GeneralValue(o, seriesPoints - 1, int.Parse(suffix)); // o.x[totalPoints - 1, int.Parse(suffix)];
+
+                if (chart.InvokeRequired)
+                {
+                    chart.Invoke(new Action(() =>
+                    {
+                        series.Points[seriesPoints - 1].SetValueXY(xValue, yValue); // update current point data
+                        series.Points[seriesPoints - 1].Label = null; // null current point label
+                        LabelGeneral(chart, series);
+                        MarkGeneral(chart, seriesPoints - 1,
+                            series);
+
+                    }));
+                }
+                else
+                {
+                    series.Points[seriesPoints - 1].SetValueXY(xValue, yValue); // update current point data
+                    series.Points[seriesPoints - 1].Label = null; // null current point label
+                    LabelGeneral(chart, series);
+                    MarkGeneral(chart, series.Points.Count - 1,
+                        series);
+
+                }
+            }
+        }
+
+        // Update or add points for "stockName 9" - the centerline
+        string centerlineSeriesName = stockName + " 9";
+        if (chart.Series.IndexOf(centerlineSeriesName) != -1)
+        {
+            System.Windows.Forms.DataVisualization.Charting.Series centerlineSeries = chart.Series[centerlineSeriesName];
+
+            if (centerlineSeries.Points.Count == 2)
+            {
+                // Replace the last point with the updated x value and y = 0
+                centerlineSeries.Points[1].SetValueXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
+            }
+            else
+            {
+                // Clear and add two points if somehow not two points (should be consistent with two points)
+                centerlineSeries.Points.Clear();
+                centerlineSeries.Points.AddXY(((int)(o.x[0, 0] / g.HUNDRED)).ToString(), 0);
+                centerlineSeries.Points.AddXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
+            }
+
+        }
+
+        chart.ChartAreas[stockName].AxisX.LabelStyle.Enabled = true;
+        chart.ChartAreas[stockName].AxisX.MajorGrid.Enabled = false;
+        chart.ChartAreas[stockName].AxisX.Interval = totalPoints - 1; // total number of point = 2, while mir 0820 -> 217
+        chart.ChartAreas[stockName].AxisX.IntervalOffset = 1;
+
     }
 
     public static void ManageChart2()
@@ -350,21 +582,19 @@ class mm
         }
     }
 
-
-
-    public static void CreateChartAreaForStock(Chart chart, string stockName, int nRow, int nCol)
+    public static void AreaStocks(Chart chart, string stockName, int nRow, int nCol)
     {
         if (stockName.Contains("KODEX"))
         {
-            CreateChartAreaForStockKodex(chart, stockName, nRow, nCol); // 
+            AreaKodex(chart, stockName, nRow, nCol); // 
         }
         else
         {
-            CreateChartAreaForStockGeneral(chart, stockName, nRow, nCol); // 
+            AreaGeneral(chart, stockName, nRow, nCol); // 
         }
     }
 
-    static ChartArea CreateChartAreaForStockKodex(Chart chart, string stockName, int nRow, int nCol)
+    static ChartArea AreaKodex(Chart chart, string stockName, int nRow, int nCol)
     {
 
 
@@ -475,7 +705,7 @@ class mm
             int MarkEndPoint = TotalNumberPoint - 1;
             int EndPoint = TotalNumberPoint - 1;
 
-            MarkKodex(chart, stockName, MarkStartPoint, dataIndex, MarkEndPoint, o.x, series);
+            MarkKodex(chart, MarkStartPoint, series);
             LabelKodex(chart, series);
         }
 
@@ -491,7 +721,7 @@ class mm
         chart.ChartAreas[area].AxisY.MinorGrid.Enabled = false;
 
         chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(5, 5, 70, 90);
-       
+
         double padding = (y_max - y_min) * 0.05; // 10% padding
         chart.ChartAreas[area].AxisY.Minimum = y_min - padding;
         chart.ChartAreas[area].AxisY.Maximum = y_max + padding;
@@ -574,7 +804,7 @@ class mm
         return chart.ChartAreas[area];
     }
 
-    static ChartArea CreateChartAreaForStockGeneral(Chart chart, string stockName, int nRow, int nCol)
+    static ChartArea AreaGeneral(Chart chart, string stockName, int nRow, int nCol)
     {
 
         int index = wk.return_index_of_ogldata(stockName);
@@ -721,10 +951,9 @@ class mm
 
             if (TotalNumberPoint < 2) return null;
 
-            //DrawStockMark((chart, stockName, start_time, i, TotalNumberPoint, o.x, t);
             int MarkStartPoint = start_time + 1;
 
-            //?MarkGeneral(chart, MarkStartPoint, t);
+            MarkGeneral(chart, MarkStartPoint, t);
             LabelGeneral(chart, t);
 
             // Apply styles based on series type
@@ -781,9 +1010,7 @@ class mm
 
             // Draw stock markers for visualization
             int MarkStartPoint = start_time + 1;
-            int MarkEndPoint = TotalNumberPoint - 1;
-            int LabelEndPont = TotalNumberPoint - 1;
-            MarkGeneral(chart, stockName, MarkStartPoint, i, MarkEndPoint, o.x, t);
+            MarkGeneral(chart, MarkStartPoint, t);
             LabelGeneral(chart, t);
 
 
@@ -854,10 +1081,10 @@ class mm
         chart.ChartAreas[area].AxisY.MajorGrid.Enabled = false;
         chart.ChartAreas[area].AxisY.MinorGrid.Enabled = false;
 
-        chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 5, 55, 90); // (20, 10, 60, 80);
+      chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 5, 55, 100); // (20, 10, 60, 80);
         double padding = (y_max - y_min) * 0.05; // 10% padding
         chart.ChartAreas[area].AxisY.Minimum = y_min - padding;
-        chart.ChartAreas[area].AxisY.Maximum = y_max + padding;
+        chart.ChartAreas[area].AxisY.Maximum = y_max + padding * 1.5;
 
 
         // Disable the secondary Y-axis
@@ -900,49 +1127,32 @@ class mm
         return chart.ChartAreas[area];
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static void MarkKodex(Chart chart, string stock, int MarkStartPoint, int i, int MarkEndPoint, int[,] x, System.Windows.Forms.DataVisualization.Charting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    public static void MarkKodex(Chart chart, int MarkStartPoint, System.Windows.Forms.DataVisualization.Charting.Series t) // i (가격, 수급, 체강 순으로 Series)
     {
         // { 1, 3, 4, 5, 6, 10, 11 }; price, program, foreign, institute, individua, Nasdaq, pension
         // draw mark for price, amount, intensity
 
+        string stock = "";
+        string chartAreaName = "";
+        int ColumnIndex = 0;
+        int EndPoint = 0;
+        SeriesInfomation(t,
+        ref stock, ref chartAreaName, ref ColumnIndex, ref EndPoint);
+
         int index = wk.return_index_of_ogldata(stock);
-
-        if (index < 0)
-            return;
-
+        if (index < 0) return;
         g.stock_data o = g.ogl_data[index];
 
+
+
+
         // if price increases more than the specified value, than circle mark
-        for (int m = MarkStartPoint; m <= MarkEndPoint; m++)
+        for (int m = MarkStartPoint; m <= EndPoint; m++)
         {
-            if (i == 1) // price
+            if (ColumnIndex == 1) // price
             {
 
-                int price_change = x[m, 1] - x[m - 1, 1];
+                int price_change = o.x[m, 1] - o.x[m - 1, 1];
 
                 if (price_change >= 20) // KODEX 가격 변화가 20 이상 상승하는 경우 Circle로 표시
                 {
@@ -965,26 +1175,32 @@ class mm
         }
     }
 
-    public static void MarkGeneral(Chart chart, string stock, int MarkStartPoint, int i, int MarkEndPoint, int[,] x, System.Windows.Forms.DataVisualization.Charting.Series t) // i (가격, 수급, 체강 순으로 Series)
+    public static void MarkGeneral(Chart chart, int MarkStartPoint, System.Windows.Forms.DataVisualization.Charting.Series t) // i (가격, 수급, 체강 순으로 Series)
     {
         // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
-
-        // draw mark for price, amount, intensity only
-        if (i > 3) return;
+        string stock = "";
+        string chartAreaName = "";
+        int ColumnIndex = 0;
+        int EndPoint = 0;
+        SeriesInfomation(t,
+        ref stock, ref chartAreaName, ref ColumnIndex, ref EndPoint);
 
         int index = wk.return_index_of_ogldata(stock);
-
-        if (index < 0)
-            return;
-
+        if (index < 0) return;
         g.stock_data o = g.ogl_data[index];
 
+        // draw mark for price, amount, intensity only
+        if (ColumnIndex > 3)
+            return;
+
+
+
         // if price increases more than the specified value, than circle mark
-        for (int m = MarkStartPoint; m <= MarkEndPoint; m++)
+        for (int m = MarkStartPoint; m <= EndPoint; m++)
         {
-            if (i == 1) // price
+            if (ColumnIndex == 1) // price
             {
-                int price_change = x[m, 1] - x[m - 1, 1];
+                int price_change = o.x[m, 1] - o.x[m - 1, 1];
 
                 if (price_change >= 100)
                 {
@@ -1003,9 +1219,9 @@ class mm
                     t.Points[m].MarkerStyle = MarkerStyle.Cross;
                 }
 
-                if (x[m, 0] >= 90200) // 시간이 9:02 이후 배수 차이가 100 이상일 때
+                if (o.x[m, 0] >= 90200) // 시간이 9:02 이후 배수 차이가 100 이상일 때
                 {
-                    int multiple_difference = x[m, 8] - x[m, 9]; // 배수 차이 
+                    int multiple_difference = o.x[m, 8] - o.x[m, 9]; // 배수 차이 
                     if (multiple_difference > 100)
                     {
 
@@ -1022,75 +1238,76 @@ class mm
                             t.Points[m].MarkerColor = Color.Red;
                     }
                 }
-            }
 
-            if (o.분거래천[0] > 10) // if o.분거래천[0] <= 10 including g.q = "h&s"
-            {
-                int price_change = x[m, 1] - x[m - 1, 1];
-                int mark_size = 0;
-                Color color = Color.White;
-                if (o.분거래천[0] < 50)
-                {
-                    color = Color.Red;
-                    mark_size = 10;
-                }
-                else if (o.분거래천[0] < 100)
-                {
-                    color = Color.Red;
-                    mark_size = 15;
-                }
-                else if (o.분거래천[0] < 200)
-                {
-                    color = Color.Green;
-                    mark_size = 15;
-                }
-                else if (o.분거래천[0] < 300)
-                {
-                    color = Color.Green;
-                    mark_size = 20;
-                }
-                else if (o.분거래천[0] < 500)
-                {
-                    color = Color.Blue;
-                    mark_size = 20;
-                }
-                else if (o.분거래천[0] < 800)
-                {
-                    color = Color.Blue;
-                    mark_size = 30;
-                }
-                else if (o.분거래천[0] < 1200)
-                {
-                    color = Color.Black;
-                    mark_size = 30;
-                }
-                else if (o.분거래천[0] < 1700)
-                {
-                    color = Color.Black;
-                    mark_size = 40;
-                }
-                else if (o.분거래천[0] >= 1700)
-                {
-                    color = Color.Black;
-                    mark_size = 50;
-                }
-                t.Points[0].MarkerColor = color;
-                t.Points[0].MarkerSize = mark_size;
 
-                if (price_change >= 0)
-                    t.Points[0].MarkerStyle = MarkerStyle.Circle;
-                else
-                    t.Points[0].MarkerStyle = MarkerStyle.Cross;
+                if (o.분거래천[0] > 10) // if o.분거래천[0] <= 10 including g.q = "h&s"
+                {
+                    price_change = o.x[m, 1] - o.x[m - 1, 1];
+                    int mark_size = 0;
+                    Color color = Color.White;
+                    if (o.분거래천[0] < 50)
+                    {
+                        color = Color.Red;
+                        mark_size = 10;
+                    }
+                    else if (o.분거래천[0] < 100)
+                    {
+                        color = Color.Red;
+                        mark_size = 15;
+                    }
+                    else if (o.분거래천[0] < 200)
+                    {
+                        color = Color.Green;
+                        mark_size = 15;
+                    }
+                    else if (o.분거래천[0] < 300)
+                    {
+                        color = Color.Green;
+                        mark_size = 20;
+                    }
+                    else if (o.분거래천[0] < 500)
+                    {
+                        color = Color.Blue;
+                        mark_size = 20;
+                    }
+                    else if (o.분거래천[0] < 800)
+                    {
+                        color = Color.Blue;
+                        mark_size = 30;
+                    }
+                    else if (o.분거래천[0] < 1200)
+                    {
+                        color = Color.Black;
+                        mark_size = 30;
+                    }
+                    else if (o.분거래천[0] < 1700)
+                    {
+                        color = Color.Black;
+                        mark_size = 40;
+                    }
+                    else if (o.분거래천[0] >= 1700)
+                    {
+                        color = Color.Black;
+                        mark_size = 50;
+                    }
+                    t.Points[0].MarkerColor = color;
+                    t.Points[0].MarkerSize = mark_size;
+
+                    if (price_change >= 0)
+                        t.Points[0].MarkerStyle = MarkerStyle.Circle;
+                    else
+                        t.Points[0].MarkerStyle = MarkerStyle.Cross;
+                }
             }
 
 
             // magenta and cyan cross mark on the lines of amount and intensity
-            if (i == 2 || i == 3)
+            if (ColumnIndex == 2 || ColumnIndex == 3)
             {
-                if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
-                                                                 //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
+                if (o.x[m, ColumnIndex + 8] >= g.npts_for_magenta_cyan_mark) // the last price lowering magenta and cyan excluded
+                                                                             //if (x[m, i + 8] >= g.npts_for_magenta_cyan_mark && x[m, 1] - x[m - 1, 1] >= 0) // the last price lowering magenta and cyan excluded
                 {
-                    if (i == 2)
+                    if (ColumnIndex == 2)
                     {
                         t.Points[m].MarkerColor = Color.Magenta; // amount
                     }
@@ -1105,25 +1322,7 @@ class mm
             }
         }
     }
-
-    public static void SeriesInfomation(System.Windows.Forms.DataVisualization.Charting.Series t,
-        ref string Stock, ref int ColumnIndex, ref int EndPoint)
-    {
-        // Get the last occurrence of the delimiter ' '
-        string[] parts = t.Name.Split(' ');
-        if (parts.Length < 2)
-        {
-            throw new InvalidOperationException("Invalid format in t.Name. Expected format: <StockName> <Number>");
-        }
-
-        // Extract stock name and number
-        Stock = string.Join(" ", parts.Take(parts.Length - 1)); // Join all parts except the last as stock name
-
-        ColumnIndex = int.Parse(parts[parts.Length - 1]); // Parse the last part as an integer
-
-        EndPoint = t.Points.Count - 1; // Extract EndPoint from the series' Points.Count
-    }
-
+   
     public static void LabelGeneral(Chart chart, System.Windows.Forms.DataVisualization.Charting.Series t)
     {
         // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
@@ -1131,17 +1330,24 @@ class mm
         // 2, 3 only 1 label
         // 6 no label
         string Stock = "";
+        string chartAreaName = "";
         int ColumnIndex = 0;
         int EndPoint = 0;
-        SeriesInfomation(t,
-        ref Stock, ref ColumnIndex, ref EndPoint);
 
+        // Fetch series information
+        SeriesInfomation(t, ref Stock, ref chartAreaName, ref ColumnIndex, ref EndPoint);
+
+        // Get the index of the stock
         int index = wk.return_index_of_ogldata(Stock);
         if (index < 0) return;
+
+        // Retrieve stock data
         g.stock_data o = g.ogl_data[index];
 
+
+
         string s = "";
-        double d = 0;
+        double d;
 
         switch (ColumnIndex)
         {
@@ -1204,23 +1410,29 @@ class mm
             t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
     }
 
-
     public static void LabelKodex(Chart chart, System.Windows.Forms.DataVisualization.Charting.Series t)
     {
         // { 1, 3, 4, 5, 6, 10, 11 }; price, program, foreign, institute, individua, Nasdaq, pension
         // all are extended label upto 4, or 5
         string Stock = "";
+        string chartAreaName = "";
         int ColumnIndex = 0;
         int EndPoint = 0;
-        SeriesInfomation(t,
-        ref Stock, ref ColumnIndex, ref EndPoint);
 
+        // Fetch series information
+        SeriesInfomation(t, ref Stock, ref chartAreaName, ref ColumnIndex, ref EndPoint);
+
+        // Get the index of the stock
         int index = wk.return_index_of_ogldata(Stock);
         if (index < 0) return;
+
+        // Retrieve stock data
         g.stock_data o = g.ogl_data[index];
 
-        int d = 0;
-        string s = "";
+
+
+        string s;
+        double d;
         //Label of price, amount and intensity at the end point
 
         s = "      " + ((int)(o.x[EndPoint, ColumnIndex])).ToString();
@@ -1247,7 +1459,6 @@ class mm
         else
             t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))); // Calibri
     }
-
 
     public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
     {
@@ -1434,9 +1645,6 @@ class mm
                 (o.프누천 / 10.0).ToString("F2");
 
 
-
-
-
         stock_title += ("\n" + AnnotationGeneralMinute(o, x, start_time, end_time));
 
         // 일반 : 프돈 + 외돈 
@@ -1546,7 +1754,6 @@ class mm
         return tick_minute_string;
     }
 
-
     private static void AddRectangleAnnotationWithText(
     Chart chart,
     string text,
@@ -1591,7 +1798,7 @@ class mm
             ClipToChartArea = "", // chartAreaName,
             AxisXName = chartAreaName + "\\X",
             AxisYName = chartAreaName + "\\Y",
-            Alignment = ContentAlignment.TopLeft,
+            Alignment = System.Drawing.ContentAlignment.TopLeft,
             ToolTip = "Rectangle Annotation Tooltip" // Optional: Add tooltip to verify it's being added
         }; ;
 
@@ -1625,84 +1832,6 @@ class mm
 
         // Calculate the remaining height for the chart area
         chartAreaHeight = totalRowHeightPercentage - annotationHeight;
-    }
-
-    public static void UpdateChartSeriesKodex(Chart chart, string stockName)
-    {
-        // Find the index of the stock data in ogl_data
-        int index = wk.return_index_of_ogldata(stockName);
-        if (index < 0)
-        {
-            return; // Exit if the stock is not found
-        }
-
-        // Get the data for the stock
-        g.stock_data o = g.ogl_data[index];
-        int totalPoints = o.nrow;
-
-        // Update or add points for each series in "KODEX" stock
-        string[] seriesNames = { "1", "3", "4", "5", "6", "10", "11" };
-
-        // Iterate over each series name and update
-        foreach (string suffix in seriesNames)
-        {
-            double magnifier = 1.0;
-            KodexMagnifier(o, Convert.ToInt32(suffix), ref magnifier);
-
-            string seriesName = stockName + " " + suffix;
-            if (chart.Series.IndexOf(seriesName) == -1)
-                continue; // Skip if series not found
-
-            System.Windows.Forms.DataVisualization.Charting.Series series = chart.Series[seriesName];
-            int seriesPoints = series.Points.Count;
-
-            if (seriesPoints == totalPoints)
-            {
-                // If series has the same number of points, replace the last point
-                series.Points[seriesPoints - 1].SetValueXY(((int)(o.x[seriesPoints - 1, 0] / g.HUNDRED)).ToString(),
-                    o.x[totalPoints - 1, int.Parse(suffix)]);
-            }
-            //else if (seriesPoints < totalPoints)
-            //{
-            //    // If the series has fewer points, add missing points
-            //    for (int i = seriesPoints; i < totalPoints; i++)
-            //    {
-            //        if (chart.InvokeRequired)
-            //        {
-            //            chart.Invoke(new Action(() =>
-            //            {
-            //                // Update the chart here
-            //                series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(), o.x[i, int.Parse(suffix)]);
-            //            }));
-            //        }
-            //        else
-            //        {
-            //            // Update the chart here
-            //            series.Points.AddXY(((int)(o.x[i, 0] / g.HUNDRED)).ToString(), o.x[i, int.Parse(suffix)]);
-            //        }
-            //    }
-            //}
-        }
-
-        // Update or add points for "stockName 9" - the centerline
-        string centerlineSeriesName = stockName + " 9";
-        if (chart.Series.IndexOf(centerlineSeriesName) != -1)
-        {
-            System.Windows.Forms.DataVisualization.Charting.Series centerlineSeries = chart.Series[centerlineSeriesName];
-
-            if (centerlineSeries.Points.Count == 2)
-            {
-                // Replace the last point with the updated x value and y = 0
-                centerlineSeries.Points[1].SetValueXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
-            }
-            else
-            {
-                // Clear and add two points if somehow not two points (should be consistent with two points)
-                centerlineSeries.Points.Clear();
-                centerlineSeries.Points.AddXY(((int)(o.x[0, 0] / g.HUNDRED)).ToString(), 0);
-                centerlineSeries.Points.AddXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
-            }
-        }
     }
 
     public static void UpdateAnnotation(Chart chart, string stockName)
@@ -1741,7 +1870,7 @@ class mm
                 // Update the position of the annotation to remain at the top-left corner of the chart area
                 textAnnotation.X = 0;
                 textAnnotation.Y = 0;
-                textAnnotation.Alignment = ContentAlignment.TopLeft;
+                textAnnotation.Alignment = System.Drawing.ContentAlignment.TopLeft;
                 textAnnotation.AxisXName = $"{stockName}\\X";
                 textAnnotation.AxisYName = $"{stockName}\\Y";
 
@@ -1760,138 +1889,20 @@ class mm
             }
         }
     }
-    public static void UpdateChartSeriesGeneral(Chart chart, string stockName)
-    {
-        // Find the index of the stock data in ogl_data
-        int index = wk.return_index_of_ogldata(stockName);
-        if (index < 0)
-        {
-            return; // Exit if the stock is not found
-        }
-
-        // Get the data for the stock
-        g.stock_data o = g.ogl_data[index];
-        int totalPoints = o.nrow;
-
-        // Update or add points for each series in "General" stock
-        string[] seriesNames = { "1", "2", "3", "4", "5", "6" };
-
-        // Get the number of data points in the "stockName 1" series
-        string baseSeriesName = stockName + " 1";
-        if (chart.Series.IndexOf(baseSeriesName) == -1)
-            return; // Exit if the base series does not exist
-
-        System.Windows.Forms.DataVisualization.Charting.Series baseSeries = chart.Series[baseSeriesName];
-        int seriesPoints = baseSeries.Points.Count;
-
-        // Update or add points for "stockName 1" and other series in seriesNames
-        foreach (string suffix in seriesNames)
-        {
-            string seriesName = stockName + " " + suffix;
-            if (chart.Series.IndexOf(seriesName) == -1)
-                continue; // Skip if series not found
-
-            System.Windows.Forms.DataVisualization.Charting.Series series = chart.Series[seriesName];
-            series.Points[seriesPoints - 1].Label = string.Empty;
-
-            if (seriesPoints < totalPoints)
-            {
-                // Add new points with updated X and Y values
-                for (int i = seriesPoints; i < totalPoints; i++)
-                {
-                    string xValue = ((int)(o.x[i, 0] / g.HUNDRED)).ToString();
-                    int yValue = GeneralValue(o, i, int.Parse(suffix));  //o.x[i, int.Parse(suffix)]; // Y-axis (value)
-
-                    series.Points[i - 1].Label = string.Empty;
-                    if (chart.InvokeRequired)
-                    {
-                        chart.Invoke(new Action(() =>
-                        {
-                            series.Points.AddXY(xValue, yValue);
-                            if (i == totalPoints - 1)
-                                LabelGeneral(chart, series);
-                            //?MarkGeneral(chart, series);
-                        }));
-                    }
-                    else
-                    {
-                        series.Points.AddXY(xValue, yValue);
-                        if (i == totalPoints - 1)
-                            LabelGeneral(chart, series);
-                    }
-                }
-            }
-            else if (seriesPoints == totalPoints && totalPoints > 0)
-            {
-                // Replace the last point's Y value and X-axis (to ensure time progresses)
-                string xValue = ((int)(o.x[seriesPoints - 1, 0] / g.HUNDRED)).ToString();
-                int yValue = GeneralValue(o, seriesPoints - 1, int.Parse(suffix)); // o.x[totalPoints - 1, int.Parse(suffix)];
-
-                if (chart.InvokeRequired)
-                {
-                    chart.Invoke(new Action(() =>
-                    {
-                        series.Points[seriesPoints - 1].SetValueXY(xValue, yValue);
-                        LabelGeneral(chart, series);
-                        MarkGeneral(chart, stockName, seriesPoints - 1,
-                            int.Parse(suffix), series.Points.Count - 1, o.x, series);
-
-                    }));
-                }
-                else
-                {
-                    series.Points[seriesPoints - 1].SetValueXY(xValue, yValue);
-                    LabelGeneral(chart, series);
-                    MarkGeneral(chart, stockName, series.Points.Count - 1,
-                        int.Parse(suffix), series.Points.Count - 1, o.x, series);
-
-                }
-            }
-        }
-
-        // Update or add points for "stockName 9" - the centerline
-        string centerlineSeriesName = stockName + " 9";
-        if (chart.Series.IndexOf(centerlineSeriesName) != -1)
-        {
-            System.Windows.Forms.DataVisualization.Charting.Series centerlineSeries = chart.Series[centerlineSeriesName];
-
-            if (centerlineSeries.Points.Count == 2)
-            {
-                // Replace the last point with the updated x value and y = 0
-                centerlineSeries.Points[1].SetValueXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
-            }
-            else
-            {
-                // Clear and add two points if somehow not two points (should be consistent with two points)
-                centerlineSeries.Points.Clear();
-                centerlineSeries.Points.AddXY(((int)(o.x[0, 0] / g.HUNDRED)).ToString(), 0);
-                centerlineSeries.Points.AddXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
-            }
-        }
-
-        chart.ChartAreas[stockName].AxisX.LabelStyle.Enabled = true;
-        chart.ChartAreas[stockName].AxisX.MajorGrid.Enabled = false;
-        chart.ChartAreas[stockName].AxisX.Interval = totalPoints - 1; // total number of point = 2, while mir 0820 -> 217
-        chart.ChartAreas[stockName].AxisX.IntervalOffset = 1;
-
-    }
-    public static void UpdateChartSeries(Chart chart, string stockName, int nRow, int nCol)
+    
+    public static void UpdateSeries(Chart chart, string stockName, int nRow, int nCol)
     {
 
         if (stockName.Contains("KODEX"))
         {
-            UpdateChartSeriesKodex(chart, stockName);
+            SeriesKodex(chart, stockName);
         }
         else
         {
-            UpdateChartSeriesGeneral(chart, stockName); // 
+            SeriesGeneral(chart, stockName); // 
             UpdateAnnotation(chart, stockName);
-
         }
-
     }
-
-
 
     static void AddSeriesToChart(string sid, Chart chart, string area, Color color, int borderWidth)
     {
@@ -1939,7 +1950,7 @@ class mm
         return value;
     }
 
-    static void RelocateChart1AreaAndDataGridView(Chart chart, string stockName, int row, int col)
+    static void RelocateChartDgv(Chart chart, string stockName, int row, int col)
     {
         // Set position and size of the chart area based on row and column
         RelocateChart1Area(chart, stockName, row, col);
@@ -1949,7 +1960,8 @@ class mm
         DataGridView dgv = fm.FindDataGridViewByName(form, stockName);
         if (dgv != null)
         {
-            RelocateChart1DataGridView(dgv, row, col + 1); // Form is placed in the column next to the chart area
+            dgv.Left = (col + 1) * (g.screenWidth / g.nCol) + 15; // Position based on screen width
+            dgv.Top = row * (g.screenHeight / g.nRow) - 4 * row; // Position based on screen height
         }
     }
 
@@ -1995,13 +2007,6 @@ class mm
             rectangleAnnotation.Width = chartArea.Position.Width; // Match ChartArea's width
             rectangleAnnotation.Height = 5.155 + 2; // Annotation height (adjust as needed)
         }
-    }
-
-    static void RelocateChart1DataGridView(DataGridView dgv, int row, int col)
-    {
-        dgv.Left = col * (g.screenWidth / g.nCol) + 10; // Position based on screen width
-        dgv.Top = row * (g.screenHeight / g.nRow) - 4 * row; // Position based on screen height
-
     }
 
     static int HandleUSIndex(g.stock_data o, int k, int end_time, int start_time, int index)
@@ -2092,27 +2097,6 @@ class mm
         return 0;
     }
 
-    static int GetMagnifierIndex(int index)
-    {
-        switch (index)
-        {
-            case 1:
-                return 0;
-            case 3:
-                return 1;
-            case 4:
-            case 5:
-            case 6:
-                return 2;
-            case 10:
-                return 3;
-            case 11:
-                return 2;
-            default:
-                return -1;
-        }
-    }
-
     // Helper function to get color based on index
     static Color GetColorByIndex(int index)
     {
@@ -2154,6 +2138,26 @@ class mm
         chart.Invalidate();   // Redraw chart
     }
 
+    public static void SeriesInfomation(System.Windows.Forms.DataVisualization.Charting.Series t,
+       ref string chartAreaName, ref string Stock, ref int ColumnIndex, ref int EndPoint)
+    {
+        // Get the last occurrence of the delimiter ' '
+        string[] parts = t.Name.Split(' ');
+        if (parts.Length < 2)
+        {
+            throw new InvalidOperationException("Invalid format in t.Name. Expected format: <StockName> <Number>");
+        }
+
+        // Extract stock name and number
+        Stock = string.Join(" ", parts.Take(parts.Length - 1)); // Join all parts except the last as stock name
+        chartAreaName = t.ChartArea;
+
+        ColumnIndex = int.Parse(parts[parts.Length - 1]); // Parse the last part as an integer
+
+        EndPoint = t.Points.Count - 1; // Extract EndPoint from the series' Points.Count
+
+
+    }
 
     public static void MinuteAdvanceRetreat(int AdvanceLines)
     {
@@ -2173,6 +2177,5 @@ class mm
             g.end_time_extended = true;
         }
     }
-
 }
 

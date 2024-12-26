@@ -644,28 +644,31 @@ namespace New_Tradegy.Library
             if (!File.Exists(filename)) return;
             string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
 
+            int add = 0;
+            if (grlines[0] == "r" || grlines[0] == "t")
+                add = 1;
 
-            if (grlines[0] == "s")
+            if (grlines[0 + add] == "s")
                 g.shortform = true;
             else
                 g.shortform = false;
 
-            string[] strs = grlines[1].Split(' ');
+            string[] strs = grlines[1 + add].Split(' ');
             g.Account = strs[0];
 
-            strs = grlines[2].Split(' ');
+            strs = grlines[2 + add].Split(' ');
             g.date = Convert.ToInt32(strs[0]);
             //if (strs[1] == "w" || strs[1] == "W")
             //{
             //    g.workingday = true;
             //}
 
-            strs = grlines[3].Split(' ');
+            strs = grlines[3 + add].Split(' ');
             g.deal_maximum_loss = Convert.ToInt32(strs[0]);
             g.deal_finish_time = Convert.ToInt32(strs[1]);
             g.deal_total_profit = Convert.ToInt32(strs[2]);
 
-            strs = grlines[4].Split(' ');
+            strs = grlines[4 + add].Split(' ');
             
             g.전일종가이상 = Convert.ToInt32(strs[0]);
         }

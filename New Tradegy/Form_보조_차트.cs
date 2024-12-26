@@ -131,11 +131,11 @@ namespace New_Tradegy
                 if (!mm.ChartAreaExists(g.chart2, stock))
                 {
                     mm.ClearChartAreaAndAnnotations(g.chart2, stock);
-                    mm.CreateChartAreaForStock(g.chart2, stock, g.nRow, g.nCol);
+                    mm.AreaStocks(g.chart2, stock, g.nRow, g.nCol);
                 }
                 else
                 {
-                    mm.UpdateChartSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
+                    mm.UpdateSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
                 }
         
             }

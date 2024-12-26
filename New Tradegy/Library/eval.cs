@@ -100,20 +100,30 @@ namespace New_Tradegy.Library
                     {
                         case "피올":
                             if (o.시장구분 == 'S')
+                            {
                                 value = (double)o.시총;
+                                a_tuple.Add(Tuple.Create(value, o.stock));
+                            }
+                                
                             break;
                         case "닥올":
                             if (o.시장구분 == 'D')
+                            {
                                 value = (double)o.시총;
+                                a_tuple.Add(Tuple.Create(value, o.stock));
+                            }
+                                
                             break;
                         case "편차":
                             value = o.dev;
+                            a_tuple.Add(Tuple.Create(value, o.stock));
                             break;
                         case "평균":
                             value = o.avr;
+                            a_tuple.Add(Tuple.Create(value, o.stock));
                             break;
                     }
-                    a_tuple.Add(Tuple.Create(value, o.stock));
+                    
                 }
             }
             else
@@ -420,12 +430,12 @@ namespace New_Tradegy.Library
             }
 
             // 표에 입력
-            int display_count = g.oGL_data.Count;
-            if (!g.connected)
+            int display_count = g.oGL_data.Count; // not g.connected full list
+            if (g.connected)
             {
                 if (g.oGL_data.Count > 9)
                 {
-                    display_count = 9;
+                    display_count = 9; // g.connected row list 9
                 }
             }
             #region
