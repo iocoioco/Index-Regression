@@ -93,7 +93,7 @@ class mm
             string stock = fixedStocks[i];
 
             // Check if the chart area exists; if not, create it\
-            if (ChartAreaExists(chart, stock))
+            if (ChartAreaExists(chart, stock) && g.connected)
             {
                 UpdateSeries(chart, stock, g.nRow, g.nCol);
             }
@@ -104,10 +104,8 @@ class mm
 
             // Check if the form exists; if not, create it and set the location
             Form form = fm.FindFormByName("se");
-            if (!fm.DoesDataGridViewExist(form, stock))
+            if (!fm.DoesDataGridViewExist(form, stock) && g.connected)
             {
-                if (!g.connected) continue;
-
                 var a = new jp();
 
                 DataGridView Dgv = a.Generate(stock);
@@ -268,7 +266,7 @@ class mm
 
             // Check if the form exists; if not, create it and set the location
             Form form = fm.FindFormByName("se");
-            if (!fm.DoesDataGridViewExist(form, stock))
+            if (!fm.DoesDataGridViewExist(form, stock) && g.connected)
             {
                 var a = new jp();
                 DataGridView dgv = a.Generate(stock);
@@ -276,13 +274,12 @@ class mm
             }
 
             // Check if the chart area exists; if not, create it\
-            if (ChartAreaExists(g.chart1, stock))
+            if (ChartAreaExists(g.chart1, stock) && g.connected)
             {
                 UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
             }
             else
             {
-                ClearChartAreaAndAnnotations(g.chart1, stock);
                 AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
             }
 
@@ -312,7 +309,7 @@ class mm
             if (wk.isStock(stock) && !stocksWithBid.Contains(stock))
             {
 
-                if (ChartAreaExists(g.chart1, stock))
+                if (ChartAreaExists(g.chart1, stock) && g.connected)
                 {
                     //if (isTotalPointsEqualSeriesPoints(g.chart1, stock))
                     //{
@@ -584,6 +581,7 @@ class mm
 
     public static void AreaStocks(Chart chart, string stockName, int nRow, int nCol)
     {
+        ClearChartAreaAndAnnotations(chart, stockName);
         if (stockName.Contains("KODEX"))
         {
             AreaKodex(chart, stockName, nRow, nCol); // 
@@ -596,12 +594,7 @@ class mm
 
     static ChartArea AreaKodex(Chart chart, string stockName, int nRow, int nCol)
     {
-
-
         int index = wk.return_index_of_ogldata(stockName);
-
-
-
         if (index < 0) // 혼합과 ogl_data 등록된 종목만 draw
         {
             return null;
@@ -644,7 +637,15 @@ class mm
         {
             start_time = g.time[0];
         }
-        end_time = o.nrow;
+
+        if (g.connected)
+        {
+            end_time = o.nrow;
+        }
+        else
+        {
+            end_time = g.time[1];
+        }
 
 
         // Check if "ChartArea1" exists and remove it
@@ -829,7 +830,6 @@ class mm
         int start_time = 0;
         int end_time = -1;
 
-        // start time 
         if (o.shrink_draw == true)
         {
             start_time = o.nrow - g.draw_shrink_time;
@@ -843,8 +843,18 @@ class mm
             start_time = g.time[0];
         }
 
-        // end time & maximum of a, i.e. amount
-        end_time = o.nrow;
+        if (g.connected)
+        {
+            end_time = o.nrow;
+        }
+        else
+        {
+            end_time = g.time[1];
+            if (end_time > o.nrow)
+            {
+                end_time = o.nrow;
+            }
+        }
 
 
         // 단일가거래 종목은 차트 포함시키지 않음
@@ -1081,7 +1091,7 @@ class mm
         chart.ChartAreas[area].AxisY.MajorGrid.Enabled = false;
         chart.ChartAreas[area].AxisY.MinorGrid.Enabled = false;
 
-      chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 5, 55, 100); // (20, 10, 60, 80);
+        chart.ChartAreas[area].InnerPlotPosition = new ElementPosition(20, 5, 55, 100); // (20, 10, 60, 80);
         double padding = (y_max - y_min) * 0.05; // 10% padding
         chart.ChartAreas[area].AxisY.Minimum = y_min - padding;
         chart.ChartAreas[area].AxisY.Maximum = y_max + padding * 1.5;
@@ -1322,7 +1332,7 @@ class mm
             }
         }
     }
-   
+
     public static void LabelGeneral(Chart chart, System.Windows.Forms.DataVisualization.Charting.Series t)
     {
         // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
@@ -1462,7 +1472,7 @@ class mm
 
     public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
     {
-        if (chart == g.chart1)
+        if (chart == g.chart1) //?
         {
             stockswithbid.Add(fixedStocks[0]);
             stockswithbid.Add(fixedStocks[1]);
@@ -1551,35 +1561,26 @@ class mm
 
     public static void ClearChartAreaAndAnnotations(Chart chart, string stockName)
     {
-        // Remove associated Series
-        var seriesToRemove = chart.Series
-            .Cast<System.Windows.Forms.DataVisualization.Charting.Series>()
-            .Where(s => s.ChartArea == stockName) // Match Series to the ChartArea
-            .ToList();
-
-        foreach (var series in seriesToRemove)
-        {
-            chart.Series.Remove(series);
-        }
-
-        // Remove the ChartArea
-        var chartArea = chart.ChartAreas
-            .Cast<ChartArea>()
-            .FirstOrDefault(ca => ca.Name == stockName);
-        if (chartArea != null)
-        {
-            chart.ChartAreas.Remove(chartArea);
-        }
-
-        // Remove associated Annotations
-        var annotationsToRemove = chart.Annotations
-            .Cast<Annotation>()
-            .Where(ann => ann.Name == stockName)
-            .ToList();
-
-        foreach (var annotation in annotationsToRemove)
+        // Delete Annotation if it exists
+        Annotation annotation = chart.Annotations.FindByName(stockName);
+        if (annotation != null)
         {
             chart.Annotations.Remove(annotation);
+        }
+        // Delete all series and chartarea by the given name
+        if (chart.ChartAreas.IndexOf(stockName) >= 0)
+        {
+            // Remove all Series linked to the ChartArea
+            for (int i = chart.Series.Count - 1; i >= 0; i--)
+            {
+                if (chart.Series[i].ChartArea == stockName)
+                {
+                    chart.Series.RemoveAt(i);
+                }
+            }
+
+            // Remove the chart area, if chartarea stockName exists
+            chart.ChartAreas.Remove(chart.ChartAreas[stockName]);
         }
     }
 
@@ -1630,17 +1631,17 @@ class mm
         }
 
 
-            if (o.oGL_sequence_id < 0) // 종목이 그룹 안에 없을 경우 종목 이름 뒤 한 칸 띄고 'x' 표시
-                stock_title += "%";
-            else
-                stock_title += " ";
-            stock_title += Math.Round(o.종거천 / 10.0) + "  " +
+        if (o.oGL_sequence_id < 0) // 종목이 그룹 안에 없을 경우 종목 이름 뒤 한 칸 띄고 'x' 표시
+            stock_title += "%";
+        else
+            stock_title += " ";
+        stock_title += Math.Round(o.종거천 / 10.0) + "  " +
 
-                               (o.프누천 / 10.0).ToString("F1") + "  " +
-                               (o.외누천 / 10.0).ToString("F1") + "  " +
-                               (o.기누천 / 10.0).ToString("F1");
+                           (o.프누천 / 10.0).ToString("F1") + "  " +
+                           (o.외누천 / 10.0).ToString("F1") + "  " +
+                           (o.기누천 / 10.0).ToString("F1");
 
-                
+
 
         stock_title += ("\n" + AnnotationGeneralMinute(o, x, start_time, end_time));
 
@@ -1886,7 +1887,7 @@ class mm
             }
         }
     }
-    
+
     public static void UpdateSeries(Chart chart, string stockName, int nRow, int nCol)
     {
 

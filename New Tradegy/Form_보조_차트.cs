@@ -130,12 +130,12 @@ namespace New_Tradegy
                 string stock = displayList[i];
                 if (!mm.ChartAreaExists(g.chart2, stock))
                 {
-                    mm.ClearChartAreaAndAnnotations(g.chart2, stock);
-                    mm.AreaStocks(g.chart2, stock, g.nRow, g.nCol);
+                    
+                    mm.AreaStocks(g.chart2, stock, nRow, nCol);
                 }
                 else
                 {
-                    mm.UpdateSeries(g.chart2, stock, g.nRow, g.nCol); // includes annotation update too
+                    mm.UpdateSeries(g.chart2, stock, nRow, nCol); // includes annotation update too
                 }
         
             }
@@ -195,7 +195,7 @@ namespace New_Tradegy
                         x,    // X position 20
                         y + 5.155F,   // Y position
                         cellWidth,          // Width
-                        28.175F); //cellHeight       // Height
+                        cellHeight - 5.155F); //cellHeight       // Height
                     }
                     
                     // Set InnerPlotPosition for plot area

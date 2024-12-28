@@ -813,7 +813,7 @@ namespace New_Tradegy.Library
 
             // Form_보조_차트 was called in the each keys
             // Main Chart Processing for post, eval, draw
-            string testpost = "1q";
+            string testpost = "qw1q";
             string testeval = "qwWrRtTyYasSdDghjJmM., n";
             string testdraw = "qwWrRtTyYasSdDghjJlmM., n";
             

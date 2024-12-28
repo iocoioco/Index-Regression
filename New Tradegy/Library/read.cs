@@ -1480,14 +1480,14 @@ namespace New_Tradegy.Library
             List<string> lines = File.ReadLines(file).Reverse().Take(nline).ToList();
 
             // Error Prone : Below 8 lines not Tested Exactly
-            if (g.test)
-            {
-                if (n < g.time[1] + 1)
-                {
-                    g.time[1] = n;
-                }
-                lines = File.ReadLines(file).Skip(g.time[1] - nline).Take(nline).Reverse().ToList();
-            }
+            //if (g.test)
+            //{
+            //    if (n < g.time[1] + 1)
+            //    {
+            //        g.time[1] = n;
+            //    }
+            //    lines = File.ReadLines(file).Skip(g.time[1] - nline).Take(nline).Reverse().ToList();
+            //}
 
             int nrow = 0;
             foreach (var line in lines)

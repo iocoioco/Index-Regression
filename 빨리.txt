@@ -8,13 +8,12 @@ https://www.youtube.com/shorts/YqoskF3Ky_k?feature=share
 https://www.youtube.com/shorts/Vo1HcQDto5A?feature=share
 https://www.youtube.com/shorts/lOSZQfYqdDI?feature=share
 
-20241021 : 
-Partial Redraw: Only update the elements that change (headlines, end marks).
+20241228 : 
+w,q etc
+
 Prioritize Most Active Stocks
-State Comparison: Only redraw elements if there’s a meaningful change.
 Suspend/Resume Layout: Use this to prevent unnecessary redraws and flickering.
 Graphics Buffering: Enable double buffering to improve smoothness.
-real buffling
 	g.chart1.DoubleBuffered = true;
 	dgv.DoubleBuffered(true);
 Adaptive Reshuffling (Optional Improvement):active or not so active
@@ -29,7 +28,7 @@ Adaptive Reshuffling (Optional Improvement):active or not so active
 두놈, 상승 올라타고 하락 바로 던진다. sudden drop (big stock also, 하한가 가는 종목도 있음)
 거분 낮고 호가 빈약, 호가계산(프돈, 외돈), 배수합,차로 급등 캣치(돌파), 손절불가바보, 지수-프돈
 
-	매도된 상태에서 호가창 다시 클릭하면 매도가 취소되고 클릴된 가격으로 매도
+	매도된 상태에서 호가창 다시 클릭하면 매도가 취소되고 클릭된 가격으로 매도
 	지수 : 배차, 프돈, 개인, 기관 영향도 분석
 		g.코스닥매수배 = (int)(t.x[t.nrow - 1, 8] * g.kosdaq_mixed.weight[i]);
 		g.코스닥매도배 = (int)(t.x[t.nrow - 1, 9] * g.kosdaq_mixed.weight[i]);
@@ -51,7 +50,7 @@ Adaptive Reshuffling (Optional Improvement):active or not so active
 20231108
 	당일 알테오젠, 한미반도체, 하나마이크론 Reversal 눈으로 보고도 실행하지 않다. 알테오젠의 경우
 		프돈을 믿고 억 단위 베팅을 하면 좋을 듯 : 비상사태에 대한 매도는 준비하여야겠지만 ... 
-		모든 것이 너무 느리다 ... 도와줄 사람이 필요
+		시간이 없는 데도 항상 진행 느리다 ... 
 
 
 	정적에서 동적으로 (틱 베이스) 프돈 변화 난이 : 조건 정리 및 프돈보다 선행연구되어야 가능 : 수치 베이스 작업할 것
@@ -60,48 +59,39 @@ Adaptive Reshuffling (Optional Improvement):active or not so active
 		- 돌파 : 발작
 	던지면 바로 던진다. 
 	예상 매일 아침 1 페이지 장전일지 작성
-20231104
-	코스피 공매도 상위 : OCI홀딩스, 호텔신라, 롯데관광개발, 후성, 현대미포조선, 두산푸얼셀, 농심
-		SKC, 현대엘리베이, 롯데에너지머티리얼즈, 포스코퓨처엠, DB하이텍
-	코스닥 공매도 상위 : 엘앤에프, 휴마시스, HLB, 에코프로, 대주전자재료, 
-		네패스, 주성엔지니어링, 에스티큐브, 엔케이낵스, 서진시스템, 다원시스
 
+20231104
 	LG엔솔 LFP 생산 속도 권부회장, 국내 베터리 수주잔고 1,000조원
-	네이버 제2사옥 네이버1784 -> 로봇 루키 배달, 고기굽는 AI셰프식당
+	네이버 제2사옥 -> 로봇 루키 배달, 고기굽는 AI셰프식당
 	네이버 사진 스누우 앱 AI 필터 : 카톡 사진 다 이걸로 바꾸더니 대박" -? 2개월 매출 150억
 
 20231103
 	어제같이 코스닥 4.5% 상승한 날은 코스닥 프돈 방향이 하락으로 간 적이 거의 없다. 
-	즉, 일 직선으로 매수하여 3,500억 ... 그런데 역으로 하락할 것이라고 때리는 멍청한 
-	놈이 세싱에 있다. 이런 날의 종가에도 상승으로 매수하는 것이 손해인 듯 하나 ...
+	즉, 일 직선으로 매수하여 3,500억 ... 그런데 역으로 하락할 것이라고 때리는 바보가 ...
+	이런 날의 종가에도 상승으로 매수하는 것이 손해인 듯 하나 ...
 	대부분의 경우 다음날 상승한 것을 많이 볼 수 있다. 
 
 	바로 상승하는 종목은 드물다 ... 대부분 지그재그로 갈피 잡기 어렵다. 상승시킬 때는 
 	상승으로는 크게 하락으로는 작게 하면서 위로 상승시킨 후 200 정도 되면 밑으로 세계 때린다. 
-	이 놈이 나쁜 것이 아니라 어떻게든 이기는 방법을 강구하는 것이 사람의 일이다. 
+	이 놈이 나쁜 것이 아니라 어떻게든 이기는 방법을 강구 필요. 
 	폴라리스오피 경우 160에서 3분 후 -240으로 다시 15분 후 흔들면서 100으로 상승 ..
 	결국 혼자 먹겠다는 것이고 개미는 흔들어 떨어뜨리는 것이 주목적이다. 
 
-	어제 코스닥 4.5% 상스하였고 미국 나스닥 1.6% 상승 영향으로 높이 떠서 시작하다
+	어제 코스닥 4.5% 상승하였고 미국 나스닥 1.6% 상승 영향으로 높이 떠서 시작하다
 	그런데, 마치 잘 걸렸다 하는 것처럼 위에서 때려 낙하시키다. 결국 개인 의도의 역으로 움직인다고 할 수 있겠다. 
-	공매도 상위 
-		파크시스템, 원익IPS, 펄어비스, 케이엠, 솔브레인, 디어유, 
-		와이지엔터, 콜마비앤, 덕산네요, 현대바이오랜드, 상아프론, 상싱인,
-		제이시스메디칼, 
-		엘앤에프, 에코프로비엠, 에코프로, 솔브레인, 원익ips, 
 
 	900 코스닥지수 200에서 시작 20분 후 20으로 ... 종목별 프돈 비중 계산, 나머지는 
 		KODEX, KBSTAR 등에 분포하여 계산한다. 코스닥 전체 종목은 건조하여도
 		에코 엘앤에프가 무너지면 상관없이 큰 영향을 미치게 된다. 
 		900 에코프로비엠 -276, 엘앤에프 -130, 셀트리온 -21, 에코프로 -263, HLB 2, 
 		JYP 6이었으니 코스닥지수가 무너질 수 밖에 없었다. 물론 특이한
-		상황이긴 하다. 그러나 특이한 것을 소화해내는 것이 돈을 버는 지름길
+		상황이긴 하다. 그러나 특이한 것에 대응하는 것이 필요.
 
-	900 푸릿 21/222, 83/26, -264에 프돈 901 2억, 902 2억 불구 100정도 하락 화난
+	900 루릿 21/222, 83/26, -264에 프돈 901 2억, 902 2억 불구 100 정도 하락 화난
 		프돈 음으로 때려 더욱 하락 ... 프돈이 때려도 상승하지 않으면 매도가 답
 	900 LG이노텍 애플 -2% 하락, 그런데 94 + 63/208, 205/30, 66 그리고 급락 이 것은
 		fake로 생각된다. 우선 올리고 파는 ... 시초 프돈 정직하지 않다. 
-	루닛, 제이엘케이, 뷰노 시초 상승시키고 904 마이너스 프돈 그리고 905, 906 동시 플러스 프돈
+		루닛, 제이엘케이, 뷰노 시초 상승시키고 904 마이너스 프돈 그리고 905, 906 동시 플러스 프돈
 		다시 급상 ... 결국 강한 상관을 가지는 종목들은 같이 움직이고 프돈이 같이 조작한다고 할 수 있다. 
 		몇 개의 종목으로 절친을 형성하여 동시성을 보는 것도 중요 .. 다 먹으려고 하다 대책없이 당하는 것보다
 		똑똑한 놈을 골라 모니터링하는 것이 중요하다. 아침 에코, 엘앤케이 무너지는 것을 보고 바로 
@@ -113,24 +103,21 @@ Adaptive Reshuffling (Optional Improvement):active or not so active
 		
 
 20231102
-	오늘도 바보 짓을 하다. 금양이 높이 떠 있는ㄴ 데 진입 약 수익이었는 데 프돈
+	오늘도 바보 짓을 하다. 금양이 높이 떠 있는 데 진입 약 수익이었는 데 프돈
 	이 던질 때 바로 던져야 하는 데 절친 에코프로가 밀리지 않아 그대로 두었는 데 
 	추가로 밀리다 ... 그런데, 오를 듯 하여 물을 타다 결국 1% 손실에서 던지다 
-	던지고 나니 조금 있다 2% 이상 상승시키다. 쉽지않다.
+	던지고 나니 조금 있다 2% 이상 상승시키다. 
 
 	두 번째는 지수는 하지 말아야 하는 데 보니 밀릴 듯 하여 진입하다 약 수익으로
 	마감하여야 하는 데 밀리는 것을 보고 800 이상 상승하였는 데 이 것이 리미트가
-	아닐까하고 버티다 ... 그런데 계속 밀리다 지수로 1% 정도 밀린 후, 아 ... 오늘은
-	그 동안 2-3달 밀린 것 복수한다고 지수 프돈이 끝없이 조금씩 매수하한다. 창 7에서
-	보니 기관도 매수하고 있다는 사인이 보였다. 던져야 하는 데 생각만 할 뿐 실제 옮기지 않고 
-	지수로 1 % 손실이 되고서 던지다. 오늘도 바보같은 날이었다. 
+	아닐까하고 버티다 ... 그런데 계속 밀리다 지수로 1% 정도 밀린 후, 
 
 	되겠지 ? 결국 이런 접근은 혼이 난다. 
 
 	프로그램에만 집중하여야겠다. 대충은 안 된다는 것을 알면서도 오랜 시간 대충
 	해보려 한 나의 잘못이 크다.
 
-20230927(수) : 어머니 제삿날
+20230927(수) : 
 	명확한 틀을 만들어야겠는 데 여전히 혼돈의 와중에 있다.
 
 	추석 전 + 미국 정부 stop 불안 + 9월은 하락의 달 : 코스피 5%, 코스닥 10% 정도씩 9월 하락
@@ -462,8 +449,4 @@ xps 17
 범용 ? 디????1 ?
 
 USB-C ports take care of charging.
-
-I took my monitor to BestBuy to see if it would work with another Lenovo Yoga 16 7i they have on display, but it didn't. I tried it with other Lenovo Yoga line laptops, but it didn't work either.  I tried it with an HP Spectre x360 16 with 12th gen i7, and no luck.  However, it did work with a Lenovo Slim 7i 16" and with a Dell XPS 15 with 12th gen i7.ㅂ
-
-LG 그램 view needs DisplayPort Alternate Mode
 

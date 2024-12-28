@@ -83,8 +83,12 @@ namespace New_Tradegy.Library
 
         public static void post_test()
         {
-            ev.eval_stock();
-            ev.eval_group();
+            if(g.v.q_advance_lines == 0 && g.v.Q_advance_lines == 0)
+            {
+                ev.eval_stock();
+                ev.eval_group();
+            }
+        
             mm.ManageChart1();
             mm.ManageChart2();
         }
@@ -1731,7 +1735,7 @@ namespace New_Tradegy.Library
             o.매수호가거래액_백만원 = (int)(o.최우선매수호가잔량 * money_factor * 10); 
 
             // 혼합, 아래 계산은 하되 사용하지 않음
-            if (g.test)
+            if (!g.connected)
             {
                 double multiple_factor = 0.0;
                 if (o.일평균거래량 > 0)

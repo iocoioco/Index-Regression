@@ -243,11 +243,14 @@ namespace New_Tradegy
                                     g.관심종목.Add(stock1);
                                 }
                             }
-                            this.Text = g.oGL_data[i].title;
+                            Form se = fm.FindFormByName("se");
+                            se.Text = words[1];
                             mm.ManageChart1(); // Memo, 선택된 상관 전체 관심종목 
                             return;
                         }
+                       
                     }
+
                 }
                 else if (words[0].Contains(".txt"))
                 {
