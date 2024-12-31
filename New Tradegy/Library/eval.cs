@@ -223,7 +223,14 @@ namespace New_Tradegy.Library
                 return false;
             }
 
-
+            if (g.v.key_string == "프누" ||
+                g.v.key_string == "종누" ||
+                g.v.key_string == "프편" ||
+                g.v.key_string == "종편" ||
+                g.v.key_string == "상순" ||
+                g.v.key_string == "저순")
+                return true;
+            
             if (g.v.푀플 == 1 && o.점수.푀분 < 0)
                 return false;
             if (g.v.배플 == 1 && o.점수.배차 < 0)

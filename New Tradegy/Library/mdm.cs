@@ -688,6 +688,9 @@ class mm
                 {
                     value = (int)(o.x[k, dataIndex] * magnifier);
                 }
+
+                //?
+                // if(dataIndex == 1) value *= -1;
                 series.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
                 TotalNumberPoint++;
 
@@ -1736,7 +1739,7 @@ class mm
 
 
         // x[k, 8 & 9]
-        for (int i = end_time; i >= end_time - 4; i--)
+        for (int i = end_time - 1; i >= end_time - 5; i--)
         {
             if (i < 1)
             {

@@ -80,7 +80,7 @@ namespace New_Tradegy.Library
                 return;
             }
 
-            
+            string action = "    ";
 
             switch (e.KeyChar)
             {
@@ -144,6 +144,8 @@ namespace New_Tradegy.Library
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
+
+                        action = " p B"; // del chartarea, post, eval, draw
                     }
                     else
                     {
@@ -187,6 +189,7 @@ namespace New_Tradegy.Library
                             g.time[0] = 0;
                             g.time[1] = 2;
                         }
+                        action = " p B"; // del chartarea, post, eval, draw
                     }
                     else
                     {
@@ -263,6 +266,7 @@ namespace New_Tradegy.Library
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
+                        action = " p B"; // del chartarea, post, eval, draw
                     }
                     //else // 매도
                     //    dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "매도", g.일회거래액); // chart1KeyPress in tr(3)
@@ -270,6 +274,14 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'Q':
+                    if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
+                    {
+                        if (g.end_time_before_advance == 0) // time extension
+                            mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
+                        else
+                            mm.MinuteAdvanceRetreat(0);
+                        action = " p B"; // del chartarea, post, eval, draw
+                    }
                     //dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "대기매도", g.일회거래액); // chart1KeyPress in 'Q'  tr(3)
                     break;
 
@@ -290,6 +302,7 @@ namespace New_Tradegy.Library
                             g.time[0] = 0;
                             g.time[1] = 2;
                         }
+                        action = " peB"; // del chartarea, post, eval, draw
                     }
                     // 매수
                         //dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "매수", g.일회거래액); // 
@@ -301,6 +314,7 @@ namespace New_Tradegy.Library
                     {
                             g.time[0] = 0;
                             g.time[1] = 1;
+                        action = " peB"; // no del, post, no eval, both draw
                     }
                      // 대기매수
                         // dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "대기매수", g.일회거래액);
@@ -336,10 +350,12 @@ namespace New_Tradegy.Library
                     {
                         g.draw_shrink_time = 10;
                     }
+                    action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
                 case 'R':
                     g.draw_shrink_time += 10;
+                    action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
                 case '\u0012': // Cntl + R
@@ -357,6 +373,7 @@ namespace New_Tradegy.Library
                                 g.time[0] = 0;
                                 g.time[1] = 10;
                             }
+                            action = " peB"; // del chartarea, post, eval, draw
                         }
                         else
                             g.npts_fi_dwm += 10;
@@ -369,6 +386,7 @@ namespace New_Tradegy.Library
                         if (g.draw_selection == 1)
                         {
                             g.time[1] -= 10;
+                            action = " peB"; // del chartarea, post, eval, draw
                         }
                         else
                             g.npts_fi_dwm -= 10;
@@ -385,6 +403,7 @@ namespace New_Tradegy.Library
                             g.time[0] = 0;
                             g.time[1] = 30;
                         }
+                        action = " peB"; // del chartarea, post, eval, draw
                     }
                     break;
 
@@ -398,6 +417,7 @@ namespace New_Tradegy.Library
                             g.time[0] = 0;
                             g.time[1] = 2;
                         }
+                        action = " peB"; // del chartarea, post, eval, draw
                     }
                     break;
 
@@ -472,6 +492,7 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     Form se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
+                    action = " pem"; // no del, post, eval, both draw
                     break;
 
                 case 'A':
@@ -483,7 +504,7 @@ namespace New_Tradegy.Library
                         mc.Sound("일반", "add interest");
                     else
                         mc.Sound("일반", "no add interest");
-                    break;
+                    return;
 
                 case '\u0001': // Cntl + A
                     wn.Memo_TopMost();
@@ -496,6 +517,7 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
+                    action = " pem"; // no del, post, no eval, main draw
                     break;
 
                 case 'S':
@@ -505,6 +527,7 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
+                    action = " pem"; // no del, post, no eval, main draw
                     break;
 
                 case '\u0013': // Ctrl + S
@@ -518,7 +541,7 @@ namespace New_Tradegy.Library
                         if (result == "Yes")
                             wr.SaveAllStocks();
                     }
-                    break;
+                    return;
 
 
 
@@ -531,17 +554,19 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
+                    action = " pem"; // no del, post, no eval, main draw
                     break;
 
                 case 'D':
                     g.v.key_string = "배차";
+                    action = " pem"; // no del, post, no eval, main draw
                     break;
 
                 case 'f':
                     Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
                     list_3 = new List<string> { "코피", "코닥", "관심" };
                     g.v.SpfKeyString = mc.cycleStrings(g.v.SpfKeyString, list_3);
-                    mm.ManageChart2(g.v.SpfKeyString); // 'f' "코피", "코닥", "관심"
+                    action = " pes"; // no del, post, no eval, main draw
                     break;
     
                 case 'F':
@@ -562,6 +587,7 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
+                    action = " pem"; // no del, post, no eval, main draw
                     break;
 
                 case 'G':
@@ -574,6 +600,7 @@ namespace New_Tradegy.Library
                     g.gid = 0;
                     se = (Form)Application.OpenForms["se"];
                     se.Text = g.v.key_string;
+                    action = " pem"; // no del, post, no eval, main draw
                     break;
 
                 case 'H':
@@ -623,8 +650,8 @@ namespace New_Tradegy.Library
                     Process.Start(filename);
                     break;
                 case '"':
-                    filename = @"C:\병신\data\상관.txt";
-                    Process.Start(filename);
+                    //filename = @"C:\병신\data\상관.txt";
+                    //Process.Start(filename);
                     break;
                 #endregion
 
@@ -811,37 +838,19 @@ namespace New_Tradegy.Library
             if (g.gid < 0) { g.gid = 0; }
             if (g.Gid < 0) { g.Gid = 0; }
 
-            // Form_보조_차트 was called in the each keys
-            // Main Chart Processing for post, eval, draw
-            string testpost = "qw1q";
-            string testeval = "qwWrRtTyYasSdDghjJmM., n";
-            string testdraw = "qwWrRtTyYasSdDghjJlmM., n";
             
-
-            string realkeys = "rRasSdDghjJmM n"; // r & R : shrink time changer
-
-            if(!g.connected) // test
+            if (action[0] != ' ')
+                mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
+            if (action[1] != ' ')
+                ps.post_test();
+            if (action[2] != ' ')
+                ev.eval_stock();
+            if (action[3] != ' ')
             {
-                if (testpost.Contains(e.KeyChar))
-                {
-                    ps.post_test();
-                }
-                if (testeval.Contains(e.KeyChar))
-                {
-                    ev.eval_stock();
-                }
-                if (testdraw.Contains(e.KeyChar))
-                {
+                if (action[3] == 'm' || action[3] == 'B')
                     mm.ManageChart1(); // key multi for test
-                }
-            }
-            else // real
-            {
-                if (realkeys.Contains(e.KeyChar))
-                {
-                    ev.eval_stock();
-                    mm.ManageChart1(); // key multi for real
-                }
+                if (action[3] == 's' || action[3] == 'B')
+                    mm.ManageChart2(); // key multi for test
             }
         }
     }

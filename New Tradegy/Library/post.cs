@@ -83,14 +83,19 @@ namespace New_Tradegy.Library
 
         public static void post_test()
         {
-            if(g.v.q_advance_lines == 0 && g.v.Q_advance_lines == 0)
+            foreach (var o in g.ogl_data)
             {
-                ev.eval_stock();
-                ev.eval_group();
+                post(o);
             }
-        
-            mm.ManageChart1();
-            mm.ManageChart2();
+
+            //if(g.v.q_advance_lines == 0 && g.v.Q_advance_lines == 0)
+            //{
+            //    ev.eval_stock();
+            //    ev.eval_group();
+            //}
+
+            //ManageChart1Safe();
+            //ManageChart2Safe();
         }
 
         public static void marketeye_received_보유종목_푀분의매수매도_소리내기(g.stock_data o)

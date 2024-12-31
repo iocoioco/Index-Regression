@@ -665,7 +665,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         {
             ky.chart_keypress(e);
             this.Text = g.v.key_string;
-            SetFocusAndReturn();
+            //SetFocusAndReturn();
         }
 
         private void chart1_MouseClick(object sender, MouseEventArgs e)
@@ -698,7 +698,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 cl.LeftRightAction(chart1, selection, row_id, col_id);
             }
 
-            SetFocusAndReturn();
+            //SetFocusAndReturn();
         }
 
 
@@ -802,7 +802,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         private void chart1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             ky.char1_previewkeydown(sender, e);
-            SetFocusAndReturn();
+            //SetFocusAndReturn();
         }
 
 

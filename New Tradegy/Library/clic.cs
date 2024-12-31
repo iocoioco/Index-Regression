@@ -217,6 +217,7 @@ namespace New_Tradegy.Library
 
         public static void CntlLeftRightAction(Chart chart, string selection, int row_id, int col_id)
         {
+            
             switch (selection)
             {
                 case "l1":
@@ -259,7 +260,7 @@ namespace New_Tradegy.Library
                             }
                         }
                     }
-                    dl.deal_exec("매수", g.clickedStock, Amount, Price, "01"); // Cntl + l1 
+                    //dl.deal_exec("매수", g.clickedStock, Amount, Price, "01"); // Cntl + l1 
                     break;
 
                 case "l2":
@@ -342,7 +343,7 @@ namespace New_Tradegy.Library
             if (index < 0) return;
             g.stock_data o = g.ogl_data[index];
 
-
+            string action = "    ";
             switch (selection)
             {
                 case "l1":
@@ -354,15 +355,10 @@ namespace New_Tradegy.Library
                     {
                         o.shrink_draw = true;
                     }
-                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
-                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock);
-                    mm.ManageChart1(); // l1, single stock shrink_draw ?
-                    mm.ManageChart2(); // l1, single stock shrink_draw ?
+                    action = "B  B";
                     break;
 
                 case "l2":
-
-
                     if (g.KODEX4.Contains(g.clickedStock))
                     {
                         // delete all existing forms with name of Form_지수_조정
@@ -388,10 +384,7 @@ namespace New_Tradegy.Library
                     else
                     {
                         o.수급과장배수 *= 1.5;
-                        wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
-                        wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock);
-                        mm.ManageChart1(); // l2, single 수급과장배수 조정
-                        mm.ManageChart2(); // l2, single 수급과장배수 조정
+                        action = "B  B";
                     }
                     break;
 
@@ -404,6 +397,7 @@ namespace New_Tradegy.Library
                     {
                         g.time[0] = 0;
                         g.time[1] = g.MAX_ROW;
+                        action = "BpeB";
                     }
                     break;
 
@@ -414,7 +408,7 @@ namespace New_Tradegy.Library
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
-                        // wk.BringToFront();
+                        action = " p B";
                     }
                     break;
 
@@ -425,6 +419,7 @@ namespace New_Tradegy.Library
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
+                        action = " p B";
                     }
                     else
                     {
@@ -435,6 +430,7 @@ namespace New_Tradegy.Library
                             if (g.clickedStock == g.KODEX4[1]) mm.fixedStocks[0] = g.KODEX4[0];
                             if (g.clickedStock == g.KODEX4[2]) mm.fixedStocks[1] = g.KODEX4[3];
                             if (g.clickedStock == g.KODEX4[3]) mm.fixedStocks[1] = g.KODEX4[2];
+                            action = "   B";
                         }
                         else
                         {
@@ -455,13 +451,9 @@ namespace New_Tradegy.Library
                                     }
                                 }
                             }
-                            break;
+                            action = " peB";
                         }
-                        
                     }
-
-                    mm.ManageChart1(); // l5
-                    mm.ManageChart2(); // l5
                     break;
 
                 case "l6":
@@ -483,8 +475,8 @@ namespace New_Tradegy.Library
                                 g.관심종목.Add(g.clickedStock);
                             }
                         }
-                        mm.ManageChart1(); // 호가, 관심 종목 추가 & 제거
                     }
+                    action = " peB";
                     break;
 
                 case "l7": // g.time[1]++
@@ -497,6 +489,7 @@ namespace New_Tradegy.Library
                             g.time[1] = 2;
                         }
                         // wk.BringToFront();
+                        action = " peB";
                     }
                     else
                     {
@@ -507,10 +500,7 @@ namespace New_Tradegy.Library
 
                 case "l8":
                     o.수급과장배수 *= 0.66;
-                    wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
-                    wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock);
-                    mm.ManageChart1(); // single 수급과장배수 조정
-                    mm.ManageChart2(); // single 수급과장배수 조정
+                    action = "d  B";
                     break;
 
                 case "l9": // g.time[1]++
@@ -523,10 +513,11 @@ namespace New_Tradegy.Library
                             g.time[1] = 2;
                         }
                         // wk.BringToFront();
+                        action = " peB";
                     }
                     else
                     {
-                        
+
                     }
                     break;
 
@@ -631,9 +622,9 @@ namespace New_Tradegy.Library
                     //Form f = (Form)(hg.FormNameGivenStock(g.clickedStock));
                     //f.Location = new Point(f.Location.X, f.Location.Y + 100);
                     //if (g.v.Screens >= 2)
-                    
-                        sr.r3_display_lines(chart, g.clickedStock, row_id, col_id);
-                    
+
+                    sr.r3_display_lines(chart, g.clickedStock, row_id, col_id);
+
 
                     //wk.BringToFront();
 
@@ -683,42 +674,27 @@ namespace New_Tradegy.Library
                     break;
             }
 
-            if (!g.connected &&
-                (selection == "l4" ||
-                 selection == "l5"))
-            {
-                ps.post_test(); // clic l4, l5
-            }
+            
 
-            if (!g.connected &&
-                (selection == "l7" ||
-                selection == "l9"))
+
+            if (action[0] != ' ')
             {
+                if (action[0] == 'm' || action[3] == 'B')
+                    mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
+                if (action[0] == 's' || action[0] == 'B')
+                    mm.ManageChart2(); // key multi for test
+            }
+                
+            if (action[1] != ' ')
+                ps.post_test();
+            if (action[2] != ' ')
                 ev.eval_stock();
-            }
-
-            if (selection == "l1" || // shrink or not
-
-               selection == "l2" || // inc. multiplier
-               selection == "l8" || // dec. multiplier
-
-               selection == "l5" || // add or remove 호가
-               selection == "l6") // add or remove 관심
+            if (action[3] != ' ')
             {
-   
-                mm.ManageChart1(); // single click, not checked
-            }
-
-            if (selection == "l1" ||
-             selection == "l2" ||
-             selection == "l8" ||
-            selection == "r9")
-            {
-      
-                if (selection == "r9")
-                    mm.ManageChart2("상관");
-                else
-                    mm.ManageChart2(); // single click, not checked
+                if (action[3] == 'm' || action[3] == 'B')
+                    mm.ManageChart1(); // key multi for test
+                if (action[3] == 's' || action[3] == 'B')
+                    mm.ManageChart2(); // key multi for test
             }
 
             //wk.BringToFront();
