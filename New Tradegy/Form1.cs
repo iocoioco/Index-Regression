@@ -164,7 +164,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             // ms.setting_코스피_코스닥합성();
 
-            this.Text = g.v.key_string; // 처음, 총점
+            this.Text = g.v.KeyString; // 처음, 총점
 
             Form Form_제어 = new Form_제어(); // info
             Form_제어.Show();
@@ -664,7 +664,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         private void chart1_KeyPress(object sender, KeyPressEventArgs e)
         {
             ky.chart_keypress(e);
-            this.Text = g.v.key_string;
+            this.Text = g.v.KeyString;
             //SetFocusAndReturn();
         }
 

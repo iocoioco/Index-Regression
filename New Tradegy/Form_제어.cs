@@ -87,7 +87,7 @@ namespace New_Tradegy
             int day = g.date % 10000 % 100;
             g.일회거래액 = 0;
             g.제어.dtb.Rows[0][0] = month.ToString() + "/" + day.ToString();
-            //g.제어.dtb.Rows[0][1] = g.v.key_string;
+            //g.제어.dtb.Rows[0][1] = g.v.KeyString;
             g.제어.dtb.Rows[0][2] = g.일회거래액;
             g.제어.dtb.Rows[0][3] = g.예치금;
 

@@ -574,7 +574,7 @@ class mm
         Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
         if (Form_보조_차트 != null)
         {
-            Form_보조_차트.keyString = keystring;
+            g.v.S_KeyString = keystring;
             Form_보조_차트.Form_보조_차트_DRAW();
         }
     }
@@ -1386,10 +1386,10 @@ class mm
                             d = o.x[EndPoint - k, ColumnIndex] - o.x[EndPoint - k - 1, ColumnIndex];
                             break;
                         case 4:
-                            d = (o.분프로천[k] - o.분프로천[k + 1]) / 10;
+                            d = o.분프로천[k] / 10;
                             break;
                         case 5:
-                            d = (o.분외인천[k] - o.분외인천[k + 1]) / 10;
+                            d = o.분외인천[k] / 10;
                             break;
                         default:
                             d = 0;

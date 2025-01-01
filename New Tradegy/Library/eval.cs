@@ -91,12 +91,12 @@ namespace New_Tradegy.Library
 
             var group = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
-            if (group.Contains(g.v.key_string))
+            if (group.Contains(g.v.KeyString))
             {
 
                 foreach (var o in g.ogl_data)
                 {
-                    switch (g.v.key_string)
+                    switch (g.v.KeyString)
                     {
                         case "피올":
                             if (o.시장구분 == 'S')
@@ -144,7 +144,7 @@ namespace New_Tradegy.Library
                         check_row = o.nrow - 1;
 
                     if (!eval_inclusion(o) || o.nrow < 2) continue;
-                    switch (g.v.key_string)
+                    switch (g.v.KeyString)
                     {
                         case "총점":
                             value = o.점수.총점;
@@ -223,12 +223,12 @@ namespace New_Tradegy.Library
                 return false;
             }
 
-            if (g.v.key_string == "프누" ||
-                g.v.key_string == "종누" ||
-                g.v.key_string == "프편" ||
-                g.v.key_string == "종편" ||
-                g.v.key_string == "상순" ||
-                g.v.key_string == "저순")
+            if (g.v.KeyString == "프누" ||
+                g.v.KeyString == "종누" ||
+                g.v.KeyString == "프편" ||
+                g.v.KeyString == "종편" ||
+                g.v.KeyString == "상순" ||
+                g.v.KeyString == "저순")
                 return true;
             
             if (g.v.푀플 == 1 && o.점수.푀분 < 0)
@@ -681,23 +681,23 @@ namespace New_Tradegy.Library
             //            true_or_false = false;
             //    }
 
-            //    if (g.v.key_string == "피올" ||
-            //        g.v.key_string == "닥올" ||
-            //        g.v.key_string == "프누" ||
-            //        g.v.key_string == "종누" ||
-            //        g.v.key_string == "분거" ||
-            //        g.v.key_string == "가증" ||
-            //        g.v.key_string == "상순" ||
-            //        g.v.key_string == "저순" ||
-            //        g.v.key_string == "편차" ||
-            //        g.v.key_string == "평균")
+            //    if (g.v.KeyString == "피올" ||
+            //        g.v.KeyString == "닥올" ||
+            //        g.v.KeyString == "프누" ||
+            //        g.v.KeyString == "종누" ||
+            //        g.v.KeyString == "분거" ||
+            //        g.v.KeyString == "가증" ||
+            //        g.v.KeyString == "상순" ||
+            //        g.v.KeyString == "저순" ||
+            //        g.v.KeyString == "편차" ||
+            //        g.v.KeyString == "평균")
             //    { // 시장구분
             //        true_or_false |= true;
-            //        if (g.v.key_string == "피올" && o.시장구분 != 'S') // 코스피만 선택 : 코스닥종목 제외
+            //        if (g.v.KeyString == "피올" && o.시장구분 != 'S') // 코스피만 선택 : 코스닥종목 제외
             //        {
             //            true_or_false = false;
             //        }
-            //        if (g.v.key_string == "닥올" && o.시장구분 != 'D') // 코스닥만 선택 : 코스피종목 제외
+            //        if (g.v.KeyString == "닥올" && o.시장구분 != 'D') // 코스닥만 선택 : 코스피종목 제외
             //        {
             //            true_or_false = false;
             //        }

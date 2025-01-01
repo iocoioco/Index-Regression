@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml.Linq;
 using static New_Tradegy.Library.g;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
@@ -217,13 +218,22 @@ namespace New_Tradegy.Library
 
         public static void CntlLeftRightAction(Chart chart, string selection, int row_id, int col_id)
         {
-            
+            string action = "    ";
             switch (selection)
             {
                 case "l1":
+                    if (!g.보유종목.Contains(g.clickedStock) &&
+                        !g.호가종목.Contains(g.clickedStock))
+                    {
+                        g.호가종목.Add(g.clickedStock);
+
+                    }
+                    mm.ManageChart1();
+
                     // int Price = hg.HogaGetValue(g.clickedStock, -1, 2); // -1 : 매도1호가 라인, 1 : column
                     int Price = TryGetPrice(g.clickedStock, 5, 100); // Try up to 5 times with 100 millisecond delay
-                    if (Price < 0) return;
+                    if (Price < 0) // Bookbid is not ready
+                        return;
 
                     int Amount = g.일회거래액 * 10000 / Price;
                     if (Amount == 0)
@@ -260,11 +270,22 @@ namespace New_Tradegy.Library
                             }
                         }
                     }
-                    //dl.deal_exec("매수", g.clickedStock, Amount, Price, "01"); // Cntl + l1 
+                    dl.deal_exec("매수", g.clickedStock, Amount, Price, "03"); // Cntl + l1 
                     break;
 
                 case "l2":
+                    int id = 0;
+                    for (int i = 0; i < g.KODEX4.Count; i++)
+                    {
+                        if (g.clickedStock == g.KODEX4[i])
+                        {
+                            id = i;
+                            break;
+                        }
+                    }
 
+                    g.kodex_magnifier[id, 0] *= 1.333;
+                    action = "d  B";
                     break;
 
                 case "l3":
@@ -289,7 +310,18 @@ namespace New_Tradegy.Library
 
 
                 case "l8":
+                    id = 0;
+                    for (int i = 0; i < g.KODEX4.Count; i++)
+                    {
+                        if (g.clickedStock == g.KODEX4[i])
+                        {
+                            id = i;
+                            break;
+                        }
+                    }
 
+                    g.kodex_magnifier[id, 0] *= 0.666;
+                    action = "d  B";
                     break;
 
                 case "l9": // g.time[1]++
@@ -332,6 +364,26 @@ namespace New_Tradegy.Library
                 case "r9": // 20201112
 
                     break;
+            }
+
+            if (action[0] != ' ')
+            {
+                if (action[0] == 'm' || action[3] == 'B')
+                    mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
+                if (action[0] == 's' || action[0] == 'B')
+                    mm.ManageChart2(); // key multi for test
+            }
+
+            if (action[1] != ' ')
+                ps.post_test();
+            if (action[2] != ' ')
+                ev.eval_stock();
+            if (action[3] != ' ')
+            {
+                if (action[3] == 'm' || action[3] == 'B')
+                    mm.ManageChart1(); // key multi for test
+                if (action[3] == 's' || action[3] == 'B')
+                    mm.ManageChart2(); // key multi for test
             }
         }
 
@@ -539,7 +591,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "r3": // 정보
-                    string query = g.clickedStock + " 잡코리아 " + "기업정보";
+                    string query = g.clickedStock + " 기업정보";
                     string encodedQuery = Uri.EscapeDataString(query);
                     t = "http://google.com/search?q=" + encodedQuery;
                     Process.Start("chrome.exe", t);
@@ -662,9 +714,9 @@ namespace New_Tradegy.Library
 
                         Form_보조_차트 form = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
 
-                        if (form?.keyString == "상관" || form?.keyString == "절친")
+                        if (g.v.S_KeyString == "상관" || g.v.S_KeyString == "절친")
                         {
-                            mm.ManageChart2(form?.keyString);
+                            mm.ManageChart2(g.v.S_KeyString);
                         }
                         else
                         {
@@ -674,7 +726,7 @@ namespace New_Tradegy.Library
                     break;
             }
 
-            
+
 
 
             if (action[0] != ' ')
@@ -684,7 +736,7 @@ namespace New_Tradegy.Library
                 if (action[0] == 's' || action[0] == 'B')
                     mm.ManageChart2(); // key multi for test
             }
-                
+
             if (action[1] != ' ')
                 ps.post_test();
             if (action[2] != ' ')
@@ -698,11 +750,11 @@ namespace New_Tradegy.Library
             }
 
             //wk.BringToFront();
-            Form f = (Form)Application.OpenForms["se"];
-            if (f != null)
-            {
-                f.Activate();
-            }
+            //Form f = (Form)Application.OpenForms["se"];
+            //if (f != null)
+            //{
+            //    f.Activate();
+            //}
         }
 
         public static int RemainSB()

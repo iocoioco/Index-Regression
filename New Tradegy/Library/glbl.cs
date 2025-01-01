@@ -378,8 +378,8 @@ namespace New_Tradegy.Library
         {
             // public int 점수선택 = 0; // 0 : 푀분 > 0 , 배차 > 0, 1 : 푀분 > 0, 2 : 배차 > 0, 3 : 푀분 + 배차 > 0, 4: no 선택
 
-            public string key_string = "총점";
-            public string SpfKeyString = "그순";
+            public string KeyString = "총점";
+            public string S_KeyString = "그순";
             public string old_key_string = "푀분";
 
             public double old_분당거래액이상_천만원;// 분거

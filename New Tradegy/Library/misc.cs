@@ -143,7 +143,7 @@ namespace New_Tradegy.Library
         // not used
         public static void toggle_inclusion_criteria()
         {
-            switch (g.v.key_string)
+            switch (g.v.KeyString)
             {
                 case "피올":
                 case "닥올":
@@ -203,13 +203,13 @@ namespace New_Tradegy.Library
             bool is_old_key_본피_배차_분거_총점 = false;
             bool is_new_key_본피_배차_분거_총점 = false;
 
-            if (g.v.key_string == "푀분" || g.v.key_string == "배차" || g.v.key_string == "분거" || g.v.key_string == "총점")
+            if (g.v.KeyString == "푀분" || g.v.KeyString == "배차" || g.v.KeyString == "분거" || g.v.KeyString == "총점")
                 is_new_key_본피_배차_분거_총점 = true;
             if (g.v.old_key_string == "푀분" || g.v.old_key_string == "배차" || g.v.old_key_string == "분거" || g.v.old_key_string == "총점")
                 is_old_key_본피_배차_분거_총점 = true;
 
             if (is_new_key_본피_배차_분거_총점 != is_old_key_본피_배차_분거_총점)
-                g.v.old_key_string = g.v.key_string;
+                g.v.old_key_string = g.v.KeyString;
 
             if (is_new_key_본피_배차_분거_총점 == is_old_key_본피_배차_분거_총점)
                 return;
@@ -292,10 +292,10 @@ namespace New_Tradegy.Library
                     break;
 
                 case "o&g":
-                    //g.제어.dtb.Rows[0][1] = g.v.key_string;
+                    //g.제어.dtb.Rows[0][1] = g.v.KeyString;
                     g.clickedStock = "";
                     g.clickedTitle = "";
-                    g.q = "o&s"; //g.v.key_string  = g.Savedkey_string;
+                    g.q = "o&s"; //g.v.KeyString  = g.Savedkey_string;
                     break;
 
                 case "s&g":

@@ -18,7 +18,6 @@ namespace New_Tradegy
         public int nRow;
         public int nCol;
 
-        public string keyString = "그순";
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
@@ -73,6 +72,7 @@ namespace New_Tradegy
             else
             {
                 this.Location = new Point(g.screenWidth, 0);
+                if(g.v.Screens == 1) this.Location = new Point(0, 0); // one screen
             }
             this.Size = new Size(g.screenWidth / 2, g.screenHeight);
             chart2.Size = new Size(this.Width, this.Height);
@@ -115,7 +115,7 @@ namespace New_Tradegy
         public void Form_보조_차트_DRAW()
         {
             displayList.Clear();
-            보조_차트_StocksGivenKeyString(keyString, displayList, g.clickedStock, g.clickedTitle);
+            보조_차트_StocksGivenKeyString(g.v.S_KeyString, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title
             UpdateFormTitle();
@@ -490,19 +490,19 @@ namespace New_Tradegy
 
         private void UpdateFormTitle()
         {
-            switch (keyString)
+            switch (g.v.S_KeyString)
             {
                 case "상관":
-                    this.Text = $"{keyString} ({g.clickedTitle})";
+                    this.Text = $"{g.v.S_KeyString} ({g.clickedTitle})";
                     break;
                 case "절친":
-                    this.Text = $"{keyString} ({g.clickedStock})";
+                    this.Text = $"{g.v.S_KeyString} ({g.clickedStock})";
                     break;
                 case "그순":
-                    this.Text = $"{keyString} ({g.oGl_data_selection})";
+                    this.Text = $"{g.v.S_KeyString} ({g.oGl_data_selection})";
                     break;
                 default:
-                    this.Text = keyString;
+                    this.Text = g.v.S_KeyString;
                     break;
             }
         }
@@ -623,28 +623,28 @@ namespace New_Tradegy
             switch (e.ColumnIndex)
             {
                 case 0:
-                    keyString = "상관";
+                    g.v.S_KeyString = "상관";
                     return;
                 case 1:
-                    keyString = "보유";
+                    g.v.S_KeyString = "보유";
                     break;
                 case 2:
-                    keyString = "그순";
+                    g.v.S_KeyString = "그순";
                     break;
                 case 3:
-                    keyString = "관심";
+                    g.v.S_KeyString = "관심";
                     break;
                 case 4:
-                    keyString = "코닥";
+                    g.v.S_KeyString = "코닥";
                     break;
                 case 5:
-                    keyString = "코피";
+                    g.v.S_KeyString = "코피";
                     break;
                 case 6:
-                    keyString = "절친";
+                    g.v.S_KeyString = "절친";
                     break;
                 case 7:
-                    keyString = "푀손";
+                    g.v.S_KeyString = "푀손";
                     break;
             }
             Form_보조_차트_DRAW();

@@ -477,22 +477,22 @@ namespace New_Tradegy.Library
             switch (e.ColumnIndex)
             {
                 case 0: // 매도
-                    if (e.RowIndex >= 2 * Rows)
-                    {
-                        return;
-                    }
-                    var existingOrder = StockExchange.sellOrders.Find(order => order.Stock == Stock && order.Price == Price);
+                    //if (e.RowIndex >= 2 * Rows)
+                    //{
+                    //    return;
+                    //}
+                    //var existingOrder = StockExchange.sellOrders.Find(order => order.Stock == Stock && order.Price == Price);
 
-                    // If such an order exists, remove it
-                    if (existingOrder != null)
-                    {
-                        StockExchange.sellOrders.Remove(existingOrder);
-                        return;
-                    }
+                    //// If such an order exists, remove it
+                    //if (existingOrder != null)
+                    //{
+                    //    StockExchange.sellOrders.Remove(existingOrder);
+                    //    return;
+                    //}
 
-                    bool WasUpper = false;
-                    if (e.RowIndex < Rows)
-                        WasUpper = true;
+                    //bool WasUpper = false;
+                    //if (e.RowIndex < Rows)
+                    //    WasUpper = true;
 
                     int Amount = g.일회거래액 * 10000 / Price;
                     if (Amount == 0)
@@ -535,16 +535,16 @@ namespace New_Tradegy.Library
                             }
                             else if (result == DialogResult.OK) // 지정가
                             {
-                                if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                                {
+                                //if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
+                                //{
                                     dl.deal_exec("매도", Stock, Amount, Price, "01");
-                                }
-                                else
-                                {
+                                //}
+                                //else
+                                //{
                                     //Urgency = form.The_urgency;
                                     //g.cancelThreshhold = form.The_cancelthreshhold;
                                     //stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
-                                }
+                                //}
                             }
                             else
                             {
@@ -554,15 +554,15 @@ namespace New_Tradegy.Library
                     }
                     else
                     {
-                        if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                        {
+                        //if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
+                        //{
                             dl.deal_exec("매도", Stock, Amount, Price, "01");
-                        }
-                        else
-                        {
+                        //}
+                        //else
+                        //{
                             // Urgency and TimeThresh not used
-                            stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
-                        }
+                            //stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                        //}
                     }
                     break;
 
@@ -613,19 +613,19 @@ namespace New_Tradegy.Library
                     {
                         return;
                     }
-                    existingOrder = StockExchange.buyOrders.Find(order => order.Stock == Stock && order.Price == Price);
+                    //existingOrder = StockExchange.buyOrders.Find(order => order.Stock == Stock && order.Price == Price);
 
-                    // If such an order exists, remove it
-                    if (existingOrder != null)
-                    {
-                        StockExchange.buyOrders.Remove(existingOrder);
-                        return;
-                    }
+                    //// If such an order exists, remove it
+                    //if (existingOrder != null)
+                    //{
+                    //    StockExchange.buyOrders.Remove(existingOrder);
+                    //    return;
+                    //}
 
 
-                    WasUpper = false;
-                    if (e.RowIndex < Rows)
-                        WasUpper = true;
+                    //WasUpper = false;
+                    //if (e.RowIndex < Rows)
+                    //    WasUpper = true;
 
                     Amount = g.일회거래액 * 10000 / Price;
                     if (Amount == 0)
@@ -654,18 +654,18 @@ namespace New_Tradegy.Library
                             }
                             else if (result == DialogResult.OK) // 지정가
                             {
-                                if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                                {
+                                //if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
+                                //{
                                     dl.deal_exec("매수", Stock, Amount, Price, "01");
-                                }
-                                else
-                                {
+                                //}
+                                //else
+                                //{
                                     //Urgency = form.The_urgency;
                                     //g.cancelThreshhold = form.The_cancelthreshhold;
                                     //stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
-                                }
+                                // }
                             }
-                            else
+                            else // 취소
                             {
                                 return;
                             }
