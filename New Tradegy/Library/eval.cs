@@ -136,7 +136,7 @@ namespace New_Tradegy.Library
                     int check_row = 0;
                     if (!g.connected)
                     {
-                        check_row = g.time[1] - 1;
+                        check_row = g.Npts[1] - 1;
                         if (check_row > o.nrow - 1)
                             check_row = o.nrow - 1;
                     }
@@ -383,26 +383,26 @@ namespace New_Tradegy.Library
 
                     g.stock_data o = g.ogl_data[index];
 
-                    int current_time = 0;
+                    int CheckNpts = 0;
                     if (!g.connected)
-                        current_time = g.time[1] - 1;
+                        CheckNpts = g.Npts[1] - 1;
                     else
-                        current_time = o.nrow - 1;
+                        CheckNpts = o.nrow - 1;
 
-                    if (current_time < 1)
+                    if (CheckNpts < 1)
                         return;
-                    if (current_time >= 382)
-                        current_time = 381;
+                    if (CheckNpts >= 382)
+                        CheckNpts = 381;
 
-                    if (o.x[current_time, 1] < -3000 || o.x[current_time, 1] > 3000)
+                    if (o.x[CheckNpts, 1] < -3000 || o.x[CheckNpts, 1] > 3000)
                         continue;
 
                     g.oGL_data[i].총점 += o.점수.총점;
                     g.oGL_data[i].거분 += o.점수.거분;
                     g.oGL_data[i].푀분 += o.점수.푀분;
-                    g.oGL_data[i].수평 += o.x[current_time, 2];
-                    g.oGL_data[i].강평 += o.x[current_time, 3] / 100;
-                    g.oGL_data[i].가증 += o.x[current_time, 1] - o.x[current_time - 1, 1];
+                    g.oGL_data[i].수평 += o.x[CheckNpts, 2];
+                    g.oGL_data[i].강평 += o.x[CheckNpts, 3] / 100;
+                    g.oGL_data[i].가증 += o.x[CheckNpts, 1] - o.x[CheckNpts - 1, 1];
 
                     maximum_count++;
                 }
@@ -1042,8 +1042,8 @@ namespace New_Tradegy.Library
             //        return;
 
             //    // checking every 20 seconds
-            //    int current_time = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
-            //    double elaped_seconds = ms.total_Seconds(g.check_time, current_time); // from time to time
+            //    int CheckNpts = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
+            //    double elaped_seconds = ms.total_Seconds(g.check_time, CheckNpts); // from time to time
             //    if (elaped_seconds < 20)
             //        return;
 

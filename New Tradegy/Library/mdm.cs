@@ -622,29 +622,29 @@ class mm
         if (o.nrow <= 1) // no data yet, i.e. only 0859 
             return null;
 
-        // g.draw_shrink_time is controlled by 'o' and 'O'
-        int start_time = 0;
-        int end_time = -1;
-        if (o.shrink_draw == true)
+        // g.NptsForShrinkDraw is controlled by 'o' and 'O'
+        int StartNpts = 0;
+        int EndNpts = -1;
+        if (o.ShrinkDrawOrNot == true)
         {
-            start_time = o.nrow - g.draw_shrink_time;
-            if (start_time < g.time[0])
+            StartNpts = o.nrow - g.NptsForShrinkDraw;
+            if (StartNpts < g.Npts[0])
             {
-                start_time = g.time[0];
+                StartNpts = g.Npts[0];
             }
         }
         else
         {
-            start_time = g.time[0];
+            StartNpts = g.Npts[0];
         }
 
         if (g.connected)
         {
-            end_time = o.nrow;
+            EndNpts = o.nrow;
         }
         else
         {
-            end_time = g.time[1];
+            EndNpts = g.Npts[1];
         }
 
 
@@ -673,14 +673,14 @@ class mm
             double magnifier = 1.0;
             KodexMagnifier(o, dataIndex, ref magnifier);
             int value = 0;
-            for (int k = start_time; k < end_time; k++)
+            for (int k = StartNpts; k < EndNpts; k++)
             {
                 if (o.x[k, 0] == 0) break; // No data
 
                 if (dataIndex == 10)
                 {
                     // Nasdaq Value is not scraped, if(value == 0), interpolate
-                    value = (int)(HandleUSIndex(o, k, end_time, start_time, dataIndex)
+                    value = (int)(HandleUSIndex(o, k, EndNpts, StartNpts, dataIndex)
                         * magnifier);
 
                 }
@@ -705,7 +705,7 @@ class mm
             }
 
             // Draw stock marker and apply styling
-            int MarkStartPoint = start_time + 1;
+            int MarkStartPoint = StartNpts + 1;
             int MarkEndPoint = TotalNumberPoint - 1;
             int EndPoint = TotalNumberPoint - 1;
 
@@ -830,39 +830,39 @@ class mm
         string sid = "";
 
         // start time and end time
-        int start_time = 0;
-        int end_time = -1;
+        int StartNpts = 0;
+        int EndNpts = -1;
 
-        if (o.shrink_draw == true)
+        if (o.ShrinkDrawOrNot == true)
         {
-            start_time = o.nrow - g.draw_shrink_time;
-            if (start_time < g.time[0])
+            StartNpts = o.nrow - g.NptsForShrinkDraw;
+            if (StartNpts < g.Npts[0])
             {
-                start_time = g.time[0];
+                StartNpts = g.Npts[0];
             }
         }
         else
         {
-            start_time = g.time[0];
+            StartNpts = g.Npts[0];
         }
 
         if (g.connected)
         {
-            end_time = o.nrow;
+            EndNpts = o.nrow;
         }
         else
         {
-            end_time = g.time[1];
-            if (end_time > o.nrow)
+            EndNpts = g.Npts[1];
+            if (EndNpts > o.nrow)
             {
-                end_time = o.nrow;
+                EndNpts = o.nrow;
             }
         }
 
 
         // 단일가거래 종목은 차트 포함시키지 않음
         // 동신건설 거래정지 종목으로 return
-        if (o.x[end_time - 1, 3] == 0)
+        if (o.x[EndNpts - 1, 3] == 0)
             return null;
 
         // The start of area and drawing of stock
@@ -915,7 +915,7 @@ class mm
 
             TotalNumberPoint = 0;
 
-            for (int k = start_time; k < end_time; k++)
+            for (int k = StartNpts; k < EndNpts; k++)
             {
                 if (o.x[k, 0] == 0)
                 {
@@ -964,7 +964,7 @@ class mm
 
             if (TotalNumberPoint < 2) return null;
 
-            int MarkStartPoint = start_time + 1;
+            int MarkStartPoint = StartNpts + 1;
 
             MarkGeneral(chart, MarkStartPoint, t);
             LabelGeneral(chart, t);
@@ -1007,7 +1007,7 @@ class mm
             chart.Series.Add(t);
 
             // Populate data points for each ID
-            for (int k = start_time; k < end_time; k++)
+            for (int k = StartNpts; k < EndNpts; k++)
             {
                 if (o.x[k, 0] == 0) // If time is 0, break as it indicates the end of data
                     break;
@@ -1022,7 +1022,7 @@ class mm
             }
 
             // Draw stock markers for visualization
-            int MarkStartPoint = start_time + 1;
+            int MarkStartPoint = StartNpts + 1;
             MarkGeneral(chart, MarkStartPoint, t);
             LabelGeneral(chart, t);
 
@@ -1049,7 +1049,7 @@ class mm
             }
         }
 
-        string annotation = AnnotationGeneral(chart, o, o.x, start_time, end_time, o.nrow); // g.test, o.nrow = g.MAX_ROW
+        string annotation = AnnotationGeneral(chart, o, o.x, StartNpts, EndNpts, o.nrow); // g.test, o.nrow = g.MAX_ROW
 
         int numLines = 5;
         double annotationHeight;
@@ -1588,7 +1588,7 @@ class mm
     }
 
     // AnnotationGeneral contains AnnotationKODEX
-    public static string AnnotationGeneral(Chart chart, g.stock_data o, int[,] x, int start_time, int end_time, int total_nrow)
+    public static string AnnotationGeneral(Chart chart, g.stock_data o, int[,] x, int StartNpts, int EndNpts, int total_nrow)
     {
         string stock = o.stock;
 
@@ -1646,7 +1646,7 @@ class mm
 
 
 
-        stock_title += ("\n" + AnnotationGeneralMinute(o, x, start_time, end_time));
+        stock_title += ("\n" + AnnotationGeneralMinute(o, x, StartNpts, EndNpts));
 
         // 일반 : 프돈 + 외돈 
         if (!(g.KODEX4.Contains(stock)))
@@ -1671,20 +1671,20 @@ class mm
                 stock_title += "+";
             stock_title += o.점수.배합.ToString("F0");
             stock_title += "+" + o.점수.그순.ToString("F0");
-            stock_title += " (" + o.x[end_time - 1, 1].ToString() + " / " + o.현재가.ToString("#,##0") + ")";
+            stock_title += " (" + o.x[EndNpts - 1, 1].ToString() + " / " + o.현재가.ToString("#,##0") + ")";
         }
         // KODEX4
         else
         {
-            stock_title += "\n" + "(" + o.x[end_time - 1, 1].ToString() + "/" + o.현재가.ToString("#,##0") + ")";
+            stock_title += "\n" + "(" + o.x[EndNpts - 1, 1].ToString() + "/" + o.현재가.ToString("#,##0") + ")";
         }
 
         //stock_title += " " + o.dev_avr; // 수급, 체강의 연속점수 삭제
-        stock_title += " " + x[end_time - 1, 10] + "/" + x[end_time - 1, 11] + "  " + o.dev_avr; // 수급, 체강의 연속점수
+        stock_title += " " + x[EndNpts - 1, 10] + "/" + x[EndNpts - 1, 11] + "  " + o.dev_avr; // 수급, 체강의 연속점수
         return stock_title;
     }
 
-    public static string AnnotationGeneralMinute(g.stock_data o, int[,] x, int start_time, int end_time)
+    public static string AnnotationGeneralMinute(g.stock_data o, int[,] x, int StartNpts, int EndNpts)
     {
         string tick_minute_string = "";
         string stock = o.stock;
@@ -1739,13 +1739,13 @@ class mm
 
 
         // x[k, 8 & 9]
-        for (int i = end_time - 1; i >= end_time - 5; i--)
+        for (int i = EndNpts - 1; i >= EndNpts - 5; i--)
         {
             if (i < 1)
             {
                 break;
             }
-            if (i == end_time - 1)
+            if (i == EndNpts - 1)
                 tick_minute_string += x[i, 8].ToString() + "/" + //ToString("0.#");
                     x[i, 9].ToString() + "  ";
             else
@@ -2010,12 +2010,12 @@ class mm
         }
     }
 
-    static int HandleUSIndex(g.stock_data o, int k, int end_time, int start_time, int index)
+    static int HandleUSIndex(g.stock_data o, int k, int EndNpts, int StartNpts, int index)
     {
         if (o.x[k, index] == 0 && k != 0)
         {
-            int upperNonZero = FindNonZeroValue(o, k + 1, end_time, index, true);
-            int lowerNonZero = FindNonZeroValue(o, k - 1, start_time, index, false);
+            int upperNonZero = FindNonZeroValue(o, k + 1, EndNpts, index, true);
+            int lowerNonZero = FindNonZeroValue(o, k - 1, StartNpts, index, false);
             return (upperNonZero + lowerNonZero) / 2;
         }
         return o.x[k, index];
@@ -2164,18 +2164,18 @@ class mm
     {
         if (AdvanceLines == 0)
         {
-            g.time[1] = g.end_time_before_advance;
-            g.end_time_before_advance = 0;
-            g.end_time_extended = false;
+            g.Npts[1] = g.EndNptsBeforeExtend;
+            g.EndNptsBeforeExtend = 0;
+            g.EndNptsExtendedOrNot = false;
         }
         else
         {
-            g.end_time_before_advance = g.time[1];
-            g.time[1] += AdvanceLines; // expedient
-            if (g.time[1] > g.MAX_ROW)
-                g.time[1] = g.MAX_ROW;
+            g.EndNptsBeforeExtend = g.Npts[1];
+            g.Npts[1] += AdvanceLines; // expedient
+            if (g.Npts[1] > g.MAX_ROW)
+                g.Npts[1] = g.MAX_ROW;
 
-            g.end_time_extended = true;
+            g.EndNptsExtendedOrNot = true;
         }
     }
 }

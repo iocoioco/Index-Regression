@@ -137,8 +137,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.v.Screens = Screen.AllScreens.Count();
             g.chart1 = chart1;
 
-            g.time[0] = 0; //
-            g.time[1] = g.MAX_ROW; //
+            g.Npts[0] = 0; //
+            g.Npts[1] = g.MAX_ROW; //
 
 
             g.q = "o&s";

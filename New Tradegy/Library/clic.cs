@@ -304,7 +304,7 @@ namespace New_Tradegy.Library
 
                     break;
 
-                case "l7": // g.time[1]++
+                case "l7": // g.Npts[1]++
 
                     break;
 
@@ -324,7 +324,7 @@ namespace New_Tradegy.Library
                     action = "d  B";
                     break;
 
-                case "l9": // g.time[1]++
+                case "l9": // g.Npts[1]++
 
                     break;
 
@@ -399,13 +399,13 @@ namespace New_Tradegy.Library
             switch (selection)
             {
                 case "l1":
-                    if (o.shrink_draw)
+                    if (o.ShrinkDrawOrNot)
                     {
-                        o.shrink_draw = false;
+                        o.ShrinkDrawOrNot = false;
                     }
                     else
                     {
-                        o.shrink_draw = true;
+                        o.ShrinkDrawOrNot = true;
                     }
                     action = "B  B";
                     break;
@@ -447,8 +447,8 @@ namespace New_Tradegy.Library
 
                     if (!g.connected)
                     {
-                        g.time[0] = 0;
-                        g.time[1] = g.MAX_ROW;
+                        g.Npts[0] = 0;
+                        g.Npts[1] = g.MAX_ROW;
                         action = "BpeB";
                     }
                     break;
@@ -456,7 +456,7 @@ namespace New_Tradegy.Library
                 case "l4":
                     if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
                     {
-                        if (g.end_time_before_advance == 0) // time extension
+                        if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
@@ -467,7 +467,7 @@ namespace New_Tradegy.Library
                 case "l5":
                     if (!g.connected)
                     {
-                        if (g.end_time_before_advance == 0)
+                        if (g.EndNptsBeforeExtend == 0)
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
@@ -531,14 +531,14 @@ namespace New_Tradegy.Library
                     action = " peB";
                     break;
 
-                case "l7": // g.time[1]++
+                case "l7": // g.Npts[1]++
                     if (!g.connected)
                     {
-                        g.time[1]++;
-                        if (g.time[1] > g.MAX_ROW)
+                        g.Npts[1]++;
+                        if (g.Npts[1] > g.MAX_ROW)
                         {
-                            g.time[0] = 0;
-                            g.time[1] = 2;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
                         }
                         // wk.BringToFront();
                         action = " peB";
@@ -555,14 +555,14 @@ namespace New_Tradegy.Library
                     action = "d  B";
                     break;
 
-                case "l9": // g.time[1]++
+                case "l9": // g.Npts[1]++
                     if (!g.connected)
                     {
-                        g.time[1]--;
-                        if (g.time[1] < 2)
+                        g.Npts[1]--;
+                        if (g.Npts[1] < 2)
                         {
-                            g.time[0] = 0;
-                            g.time[1] = 2;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
                         }
                         // wk.BringToFront();
                         action = " peB";
@@ -626,13 +626,13 @@ namespace New_Tradegy.Library
 
                         if (!g.connected)
                         {
-                            g.time[0] = g.saved_time[0];
-                            g.time[1] = g.saved_time[1];
+                            g.Npts[0] = g.SavedNpts[0];
+                            g.Npts[1] = g.SavedNpts[1];
                         }
                         else
                         {
-                            g.time[0] = 0;
-                            g.time[1] = g.MAX_ROW;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = g.MAX_ROW;
                         }
 
                         int month = g.date % 10000 / 100;
@@ -658,13 +658,13 @@ namespace New_Tradegy.Library
 
                         if (!g.connected)
                         {
-                            g.saved_time[0] = g.time[0];
-                            g.saved_time[1] = g.time[1];
+                            g.SavedNpts[0] = g.Npts[0];
+                            g.SavedNpts[1] = g.Npts[1];
                         }
                         else
                         {
-                            g.time[0] = 0;
-                            g.time[1] = g.MAX_ROW;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = g.MAX_ROW;
                         }
 
                     }

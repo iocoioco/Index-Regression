@@ -616,9 +616,9 @@ namespace New_Tradegy.Library
                 {
                     return;
                 }
-                for (int i = g.time[0]; i < g.time[1]; i++)
+                for (int i = g.Npts[0]; i < g.Npts[1]; i++)
                 {
-                    if (x[i, 0] == 0) // lines less than g.time[1]
+                    if (x[i, 0] == 0) // lines less than g.Npts[1]
                         break;
                     for (int j = 0; j < 12; j++)
                     {
@@ -631,7 +631,7 @@ namespace New_Tradegy.Library
             {
                 for (int i = 0; i < o.nrow; i++)
                 {
-                    if (i >= g.time[0] && i < g.time[1])
+                    if (i >= g.Npts[0] && i < g.Npts[1])
                     {
                         for (int j = 0; j < 12; j++)
                         {

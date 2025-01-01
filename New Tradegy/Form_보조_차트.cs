@@ -434,7 +434,7 @@ namespace New_Tradegy
                         }
                         else
                         {
-                            check_row = g.time[1] - 1;
+                            check_row = g.Npts[1] - 1;
                             if (check_row > o.nrow - 1)
                                 check_row = o.nrow - 1;
                         }

@@ -3,18 +3,18 @@ key			test			real		eval		draw
 q			extend time					+/			+/
 Q
 Cntl q	
-w			g.time[1]++					+/			+/
-W			g.time[0] = 0				+/			+/
-			g.time[1] = 1
+w			g.Npts[1]++					+/			+/
+W			g.Npts[0] = 0				+/			+/
+			g.Npts[1] = 1
 Cntl w		Form_무게
 e			Form_보조_차트(그순, 관심)		
 E			Form_보조_차트 (관심)
 r			g.draw_shrink_time -= 10	+/+			+/+
 R			g.draw_shrink_time += 10	+/+			+/+
-t			g.time[1] += 10				+/			+/
-T			g.time[1] -= 10				+/			+/
-y			g.time[1] += 30				+/			+/
-Y			g.time[1] -= 30				+/			+/
+t			g.Npts[1] += 10				+/			+/
+T			g.Npts[1] -= 10				+/			+/
+y			g.Npts[1] += 30				+/			+/
+Y			g.Npts[1] -= 30				+/			+/
 p			g.PeoridNews toggles(d, w, m)
 [			g.draw_selection = 3 Bollinger
 ]			g.draw_selection = 2 외인, 기관, 가격

@@ -28,7 +28,7 @@ namespace New_Tradegy.Library
    
 
             Color[] colors = new Color[3];
-            int check_row = !g.connected ? g.time[1] - 1 : 0;
+            int check_row = !g.connected ? g.Npts[1] - 1 : 0;
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];

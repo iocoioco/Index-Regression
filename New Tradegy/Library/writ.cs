@@ -83,27 +83,16 @@ namespace New_Tradegy.Library
         {
             if (fromorTo[0] == 'F')
             {
-                g.savedTime = DateTime.Now;
+                g.SavedTimeForDuration = DateTime.Now;
             }
             else
             {
-                TimeSpan duration = DateTime.Now.Subtract(g.savedTime);
+                TimeSpan duration = DateTime.Now.Subtract(g.SavedTimeForDuration);
                 double m = duration.TotalMilliseconds;
                 return m;
                 
             }
             return 0.0;
-            //DateTime now = DateTime.Now();// fff means the accurarcy of 1 millisecond
-            //TimeSpan duration = DateTime.Now.Subtract(g.savedTime));
-            //double totalMilliseconds = duration.TotalMilliseconds;
-            //if (totalMilliseconds < 1)
-            //{
-            //    g.매매.dtb.Rows[0][0] = totalMilliseconds;
-            //}
-            //else
-            //{
-            //    g.k.saved_click_time = current_click_time;
-            //}
         }
 
         public static void append(string path, string t)

@@ -290,7 +290,7 @@ namespace New_Tradegy.Library
 
                 o.nrow = 0;
 
-                int current_time = 0;
+                int CurrentTime = 0;
 
                 foreach (var line in lines)
                 {
@@ -301,16 +301,16 @@ namespace New_Tradegy.Library
                     }
                     if (words[0].Contains(":"))
                     {
-                        current_time = mc.time_to_int(words[0]);
+                        CurrentTime = mc.time_to_int(words[0]);
                     }
                     else
                     {
-                        current_time = Convert.ToInt32(words[0]);
+                        CurrentTime = Convert.ToInt32(words[0]);
                     }
 
-                    if (current_time >= 85959 && current_time < 152100)
+                    if (CurrentTime >= 85959 && CurrentTime < 152100)
                     {
-                        o.x[o.nrow, 0] = current_time;
+                        o.x[o.nrow, 0] = CurrentTime;
                         for (int j = 1; j < words.Length; j++)
                         {
                             o.x[o.nrow, j] = Convert.ToInt32(words[j]);
@@ -1482,11 +1482,11 @@ namespace New_Tradegy.Library
             // Error Prone : Below 8 lines not Tested Exactly
             //if (g.test)
             //{
-            //    if (n < g.time[1] + 1)
+            //    if (n < g.Npts[1] + 1)
             //    {
-            //        g.time[1] = n;
+            //        g.Npts[1] = n;
             //    }
-            //    lines = File.ReadLines(file).Skip(g.time[1] - nline).Take(nline).Reverse().ToList();
+            //    lines = File.ReadLines(file).Skip(g.Npts[1] - nline).Take(nline).Reverse().ToList();
             //}
 
             int nrow = 0;

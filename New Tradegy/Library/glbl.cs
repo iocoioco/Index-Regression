@@ -37,7 +37,7 @@ namespace New_Tradegy.Library
         public static int screenWidth;
 
         public static int date;
-        public static DateTime savedTime;
+        public static DateTime SavedTimeForDuration;
 
 
 
@@ -46,8 +46,7 @@ namespace New_Tradegy.Library
 
         public static bool draw_history_forwards = false;
 
-        //public static bool timer_첵_first = true;
-        //public static bool draw_kodex_inverse = false;
+     
         public static bool click_trade = false;
         public static bool confirm_buy = true;
         public static bool add_interest = false;
@@ -104,8 +103,7 @@ namespace New_Tradegy.Library
 
         public static int 일회거래액 = 0;
         public static readonly object lockObject = new object(); // Make sure it's initialized
-        public static int check_time = 0;
-        public string start_time = "00:00:00";
+
 
 
         public static int MAX_ROW = 382; // XX 382 -> 500
@@ -267,9 +265,9 @@ namespace New_Tradegy.Library
         public static int kosdq_value = -3000;
         public static int kospi_was1호가 = 0;
         public static int kosdaq_was1호가 = 0;
-        public static int timeKospiSouned = 0;
+       
         public static int priceKospiSounded = 0;
-        public static int timeKosdaqSouned = 0;
+       
         public static int priceKosdaqSounded = 0;
 
 
@@ -327,16 +325,16 @@ namespace New_Tradegy.Library
         public static int saved_date = 0;
         public static int saved_hs_date = 0;
         public static List<int> date_list = new List<int>();
-        public static int[,] time_list = new int[100, 2];
-        public static int[] time = new int[2];
-        //public static int saved_time = 0;
-        public static int[] saved_time = new int[2];
+      
+        public static int[] Npts = new int[2];
+
+        public static int[] SavedNpts = new int[2];
 
         public static string saved_stock;
         public static int[,] eval_score = new int[10, 12];
 
-        public static int end_time_before_advance;
-        public static bool end_time_extended;
+        public static int EndNptsBeforeExtend;
+        public static bool EndNptsExtendedOrNot;
 
         public static int nCol = 10;
         public static int nRow = 3;
@@ -347,7 +345,7 @@ namespace New_Tradegy.Library
         public static int saved_Gid;
         public static int draw_selection = 1;
         public static int npts_fi_dwm = 40;
-        public static int draw_shrink_time = 30;
+        public static int NptsForShrinkDraw = 30;
         public static int npts_for_magenta_cyan_mark = 4;
 
         //public static int money_shift = 2;
@@ -440,22 +438,6 @@ namespace New_Tradegy.Library
         }
         public static variable v = new variable();
 
-
-        //public class kodex_magnifier_shifter
-        //{
-        //    //public int[,] shifter = new int[4, 3];
-        //    // price, money, US
-        //    public double[,] magnifier = new double[4, 3];
-        //    // price, money, U
-        //    public double[,] max_min = new double[4, 2];
-        //    // i = 0 KODEX 레버리지, i = 1 KODEX 200선물인버스2X
-        //    // i = 2 KODEX 코스닥150레버리지, i = 3 KODEX 코스닥150레버리지
-
-        //    public double saved_row_percentage = 0.0;
-        //    public DateTime savedTime;
-        //    public int index_magnifier_shifter;
-        //}
-        //public static kodex_magnifier_shifter k = new kodex_magnifier_shifter();
 
         public static double[,] kodex_magnifier = new double[4, 4];
 
@@ -569,7 +551,7 @@ namespace New_Tradegy.Library
             public string stock;
     
 
-            public bool shrink_draw = false;
+            public bool ShrinkDrawOrNot = false;
 
             //public bool in_group_or_not = false;
 

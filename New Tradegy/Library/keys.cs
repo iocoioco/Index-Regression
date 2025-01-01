@@ -140,7 +140,7 @@ namespace New_Tradegy.Library
                 case '1':
                     if (!g.connected) // 긴 시간 앞으로 in draw
                     {
-                        if (g.end_time_before_advance == 0) // time extension
+                        if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
@@ -183,11 +183,11 @@ namespace New_Tradegy.Library
                 case '2': // 매도
                     if (!g.connected) // 시간 뒤로 (테스트)
                     {
-                        g.time[1]--;
-                        if (g.time[1] < 2)
+                        g.Npts[1]--;
+                        if (g.Npts[1] < 2)
                         {
-                            g.time[0] = 0;
-                            g.time[1] = 2;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
                         }
                         action = " peB"; // del chartarea, post, eval, draw
                     }
@@ -262,7 +262,7 @@ namespace New_Tradegy.Library
                 case 'q':
                     if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
                     {
-                        if (g.end_time_before_advance == 0) // time extension
+                        if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
@@ -276,7 +276,7 @@ namespace New_Tradegy.Library
                 case 'Q':
                     if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
                     {
-                        if (g.end_time_before_advance == 0) // time extension
+                        if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
@@ -295,12 +295,12 @@ namespace New_Tradegy.Library
                 case 'w':
                     if (!g.connected) // 시간 앞으로 (테스트)
                     {
-                        g.time[1]++;
+                        g.Npts[1]++;
 
-                        if (g.time[1] > g.MAX_ROW)
+                        if (g.Npts[1] > g.MAX_ROW)
                         {
-                            g.time[0] = 0;
-                            g.time[1] = 2;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
                         }
                         action = " peB"; // del chartarea, post, eval, draw
                     }
@@ -312,8 +312,8 @@ namespace New_Tradegy.Library
                 case 'W':
                     if (!g.connected) // 시초
                     {
-                            g.time[0] = 0;
-                            g.time[1] = 2;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
                         action = " peB"; // no del, post, no eval, both draw
                     }
                      // 대기매수
@@ -345,16 +345,16 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'r':
-                    g.draw_shrink_time -= 10;
-                    if (g.draw_shrink_time <= 10)
+                    g.NptsForShrinkDraw -= 10;
+                    if (g.NptsForShrinkDraw <= 10)
                     {
-                        g.draw_shrink_time = 10;
+                        g.NptsForShrinkDraw = 10;
                     }
                     action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
                 case 'R':
-                    g.draw_shrink_time += 10;
+                    g.NptsForShrinkDraw += 10;
                     action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
@@ -367,11 +367,11 @@ namespace New_Tradegy.Library
                     {
                         if (g.draw_selection == 1)
                         {
-                            g.time[1] += 10;
-                            if (g.time[1] > g.MAX_ROW)
+                            g.Npts[1] += 10;
+                            if (g.Npts[1] > g.MAX_ROW)
                             {
-                                g.time[0] = 0;
-                                g.time[1] = 10;
+                                g.Npts[0] = 0;
+                                g.Npts[1] = 10;
                             }
                             action = " peB"; // del chartarea, post, eval, draw
                         }
@@ -385,7 +385,7 @@ namespace New_Tradegy.Library
                     {
                         if (g.draw_selection == 1)
                         {
-                            g.time[1] -= 10;
+                            g.Npts[1] -= 10;
                             action = " peB"; // del chartarea, post, eval, draw
                         }
                         else
@@ -396,12 +396,12 @@ namespace New_Tradegy.Library
                 case 'y':
                     if (!g.connected)
                     {
-                        g.time[1] += 30;
+                        g.Npts[1] += 30;
 
-                        if (g.time[1] > g.MAX_ROW)
+                        if (g.Npts[1] > g.MAX_ROW)
                         {
-                            g.time[0] = 0;
-                            g.time[1] = 30;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 30;
                         }
                         action = " peB"; // del chartarea, post, eval, draw
                     }
@@ -410,12 +410,12 @@ namespace New_Tradegy.Library
                 case 'Y': //
                     if (!g.connected)
                     {
-                        g.time[1] -= 30;
+                        g.Npts[1] -= 30;
 
-                        if (g.time[1] < 2)
+                        if (g.Npts[1] < 2)
                         {
-                            g.time[0] = 0;
-                            g.time[1] = 2;
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
                         }
                         action = " peB"; // del chartarea, post, eval, draw
                     }
@@ -830,10 +830,10 @@ namespace New_Tradegy.Library
             }
 
             // time correction 
-            if (g.time[0] < 0) { g.time[0] = 0; }
-            if (g.time[1] <= g.time[0]) { g.time[1] = g.time[0] + 10; }
-            if (g.time[1] < 2) { g.time[1] = 2; }
-            if (g.time[1] > g.MAX_ROW){g.time[1] = g.MAX_ROW;}
+            if (g.Npts[0] < 0) { g.Npts[0] = 0; }
+            if (g.Npts[1] <= g.Npts[0]) { g.Npts[1] = g.Npts[0] + 10; }
+            if (g.Npts[1] < 2) { g.Npts[1] = 2; }
+            if (g.Npts[1] > g.MAX_ROW){g.Npts[1] = g.MAX_ROW;}
             if (g.npts_fi_dwm < 5) { g.npts_fi_dwm = 5; } 
             if (g.gid < 0) { g.gid = 0; }
             if (g.Gid < 0) { g.Gid = 0; }

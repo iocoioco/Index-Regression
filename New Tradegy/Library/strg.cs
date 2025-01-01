@@ -26,15 +26,15 @@ namespace New_Tradegy.Library
             int start_row, end_row;
             if (!g.connected)
             {
-                if (t.nrow < g.time[1])
+                if (t.nrow < g.Npts[1])
                     end_row = t.nrow;
                 else
-                    end_row = g.time[1];
+                    end_row = g.Npts[1];
             }
             else
                 end_row = t.nrow;
 
-            start_row = g.time[0];
+            start_row = g.Npts[0];
 
             if (end_row - g.v.q_advance_lines - 7 > start_row)
                 start_row = end_row - g.v.q_advance_lines - 7;
@@ -168,10 +168,10 @@ namespace New_Tradegy.Library
             int start_row, end_row;
             if (!g.connected)
             {
-                if (t.nrow < g.time[1])
+                if (t.nrow < g.Npts[1])
                     end_row = t.nrow;
                 else
-                    end_row = g.time[1];
+                    end_row = g.Npts[1];
             }
             else
                 end_row = t.nrow;
@@ -480,15 +480,15 @@ namespace New_Tradegy.Library
                              Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
             if (!g.connected)
             {
-                if (o.nrow < g.time[1])
+                if (o.nrow < g.Npts[1])
                     end_row = o.nrow;
                 else
-                    end_row = g.time[1];
+                    end_row = g.Npts[1];
             }
             else
                 end_row = o.nrow; 
 
-            int start_row = g.time[0];
+            int start_row = g.Npts[0];
             if (end_row - g.v.q_advance_lines - 10 > start_row)
                 start_row = end_row - g.v.q_advance_lines - 10;
 
@@ -594,15 +594,15 @@ namespace New_Tradegy.Library
             //                 Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
             if (!g.connected)
             {
-                if (o.nrow < g.time[1])
+                if (o.nrow < g.Npts[1])
                     end_row = o.nrow;
                 else
-                    end_row = g.time[1];
+                    end_row = g.Npts[1];
             }
             else
                 end_row = o.nrow;
 
-            int start_row = g.time[0];
+            int start_row = g.Npts[0];
             if (end_row - g.v.q_advance_lines - 10 > start_row)
                 start_row = end_row - g.v.q_advance_lines - 10;
 

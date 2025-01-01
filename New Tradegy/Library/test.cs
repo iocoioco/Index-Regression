@@ -78,13 +78,13 @@ namespace New_Tradegy.Library
                     words = grlines[count++].Split('\t');
                     g.date = Convert.ToInt32(words[0]);
                     int minute_happend = Convert.ToInt32(words[1]);
-                    g.time[0] = minute_happend - 10;
-                    g.time[1] = minute_happend + 10;
+                    g.Npts[0] = minute_happend - 10;
+                    g.Npts[1] = minute_happend + 10;
 
-                    if (g.time[0] < 0)
-                        g.time[0] = 0;
-                    if (g.time[1] >= 382)
-                        g.time[1] = 382;
+                    if (g.Npts[0] < 0)
+                        g.Npts[0] = 0;
+                    if (g.Npts[1] >= 382)
+                        g.Npts[1] = 382;
 
                     //dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
                 }
@@ -198,13 +198,13 @@ namespace New_Tradegy.Library
 
                     g.date = Convert.ToInt32(a_tuple[i].Item2);
                     int minute_happend = Convert.ToInt32(a_tuple[i].Item3);
-                    g.time[0] = minute_happend - 10;
-                    g.time[1] = minute_happend + 10;
+                    g.Npts[0] = minute_happend - 10;
+                    g.Npts[1] = minute_happend + 10;
 
-                    if (g.time[0] < 0)
-                        g.time[0] = 0;
-                    if (g.time[1] >= 382)
-                        g.time[1] = 382;
+                    if (g.Npts[0] < 0)
+                        g.Npts[0] = 0;
+                    if (g.Npts[1] >= 382)
+                        g.Npts[1] = 382;
 
                     //dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
 

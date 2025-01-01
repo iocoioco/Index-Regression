@@ -792,7 +792,7 @@ namespace New_Tradegy.Library
 
             //                case 7: // ms.분거천 cover both ftesitng and trading 
             //                    {
-            //                        o.분거천 = ms.분거천(o, g.time[1]);
+            //                        o.분거천 = ms.분거천(o, g.Npts[1]);
             //                    }
             //                    break;
 
@@ -920,7 +920,7 @@ namespace New_Tradegy.Library
                 return;
             }
 
-            int check_row = !g.connected ? Math.Min(g.time[1] - 1, o.nrow - 1) : o.nrow - 1;
+            int check_row = !g.connected ? Math.Min(g.Npts[1] - 1, o.nrow - 1) : o.nrow - 1;
 
             post_minute(o, check_row);
 
@@ -1595,7 +1595,7 @@ namespace New_Tradegy.Library
 
             //                case 7: // ms.분거천 cover both ftesitng and trading 
             //                    {
-            //                        o.분거천 = ms.분거천(o, g.time[1]);
+            //                        o.분거천 = ms.분거천(o, g.Npts[1]);
             //                    }
             //                    break;
 
@@ -1771,37 +1771,37 @@ namespace New_Tradegy.Library
                 if (o.일평균거래량 == 0 || o.전일종가 == 0)
                     return;
 
-                int selected_time = g.틱_array_size - 1; // if not found, use the last time 
+                int SelectedTickSequence = g.틱_array_size - 1; // if not found, use the last time 
 
                 double elapsed_seconds = 0;
                 for (int i = 1; i < g.틱_array_size; i++) // MDF 2023 0301 g.array_size = 30
                 {
                     if (o.틱의시간[i] == 0) // no data for the tick, i.e. not downloaded yet
                     {
-                        selected_time = i - 1;
+                        SelectedTickSequence = i - 1;
                         break;
                     }
 
                     elapsed_seconds = mc.total_Seconds(o.틱의시간[i], o.틱의시간[0]); // from time to time
                     if (elapsed_seconds > g.postInterval) // if over 30 seconds elapsed
                     {
-                        selected_time = i;
+                        SelectedTickSequence = i;
                         break;
                     }
                 }
 
-                if (selected_time == 0)
-                    selected_time = g.틱_array_size - 1;
+                if (SelectedTickSequence == 0)
+                    SelectedTickSequence = g.틱_array_size - 1;
 
 
-                if (selected_time > 0) // more than one tick
+                if (SelectedTickSequence > 0) // more than one tick
                 {
-                    double total_seconds = mc.total_Seconds(o.틱의시간[selected_time], o.틱의시간[0]); // from time to time
+                    double total_seconds = mc.total_Seconds(o.틱의시간[SelectedTickSequence], o.틱의시간[0]); // from time to time
                     if (total_seconds == 0)
                         return;
 
-                    int amount_dealt = o.틱매수량[0] - o.틱매수량[selected_time] +
-                                                                o.틱매도량[0] - o.틱매도량[selected_time];
+                    int amount_dealt = o.틱매수량[0] - o.틱매수량[SelectedTickSequence] +
+                                                                o.틱매도량[0] - o.틱매도량[SelectedTickSequence];
                     if (amount_dealt == 0)
                     {
                         if (!g.관심종목.Contains(o.stock))
@@ -1810,20 +1810,20 @@ namespace New_Tradegy.Library
                             //mc.Sound("일반", "v i");
                         }
                     }
-                    int amount_dealt_program = o.틱프로량[0] - o.틱프로량[selected_time];
-                    int amount_dealt_foreign = o.틱외인량[0] - o.틱외인량[selected_time]; // 20220720
+                    int amount_dealt_program = o.틱프로량[0] - o.틱프로량[SelectedTickSequence];
+                    int amount_dealt_foreign = o.틱외인량[0] - o.틱외인량[SelectedTickSequence]; // 20220720
                     double time_money_factor = o.전일종가 / g.천만원 / total_seconds * 60; // unit : 천만원/분
                     double multiple_factor = 60.0 / total_seconds * 380.0 / o.일평균거래량; // checke o.일평균거래량 != 0
 
                     o.분프로천[0] = (int)(amount_dealt_program * time_money_factor);
                     o.분외인천[0] = (int)(amount_dealt_foreign * time_money_factor);
                     o.분거래천[0] = (int)(amount_dealt * time_money_factor);
-                    o.분매수배[0] = (int)((o.틱매수량[0] - o.틱매수량[selected_time]) * multiple_factor);
-                    o.분매도배[0] = (int)((o.틱매도량[0] - o.틱매도량[selected_time]) * multiple_factor);
+                    o.분매수배[0] = (int)((o.틱매수량[0] - o.틱매수량[SelectedTickSequence]) * multiple_factor);
+                    o.분매도배[0] = (int)((o.틱매도량[0] - o.틱매도량[SelectedTickSequence]) * multiple_factor);
                     o.분배수차[0] = o.분매수배[0] - o.분매도배[0];
                     o.분배수합[0] = o.분매수배[0] + o.분매도배[0];
 
-                    o.분당가격차 = (int)((o.틱의가격[0] - o.틱의가격[selected_time]) / total_seconds * 60);
+                    o.분당가격차 = (int)((o.틱의가격[0] - o.틱의가격[SelectedTickSequence]) / total_seconds * 60);
                 }
             }
 
