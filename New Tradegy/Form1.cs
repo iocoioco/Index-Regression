@@ -388,7 +388,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                                 {
                                     //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
                                     g.코스피개인순매수 = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                                    g.코스피외인순매수 = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
+                                    // g.코스피외인순매수 = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
                                     g.코스피기관순매수 = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
                                     g.코스피금투순매수 = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
                                     g.코스피연기순매수 = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
@@ -772,7 +772,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     {
                         //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
                         g.코스피개인순매수 = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                        g.코스피외인순매수 = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
+                        // g.코스피외인순매수 = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
                         g.코스피기관순매수 = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
                         g.코스피금투순매수 = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
                         g.코스피연기순매수 = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);

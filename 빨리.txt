@@ -439,14 +439,3 @@ hike
 역사, 거분, 프분, 종누, 종거, 프누, 배차, 배합
 
 
-
-
- dell c1422h
-
-xps 17
-4개의 Thunderbolt??4(USB Type-C??, DisplayPort  ?PD(Power Delivery) 지??
-1개의 eDP ? 트, 최 ? 3개의 USB Type-C 지??
-범용 ? 디????1 ?
-
-USB-C ports take care of charging.
-

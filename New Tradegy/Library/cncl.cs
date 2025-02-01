@@ -28,7 +28,7 @@ namespace New_Tradegy.Library
 
         public static void Init_CpConclusion()
         {
-            return;
+            
 
             _CpConclusion = new DSCBO1Lib.CpConclusion();
             _CpConclusion.Received +=

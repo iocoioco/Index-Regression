@@ -625,18 +625,6 @@ class mm
         // g.NptsForShrinkDraw is controlled by 'o' and 'O'
         int StartNpts = 0;
         int EndNpts = -1;
-        if (o.ShrinkDrawOrNot == true)
-        {
-            StartNpts = o.nrow - g.NptsForShrinkDraw;
-            if (StartNpts < g.Npts[0])
-            {
-                StartNpts = g.Npts[0];
-            }
-        }
-        else
-        {
-            StartNpts = g.Npts[0];
-        }
 
         if (g.connected)
         {
@@ -645,8 +633,23 @@ class mm
         else
         {
             EndNpts = g.Npts[1];
+            if (EndNpts > o.nrow)
+            {
+                EndNpts = o.nrow;
+            }
+        }
+        StartNpts = g.Npts[0];
+
+        if (o.ShrinkDrawOrNot == true)
+        {
+            StartNpts = EndNpts - g.NptsForShrinkDraw;
+            if (StartNpts < g.Npts[0])
+            {
+                StartNpts = g.Npts[0];
+            }
         }
 
+        
 
         // Check if "ChartArea1" exists and remove it
         var defaultArea = chart.ChartAreas.FindByName("ChartArea1");
@@ -659,7 +662,8 @@ class mm
 
         // Initialize variables
         int TotalNumberPoint = 0;
-        int[] idIndex = { 1, 3, 4, 5, 6, 10, 11 }; // Data types to draw: price, program, foreign, institute, Nasdaq, pension
+        int[] idIndex = { 1, 3, 4, 5, 6, 10, 11 };
+        // Data types to draw: price, program, institute, foreign, Nasdaq, pension
 
         // Process each data type in idIndex
         foreach (int dataIndex in idIndex)
@@ -833,19 +837,6 @@ class mm
         int StartNpts = 0;
         int EndNpts = -1;
 
-        if (o.ShrinkDrawOrNot == true)
-        {
-            StartNpts = o.nrow - g.NptsForShrinkDraw;
-            if (StartNpts < g.Npts[0])
-            {
-                StartNpts = g.Npts[0];
-            }
-        }
-        else
-        {
-            StartNpts = g.Npts[0];
-        }
-
         if (g.connected)
         {
             EndNpts = o.nrow;
@@ -858,6 +849,18 @@ class mm
                 EndNpts = o.nrow;
             }
         }
+        StartNpts = g.Npts[0];
+
+        if (o.ShrinkDrawOrNot == true)
+        {
+            StartNpts = EndNpts - g.NptsForShrinkDraw;
+            if (StartNpts < g.Npts[0])
+            {
+                StartNpts = g.Npts[0];
+            }
+        }
+ 
+        
 
 
         // 단일가거래 종목은 차트 포함시키지 않음
@@ -1554,7 +1557,7 @@ class mm
             .Select(ca => ca.Name)
             .ToList())
         {
-            if (stockName.Contains("KODEX"))
+            if (stockName.Contains("KODEX") && chart == g.chart1)
             {
                 continue;
             }

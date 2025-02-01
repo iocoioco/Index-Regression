@@ -204,6 +204,7 @@ namespace New_Tradegy.Library
                     g.제어.dtb.Rows[1][1] = newValue;
                 }
             }
+            ev.eval_group();
         }
 
         public static bool eval_inclusion(g.stock_data o)

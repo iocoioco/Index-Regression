@@ -145,7 +145,7 @@ namespace New_Tradegy.Library
                         else
                             mm.MinuteAdvanceRetreat(0);
 
-                        action = " p B"; // del chartarea, post, eval, draw
+                        action = " p B"; // no del chartarea, post, no eval, both draw
                     }
                     else
                     {
@@ -180,7 +180,7 @@ namespace New_Tradegy.Library
                     }
                     break;
 
-                case '2': // 매도
+                case '2': //
                     if (!g.connected) // 시간 뒤로 (테스트)
                     {
                         g.Npts[1]--;
@@ -762,6 +762,7 @@ namespace New_Tradegy.Library
                             {
                                 g.gid = 0;
                             }
+                            
                             break;
 
                         case "h&s":
@@ -786,6 +787,7 @@ namespace New_Tradegy.Library
                         default:
                             break;
                     }
+                    action = "   m";
                     break;
 
                 case 'n':
@@ -793,7 +795,7 @@ namespace New_Tradegy.Library
                     {
                         case "o&s":
                             //case "e&s":
-                            int count = g.보유종목.Count + g.호가종목.Count; // 지수종목
+                            int count = g.보유종목.Count + g.호가종목.Count; 
                             if (g.gid - ((g.nCol - 2) * g.nRow - count) >= 0)
                             {
                                 g.gid -= (g.nCol - 2) * g.nRow - count;
@@ -822,6 +824,7 @@ namespace New_Tradegy.Library
                         default:
                             break;
                     }
+                    action = "   m";
                     break;
 
                 default:

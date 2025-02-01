@@ -33,10 +33,7 @@ namespace New_Tradegy.Library
             double x_max = chart.Bounds.Width;
             double y_max = chart.Bounds.Height;
             string clickedStock = null;
-            if (chart.Name == "chart2")
-            {
-                y_min = 31;
-            }
+        
             // Normalize coordinates to a (100, 100) system
             double norm_x = (e.X) / (x_max - x_min) * 100.0;
             double norm_y = (e.Y - y_min) / (y_max - y_min) * 100.0;
@@ -407,7 +404,7 @@ namespace New_Tradegy.Library
                     {
                         o.ShrinkDrawOrNot = true;
                     }
-                    action = "B  B";
+                    action = "B  B"; // both delete area, no post, no eval and both redraw
                     break;
 
                 case "l2":
@@ -532,21 +529,8 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l7": // g.Npts[1]++
-                    if (!g.connected)
-                    {
-                        g.Npts[1]++;
-                        if (g.Npts[1] > g.MAX_ROW)
-                        {
-                            g.Npts[0] = 0;
-                            g.Npts[1] = 2;
-                        }
-                        // wk.BringToFront();
-                        action = " peB";
-                    }
-                    else
-                    {
-
-                    }
+                    wk.call_네이버(g.clickedStock, "main");
+                    
                     break;
 
 
@@ -599,7 +583,21 @@ namespace New_Tradegy.Library
                     break; ;
 
                 case "r4": // Naver main
-                    wk.call_네이버(g.clickedStock, "main");
+                    if (!g.connected)
+                    {
+                        g.Npts[1]++;
+                        if (g.Npts[1] > g.MAX_ROW)
+                        {
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
+                        }
+                        // wk.BringToFront();
+                        action = " peB";
+                    }
+                    else
+                    {
+
+                    }
                     break;
 
                 case "r5": // 관심 추가 제거
@@ -731,7 +729,7 @@ namespace New_Tradegy.Library
 
             if (action[0] != ' ')
             {
-                if (action[0] == 'm' || action[3] == 'B')
+                if (action[0] == 'm' || action[0] == 'B')
                     mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
                 if (action[0] == 's' || action[0] == 'B')
                     mm.ManageChart2(); // key multi for test

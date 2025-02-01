@@ -443,7 +443,7 @@ namespace New_Tradegy.Library
 
             // 지수종목 
 
-            rd.read_삼성_코스피_코스닥();  // duration 0.001 seconds
+            rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
 
             rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
 
@@ -1203,13 +1203,13 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void read_삼성_코스피_코스닥()
+        public static void read_삼성_코스피_코스닥_전체종목()
         {
-            string filename = @"C:\병신\data\삼성_코스피_코스닥.txt";
+            string filename = @"C:\병신\data\삼성_코스피_코스닥_전체종목.txt";
 
             if (!File.Exists(filename))
             {
-                MessageBox.Show("삼성_코스피_코스닥.txt Not Exist");
+                MessageBox.Show("삼성_코스피_코스닥_전체종목.txt Not Exist");
                 return;
             }
 
@@ -1230,9 +1230,9 @@ namespace New_Tradegy.Library
                 {
                     if (empty_line_met == false)
                     {
-                        string stock = words[0];
+                        string stock = words[1];
                         g.kospi_mixed.stock.Add(stock);
-                        string t = words[3].Trim(new Char[] { '%', '(', ')' });
+                        string t = words[5].Trim(new Char[] { '%', '(', ')' });
                         double d = Convert.ToDouble(t);
                         g.kospi_mixed.weight.Add(d); // 22 items sum 38.21
                         kospi_weight_sum += d;
@@ -1240,9 +1240,9 @@ namespace New_Tradegy.Library
                     }
                     else
                     {
-                        string stock = words[0];
+                        string stock = words[1];
                         g.kosdaq_mixed.stock.Add(stock);
-                        string t = words[3].Trim(new Char[] { '%', '(', ')' });
+                        string t = words[5].Trim(new Char[] { '%', '(', ')' });
                         double d = Convert.ToDouble(t);
                         g.kosdaq_mixed.weight.Add(d); // 24 items sum 38.47
                         kosdaq_weight_sum += d;
@@ -1294,65 +1294,7 @@ namespace New_Tradegy.Library
             return adjustedNumbers;
         }
 
-        // not used
-        public static void read_지수_숫자_비중()
-        {
-            string filename = @"C:\병신\data\지수_숫자_비중.txt";
-
-            if (!File.Exists(filename))
-            {
-                MessageBox.Show("지수_숫자_비중.txt Not Exist");
-                return;
-            }
-
-            string[] grlines = File.ReadAllLines(filename);
-            List<string> list = new List<string>();
-
-            int kospi_mixed_stock_count = 0;
-            int kosdaq_mixed_stock_count = 0;
-            bool empty_line_met = false;
-            foreach (string line in grlines)
-            {
-                string[] words = line.Split('\t');
-                if (words[0] == "")
-                    empty_line_met = true;
-
-
-                if (words[0].Length > 0)
-                {
-                    if (empty_line_met == false)
-                    {
-                        g.kospi_mixed.stock[kospi_mixed_stock_count] = words[0];
-                        string t = words[2].Trim(new Char[] { '%' });
-                        g.kospi_mixed.weight[kospi_mixed_stock_count++] = Convert.ToDouble(t);
-                    }
-                    else
-                    {
-                        g.kosdaq_mixed.stock[kosdaq_mixed_stock_count] = words[0];
-                        string t = words[2].Trim(new Char[] { '%' });
-                        g.kosdaq_mixed.weight[kosdaq_mixed_stock_count++] = Convert.ToDouble(t);
-                    }
-                }
-            }
-
-            //g.평불종목.Add("코스피혼합");
-            //g.평불종목.Add("코스닥혼합");
-
-            g.지수종목.Clear();
-            foreach (string stock in g.kospi_mixed.stock)
-            {
-                g.지수종목.Add(stock);
-            }
-            foreach (string stock in g.kosdaq_mixed.stock)
-            {
-                g.지수종목.Add(stock);
-            }
-
-            g.지수종목.Add("KODEX 레버리지"); // 0504
-            g.지수종목.Add("KODEX 200선물인버스2X");
-            g.지수종목.Add("KODEX 코스닥150레버리지");
-            g.지수종목.Add("KODEX 코스닥150선물인버스");
-        }
+        
 
         public static void read_그룹_네이버_테마(List<string> tsl, List<string> tsl_그룹_상관, List<string> GL_title, List<List<string>> GL)
         {

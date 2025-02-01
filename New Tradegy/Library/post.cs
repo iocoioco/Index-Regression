@@ -67,7 +67,7 @@ namespace New_Tradegy.Library
                 post(o);
             }
                 ev.eval_stock();
-            ev.eval_group();
+            
 
             foreach (var o in Download_ogl_data_List)
             {
@@ -877,6 +877,7 @@ namespace New_Tradegy.Library
             g.코스피매수배 = 0;
             g.코스피매도배 = 0;
             g.코스피프외순매수 = 0;
+            g.코스피외인순매수 = 0;
 
             for (int i = 0; i < g.kospi_mixed.stock.Count; i++)
             {
@@ -887,6 +888,7 @@ namespace New_Tradegy.Library
                 double money_factor = t.전일종가 / g.억원;
 
                 g.코스피프외순매수 += (int)((t.x[t.nrow - 1, 3] + t.x[t.nrow - 1, 5]) * money_factor);
+                g.코스피외인순매수 += (int)(t.x[t.nrow - 1, 5] * money_factor);
                 g.코스피매수배 = (int)(t.x[t.nrow - 1, 8] * g.kospi_mixed.weight[i]);
                 g.코스피매도배 = (int)(t.x[t.nrow - 1, 9] * g.kospi_mixed.weight[i]);
             }
@@ -894,7 +896,7 @@ namespace New_Tradegy.Library
             g.코스닥매수배 = 0;
             g.코스닥매도배 = 0;
             g.코스닥프외순매수 = 0;
-
+            g.코스닥외인순매수 = 0;
             for (int i = 0; i < g.kosdaq_mixed.stock.Count; i++)
             {
                 int index = wk.return_index_of_ogldata(g.kosdaq_mixed.stock[i]);
@@ -904,6 +906,7 @@ namespace New_Tradegy.Library
                 double money_factor = t.전일종가 / g.억원;
 
                 g.코스닥프외순매수 += (int)((t.x[t.nrow - 1, 3] + t.x[t.nrow - 1, 5]) * money_factor);
+                g.코스닥외인순매수 += (int)(t.x[t.nrow - 1, 5] * money_factor);
                 g.코스닥매수배 = (int)(t.x[t.nrow - 1, 8] * g.kosdaq_mixed.weight[i]);
                 g.코스닥매도배 = (int)(t.x[t.nrow - 1, 9] * g.kosdaq_mixed.weight[i]);
             }

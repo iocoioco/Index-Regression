@@ -184,6 +184,7 @@
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\mdm.cs" />
     <Compile Include="Library\sell.cs" />
+    <Compile Include="Library\temp.cs" />
     <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
     <Compile Include="Library\keys.cs" />

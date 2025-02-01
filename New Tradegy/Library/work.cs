@@ -1166,9 +1166,10 @@ namespace New_Tradegy.Library
             }
             value = (hh - 9) * 60 + mm + 1; // 시작시간 9시
                                             //value = (hh - 10) * 60 + mm + 1; // 시작시간 10시
-            if (value < 0 || value > 6 * 60 + 20) // value가 0보다 작거나 380보다 크면 381 리턴
+            if (value <= 0 || value > 6 * 60 + 21) // value가 0 이하 또는 381보다 크면 value = 381
                 value = 6 * 60 + 21;
 
+      
             double return_value = 381.0 / value;
             return return_value;
         }

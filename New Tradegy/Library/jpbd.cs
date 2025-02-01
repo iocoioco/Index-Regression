@@ -691,7 +691,7 @@ namespace New_Tradegy.Library
         }
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
-        private void stockjpbid_Received()
+        private void stockjpbid_Received_old()
         {
             lock (g.lockObject)
             {
@@ -805,6 +805,85 @@ namespace New_Tradegy.Library
                 }
             }
         }
+
+
+
+        // updated on 20241020, lock, BeginLoadData, EndLoadData added
+        private void stockjpbid_Received()
+        {
+            lock (g.lockObject)
+            {
+                // Begin batch update to minimize UI refreshes
+                Dgv.SuspendLayout();
+
+                try
+                {
+
+                    if (Rows == 5)
+                    {
+                        for (int i = 0; i < 5; i++) // Loop for 5 rows
+                        {
+                            int headerIndex = 3 + (i * 4); // Dynamically calculate header index
+                            Dtb.Rows[4 - i][1] = _stockjpbid.GetHeaderValue(headerIndex).ToString();       // Middle column (prices for selling)
+                            Dtb.Rows[5 + i][1] = _stockjpbid.GetHeaderValue(headerIndex + 1).ToString(); // Middle column (prices for buying)
+                            Dtb.Rows[4 - i][0] = _stockjpbid.GetHeaderValue(headerIndex + 2).ToString(); // Left column (selling amounts)
+                            Dtb.Rows[5 + i][2] = _stockjpbid.GetHeaderValue(headerIndex + 3).ToString(); // Right column (buying amounts)
+                        }
+
+                        // Handling the last row for the 10th price (if applicable)
+                        Dtb.Rows[10][0] = _stockjpbid.GetHeaderValue(23).ToString(); // Last selling amount
+                        Dtb.Rows[10][2] = _stockjpbid.GetHeaderValue(24).ToString(); // Last buying amount
+                    }
+
+                    else
+                    {
+                        for (int i = 0; i < 5; i++) // Selling Side
+                        {
+                            int headerIndex = 19 - (i * 2); // Adjusting the header index dynamically
+                            int rowIndex = 9 - i; // Adjusting the DataTable row index for the top 5 rows
+
+                            // Setting the selling price and divided amounts
+                            Dtb.Rows[rowIndex][1] = _stockjpbid.GetHeaderValue(headerIndex).ToString();
+                            Dtb.Rows[rowIndex][0] = (_stockjpbid.GetHeaderValue(headerIndex - 1).ToString()) + "/" +
+                                                    (_stockjpbid.GetHeaderValue(headerIndex - 1).ToString());
+                            Dtb.Rows[rowIndex][2] = ""; // Placeholder for extra data (can be updated with magenta "0")
+                        }
+
+                        for (int i = 0; i < 5; i++) // Buying Side
+                        {
+                            int headerIndex = 20 + (i * 2); // Adjusting the header index dynamically
+                            int rowIndex = 10 + i; // Adjusting the DataTable row index for the bottom 5 rows
+
+                            // Setting the buying price and divided amounts
+                            Dtb.Rows[rowIndex][1] = _stockjpbid.GetHeaderValue(headerIndex).ToString();
+                            Dtb.Rows[rowIndex][0] = ""; // Placeholder for selling amounts
+                            Dtb.Rows[rowIndex][2] = (_stockjpbid.GetHeaderValue(headerIndex + 1).ToString()) + "/" +
+                                                    (_stockjpbid.GetHeaderValue(headerIndex + 1).ToString());
+                        }
+                    }
+
+                    // Additional logic for monitoring prices, for example
+                    string code = _stockjpbid.GetHeaderValue(0).ToString();
+                    string stock = _cpstockcode.CodeToName(code).ToString();
+
+                    stockExchange.MonitorPrices(stock,
+                        Convert.ToInt32(Dtb.Rows[Rows - 1][0]),
+                        Convert.ToInt32(Dtb.Rows[Rows - 1][1]),
+                        Convert.ToInt32(Dtb.Rows[Rows][2]),
+                        Convert.ToInt32(Dtb.Rows[Rows][1]));
+
+                    deal_호가_추가();
+                }
+                finally
+                {
+                    // End batch update
+                    Dgv.ResumeLayout();
+                }
+            }
+        }
+
+
+
 
         private void request_호가()
         {

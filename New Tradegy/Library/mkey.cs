@@ -23,9 +23,16 @@ namespace New_Tradegy
                 int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
                 int HHmm = Convert.ToInt32(date.ToString("HHmm"));
 
+                // 시작시간 09:00
                 // Trigger at 10:00, 11:00, 12:00, 13:00, 14:00, or 15:21 only once per minute
-                if ((HHmm == 1000 || HHmm == 1100 || HHmm == 1200 || HHmm == 1300 || HHmm == 1400 || HHmm == 1521) &&
-                    g.minuteSaveAll != HHmm)
+                if ((HHmm == 1000 || HHmm == 1100 || HHmm == 1200 || HHmm == 1300
+                    || HHmm == 1400 || HHmm == 1521) &&
+                g.minuteSaveAll != HHmm)
+
+                //시작시간 10:00
+            //    if ((HHmm == 1100 || HHmm == 1200 || HHmm == 1300 ||
+            //HHmm == 1400 || HHmm == 1500 || HHmm == 1621) &&
+            //g.minuteSaveAll != HHmm)
                 {
                     if (wk.isWorkingHour())
                     {
@@ -34,7 +41,9 @@ namespace New_Tradegy
                         g.minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }
-                if(wk.isWorkingHour())
+
+
+                if (wk.isWorkingHour())
                 {
                     // Trigger the marketeye alarm task
                     await mc.task_marketeye_alarm(HHmm);
@@ -120,7 +129,7 @@ namespace New_Tradegy
             string code;
             List<string> 지수보유호가관심종목 = new List<string>();
 
-        지수보유호가관심종목.Clear();
+            지수보유호가관심종목.Clear();
 
             지수보유호가관심종목.Add("KODEX 레버리지");
             지수보유호가관심종목.Add("KODEX 코스닥150레버리지");
@@ -270,7 +279,7 @@ namespace New_Tradegy
             dynamic fieldname = _marketeye.GetHeaderValue(1); // name of data ... 프로그램매수 등
             int count = (int)_marketeye.GetHeaderValue(2); // number of stock downloaded
 
-            List <g.stock_data> Download_ogl_data_List = new System.Collections.Generic.List<g.stock_data>();
+            List<g.stock_data> Download_ogl_data_List = new System.Collections.Generic.List<g.stock_data>();
 
             for (int k = 0; k < count; k++)
             {
@@ -410,21 +419,21 @@ namespace New_Tradegy
                 // 7 거래량, 8 매수배, 9 매도배, 10 Nasdaq_지수, 11 연기금순매수액(억)
                 if (o.stock.Contains("KODEX 레버리지") || o.stock.Contains("KODEX 200선물인버스2X")) // full
                 {
-                    t[3] = (int)g.코스피프외순매수; //지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
-                    t[4] = (int)g.코스피기관순매수;
-                    t[5] = (int)g.코스피외인순매수;
-                    t[6] = (int)g.코스피개인순매수;
+                    t[3] = (int)g.코스피프외순매수; // 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[4] = (int)g.코스피기관순매수; // from cpsvrnew7222
+                    t[5] = (int)g.코스피외인순매수; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[6] = (int)g.코스피개인순매수; // from cpsvrnew7222
                     t[10] = (int)(g.Nasdaq_지수 * g.THOUSAND);
-                    t[11] = (int)g.코스피연기순매수;
+                    t[11] = (int)g.코스피연기순매수; // From cpsvrnew7222
                 }
                 else if (o.stock.Contains("KODEX 코스닥150레버리지") || o.stock.Contains("KODEX 코스닥150선물인버스")) // full
                 {
                     t[3] = (int)g.코스닥프외순매수;// t[3] : 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
-                    t[4] = (int)g.코스닥기관순매수;
-                    t[5] = (int)g.코스닥외인순매수;
-                    t[6] = (int)g.코스닥개인순매수;
+                    t[4] = (int)g.코스닥기관순매수; // from cpsvrnew7222
+                    t[5] = (int)g.코스닥외인순매수; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[6] = (int)g.코스닥개인순매수; // from cpsvrnew7222
                     t[10] = (int)(g.Nasdaq_지수 * g.THOUSAND);  // was g.코스닥금투순매수;
-                    t[11] = (int)g.코스닥연기순매수;
+                    t[11] = (int)g.코스닥연기순매수; // from cpsvrnew7222
                 }
                 else // 일반, 10 수급연속, 11 체강연속 below
                 {
@@ -602,11 +611,11 @@ namespace New_Tradegy
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];
             g.코스피지수 = q.x[q.nrow - 1, 1];
-           
+
             index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
             q = g.ogl_data[index];
             g.코스닥지수 = q.x[q.nrow - 1, 1];
-            
+
             ps.post_코스닥_코스피_프외_순매수_배차_합산();
 
             g.marketeye_count++;
@@ -629,7 +638,7 @@ namespace New_Tradegy
             //if (index >= 0)
             //{
             //    g.stock_data o = g.ogl_data[index];
-      
+
             //}
 
             //wr.wt(" ");
@@ -744,7 +753,7 @@ namespace New_Tradegy
             }
         }
 
-        
+
 
     }
 }
