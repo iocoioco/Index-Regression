@@ -32,10 +32,14 @@ namespace New_Tradegy
         int _urgency;
         int _cancelThreshhold;
 
+
+
         //private System.Windows.Forms.Button Yes;
 
         public Form_매수_매도(string ReceivedStock, string text, int Urgency, int CancelThreshhold, string ReceivedString)
         {
+            
+
             InitializeComponent();
             this.Text = text; // 매수 또는 매도
 
@@ -60,23 +64,15 @@ namespace New_Tradegy
             _cancelThreshhold = CancelThreshhold;
         }
 
+
+
         private void Form_매수_매도_Load(object sender, EventArgs e)
         {
             appendMemoRichTextBox(str, Color.Black, true);
 
-            // Initialize Yes button
-            //Yes = new System.Windows.Forms.Button();
-
-
-            //Yes.Text = "Yes";
-            //Yes.DialogResult = DialogResult.Yes;
-            //Yes.Click += Yes_Click;
-            //this.Controls.Add(Yes);
-
             Ok.TabIndex = 0;
             Yes.TabIndex = 1;
             Cancel.TabIndex = 2;
-
 
             // Adjust Ok and Cancel button positions
             Yes.Size = new Size(80, 25);
@@ -106,9 +102,6 @@ namespace New_Tradegy
             hUrgencyScrollBar.Scroll += HUrgencyscrollBar_Scroll;
             hUrgencyScrollBar.BringToFront();
 
-
-
-
             // CancelThreshhold
             HScrollBar hCancelThreshholdScrollBar = new HScrollBar();
             hCancelThreshholdScrollBar.Minimum = 0;
@@ -127,30 +120,12 @@ namespace New_Tradegy
             richTextBox1.Controls.Add(hCancelThreshholdScrollBar);
             this.TopMost = true;
 
-            int index = wk.return_index_of_ogldata(stock);
-            if (index < 0)
-                return;
-            g.stock_data o = g.ogl_data[index];
-
-            if (index >= 0)
-            {
-                if (o.매수1호가 > 0)
-                {
-                    o.수익률 = (double)(o.매수1호가 - o.장부가) / o.매수1호가 * 100;
-                }
-
-                if (o.수익률 < 0)
-                {
-                    appendMemoRichTextBox("\n               No Watering" + ": " + o.수익률.ToString("0.##"), Color.Red, true);
-                }
-            }
+            
             this.ActiveControl = Ok;
             this.Ok.DialogResult = DialogResult.OK;
             this.AcceptButton = Ok;
 
         }
-
-        
 
         public int The_urgency
         {
@@ -213,6 +188,7 @@ namespace New_Tradegy
             //int startIndex = richTextBox1.SelectionStart;
             //richTextBox1.Text = richTextBox1.Text.Insert(richTextBox1.SelectionStart, text);
         }
+
         private void Yes_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Yes;
@@ -247,21 +223,6 @@ namespace New_Tradegy
             Size = this.Size;
         }
 
-        //private void Form_매수_매도_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-        //    ky.chart_keypress(e);
-        //}
-
-        //private void richTextBox1_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-        //    if(e.KeyChar == (char)Keys.Escape)
-        //    {
-        //        this.Close();
-        //        return;
-        //    }
-
-        //}
-
         private void Ok_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(e.KeyChar == (char)Keys.Escape)
@@ -271,61 +232,6 @@ namespace New_Tradegy
             }
             ky.chart_keypress(e);
         }
-
-        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        //{
-        //    if (ActiveControl == richTextBox1)
-        //    {
-        //        Ok.Focus(); // Move to the first button (Yes) when richTextBox has focus
-        //        return true;
-        //    }
-
-        //    // Check if the left or right arrow keys are pressed
-        //    if (keyData == Keys.Left)
-        //    {
-        //        // Handle left arrow key behavior: Move between Yes and Ok
-        //        if (ActiveControl == Ok)
-        //        {
-        //            Yes.Focus();
-        //            return true;  // Stops further processing
-        //        }
-        //        else if (ActiveControl == Yes)
-        //        {
-        //            Cancel.Focus();
-        //            return true;  // Stops further processing
-        //        }
-        //        else
-        //        {
-        //            Ok.Focus();
-        //            return true;  // Stops further processing
-        //        }
-        //    }
-
-        //    if (keyData == Keys.Right)
-        //    {
-        //        // Handle right arrow key behavior: Move between Ok and Cancel
-        //        if (ActiveControl == Ok)
-        //        {
-        //            Cancel.Focus();
-        //            return true;  // Stops further processing
-        //        }
-        //        // Move from Cancel back to Ok if the right arrow is pressed
-        //        if (ActiveControl == Cancel)
-        //        {
-        //            Yes.Focus();
-        //            return true;  // Stops further processing
-        //        }
-        //        else
-        //        {
-        //            Ok.Focus();
-        //            return true;  // Stops further processing
-        //        }
-        //    }
-
-        //    // Default case: No special key processing, pass control to the base method
-        //    return base.ProcessCmdKey(ref msg, keyData);
-        //}
-
 
     }
 }

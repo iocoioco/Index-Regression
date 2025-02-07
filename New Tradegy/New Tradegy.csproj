@@ -184,7 +184,8 @@
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\mdm.cs" />
     <Compile Include="Library\sell.cs" />
-    <Compile Include="Library\temp.cs" />
+    <Compile Include="Library\temp_breakout_largewall.cs" />
+    <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
     <Compile Include="Library\keys.cs" />

@@ -92,8 +92,8 @@ class mm
         {
             string stock = fixedStocks[i];
 
-            // Check if the chart area exists; if not, create it\
-            if (ChartAreaExists(chart, stock) && g.connected)
+            // Check if the chart area exists; if not, create  //?
+             if (ChartAreaExists(chart, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected)
             {
                 UpdateSeries(chart, stock, g.nRow, g.nCol);
             }
@@ -273,8 +273,8 @@ class mm
                 dgv.Height = DgvCellHeight * 12;
             }
 
-            // Check if the chart area exists; if not, create it\
-            if (ChartAreaExists(g.chart1, stock) && g.connected)
+            // Check if the chart area exists; if not, create it //?
+            if (ChartAreaExists(g.chart1, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected)
             {
                 UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
             }
@@ -451,7 +451,15 @@ class mm
 
         // Get the data for the stock
         g.stock_data o = g.ogl_data[index];
-        int totalPoints = o.nrow;
+
+        int totalPoints = o.nrow; //? modified for shrink draw : not sure to work or not
+        if (o.SrkDrw)
+        {
+            totalPoints = totalPoints - g.NptsForShrinkDraw;
+        }
+
+     
+
 
         // Update or add points for each series in "General" stock
         string[] seriesNames = { "1", "2", "3", "4", "5", "6" };
@@ -550,7 +558,6 @@ class mm
                 centerlineSeries.Points.AddXY(((int)(o.x[0, 0] / g.HUNDRED)).ToString(), 0);
                 centerlineSeries.Points.AddXY(((int)(o.x[totalPoints - 1, 0] / g.HUNDRED)).ToString(), 0);
             }
-
         }
 
         chart.ChartAreas[stockName].AxisX.LabelStyle.Enabled = true;
@@ -574,7 +581,7 @@ class mm
         Form_보조_차트 Form_보조_차트 = (Form_보조_차트)System.Windows.Forms.Application.OpenForms["Form_보조_차트"];
         if (Form_보조_차트 != null)
         {
-            g.v.S_KeyString = keystring;
+            g.v.SubKeyStr = keystring;
             Form_보조_차트.Form_보조_차트_DRAW();
         }
     }
@@ -638,9 +645,10 @@ class mm
                 EndNpts = o.nrow;
             }
         }
-        StartNpts = g.Npts[0];
 
-        if (o.ShrinkDrawOrNot == true)
+
+        StartNpts = g.Npts[0];
+        if (o.SrkDrw == true)
         {
             StartNpts = EndNpts - g.NptsForShrinkDraw;
             if (StartNpts < g.Npts[0])
@@ -693,7 +701,7 @@ class mm
                     value = (int)(o.x[k, dataIndex] * magnifier);
                 }
 
-                //?
+                //
                 // if(dataIndex == 1) value *= -1;
                 series.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
                 TotalNumberPoint++;
@@ -851,7 +859,7 @@ class mm
         }
         StartNpts = g.Npts[0];
 
-        if (o.ShrinkDrawOrNot == true)
+        if (o.SrkDrw == true)
         {
             StartNpts = EndNpts - g.NptsForShrinkDraw;
             if (StartNpts < g.Npts[0])

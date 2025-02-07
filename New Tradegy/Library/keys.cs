@@ -20,56 +20,33 @@ namespace New_Tradegy.Library
     internal class ky
     {
         private static TextBox searchTextBox;
-        public static void char1_previewkeydown(object sender, PreviewKeyDownEventArgs e)
+        public static void chart1_previewkeydown(object sender, PreviewKeyDownEventArgs e)
         {
             switch (e.KeyCode)
             {
-                #region
-                // 매도(ActiveForm)
-                case Keys.F9:
-                    
+                case Keys.Up:
+                    g.MkyDiv+= 2;
                     break;
-                    //case Keys.F2: //  지수 과장배수 확대
-                    //    switch (g.clickedStock)
-                    //    {
-                    //        case "KODEX 레버리지":
-                    //            g.k.magnifier[0, g.k.index_magnifier_shifter] *= 1.5;
-                    //            break;
-                    //        case "KODEX 200선물인버스2X":
-                    //            g.k.magnifier[1, g.k.index_magnifier_shifter] *= 1.5;
-                    //            break;
-                    //        case "KODEX 코스닥150레버리지":
-                    //            g.k.magnifier[2, g.k.index_magnifier_shifter] *= 1.5;
-                    //            break;
-                    //        case "KODEX 코스닥150선물인버스":
-                    //            g.k.magnifier[3, g.k.index_magnifier_shifter] *= 1.5;
-                    //            break;
-                    //        default:
-                    //            int index = wk.return_index_of_ogldata(g.clickedStock);
-                    //            if (index < 0)
-                    //                return;
-                    //            g.stock_data o = g.ogl_data[index];
-                    //            o.수급과장배수 *= 1.5;
-                    //            break;
-                    //    }
 
-                    //        break;
+                case Keys.Down:
+                    g.MkyDiv-= 2;
+                    if(g.MkyDiv==0)
+                    {
+                        g.MkyDiv += 2;
+                    }
+                        
+                    break;
 
-                    //    case Keys.F4: //  호가종목 추가
-                    //        Form se = (Form)Application.OpenForms["se"];
-                    //        TextBox tb = (TextBox)se.Controls["textBox1"];
-                    //        tb.Text = "";
-                    //        tb.Show();
-                    //        tb.Size = new Size(150, 20);
-                    //        tb.Location = new Point(95, 500);
+                case Keys.Left:
+                    break;
 
-                    //        break;
-                    //}
-                    //if (draw)
-                    //    dr.draw_chart();
-                    #endregion
+                case Keys.Right:
+                    break;
+
+                case Keys.F9:
+                    break;
             }
-         }
+        }
 
 
         public static void chart_keypress(KeyPressEventArgs e)
@@ -335,7 +312,7 @@ namespace New_Tradegy.Library
                     if (Form_보조_차트 != null)
                     {
                         List<string> list_6= new List<string> { "그순", "관심" };
-                        g.v.S_KeyString = mc.cycleStrings(g.v.S_KeyString, list_6);
+                        g.v.SubKeyStr = mc.cycleStrings(g.v.SubKeyStr, list_6);
                         Form_보조_차트.Form_보조_차트_DRAW();
                     }
                     break;
@@ -565,7 +542,7 @@ namespace New_Tradegy.Library
                 case 'f':
                     Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
                     list_3 = new List<string> { "코피", "코닥", "관심" };
-                    g.v.S_KeyString = mc.cycleStrings(g.v.S_KeyString, list_3);
+                    g.v.SubKeyStr = mc.cycleStrings(g.v.SubKeyStr, list_3);
                     action = " pes"; // no del, post, no eval, main draw
                     break;
     

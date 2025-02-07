@@ -409,12 +409,12 @@ namespace New_Tradegy.Library
         }
 
         
-        public static void wt_temp_marketeye_count(string t)
+        public static void wt_temp_MkyCnt(string t)
         {
             lock (g.lockObject)
             {
                 string time_now = DateTime.Now.ToString("hh:mm:ss.ffff");
-                string path = @"C:\병신\temp_marketeye_count.txt";
+                string path = @"C:\병신\temp_MkyCnt.txt";
                 StreamWriter sw = File.AppendText(path);
 
                 sw.WriteLine("{0}\t{1}", time_now, t);

@@ -663,14 +663,14 @@ namespace New_Tradegy.Library
             //    g.workingday = true;
             //}
 
-            strs = grlines[3 + add].Split(' ');
-            g.deal_maximum_loss = Convert.ToInt32(strs[0]);
-            g.deal_finish_time = Convert.ToInt32(strs[1]);
-            g.deal_total_profit = Convert.ToInt32(strs[2]);
+            //strs = grlines[3 + add].Split(' ');
+            //g.deal_maximum_loss = Convert.ToInt32(strs[0]);
+            //g.deal_finish_time = Convert.ToInt32(strs[1]);
+            //g.deal_total_profit = Convert.ToInt32(strs[2]);
 
-            strs = grlines[4 + add].Split(' ');
+            //strs = grlines[4 + add].Split(' ');
             
-            g.전일종가이상 = Convert.ToInt32(strs[0]);
+            //g.전일종가이상 = Convert.ToInt32(strs[0]);
         }
 
         public static void read_변수()

@@ -313,8 +313,8 @@ namespace New_Tradegy.Library
 
 
 
-        public static int marketeye_count = 0;
-        public static int marketeye_count_draw_tick = 0;
+        public static int MkyCnt = 0;
+        public static int MkyDiv = 10;
         public static int minuteSaveAll = 0;
         public static int alamed_hhmm = 0;
 
@@ -377,7 +377,7 @@ namespace New_Tradegy.Library
             // public int 점수선택 = 0; // 0 : 푀분 > 0 , 배차 > 0, 1 : 푀분 > 0, 2 : 배차 > 0, 3 : 푀분 + 배차 > 0, 4: no 선택
 
             public string KeyString = "총점";
-            public string S_KeyString = "그순";
+            public string SubKeyStr = "그순";
             public string old_key_string = "푀분";
 
             public double old_분당거래액이상_천만원;// 분거
@@ -551,7 +551,7 @@ namespace New_Tradegy.Library
             public string stock;
     
 
-            public bool ShrinkDrawOrNot = false;
+            public bool SrkDrw = false;
 
             //public bool in_group_or_not = false;
 

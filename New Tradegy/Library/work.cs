@@ -361,6 +361,7 @@ namespace New_Tradegy.Library
                 return false; //루미마이크로, 메디포럼제약 코드 못 찾음, 합병된 것으로 추정
 
             o.전일종가 = rd.read_전일종가(stock);
+            g.전일종가이상 = 1000; // also defined in glbl
             if (o.전일종가 < g.전일종가이상)
                 return false;
 

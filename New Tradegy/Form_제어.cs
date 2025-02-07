@@ -91,13 +91,13 @@ namespace New_Tradegy
             g.제어.dtb.Rows[0][2] = g.일회거래액;
             g.제어.dtb.Rows[0][3] = g.예치금;
 
-            if (g.connected)
-            {
-                dl.deal_profit();
-            }
+            //if (g.connected)
+            //{
+            //    dl.deal_profit();
+            //}
 
             // Row 1
-            g.제어.dtb.Rows[1][0] = g.deal_profit;
+            // g.제어.dtb.Rows[1][0] = g.deal_profit;
             g.제어.dtb.Rows[1][1] = ""; // (int)usd_krw; 
             g.제어.dtb.Rows[1][2] = g.Nasdaq_지수;
             g.제어.dtb.Rows[1][3] = g.SP_지수;
@@ -192,7 +192,7 @@ namespace New_Tradegy
                         switch (e.ColumnIndex)
                         {
                             case 3:
-                                dl.deal_deposit();
+                                //dl.deal_deposit();
                                 break;
                         }
                         break;

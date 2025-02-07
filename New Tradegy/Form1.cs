@@ -79,7 +79,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             //return;
 
             mc.Sound("일반", "by 2032");
-        }
+        } 
 
 
 
@@ -217,7 +217,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 cn.Init_CpConclusion();
 
-                Task task_deal_profit = Task.Run(async () => await dl.task_deal_profit());
+                //Task task_deal_profit = Task.Run(async () => await dl.task_deal_profit());
 
                 dl.deal_processing();
                 dl.deal_hold(); // Initialize g.보유종목
@@ -250,7 +250,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             rd.read_파일관심종목(); // duration 0.000 seconds
             mm.ManageChart1(); // all new, Form_1 start
-            //?  chart1 only plot ... mm.ManageChart2(); // all new, Form_1 start
+            //  chart1 only plot ... mm.ManageChart2(); // all new, Form_1 start
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
@@ -569,6 +569,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         // updated on 20241020
         private bool _isRunning = false;
 
+        /* not used : Task task_eval_draw
         public async Task task_eval_draw()
         {
             // Ensure that this task is not running multiple times
@@ -581,9 +582,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 if (IsMarketOpen())
                 {
-                    if (g.marketeye_count > g.marketeye_count_draw_tick)
+                    if (g.MkyCnt > g.MkyCnt_draw_tick)
                     {
-                        if (g.marketeye_count % g.v.eval_per_marketeyes == 1)
+                        if (g.MkyCnt % g.v.eval_per_marketeyes == 1)
                         {
                             ev.eval_stock();  // Evaluate stock conditionally
                         }
@@ -592,7 +593,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                         mm.ManageChart2(); // not used, Task task_eval_draw
 
                         // Update the last draw tick
-                        g.marketeye_count_draw_tick = g.marketeye_count;
+                        g.MkyCnt_draw_tick = g.MkyCnt;
                     }
                 }
 
@@ -600,8 +601,10 @@ namespace New_Tradegy // added for test on 20241020 0300
                 await Task.Delay(750);
             }
         }
+        */
 
         // Helper method to check if the market is open
+
         private bool IsMarketOpen()
         {
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
@@ -801,7 +804,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void chart1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            ky.char1_previewkeydown(sender, e);
+            ky.chart1_previewkeydown(sender, e);
             //SetFocusAndReturn();
         }
 
@@ -937,7 +940,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 //        int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm")); // timerEvalDrawTick
 //        string day = Convert.ToString(DateTime.Today.DayOfWeek);
 
-//        if (g.marketeye_count > g.marketeye_count_draw_tick // 평일 0900부터 1530까지 marketeye, eval, draw 작동
+//        if (g.MkyCnt > g.MkyCnt_draw_tick // 평일 0900부터 1530까지 marketeye, eval, draw 작동
 //        && HHmm >= 0900 && HHmm <= 1530 &&
 //        day != "Sunday" && day != "Saturday")
 //        {

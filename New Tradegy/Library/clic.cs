@@ -252,6 +252,9 @@ namespace New_Tradegy.Library
 
                         str += "\n" + sr.r3_display_매수_매도(o);
 
+                        if (dl.CheckPreviousLoss(g.clickedStock))
+                            return;
+  
 
                         using (var form = new Form_매수_매도(g.clickedStock, "매수 ?", 100, g.cancelThreshhold, str))
                         {
@@ -396,13 +399,13 @@ namespace New_Tradegy.Library
             switch (selection)
             {
                 case "l1":
-                    if (o.ShrinkDrawOrNot)
+                    if (o.SrkDrw)
                     {
-                        o.ShrinkDrawOrNot = false;
+                        o.SrkDrw = false;
                     }
                     else
                     {
-                        o.ShrinkDrawOrNot = true;
+                        o.SrkDrw = true;
                     }
                     action = "B  B"; // both delete area, no post, no eval and both redraw
                     break;
@@ -712,9 +715,9 @@ namespace New_Tradegy.Library
 
                         Form_보조_차트 form = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
 
-                        if (g.v.S_KeyString == "상관" || g.v.S_KeyString == "절친")
+                        if (g.v.SubKeyStr == "상관" || g.v.SubKeyStr == "절친")
                         {
-                            mm.ManageChart2(g.v.S_KeyString);
+                            mm.ManageChart2(g.v.SubKeyStr);
                         }
                         else
                         {

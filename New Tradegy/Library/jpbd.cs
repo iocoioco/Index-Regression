@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using static New_Tradegy.Library.g.stock_data;
+using static OpenQA.Selenium.BiDi.Modules.Script.RealmInfo;
 
 namespace New_Tradegy.Library
 {
@@ -107,6 +108,8 @@ namespace New_Tradegy.Library
 
                     RemoveOrder(buyOrders, order);
 
+                    
+                    //?
                     using (var form = new Form_매수_매도(stock, "매수 ?", order.UrgencyLevel, g.cancelThreshhold, str))
                     {
                         DialogResult result = form.ShowDialog();
@@ -140,6 +143,7 @@ namespace New_Tradegy.Library
 
                     RemoveOrder(sellOrders, order);
 
+                    //?
                     using (var form = new Form_매수_매도(stock, "매도 ?", order.UrgencyLevel, g.cancelThreshhold, str))
                     {
                         DialogResult result = form.ShowDialog();
@@ -220,6 +224,10 @@ namespace New_Tradegy.Library
 
         public void AddBuyOrder(string stock, int price, bool wasUpper, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
         {
+            if (dl.CheckPreviousLoss(stock))
+                return;
+
+
             // Find the existing order with the same stock and price
             var existingOrder = buyOrders.Find(order => order.Stock == stock && order.Price == price);
 
@@ -477,22 +485,22 @@ namespace New_Tradegy.Library
             switch (e.ColumnIndex)
             {
                 case 0: // 매도
-                    //if (e.RowIndex >= 2 * Rows)
-                    //{
-                    //    return;
-                    //}
-                    //var existingOrder = StockExchange.sellOrders.Find(order => order.Stock == Stock && order.Price == Price);
+                    if (e.RowIndex >= 2 * Rows)
+                    {
+                        return;
+                    }
+                    var existingOrder = StockExchange.sellOrders.Find(order => order.Stock == Stock && order.Price == Price);
 
-                    //// If such an order exists, remove it
-                    //if (existingOrder != null)
-                    //{
-                    //    StockExchange.sellOrders.Remove(existingOrder);
-                    //    return;
-                    //}
+                    // If such an order exists, remove it
+                    if (existingOrder != null)
+                    {
+                        StockExchange.sellOrders.Remove(existingOrder);
+                        return;
+                    }
 
-                    //bool WasUpper = false;
-                    //if (e.RowIndex < Rows)
-                    //    WasUpper = true;
+                    bool WasUpper = false;
+                    if (e.RowIndex < Rows)
+                        WasUpper = true;
 
                     int Amount = g.일회거래액 * 10000 / Price;
                     if (Amount == 0)
@@ -535,16 +543,16 @@ namespace New_Tradegy.Library
                             }
                             else if (result == DialogResult.OK) // 지정가
                             {
-                                //if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                                //{
+                                if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
+                                {
                                     dl.deal_exec("매도", Stock, Amount, Price, "01");
-                                //}
-                                //else
-                                //{
-                                    //Urgency = form.The_urgency;
-                                    //g.cancelThreshhold = form.The_cancelthreshhold;
-                                    //stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
-                                //}
+                                }
+                                else
+                                {
+                                    Urgency = form.The_urgency;
+                                    g.cancelThreshhold = form.The_cancelthreshhold;
+                                    stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                                }
                             }
                             else
                             {
@@ -554,15 +562,15 @@ namespace New_Tradegy.Library
                     }
                     else
                     {
-                        //if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                        //{
+                        if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
+                        {
                             dl.deal_exec("매도", Stock, Amount, Price, "01");
-                        //}
-                        //else
-                        //{
+                        }
+                        else
+                        {
                             // Urgency and TimeThresh not used
-                            //stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
-                        //}
+                            stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                        }
                     }
                     break;
 
@@ -613,19 +621,20 @@ namespace New_Tradegy.Library
                     {
                         return;
                     }
-                    //existingOrder = StockExchange.buyOrders.Find(order => order.Stock == Stock && order.Price == Price);
+                    existingOrder = StockExchange.buyOrders.Find(order => order.Stock == Stock && order.Price == Price);
 
-                    //// If such an order exists, remove it
-                    //if (existingOrder != null)
-                    //{
-                    //    StockExchange.buyOrders.Remove(existingOrder);
-                    //    return;
-                    //}
+                    // If such an order exists, remove it
+                    if (existingOrder != null)
+                    {
+                        StockExchange.buyOrders.Remove(existingOrder);
+                        return;
+                    }
 
 
-                    //WasUpper = false;
-                    //if (e.RowIndex < Rows)
-                    //    WasUpper = true;
+                    WasUpper = false;
+                    if (e.RowIndex < Rows)
+                        WasUpper = true;
+
 
                     Amount = g.일회거래액 * 10000 / Price;
                     if (Amount == 0)
@@ -644,6 +653,8 @@ namespace New_Tradegy.Library
 
                         str += "\n" + sr.r3_display_매수_매도(o);
 
+                        if (dl.CheckPreviousLoss(Stock))
+                            return;
 
                         using (var form = new Form_매수_매도(Stock, "매수 ?", Urgency, g.cancelThreshhold, str))
                         {
@@ -654,16 +665,16 @@ namespace New_Tradegy.Library
                             }
                             else if (result == DialogResult.OK) // 지정가
                             {
-                                //if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                                //{
+                                if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
+                                {
                                     dl.deal_exec("매수", Stock, Amount, Price, "01");
-                                //}
-                                //else
-                                //{
-                                    //Urgency = form.The_urgency;
-                                    //g.cancelThreshhold = form.The_cancelthreshhold;
-                                    //stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
-                                // }
+                                }
+                                else
+                                {
+                                    Urgency = form.The_urgency;
+                                    g.cancelThreshhold = form.The_cancelthreshhold;
+                                    stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                                }
                             }
                             else // 취소
                             {

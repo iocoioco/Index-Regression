@@ -86,26 +86,26 @@ namespace New_Tradegy.Library
         }
 
 
-        public static async Task task_deal_profit()
-        {
-            while (true)
-            {
-                // Execute your deal profit logic
-                deal_profit();
+        //public static async Task task_deal_profit()
+        //{
+        //    while (true)
+        //    {
+        //        // Execute your deal profit logic
+        //        deal_profit();
 
-                // Wait asynchronously for 60 seconds (non-blocking)
-                await Task.Delay(60 * 1000);
-            }
-        }
+        //        // Wait asynchronously for 60 seconds (non-blocking)
+        //        await Task.Delay(60 * 1000);
+        //    }
+        //}
 
-        public static void task_deal_profit_old()
-        {
-            while (true)
-            {
-                deal_profit();
-                Thread.Sleep(60 * 1000);
-            }
-        }
+        //public static void task_deal_profit_old()
+        //{
+        //    while (true)
+        //    {
+        //        deal_profit();
+        //        Thread.Sleep(60 * 1000);
+        //    }
+        //}
 
         public static int deal_profit()
         {
@@ -151,7 +151,7 @@ namespace New_Tradegy.Library
                 ulong a = _CpTd5342.GetHeaderValue(9);
                 ulong b = _CpTd5342.GetHeaderValue(10);
                 g.deal_profit = ((int)(a - b) / 10000);
-                if (g.marketeye_count == 0)
+                if (g.MkyCnt == 0)
                 {
                     g.deal_profit = g.deal_total_profit;
                 }
@@ -274,6 +274,28 @@ namespace New_Tradegy.Library
                     g.m_mapOrder[item.m_ordKey] = item;
                 }
             }
+        }
+
+        // Function to check if the stock is in loss
+        public static bool CheckPreviousLoss(string stockSymbol)
+        {
+            int index = wk.return_index_of_ogldata(stockSymbol);
+            if (index < 0) return false; // Stock not found in holdings
+
+            g.stock_data o = g.ogl_data[index];
+
+            //?
+            if (o.매수1호가 > 0 && o.보유량 >= 1) // Ensure valid purchase price exists
+            {
+                double 수익률 = (double)(o.매수1호가 - o.장부가) / o.매수1호가 * 100;
+
+                if (수익률 < -0.3 && o.평가금액 > 1000000) // If loss detected and eval amount is over 1M
+                {
+                    mc.Sound("alarm", "lost already");
+                    return true; // Block trade
+                }
+            }
+            return false;
         }
 
         public static void deal_hold() // tr(1)

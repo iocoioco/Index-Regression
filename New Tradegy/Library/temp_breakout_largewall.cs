@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace New_Tradegy.Library
 {
 
+// 52400 assumed to be breakout price
 //    Adaptive wait time: Strong breakouts execute in 100ms, weaker ones wait 200ms.
 //✅ Bid size confirmation: Ensures follow-through buying.
 //✅ Early execution: If ask size at 52,500 collapses, buy earlier.
@@ -119,19 +120,19 @@ namespace New_Tradegy.Library
     {
         private static TickSizeOrderManager orderManager = new TickSizeOrderManager(52400m);
         private static Random random = new Random();
-        static void Main()
-        {
-            while (true)
-            {
-                decimal bestBid = 52300 + random.Next(0, 2) * 100;
-                decimal bestAsk = 52400 + random.Next(0, 2) * 100;
-                int bidSize = random.Next(100, 500);
-                int askSize = random.Next(200, 1000);
+        //static void Main()
+        //{
+        //    while (true)
+        //    {
+        //        decimal bestBid = 52300 + random.Next(0, 2) * 100;
+        //        decimal bestAsk = 52400 + random.Next(0, 2) * 100;
+        //        int bidSize = random.Next(100, 500);
+        //        int askSize = random.Next(200, 1000);
 
-                orderManager.OnBookUpdate(bestBid, bestAsk, bidSize, askSize);
+        //        orderManager.OnBookUpdate(bestBid, bestAsk, bidSize, askSize);
 
-                Thread.Sleep(100);
-            }
-        }
+        //        Thread.Sleep(100);
+        //    }
+        //}
     }
 }

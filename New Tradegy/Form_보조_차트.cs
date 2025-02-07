@@ -21,6 +21,8 @@ namespace New_Tradegy
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
+        private string PreSubKeyStr = "";
+
         public Form_보조_차트()
         {
             InitializeComponent();
@@ -72,7 +74,7 @@ namespace New_Tradegy
             else
             {
                 this.Location = new Point(g.screenWidth, 0);
-                if(g.v.Screens == 1) this.Location = new Point(0, 0); // one screen
+                if(g.v.Screens == 1) this.Location = new Point(g.screenWidth / 2, 0); // one screen
             }
             this.Size = new Size(g.screenWidth / 2, g.screenHeight);
             chart2.Size = new Size(this.Width, this.Height);
@@ -115,7 +117,7 @@ namespace New_Tradegy
         public void Form_보조_차트_DRAW()
         {
             displayList.Clear();
-            보조_차트_StocksGivenKeyString(g.v.S_KeyString, displayList, g.clickedStock, g.clickedTitle);
+            StocksGivenKeyStr(g.v.SubKeyStr, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title
             UpdateFormTitle();
@@ -123,14 +125,20 @@ namespace New_Tradegy
             // Determine grid layout
             SetGridDimensions();
 
+            if (g.v.SubKeyStr != PreSubKeyStr) // if g.v.SubKeyStr changes, Clear Chart
+            {
+                PreSubKeyStr = g.v.SubKeyStr;
+                ChartClear();
+            }
+                
+
             for (int i = 0; i < nRow * nCol; i++)
             {
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                if (!mm.ChartAreaExists(g.chart2, stock) || !g.connected)
+                if (!mm.ChartAreaExists(g.chart2, stock) || g.connected)
                 {
-                    
                     mm.AreaStocks(g.chart2, stock, nRow, nCol);
                 }
                 else
@@ -285,7 +293,7 @@ namespace New_Tradegy
         }
 
         // 상관, 보유, 그순, 관심, 코닥, 코피, 절친, 푀손
-        public static void 보조_차트_StocksGivenKeyString(string keyString, List<string> displayList, string clickedStock, string clickedTitle)
+        public static void StocksGivenKeyStr(string keyString, List<string> displayList, string clickedStock, string clickedTitle)
         {
             switch (keyString)
             {
@@ -449,8 +457,8 @@ namespace New_Tradegy
                             for (int i = check_row - 1; i >= 1; i--)
                             {
                                 //분간 프돈 매수 -> (현재가 - (후분가 + 전분가) / 2) * 분간프돈매수량 * 전일종가
-                                value += (o.x[check_row, 1] - (o.x[i, 1] + o.x[i - 1, 1]) / 2.0) / 100.0 *
-                                    (o.x[i, 4] - o.x[i - 1, 4]) * o.전일종가 / g.억원;
+                                value += (o.x[check_row, 1] - (o.x[i, 1] + o.x[i - 1, 1]) / 2.0) *
+                                    (o.x[i, 4] - o.x[i - 1, 4]);
                             }
                         }
                         a_tuple.Add(Tuple.Create(value, stock));
@@ -459,7 +467,6 @@ namespace New_Tradegy
 
                     foreach (var t in a_tuple)
                     {
-
                         if (!displayList.Contains(t.Item2))
                             displayList.Add(t.Item2);
                     }
@@ -490,19 +497,19 @@ namespace New_Tradegy
 
         private void UpdateFormTitle()
         {
-            switch (g.v.S_KeyString)
+            switch (g.v.SubKeyStr)
             {
                 case "상관":
-                    this.Text = $"{g.v.S_KeyString} ({g.clickedTitle})";
+                    this.Text = $"{g.v.SubKeyStr} ({g.clickedTitle})";
                     break;
                 case "절친":
-                    this.Text = $"{g.v.S_KeyString} ({g.clickedStock})";
+                    this.Text = $"{g.v.SubKeyStr} ({g.clickedStock})";
                     break;
                 case "그순":
-                    this.Text = $"{g.v.S_KeyString} ({g.oGl_data_selection})";
+                    this.Text = $"{g.v.SubKeyStr} ({g.oGl_data_selection})";
                     break;
                 default:
-                    this.Text = g.v.S_KeyString;
+                    this.Text = g.v.SubKeyStr;
                     break;
             }
         }
@@ -623,28 +630,28 @@ namespace New_Tradegy
             switch (e.ColumnIndex)
             {
                 case 0:
-                    g.v.S_KeyString = "상관";
+                    g.v.SubKeyStr = "상관";
                     return;
                 case 1:
-                    g.v.S_KeyString = "보유";
+                    g.v.SubKeyStr = "보유";
                     break;
                 case 2:
-                    g.v.S_KeyString = "그순";
+                    g.v.SubKeyStr = "그순";
                     break;
                 case 3:
-                    g.v.S_KeyString = "관심";
+                    g.v.SubKeyStr = "관심";
                     break;
                 case 4:
-                    g.v.S_KeyString = "코닥";
+                    g.v.SubKeyStr = "코닥";
                     break;
                 case 5:
-                    g.v.S_KeyString = "코피";
+                    g.v.SubKeyStr = "코피";
                     break;
                 case 6:
-                    g.v.S_KeyString = "절친";
+                    g.v.SubKeyStr = "절친";
                     break;
                 case 7:
-                    g.v.S_KeyString = "푀손";
+                    g.v.SubKeyStr = "푀손";
                     break;
             }
             Form_보조_차트_DRAW();

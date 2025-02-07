@@ -618,7 +618,7 @@ namespace New_Tradegy
 
             ps.post_코스닥_코스피_프외_순매수_배차_합산();
 
-            g.marketeye_count++;
+            g.MkyCnt++;
 
 
 

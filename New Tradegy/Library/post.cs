@@ -35,7 +35,7 @@ namespace New_Tradegy.Library
 {
     public class ps
     {
-        public static void ManageChart1Safe()
+        public static void ManageChart1Invoke()
         {
             Form se = (Form)Application.OpenForms["se"];
             if (se.InvokeRequired)
@@ -47,7 +47,7 @@ namespace New_Tradegy.Library
                 mm.ManageChart1();
             }
         }
-        public static void ManageChart2Safe()
+        public static void ManageChart2Invoke()
         {
             Form Form_보조_차트 = (Form)Application.OpenForms["Form_보조_차트"];
             if (Form_보조_차트.InvokeRequired)
@@ -66,6 +66,9 @@ namespace New_Tradegy.Library
             {
                 post(o);
             }
+
+            //?
+            if(g.MkyCnt % g.MkyDiv == 1)
                 ev.eval_stock();
             
 
@@ -77,8 +80,8 @@ namespace New_Tradegy.Library
                     marketeye_received_보유종목_푀분의매수매도_소리내기(o); // this is from mip
                 }
             }
-            ManageChart1Safe();
-            ManageChart2Safe();
+            ManageChart1Invoke();
+            ManageChart2Invoke();
         }
 
         public static void post_test()
@@ -94,8 +97,8 @@ namespace New_Tradegy.Library
             //    ev.eval_group();
             //}
 
-            //ManageChart1Safe();
-            //ManageChart2Safe();
+            //ManageChart1Invoke();
+            //ManageChart2Invoke();
         }
 
         public static void marketeye_received_보유종목_푀분의매수매도_소리내기(g.stock_data o)
