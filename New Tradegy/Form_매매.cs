@@ -152,35 +152,35 @@ namespace New_Tradegy
                     break;
 
                 case 2: // 매도 Blocked
-                    if (g.connected)
-                    {
-                        string buySell = "매도";
-                        int 거래가격 = hg.HogaGetValue(stock, 0, 1); // 0 : 매수1호가 라인, 1 : column
+                    //if (g.connected)
+                    //{
+                    //    string buySell = "매도";
+                    //    int 거래가격 = hg.HogaGetValue(stock, 0, 1); // 0 : 매수1호가 라인, 1 : column
 
-                        int Urgency = 100;
-                        if (g.optimumTrading)
-                        {
-                            Urgency = (int)(e.X / (double)g.매매.dgv.Columns[2].Width * 100);
-                        }
+                    //    int Urgency = 100;
+                    //    if (g.optimumTrading)
+                    //    {
+                    //        Urgency = (int)(e.X / (double)g.매매.dgv.Columns[2].Width * 100);
+                    //    }
 
-                        // dl.deal_sett(stock, buySell, 거래가격, Urgency);
-                    }
+                    //    dl.deal_sett(stock, buySell, 거래가격, Urgency);
+                    //}
                     break;
 
                 case 3: // 매수 Blocked 
-                    if (g.connected)
-                    {
-                        string buySell = "매수";
-                        int 거래가격 = hg.HogaGetValue(stock, -1, 1); // 0 : 매수1호가 라인, 1 : column
+                    //if (g.connected)
+                    //{
+                    //    string buySell = "매수";
+                    //    int 거래가격 = hg.HogaGetValue(stock, -1, 1); // 0 : 매수1호가 라인, 1 : column
 
-                        int Urgency = 100;
-                        if (g.optimumTrading)
-                        {
-                            Urgency = (int)(e.X / (double)g.매매.dgv.Columns[2].Width * 100);
-                        }
+                    //    int Urgency = 100;
+                    //    if (g.optimumTrading)
+                    //    {
+                    //        Urgency = (int)(e.X / (double)g.매매.dgv.Columns[2].Width * 100);
+                    //    }
 
-                        // dl.deal_sett(stock, buySell, 거래가격, Urgency);
-                    }
+                    //    dl.deal_sett(stock, buySell, 거래가격, Urgency);
+                    //}
                     break;
             }
         }

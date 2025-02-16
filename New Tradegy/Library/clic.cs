@@ -256,7 +256,7 @@ namespace New_Tradegy.Library
                             return;
   
 
-                        using (var form = new Form_매수_매도(g.clickedStock, "매수 ?", 100, g.cancelThreshhold, str))
+                        using (var form = new Form_매수_매도(g.clickedStock, "매수 ?", 100, str))
                         {
                             DialogResult result = form.ShowDialog();
 
@@ -264,10 +264,7 @@ namespace New_Tradegy.Library
                             {
                                 return;
                             }
-                            else
-                            {
-                                g.cancelThreshhold = form.The_cancelthreshhold;
-                            }
+                           
                         }
                     }
                     dl.deal_exec("매수", g.clickedStock, Amount, Price, "03"); // Cntl + l1 
@@ -293,6 +290,14 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l4":
+                    if (g.test)
+                    {
+                        if (g.EndNptsBeforeExtend == 0)
+                            mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
+                        else
+                            mm.MinuteAdvanceRetreat(0);
+                        action = " p B";
+                    }
 
                     break;
 
@@ -341,6 +346,17 @@ namespace New_Tradegy.Library
                     break; ;
 
                 case "r4": // Naver main
+
+                    if (g.test) // 시간 뒤로 (테스트)
+                    {
+                        g.Npts[1]--;
+                        if (g.Npts[1] < 2)
+                        {
+                            g.Npts[0] = 0;
+                            g.Npts[1] = 2;
+                        }
+                        action = " peB"; // del chartarea, post, eval, draw
+                    }
 
                     break;
 
@@ -445,7 +461,7 @@ namespace New_Tradegy.Library
                     //    wn.Memo_TopMost();
                     //else 
 
-                    if (!g.connected)
+                    if (g.test)
                     {
                         g.Npts[0] = 0;
                         g.Npts[1] = g.MAX_ROW;
@@ -454,7 +470,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l4":
-                    if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
+                    if (g.test) // 짧은 시간 앞으로 in draw(테스트)
                     {
                         if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
@@ -465,16 +481,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l5":
-                    if (!g.connected)
-                    {
-                        if (g.EndNptsBeforeExtend == 0)
-                            mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
-                        else
-                            mm.MinuteAdvanceRetreat(0);
-                        action = " p B";
-                    }
-                    else
-                    {
+      
                         if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2])
                         {
                             wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
@@ -505,7 +512,7 @@ namespace New_Tradegy.Library
                             }
                             action = " peB";
                         }
-                    }
+                    
                     break;
 
                 case "l6":
@@ -543,7 +550,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l9": // g.Npts[1]++
-                    if (!g.connected)
+                    if (g.test)
                     {
                         g.Npts[1]--;
                         if (g.Npts[1] < 2)
@@ -585,8 +592,8 @@ namespace New_Tradegy.Library
 
                     break; ;
 
-                case "r4": // Naver main
-                    if (!g.connected)
+                case "r4": 
+                    if (g.test)
                     {
                         g.Npts[1]++;
                         if (g.Npts[1] > g.MAX_ROW)
@@ -625,7 +632,7 @@ namespace New_Tradegy.Library
                         g.Gid = g.saved_Gid;
                         g.date = g.saved_date;
 
-                        if (!g.connected)
+                        if (g.test)
                         {
                             g.Npts[0] = g.SavedNpts[0];
                             g.Npts[1] = g.SavedNpts[1];
@@ -657,7 +664,7 @@ namespace New_Tradegy.Library
                         g.saved_date = g.date;
                         g.moving_reference_date = g.date;
 
-                        if (!g.connected)
+                        if (g.test)
                         {
                             g.SavedNpts[0] = g.Npts[0];
                             g.SavedNpts[1] = g.Npts[1];

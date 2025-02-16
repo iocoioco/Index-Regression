@@ -284,7 +284,7 @@ namespace New_Tradegy.Library
 
             g.stock_data o = g.ogl_data[index];
 
-            //?
+            //? no watering
             if (o.매수1호가 > 0 && o.보유량 >= 1) // Ensure valid purchase price exists
             {
                 double 수익률 = (double)(o.매수1호가 - o.장부가) / o.매수1호가 * 100;

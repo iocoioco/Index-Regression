@@ -173,7 +173,7 @@ namespace New_Tradegy
             // Row 13
             g.제어.dtb.Rows[13][0] = "선폭";
             g.제어.dtb.Rows[13][1] = 2; g.LineWidth = 2;
-           
+
 
             for (int i = 0; i < Columns; i++)
             {
@@ -439,22 +439,25 @@ namespace New_Tradegy
                         }
                         g.LineWidth = newValue;
                         g.제어.dtb.Rows[13][1] = newValue;
-
-                        g.chart1.Series.Clear();
-                        g.chart1.ChartAreas.Clear();
-                        g.chart1.Annotations.Clear();
-                        g.chart2.Series.Clear();
-                        g.chart2.ChartAreas.Clear();
-                        g.chart2.Annotations.Clear();
-
-                        mm.ManageChart1(); 
-                        mm.ManageChart2(); 
                         break;
                 }
+
+
+                g.chart1.Series.Clear();
+                g.chart1.ChartAreas.Clear();
+                g.chart1.Annotations.Clear();
+                g.chart2.Series.Clear();
+                g.chart2.ChartAreas.Clear();
+                g.chart2.Annotations.Clear();
+
+                ev.eval_stock();
+                mm.ManageChart1();
+                mm.ManageChart2();
+
             }
 
             g.제어.dgv.Refresh();
-            
+
         }
 
         private int FindNewValueFromArray(int[] array, int clickedValue, bool upper)

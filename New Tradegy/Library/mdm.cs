@@ -92,8 +92,8 @@ class mm
         {
             string stock = fixedStocks[i];
 
-            // Check if the chart area exists; if not, create  //?
-             if (ChartAreaExists(chart, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected)
+            //? chart area exists ? ; if not, create 
+             if (ChartAreaExists(chart, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test)
             {
                 UpdateSeries(chart, stock, g.nRow, g.nCol);
             }
@@ -273,8 +273,8 @@ class mm
                 dgv.Height = DgvCellHeight * 12;
             }
 
-            // Check if the chart area exists; if not, create it //?
-            if (ChartAreaExists(g.chart1, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected)
+            //? chart area exists ? ; if not, create it
+            if (ChartAreaExists(g.chart1, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test)
             {
                 UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
             }
@@ -309,7 +309,7 @@ class mm
             if (wk.isStock(stock) && !stocksWithBid.Contains(stock))
             {
 
-                if (ChartAreaExists(g.chart1, stock) && g.connected)
+                if (ChartAreaExists(g.chart1, stock) && g.connected && !g.test)
                 {
                     //if (isTotalPointsEqualSeriesPoints(g.chart1, stock))
                     //{
@@ -351,6 +351,10 @@ class mm
         // Get the data for the stock
         g.stock_data o = g.ogl_data[index];
         int totalPoints = o.nrow;
+        if (o.SrkDrw)
+        {
+            totalPoints = totalPoints - g.NptsForSrkDrw;
+        }
 
         // Update or add points for each series in "KODEX" stock
         string[] seriesNames = { "1", "3", "4", "5", "6", "10", "11" };
@@ -417,7 +421,7 @@ class mm
 
         // Update or add points for "stockName 9" - the centerline
         string centerlineSeriesName = stockName + " 9";
-        if (chart.Series.IndexOf(centerlineSeriesName) != -1)
+        if (chart.Series.IndexOf(centerlineSeriesName) != -1) //?
         {
             System.Windows.Forms.DataVisualization.Charting.Series centerlineSeries = chart.Series[centerlineSeriesName];
 
@@ -455,7 +459,7 @@ class mm
         int totalPoints = o.nrow; //? modified for shrink draw : not sure to work or not
         if (o.SrkDrw)
         {
-            totalPoints = totalPoints - g.NptsForShrinkDraw;
+            totalPoints = totalPoints - g.NptsForSrkDrw;
         }
 
      
@@ -629,11 +633,11 @@ class mm
         if (o.nrow <= 1) // no data yet, i.e. only 0859 
             return null;
 
-        // g.NptsForShrinkDraw is controlled by 'o' and 'O'
+        // g.NptsForSrkDrw is controlled by 'o' and 'O'
         int StartNpts = 0;
         int EndNpts = -1;
 
-        if (g.connected)
+        if (!g.test)
         {
             EndNpts = o.nrow;
         }
@@ -650,7 +654,7 @@ class mm
         StartNpts = g.Npts[0];
         if (o.SrkDrw == true)
         {
-            StartNpts = EndNpts - g.NptsForShrinkDraw;
+            StartNpts = EndNpts - g.NptsForSrkDrw;
             if (StartNpts < g.Npts[0])
             {
                 StartNpts = g.Npts[0];
@@ -845,7 +849,7 @@ class mm
         int StartNpts = 0;
         int EndNpts = -1;
 
-        if (g.connected)
+        if (!g.test) //?
         {
             EndNpts = o.nrow;
         }
@@ -861,7 +865,7 @@ class mm
 
         if (o.SrkDrw == true)
         {
-            StartNpts = EndNpts - g.NptsForShrinkDraw;
+            StartNpts = EndNpts - g.NptsForSrkDrw;
             if (StartNpts < g.Npts[0])
             {
                 StartNpts = g.Npts[0];
@@ -1486,7 +1490,7 @@ class mm
 
     public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
     {
-        if (chart == g.chart1) //?
+        if (chart == g.chart1) //? ClearUnusedDataGridViews
         {
             stockswithbid.Add(fixedStocks[0]);
             stockswithbid.Add(fixedStocks[1]);
@@ -1682,7 +1686,8 @@ class mm
                 stock_title += "+";
             stock_title += o.점수.배합.ToString("F0");
             stock_title += "+" + o.점수.그순.ToString("F0");
-            stock_title += " (" + o.x[EndNpts - 1, 1].ToString() + " / " + o.현재가.ToString("#,##0") + ")";
+            if(EndNpts - 1 >= 0)
+                stock_title += " (" + o.x[EndNpts - 1, 1].ToString() + " / " + o.현재가.ToString("#,##0") + ")";
         }
         // KODEX4
         else
@@ -1691,7 +1696,8 @@ class mm
         }
 
         //stock_title += " " + o.dev_avr; // 수급, 체강의 연속점수 삭제
-        stock_title += " " + x[EndNpts - 1, 10] + "/" + x[EndNpts - 1, 11] + "  " + o.dev_avr; // 수급, 체강의 연속점수
+        if (EndNpts - 1 >= 0)
+            stock_title += " " + x[EndNpts - 1, 10] + "/" + x[EndNpts - 1, 11] + "  " + o.dev_avr; // 수급, 체강의 연속점수
         return stock_title;
     }
 

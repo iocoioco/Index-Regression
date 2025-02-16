@@ -19,7 +19,7 @@ namespace New_Tradegy
         {
             InitializeComponent();
           
-            if(g.connected)
+            //? if(g.connected)
                 this.FormClosed += new FormClosedEventHandler(Form_그룹_FormClosed);
         }
 
@@ -67,7 +67,7 @@ namespace New_Tradegy
             g.그룹.dgv.RowTemplate.Height = g.formSize.ch;
             g.그룹.dgv.ForeColor = Color.Black;
 
-            if(g.connected)
+            if(!g.test)
             {
                 g.그룹.dgv.ScrollBars = ScrollBars.None;
                 
@@ -104,7 +104,7 @@ namespace New_Tradegy
             g.그룹.dtb.Columns.Add("2");
            
             int rows = g.oGL_data.Count;
-            if (g.connected)
+            if (!g.test)
             {
                 rows = 9;
             }

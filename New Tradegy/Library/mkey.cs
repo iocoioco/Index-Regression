@@ -14,7 +14,11 @@ namespace New_Tradegy
     {
         private static CPSYSDIBLib.MarketEye _marketeye;
         private static CPUTILLib.CpStockCode _cpstockcode;
+     
+        private static IndexRangeTrack KospiIndexRangeTrack  = new IndexRangeTrack();
+        private static IndexRangeTrack KosdaqIndexRangeTrack = new IndexRangeTrack();
 
+        
         public static async Task task_marketeye()
         {
             while (true)
@@ -611,10 +615,12 @@ namespace New_Tradegy
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];
             g.코스피지수 = q.x[q.nrow - 1, 1];
+            KospiIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kospi"); //?
 
             index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
             q = g.ogl_data[index];
             g.코스닥지수 = q.x[q.nrow - 1, 1];
+            KosdaqIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kosdaq"); //?p
 
             ps.post_코스닥_코스피_프외_순매수_배차_합산();
 

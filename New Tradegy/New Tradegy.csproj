@@ -181,9 +181,11 @@
     <Compile Include="Library\eval.cs" />
     <Compile Include="Library\form.cs" />
     <Compile Include="Library\hoga.cs" />
+    <Compile Include="Library\IndexRangeCheck.cs" />
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\mdm.cs" />
     <Compile Include="Library\sell.cs" />
+    <Compile Include="Library\SuddenDrop.cs" />
     <Compile Include="Library\temp_breakout_largewall.cs" />
     <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\test.cs" />

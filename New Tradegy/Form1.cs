@@ -213,7 +213,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            if (g.connected) 
+            if (!g.test) 
             {
                 cn.Init_CpConclusion();
 

@@ -24,7 +24,7 @@ namespace New_Tradegy.Library
         {
             // row setting
             int start_row, end_row;
-            if (!g.connected)
+            if (g.test)
             {
                 if (t.nrow < g.Npts[1])
                     end_row = t.nrow;
@@ -166,7 +166,7 @@ namespace New_Tradegy.Library
         {
             // row setting
             int start_row, end_row;
-            if (!g.connected)
+            if (g.test)
             {
                 if (t.nrow < g.Npts[1])
                     end_row = t.nrow;
@@ -478,7 +478,7 @@ namespace New_Tradegy.Library
                              Math.Round(o.통계.거분_avr * 10, 0) + "  " + Math.Round(o.통계.거분_dev * 10, 0) + "      프분     거분\n" +
                      "  " + Math.Round(o.통계.배차_avr, 0) + "  " + Math.Round(o.통계.배차_dev, 0) + "    " +
                              Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
-            if (!g.connected)
+            if (g.test)
             {
                 if (o.nrow < g.Npts[1])
                     end_row = o.nrow;
@@ -592,7 +592,7 @@ namespace New_Tradegy.Library
             //                 Math.Round(o.통계.거분_avr * 10, 0) + "  " + Math.Round(o.통계.거분_dev * 10, 0) + "      프분     거분\n" +
             //         "  " + Math.Round(o.통계.배차_avr, 0) + "  " + Math.Round(o.통계.배차_dev, 0) + "    " +
             //                 Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
-            if (!g.connected)
+            if (g.test)
             {
                 if (o.nrow < g.Npts[1])
                     end_row = o.nrow;

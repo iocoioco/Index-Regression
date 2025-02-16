@@ -20,19 +20,15 @@ namespace New_Tradegy.Library
         public int Price { get; set; }
         public bool WasUpper { get; set; }
         public int Quantity { get; set; }
-        public DateTime OrderTime { get; set; }
         public int UrgencyLevel { get; set; }
-        public TimeSpan CancelThreshold { get; set; }
 
-        public Order(string stock, int price, bool wasUpper, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
+        public Order(string stock, int price, bool wasUpper, int quantity, int urgencyLevel)
         {
             Stock = stock;
             Price = price;
             WasUpper = wasUpper;
             Quantity = quantity;
-            OrderTime = orderTime;
             UrgencyLevel = urgencyLevel;
-            this.CancelThreshold = cancelThreshold;
         }
     }
 
@@ -109,8 +105,8 @@ namespace New_Tradegy.Library
                     RemoveOrder(buyOrders, order);
 
                     
-                    //?
-                    using (var form = new Form_매수_매도(stock, "매수 ?", order.UrgencyLevel, g.cancelThreshhold, str))
+                    //? MonitorPrices
+                    using (var form = new Form_매수_매도(stock, "매수 ?", order.UrgencyLevel, str))
                     {
                         DialogResult result = form.ShowDialog();
                         if (result == DialogResult.Yes) // 시장가
@@ -143,8 +139,8 @@ namespace New_Tradegy.Library
 
                     RemoveOrder(sellOrders, order);
 
-                    //?
-                    using (var form = new Form_매수_매도(stock, "매도 ?", order.UrgencyLevel, g.cancelThreshhold, str))
+                    //? MonitorPrices
+                    using (var form = new Form_매수_매도(stock, "매도 ?", order.UrgencyLevel, str))
                     {
                         DialogResult result = form.ShowDialog();
                         if (result == DialogResult.Yes) // 시장가
@@ -222,7 +218,7 @@ namespace New_Tradegy.Library
             #endregion
         }
 
-        public void AddBuyOrder(string stock, int price, bool wasUpper, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
+        public void AddBuyOrder(string stock, int price, bool wasUpper, int quantity, int urgencyLevel)
         {
             if (dl.CheckPreviousLoss(stock))
                 return;
@@ -237,10 +233,10 @@ namespace New_Tradegy.Library
                 buyOrders.Remove(existingOrder);
             }
 
-            buyOrders.Add(new Order(stock, price, wasUpper, quantity, orderTime, urgencyLevel, cancelThreshold));
+            buyOrders.Add(new Order(stock, price, wasUpper, quantity, urgencyLevel));
         }
 
-        public void AddSellOrder(string stock, int price, bool wasUpper, int quantity, DateTime orderTime, int urgencyLevel, TimeSpan cancelThreshold)
+        public void AddSellOrder(string stock, int price, bool wasUpper, int quantity, int urgencyLevel)
         {
             // Find the existing order with the same stock and price
             var existingOrder = sellOrders.Find(order => order.Stock == stock && order.Price == price);
@@ -251,7 +247,7 @@ namespace New_Tradegy.Library
                 sellOrders.Remove(existingOrder);
             }
 
-            sellOrders.Add(new Order(stock, price, wasUpper, quantity, orderTime, urgencyLevel, cancelThreshold));
+            sellOrders.Add(new Order(stock, price, wasUpper, quantity, urgencyLevel));
         }
 
         private bool IsSuddenDrop(int sellHogaPrice, int buyHogaPrice)
@@ -534,7 +530,7 @@ namespace New_Tradegy.Library
                         str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
                                    " = " + (Price * Amount / 10000).ToString() + "만원";
 
-                        using (var form = new Form_매수_매도(Stock, "매도 ?", Urgency, g.cancelThreshhold, str))
+                        using (var form = new Form_매수_매도(Stock, "매도 ?", Urgency, str))
                         {
                             DialogResult result = form.ShowDialog();
                             if (result == DialogResult.Yes) // 시장가
@@ -550,8 +546,8 @@ namespace New_Tradegy.Library
                                 else
                                 {
                                     Urgency = form.The_urgency;
-                                    g.cancelThreshhold = form.The_cancelthreshhold;
-                                    stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                                
+                                    stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, Urgency);
                                 }
                             }
                             else
@@ -569,7 +565,7 @@ namespace New_Tradegy.Library
                         else
                         {
                             // Urgency and TimeThresh not used
-                            stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                            stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, Urgency);
                         }
                     }
                     break;
@@ -643,7 +639,7 @@ namespace New_Tradegy.Library
                     }
 
                     mc.Sound_돈(g.일회거래액);
-                    Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[0].Width * 100) : 100;
+                    Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[2].Width * 100) : 100;
 
                     str = "";
                     if (g.confirm_buy)
@@ -656,7 +652,7 @@ namespace New_Tradegy.Library
                         if (dl.CheckPreviousLoss(Stock))
                             return;
 
-                        using (var form = new Form_매수_매도(Stock, "매수 ?", Urgency, g.cancelThreshhold, str))
+                        using (var form = new Form_매수_매도(Stock, "매수 ?", Urgency, str))
                         {
                             DialogResult result = form.ShowDialog();
                             if (result == DialogResult.Yes) // 시장가
@@ -672,8 +668,8 @@ namespace New_Tradegy.Library
                                 else
                                 {
                                     Urgency = form.The_urgency;
-                                    g.cancelThreshhold = form.The_cancelthreshhold;
-                                    stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, DateTime.Now, Urgency, TimeSpan.FromMinutes(382));
+                                
+                                    stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, Urgency);
                                 }
                             }
                             else // 취소

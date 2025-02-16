@@ -30,13 +30,12 @@ namespace New_Tradegy
         public static string str;
         string stock;
         int _urgency;
-        int _cancelThreshhold;
-
+      
 
 
         //private System.Windows.Forms.Button Yes;
 
-        public Form_매수_매도(string ReceivedStock, string text, int Urgency, int CancelThreshhold, string ReceivedString)
+        public Form_매수_매도(string ReceivedStock, string text, int Urgency, string ReceivedString)
         {
             
 
@@ -61,7 +60,6 @@ namespace New_Tradegy
             richTextBox1.Size = this.Size;
 
             _urgency = Urgency;
-            _cancelThreshhold = CancelThreshhold;
         }
 
 
@@ -96,31 +94,17 @@ namespace New_Tradegy
             hUrgencyScrollBar.Value = (int)(_urgency * 1.1);
             hUrgencyScrollBar.Name = "";
             hUrgencyScrollBar.Text = "";
-            hUrgencyScrollBar.Location = new Point(this.Width / 7, (int)(this.Height * 0.65));
-            int w = Cancel.Location.X - Ok.Location.X + Cancel.Size.Width;
+            hUrgencyScrollBar.Location = new Point(this.Width / 8, (int)(this.Height * 0.65));
+            int w = Cancel.Location.X + Cancel.Width - Yes.Location.X;
             hUrgencyScrollBar.Size = new System.Drawing.Size(w, (int)(Ok.Size.Height * 1.0));
             hUrgencyScrollBar.Scroll += HUrgencyscrollBar_Scroll;
             hUrgencyScrollBar.BringToFront();
 
-            // CancelThreshhold
-            HScrollBar hCancelThreshholdScrollBar = new HScrollBar();
-            hCancelThreshholdScrollBar.Minimum = 0;
-            hCancelThreshholdScrollBar.Maximum = 110;
-            hCancelThreshholdScrollBar.Value = (_cancelThreshhold - 1) * 25;
-            hCancelThreshholdScrollBar.Name = "";
-            hCancelThreshholdScrollBar.Text = "";
-            hCancelThreshholdScrollBar.Location = new Point(this.Width / 7, (int)(this.Height * 0.65) + 30);
-            w = Cancel.Location.X - Ok.Location.X + Cancel.Size.Width;
-            hCancelThreshholdScrollBar.Size = new System.Drawing.Size(w, (int)(Ok.Size.Height * 1.0));
-            hCancelThreshholdScrollBar.Scroll += HCancelThreshholdscrollBar_Scroll;
-            hCancelThreshholdScrollBar.Width = w;
-            hCancelThreshholdScrollBar.BringToFront();
-
             richTextBox1.Controls.Add(hUrgencyScrollBar);
-            richTextBox1.Controls.Add(hCancelThreshholdScrollBar);
+            
             this.TopMost = true;
 
-            
+
             this.ActiveControl = Ok;
             this.Ok.DialogResult = DialogResult.OK;
             this.AcceptButton = Ok;
@@ -132,10 +116,7 @@ namespace New_Tradegy
             get { return this._urgency; }
         }
 
-        public int The_cancelthreshhold
-        {
-            get { return this._cancelThreshhold; }
-        }
+
 
         private void HUrgencyscrollBar_Scroll(object sender, ScrollEventArgs e)
         {
@@ -153,14 +134,7 @@ namespace New_Tradegy
             }
         }
 
-        private void HCancelThreshholdscrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (e.Type == ScrollEventType.EndScroll)
-            {
-                _cancelThreshhold = e.NewValue/ 25 + 1; // the interval was set 20 - 110, now reset effect 1 - 5
-                g.cancelThreshhold = _cancelThreshhold ;
-            }
-        }
+
 
         // addNewLine : if true add new line at the end, else ...
         public void appendMemoRichTextBox(string text, Color color, bool addNewLine = false)

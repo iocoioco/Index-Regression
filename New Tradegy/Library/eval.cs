@@ -134,7 +134,7 @@ namespace New_Tradegy.Library
                     ps.post(o);
                     // ps.PostPassing(o, o.nrow - 1, true); // marketeye_received() real
                     int check_row = 0;
-                    if (!g.connected)
+                    if (g.test)
                     {
                         check_row = g.Npts[1] - 1;
                         if (check_row > o.nrow - 1)
@@ -227,9 +227,8 @@ namespace New_Tradegy.Library
             if (g.v.KeyString == "프누" ||
                 g.v.KeyString == "종누" ||
                 g.v.KeyString == "프편" ||
-                g.v.KeyString == "종편" ||
-                g.v.KeyString == "상순" ||
-                g.v.KeyString == "저순")
+                g.v.KeyString == "종편" 
+            )
                 return true;
             
             if (g.v.푀플 == 1 && o.점수.푀분 < 0)
@@ -385,7 +384,7 @@ namespace New_Tradegy.Library
                     g.stock_data o = g.ogl_data[index];
 
                     int CheckNpts = 0;
-                    if (!g.connected)
+                    if (g.test)
                         CheckNpts = g.Npts[1] - 1;
                     else
                         CheckNpts = o.nrow - 1;
@@ -438,8 +437,8 @@ namespace New_Tradegy.Library
             }
 
             // 표에 입력
-            int display_count = g.oGL_data.Count; // not g.connected full list
-            if (g.connected)
+            int display_count = g.oGL_data.Count; 
+            if (!g.test)
             {
                 if (g.oGL_data.Count > 9)
                 {

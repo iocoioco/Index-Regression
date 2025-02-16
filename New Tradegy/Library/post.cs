@@ -67,7 +67,7 @@ namespace New_Tradegy.Library
                 post(o);
             }
 
-            //?
+            //? eval or not in post_real
             if(g.MkyCnt % g.MkyDiv == 1)
                 ev.eval_stock();
             
@@ -926,17 +926,17 @@ namespace New_Tradegy.Library
                 return;
             }
 
-            int check_row = !g.connected ? Math.Min(g.Npts[1] - 1, o.nrow - 1) : o.nrow - 1;
+            int check_row = g.test ? Math.Min(g.Npts[1] - 1, o.nrow - 1) : o.nrow - 1;
 
             post_minute(o, check_row);
 
             // Maybe no need to do post_minute(o, check_row)
             // for "KODEX 코스닥150레버리지", "KODEX 레버리지"
-            if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
-            {
-                if (g.connected) ev.EvalKODEX(o);
-                return;
-            }
+            //if (o.stock == "KODEX 코스닥150레버리지" || o.stock == "KODEX 레버리지")
+            //{
+            //    if (g.connected) ev.EvalKODEX(o);
+            //    return;
+            //}
             
             o.점수.총점 = post_score(o, check_row);
 
@@ -1746,7 +1746,7 @@ namespace New_Tradegy.Library
             o.매수호가거래액_백만원 = (int)(o.최우선매수호가잔량 * money_factor * 10); 
 
             // 혼합, 아래 계산은 하되 사용하지 않음
-            if (!g.connected)
+            if (g.test)
             {
                 double multiple_factor = 0.0;
                 if (o.일평균거래량 > 0)

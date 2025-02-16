@@ -64,7 +64,7 @@ namespace New_Tradegy.Library
                 // Functionw
                 #region
                 case '\u001B': // Escape
-                    if (!g.connected)
+                    if (g.test)
                     {
                         if (g.clickedStock == null)
                             return;
@@ -115,7 +115,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case '1':
-                    if (!g.connected) // 긴 시간 앞으로 in draw
+                    if (g.test) // 긴 시간 앞으로 in draw
                     {
                         if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
@@ -158,7 +158,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case '2': //
-                    if (!g.connected) // 시간 뒤로 (테스트)
+                    if (g.test) // 시간 뒤로 (테스트)
                     {
                         g.Npts[1]--;
                         if (g.Npts[1] < 2)
@@ -185,7 +185,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case '3': // 매수
-                    if (!!g.connected)
+                    if (g.connected && !g.test)
                     {
                         Form f = cl.GetActiveForm();
                         if (f == null)
@@ -237,7 +237,7 @@ namespace New_Tradegy.Library
                 // TOP
                 #region
                 case 'q':
-                    if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
+                    if (g.test) // 짧은 시간 앞으로 in draw(테스트)
                     {
                         if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.q_advance_lines);
@@ -251,26 +251,27 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'Q':
-                    if (!g.connected) // 짧은 시간 앞으로 in draw(테스트)
+                    if (g.test) // 긴 시간 앞으로 in draw
                     {
                         if (g.EndNptsBeforeExtend == 0) // time extension
                             mm.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                         else
                             mm.MinuteAdvanceRetreat(0);
-                        action = " p B"; // del chartarea, post, eval, draw
+
+                        action = " p B"; // no del chartarea, post, no eval, both draw
                     }
                     //dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "대기매도", g.일회거래액); // chart1KeyPress in 'Q'  tr(3)
                     break;
 
                 case '\u0011': // Cntl + q, 비상매도
-                    if (!g.connected)
+                    if (g.test)
                         return;
                     //dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "시장가", g.일회거래액); // chart1KeyPress in 'Cntl + q'  tr(3)
                     break;
 
 
                 case 'w':
-                    if (!g.connected) // 시간 앞으로 (테스트)
+                    if (!!g.test) // 시간 앞으로 (테스트)
                     {
                         g.Npts[1]++;
 
@@ -287,14 +288,18 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'W':
-                    if (!g.connected) // 시초
+                    if (g.test) // 시간 뒤로 (테스트)
                     {
+                        g.Npts[1]--;
+                        if (g.Npts[1] < 2)
+                        {
                             g.Npts[0] = 0;
                             g.Npts[1] = 2;
-                        action = " peB"; // no del, post, no eval, both draw
+                        }
+                        action = " peB"; // del chartarea, post, eval, draw
                     }
-                     // 대기매수
-                        // dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "대기매수", g.일회거래액);
+                    // 대기매수
+                    // dl.deal_trade_by_key(g.호가[0].dgv, g.매매.dgv, "대기매수", g.일회거래액);
 
                     break;
 
@@ -322,16 +327,16 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'r':
-                    g.NptsForShrinkDraw -= 10;
-                    if (g.NptsForShrinkDraw <= 10)
+                    g.NptsForSrkDrw -= 10;
+                    if (g.NptsForSrkDrw <= 10)
                     {
-                        g.NptsForShrinkDraw = 10;
+                        g.NptsForSrkDrw = 10;
                     }
                     action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
                 case 'R':
-                    g.NptsForShrinkDraw += 10;
+                    g.NptsForSrkDrw += 10;
                     action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
@@ -340,7 +345,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 't':
-                    if (!g.connected)
+                    if (g.test)
                     {
                         if (g.draw_selection == 1)
                         {
@@ -358,7 +363,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'T':
-                    if (!g.connected)
+                    if (g.test)
                     {
                         if (g.draw_selection == 1)
                         {
@@ -371,7 +376,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'y':
-                    if (!g.connected)
+                    if (g.test)
                     {
                         g.Npts[1] += 30;
 
@@ -385,7 +390,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'Y': //
-                    if (!g.connected)
+                    if (g.test)
                     {
                         g.Npts[1] -= 30;
 
@@ -473,7 +478,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'A':
-                    if (!g.connected)
+                    if (!g.connected && !g.test)
                         return;
 
                     g.add_interest = !g.add_interest;
@@ -508,7 +513,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case '\u0013': // Ctrl + S
-                    if (!!g.connected)
+                    if (g.connected && !g.test)
                     {
                         string caption = "Save all stocks ?";
                         string message = "모든 파일 현재 시간 기준 저장";
@@ -547,6 +552,8 @@ namespace New_Tradegy.Library
                     break;
     
                 case 'F':
+                    g.v.KeyString = "분거";
+                    action = " pem"; //?
                     break;
                 case '\u0006': // Ctrl + F
                                // Add TextBox
@@ -581,7 +588,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'H':
-                    if (!g.connected)
+                    if (g.test)
                         g.draw_history_forwards = !g.draw_history_forwards;
                     break;
 
@@ -648,7 +655,7 @@ namespace New_Tradegy.Library
 
 
                 case 'x':
-                    if (!!g.connected)
+                    if (!g.test)
                     {
                         g.click_trade = !g.click_trade;
                         if (g.click_trade)
@@ -713,14 +720,14 @@ namespace New_Tradegy.Library
 
                 // 화면 전 후 이동
                 case '.':
-                    if (!g.connected)
+                    if (g.test)
                     {
                         wk.date_backwards_forwards("forwards");
                     }
                     break;
 
                 case ',':
-                    if (!g.connected)
+                    if (g.test)
                     {
                         wk.date_backwards_forwards("backwards");
                     }

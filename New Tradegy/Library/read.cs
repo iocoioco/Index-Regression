@@ -644,19 +644,21 @@ namespace New_Tradegy.Library
             if (!File.Exists(filename)) return;
             string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
 
-            int add = 0;
-            if (grlines[0] == "r" || grlines[0] == "t")
-                add = 1;
 
-            if (grlines[0 + add] == "s")
+            if (grlines[0] == "t")
+                g.test = true;
+            else
+                g.test = false;
+
+            if (grlines[1] == "s")
                 g.shortform = true;
             else
                 g.shortform = false;
 
-            string[] strs = grlines[1 + add].Split(' ');
+            string[] strs = grlines[2].Split(' ');
             g.Account = strs[0];
 
-            strs = grlines[2 + add].Split(' ');
+            strs = grlines[3].Split(' ');
             g.date = Convert.ToInt32(strs[0]);
             //if (strs[1] == "w" || strs[1] == "W")
             //{

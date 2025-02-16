@@ -1,31 +1,29 @@
-﻿using MathNet.Numerics.Random;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace New_Tradegy.Library
 {
     public class g
     {
+        public static bool test;
 
-        public static int cancelThreshhold = 5;
         public static int postInterval = 30;
-        public static Dictionary<string, object> jpjds = 
+        public static Dictionary<string, object> jpjds =
             new Dictionary<string, object>();
 
         public static bool workingday = false;
 
         public static char PeoridNews = 'w';
-            public static string Account;
+        public static string Account;
         public static string MachineName;
         public static bool shortform;
         public static int 전일종가이상 = 1000;
-        
+
 
         public static bool _checkedTradeInit = false;
 
@@ -46,7 +44,7 @@ namespace New_Tradegy.Library
 
         public static bool draw_history_forwards = false;
 
-     
+
         public static bool click_trade = false;
         public static bool confirm_buy = true;
         public static bool add_interest = false;
@@ -78,7 +76,7 @@ namespace New_Tradegy.Library
             public int m_nAmt; // 주문수량
             public int m_nContAmt; // 체결수량
             public int m_nPrice; //주문단가
-           // public string m_sCredit;
+                                 // public string m_sCredit;
             public int m_nModAmt; // 접수시 주문수량 = 정정취소 가능수량
 
             public string m_sHogaFlag; // 주문호가구분코드내용
@@ -114,26 +112,26 @@ namespace New_Tradegy.Library
         public class form_size
         {
             public int ch = 28;
-        
+
 
             public static int h = 28;
-            
-     
+
+
             public int 상단_y = 0;
-            public int 호가_ht = h  * 12;
-    
+            public int 호가_ht = h * 12;
+
             public int 제어_y = h * 12;
             public int 제어_ht = h * 3;
-   
+
             public int 매매_y = h * 15;
             public int 매매_ht = h * 7;
-     
+
             public int 그룹_y = h * 22;
             public int 그룹_ht = h * 3;
-    
+
             public int 하단_y = h * 25;
             public int 호가폭감소 = 10;
-            
+
         }
         public static form_size formSize = new form_size();
 
@@ -186,7 +184,7 @@ namespace New_Tradegy.Library
 
 
 
-       
+
 
 
         //public static List<string> ogl = new List<string>();   // total set of single stock list
@@ -197,10 +195,10 @@ namespace New_Tradegy.Library
 
 
         public static List<List<string>> oGL = new List<List<string>>(); // large group set list
-        //public static List<string> oGL_title = new List<string>();
+                                                                         //public static List<string> oGL_title = new List<string>();
 
 
-       
+
 
 
 
@@ -231,7 +229,7 @@ namespace New_Tradegy.Library
 
         // public static List<string> 평불종목 = new List<string>();   // 매수된 종목
 
-       
+
         public static List<string> 지수종목 = new List<string>();
         public static List<string> 코스피History = new List<string>();   // 매수된 종목
         public static List<string> 코스닥History = new List<string>();   // 클릭된 종목, Toggle로 선택 & 취소
@@ -265,9 +263,9 @@ namespace New_Tradegy.Library
         public static int kosdq_value = -3000;
         public static int kospi_was1호가 = 0;
         public static int kosdaq_was1호가 = 0;
-       
+
         public static int priceKospiSounded = 0;
-       
+
         public static int priceKosdaqSounded = 0;
 
 
@@ -325,7 +323,7 @@ namespace New_Tradegy.Library
         public static int saved_date = 0;
         public static int saved_hs_date = 0;
         public static List<int> date_list = new List<int>();
-      
+
         public static int[] Npts = new int[2];
 
         public static int[] SavedNpts = new int[2];
@@ -345,7 +343,7 @@ namespace New_Tradegy.Library
         public static int saved_Gid;
         public static int draw_selection = 1;
         public static int npts_fi_dwm = 40;
-        public static int NptsForShrinkDraw = 30;
+        public static int NptsForSrkDrw = 30;
         public static int npts_for_magenta_cyan_mark = 4;
 
         //public static int money_shift = 2;
@@ -502,7 +500,7 @@ namespace New_Tradegy.Library
         public static score s = new score();
 
 
- 
+
         public class stock_data
         {
             public class t
@@ -549,7 +547,7 @@ namespace New_Tradegy.Library
             public d deal = new d();
 
             public string stock;
-    
+
 
             public bool SrkDrw = false;
 
@@ -557,7 +555,7 @@ namespace New_Tradegy.Library
 
             public List<string> 절친 = new List<string>();
 
-       
+
             public bool downloaded = false;
 
             public string code; //0
@@ -588,7 +586,7 @@ namespace New_Tradegy.Library
 
                 public double 등합;
 
-                
+
             }
             public score 점수 = new score();
             public class statics
@@ -601,7 +599,7 @@ namespace New_Tradegy.Library
                 public double 그룹_avr, 그룹_dev;
                 public double 피로_avr, 피로_dev;
                 public double 기타_avr, 기타_dev;
-                
+
             }
             public statics 통계 = new statics();
 

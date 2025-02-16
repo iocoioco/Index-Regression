@@ -37,7 +37,7 @@ namespace New_Tradegy.Library
         public static async Task SaveAllStocks()
         {
 
-          if (!g.connected) // never save during test
+          if (g.test) // never save during test
                 return;
 
             rd.read_write_kodex_magnifier("write");

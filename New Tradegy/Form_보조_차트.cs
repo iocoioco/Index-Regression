@@ -137,7 +137,7 @@ namespace New_Tradegy
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                if (!mm.ChartAreaExists(g.chart2, stock) || g.connected)
+                if (!mm.ChartAreaExists(g.chart2, stock)) //?
                 {
                     mm.AreaStocks(g.chart2, stock, nRow, nCol);
                 }
