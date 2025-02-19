@@ -91,9 +91,12 @@ class mm
         for (int i = 0; i < fixedStocks.Length; i++)
         {
             string stock = fixedStocks[i];
+            int index = wk.return_index_of_ogldata(stock);
+            if (index < 0) return;
+            g.stock_data o = g.ogl_data[index];
 
             //? chart area exists ? ; if not, create 
-             if (ChartAreaExists(chart, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test)
+             if (ChartAreaExists(chart, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test && !o.SrkDrw)
             {
                 UpdateSeries(chart, stock, g.nRow, g.nCol);
             }
@@ -273,8 +276,16 @@ class mm
                 dgv.Height = DgvCellHeight * 12;
             }
 
+
+
+
+
+  
+            int index = wk.return_index_of_ogldata(stock);
+            if (index < 0) return;
+            g.stock_data o = g.ogl_data[index];
             //? chart area exists ? ; if not, create it
-            if (ChartAreaExists(g.chart1, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test)
+            if (ChartAreaExists(g.chart1, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test && !o.SrkDrw)
             {
                 UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
             }
@@ -306,10 +317,24 @@ class mm
         for (int i = 0; i < g.dl.Count; i++)
         {
             string stock = g.dl[i];
+            if(stock == "empty" || stock =="")
+            {
+                continue;
+            }
+            int index = wk.return_index_of_ogldata(stock);
+            if (index < 0)
+            {
+                return;
+            }
+            g.stock_data o = g.ogl_data[index];
+
             if (wk.isStock(stock) && !stocksWithBid.Contains(stock))
             {
+            
 
-                if (ChartAreaExists(g.chart1, stock) && g.connected && !g.test)
+                
+
+                if (ChartAreaExists(g.chart1, stock) && g.connected && !g.test && !o.SrkDrw)
                 {
                     //if (isTotalPointsEqualSeriesPoints(g.chart1, stock))
                     //{
@@ -634,34 +659,15 @@ class mm
             return null;
 
         // g.NptsForSrkDrw is controlled by 'o' and 'O'
-        int StartNpts = 0;
-        int EndNpts = -1;
+        int StartNpts = g.Npts[0];
+        int EndNpts = g.test ? Math.Min(g.Npts[1], o.nrow) : o.nrow;
 
-        if (!g.test)
+        if (o.SrkDrw)
         {
-            EndNpts = o.nrow;
-        }
-        else
-        {
-            EndNpts = g.Npts[1];
-            if (EndNpts > o.nrow)
-            {
-                EndNpts = o.nrow;
-            }
+            StartNpts = Math.Max(EndNpts - g.NptsForSrkDrw, g.Npts[0]);
         }
 
 
-        StartNpts = g.Npts[0];
-        if (o.SrkDrw == true)
-        {
-            StartNpts = EndNpts - g.NptsForSrkDrw;
-            if (StartNpts < g.Npts[0])
-            {
-                StartNpts = g.Npts[0];
-            }
-        }
-
-        
 
         // Check if "ChartArea1" exists and remove it
         var defaultArea = chart.ChartAreas.FindByName("ChartArea1");
@@ -725,7 +731,7 @@ class mm
             int MarkEndPoint = TotalNumberPoint - 1;
             int EndPoint = TotalNumberPoint - 1;
 
-            MarkKodex(chart, MarkStartPoint, series);
+            MarkKodex(chart, StartNpts, series);
             LabelKodex(chart, series);
         }
 
@@ -1175,7 +1181,7 @@ class mm
 
 
         // if price increases more than the specified value, than circle mark
-        for (int m = MarkStartPoint; m <= EndPoint; m++)
+        for (int m = MarkStartPoint + 1; m <= EndPoint; m++)
         {
             if (ColumnIndex == 1) // price
             {
@@ -1351,7 +1357,7 @@ class mm
         }
     }
 
-    public static void LabelGeneral(Chart chart, System.Windows.Forms.DataVisualization.Charting.Series t)
+    public static void  LabelGeneral(Chart chart, System.Windows.Forms.DataVisualization.Charting.Series t)
     {
         // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
         // 1, 4, 5 extened label
@@ -1360,10 +1366,10 @@ class mm
         string Stock = "";
         string chartAreaName = "";
         int ColumnIndex = 0;
-        int EndPoint = 0;
+        int MarkingPoint = 0;
 
         // Fetch series information
-        SeriesInfomation(t, ref Stock, ref chartAreaName, ref ColumnIndex, ref EndPoint);
+        SeriesInfomation(t, ref Stock, ref chartAreaName, ref ColumnIndex, ref MarkingPoint);
 
         // Get the index of the stock
         int index = wk.return_index_of_ogldata(Stock);
@@ -1372,7 +1378,7 @@ class mm
         // Retrieve stock data
         g.stock_data o = g.ogl_data[index];
 
-
+        int TotalPointsOnCurve = g.test ? Math.Min(g.Npts[1], o.nrow) : o.nrow;
 
         string s = "";
         double d;
@@ -1384,21 +1390,21 @@ class mm
             case 5:
                 // Initial data setting
                 if (ColumnIndex == 1)
-                    s = "      " + o.x[EndPoint, ColumnIndex].ToString();
+                    s = "      " + o.x[TotalPointsOnCurve - 1, ColumnIndex].ToString();
                 else
                     s = ((ColumnIndex == 4 ? o.프누천 : o.외누천) / 10).ToString("F1");
 
                 // Following data setting
                 for (int k = 0; k < 4; k++)
                 {
-                    if (EndPoint - k - 1 < 0)
+                    if (TotalPointsOnCurve - 1 - k - 1 < 0)
                         break;
 
                     // Calculate difference based on ColumnIndex
                     switch (ColumnIndex)
                     {
                         case 1:
-                            d = o.x[EndPoint - k, ColumnIndex] - o.x[EndPoint - k - 1, ColumnIndex];
+                            d = o.x[TotalPointsOnCurve - 1 - k, ColumnIndex] - o.x[TotalPointsOnCurve - 1 - k - 1, ColumnIndex];
                             break;
                         case 4:
                             d = o.분프로천[k] / 10;
@@ -1417,18 +1423,18 @@ class mm
                 break;
 
             case 2:
-                s = o.x[EndPoint, ColumnIndex].ToString();
+                s = o.x[TotalPointsOnCurve - 1, ColumnIndex].ToString();
                 break;
 
             case 3:
-                s = (o.x[EndPoint, ColumnIndex] / 100).ToString();
+                s = (o.x[TotalPointsOnCurve - 1, ColumnIndex] / 100).ToString();
                 break;
 
             case 6:
                 return;
         }
 
-        t.Points[EndPoint].Label = s;
+        t.Points[MarkingPoint].Label = s;
         t.LabelForeColor = colorGeneral[ColumnIndex];
 
         // working
@@ -1445,10 +1451,12 @@ class mm
         string Stock = "";
         string chartAreaName = "";
         int ColumnIndex = 0;
-        int EndPoint = 0;
+        int MarkingPoint = 0;
 
         // Fetch series information
-        SeriesInfomation(t, ref Stock, ref chartAreaName, ref ColumnIndex, ref EndPoint);
+        SeriesInfomation(t, ref Stock, ref chartAreaName, ref ColumnIndex, ref MarkingPoint);
+
+
 
         // Get the index of the stock
         int index = wk.return_index_of_ogldata(Stock);
@@ -1459,14 +1467,16 @@ class mm
 
 
 
+        int TotalPointsOnCurve = g.test ? Math.Min(g.Npts[1], o.nrow) : o.nrow;
+
         string s;
         double d;
         //Label of price, amount and intensity at the end point
 
-        s = "      " + ((int)(o.x[EndPoint, ColumnIndex])).ToString();
+        s = "      " + ((int)(o.x[TotalPointsOnCurve - 1, ColumnIndex])).ToString();
 
         // Curve End Label
-        for (int k = EndPoint; k >= EndPoint - 3; k--)
+        for (int k = TotalPointsOnCurve - 1; k >= TotalPointsOnCurve - 4; k--)
         {
             if (k - 1 < 0)
                 break;
@@ -1479,7 +1489,7 @@ class mm
                 s += d.ToString();
         }
 
-        t.Points[EndPoint].Label = s;
+        t.Points[MarkingPoint].Label = s;
         t.LabelForeColor = colorKODEX[ColumnIndex];
 
         if (chart.Name == "chart1")

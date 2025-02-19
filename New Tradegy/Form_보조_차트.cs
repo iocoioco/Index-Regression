@@ -130,14 +130,20 @@ namespace New_Tradegy
                 PreSubKeyStr = g.v.SubKeyStr;
                 ChartClear();
             }
-                
+
 
             for (int i = 0; i < nRow * nCol; i++)
             {
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                if (!mm.ChartAreaExists(g.chart2, stock)) //?
+                int index = wk.return_index_of_ogldata(stock);
+                if(index < 0)
+                {
+                    continue;
+                }
+                g.stock_data o = g.ogl_data[index];
+                if (!mm.ChartAreaExists(g.chart2, stock) || o.SrkDrw) //?
                 {
                     mm.AreaStocks(g.chart2, stock, nRow, nCol);
                 }

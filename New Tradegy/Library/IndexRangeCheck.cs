@@ -13,19 +13,26 @@ namespace New_Tradegy.Library
         // private IndexRangeTrack kospiTracker;
         // IndexRangeCheck kospiTracker = new IndexRangeTrack();
 
-        private string currentRangeString = "00000"; // Track the last range
+        private string currentRangeKospi = "00000"; // Track the last range for Kospi
+        private string currentRangeKosdaq = "00000"; // Track the last range for Kosdaq
 
         public void CheckIndexAndSound(int indexPrice, string market)
         {
             string rangeString = GetRangeString(indexPrice);
+            string currentRange = (market == "Kospi") ? currentRangeKospi : currentRangeKosdaq;
 
-            if (currentRangeString != rangeString) // Play sound only if range changes
+            if (currentRange != rangeString) // Play sound only if range changes
             {
-                currentRangeString = rangeString;
                 if (market == "Kospi")
-                    rangeString = "p" + rangeString;
+                {
+                    currentRangeKospi = rangeString;
+                    rangeString = indexPrice > 0 ? "p+" + rangeString : "p" + rangeString;
+                }
                 else
-                    rangeString = "q" + rangeString;
+                {
+                    currentRangeKosdaq = rangeString;
+                    rangeString = indexPrice > 0 ? "q+" + rangeString : "q" + rangeString;
+                }
 
                 mc.Sound("코스피 코스닥", rangeString);
             }
@@ -35,13 +42,12 @@ namespace New_Tradegy.Library
         {
             if (value >= -9 && value <= 9)
             {
-                if (value < 0)
-                    return "-0";
-                else
-                    return "+0";
+                return value < 0 ? "-0" : "+0";
             }
             else
+            {
                 return (value / 10).ToString();
+            }
         }
     }
 }
