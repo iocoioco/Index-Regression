@@ -1,0 +1,4 @@
+git status           # Check changes
+git add .            # Stage all changes
+git commit -m "Fixed bug in calculation function"  # Commit changes
+git push origin main # Push to remote repository
