@@ -174,7 +174,6 @@
       <DependentUpon>Form_호가.cs</DependentUpon>
     </Compile>
     <Compile Include="Library\buys.cs" />
-    <Compile Include="Library\ChartState.cs" />
     <Compile Include="Library\clic.cs" />
     <Compile Include="Library\cncl.cs" />
     <Compile Include="Library\deal.cs" />
