@@ -85,15 +85,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-
-        public void InvalidateChart1()
-        {
-            chart1.Invalidate();
-        }
-
-
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
             //md.ParentPassing(this);

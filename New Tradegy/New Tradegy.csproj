@@ -183,7 +183,7 @@
     <Compile Include="Library\IndexRangeCheck.cs" />
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\mdm.cs" />
-    <Compile Include="Library\ModallessForm_매수_매도.cs" />
+    <Compile Include="Library\temp_ModallessForm_매수_매도.cs" />
     <Compile Include="Library\sell.cs" />
     <Compile Include="Library\SuddenDrop.cs" />
     <Compile Include="Library\temp_breakout_largewall.cs" />

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace New_Tradegy.Library
 {
-    internal class ModallessForm_매수_매도
+    internal class temp_ModallessForm_매수_매도
     {
         //private Dictionary<string, Form_매수_매도> activeForms = new Dictionary<string, Form_매수_매도>();
 
