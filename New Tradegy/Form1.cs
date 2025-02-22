@@ -303,13 +303,13 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
         
-        private void Chart_Paint(object sender, PaintEventArgs e)
-        {
-            if (ChartState.ActiveChart == "chart1")
-            {
-                ChartHelper.DrawNumbersAtMousePosition(e.Graphics, ChartState.Chart1MousePosition);
-            }
-        }
+        //private void Chart_Paint(object sender, PaintEventArgs e)
+        //{
+        //    if (ChartState.ActiveChart == "chart1")
+        //    {
+        //        ChartHelper.DrawNumbersAtMousePosition(e.Graphics, ChartState.Chart1MousePosition);
+        //    }
+        //}
 
 
 

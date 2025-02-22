@@ -6,7 +6,6 @@ git push origin main # Push to remote repository
 
 // undo all modifications and return to the last committed state, no undo
 git reset --hard HEAD
-
 // specific file only 
 git checkout -- filename.ext or git restore filename.ext
 
@@ -35,4 +34,4 @@ git stash pop
 git restore --staged a.txt b.cs   # Unstage the files
 git restore a.txt b.cs            # Restore them to last commit
 
-temporary aaa bbb 
+
