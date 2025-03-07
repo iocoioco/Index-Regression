@@ -419,18 +419,21 @@ namespace New_Tradegy.Library
             }
             else
             {
-                total_stock_list = rd.read_그룹_네이버_업종(Gl, GL); // duration 2.7 seconds
+                total_stock_list = rd.read_그룹_네이버_업종(Gl, GL); // 2734 종목(20250224 기준), duration 2.7 seconds
             }
 
             // total_stock_list : 20일 최대거래액 30억 이상 종목만 total_stock_list에
             // 저장 (2400여 개 종목 중 1200개 정도 total_stock_list에 다시 저장
-            wk.일최대거래액일정액이상종목선택(total_stock_list, 30); // duration 0.8 seconds
+           
 
             // 상관.txt에 있는 종목을 상관_group_total_stock_list에 저장
             // tgl_title : group 이름
             // tgl : 각 그룹별 종목
             rd.read_상관(상관_group_total_stock_list, tgl_title, tgl, total_stock_list); // duration 1.3 seconds
 
+            //int 일거래액기준 = 30; // 30억
+            //wk.이십일중일최대거래액일정액이상종목선택(total_stock_list, 일거래액기준); // 1211 종목(20250224 기준) // duration 0.8 seconds
+    
             // if exist read
             // 상관_group_total_stock_list 중 중복되지 않는 종목 1200여 개 total_stock_list.추가
             //foreach (var item in 상관_group_total_stock_list)
@@ -447,7 +450,9 @@ namespace New_Tradegy.Library
 
             rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
 
-            foreach (string t in g.지수종목) // duration 0.000 seconds
+      
+
+            foreach (string t in g.지수종목) // 1244 종목(20250224 기준) 왜 33 종목이 늘었지 ? // duration 0.000 seconds
             {
                 if (!total_stock_list.Contains(t))
                     total_stock_list.Add(t);
@@ -460,7 +465,10 @@ namespace New_Tradegy.Library
             //}
 
             foreach (var stock in total_stock_list) // duration 5.86 seconds
+            {
                 wk.gen_ogl_data(stock);
+            }
+                
 
             // 개별 종목이 그룹에 속하는 지 여부 bool로 기록
             //for (int i = 0; i < GL.Count; i++)

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 /* 배점 : 대형주 배차 조건 충족시, 수일 과다 움직임 높게(dev 큰 종목 가능성 높음) + 배차
  *  1차 상승시 접근, 2차 이상 자제
@@ -67,8 +68,8 @@ namespace New_Tradegy.Library
                 post(o);
             }
 
-            //? eval or not in post_real
-            if(g.MkyCnt % g.MkyDiv == 1)
+            // eval or not in post_real
+            if(g.MarketeyeCount % g.MarketeyeDividerForEvalStock == 1)
                 ev.eval_stock();
             
 
@@ -885,12 +886,15 @@ namespace New_Tradegy.Library
             for (int i = 0; i < g.kospi_mixed.stock.Count; i++)
             {
                 int index = wk.return_index_of_ogldata(g.kospi_mixed.stock[i]);
-                if (index < 0) continue;
+                if (index < 0)
+                {
+                    continue;
+                }
 
                 g.stock_data t = g.ogl_data[index];
                 double money_factor = t.전일종가 / g.억원;
 
-                g.코스피프외순매수 += (int)((t.x[t.nrow - 1, 3] + t.x[t.nrow - 1, 5]) * money_factor);
+                g.코스피프외순매수 += (int)((t.x[t.nrow - 1, 4] + t.x[t.nrow - 1, 5]) * money_factor); // 4 : 프로그램, 5: 외인, 6: 기관
                 g.코스피외인순매수 += (int)(t.x[t.nrow - 1, 5] * money_factor);
                 g.코스피매수배 = (int)(t.x[t.nrow - 1, 8] * g.kospi_mixed.weight[i]);
                 g.코스피매도배 = (int)(t.x[t.nrow - 1, 9] * g.kospi_mixed.weight[i]);
@@ -903,12 +907,15 @@ namespace New_Tradegy.Library
             for (int i = 0; i < g.kosdaq_mixed.stock.Count; i++)
             {
                 int index = wk.return_index_of_ogldata(g.kosdaq_mixed.stock[i]);
-                if (index < 0) continue;
+                if (index < 0)
+                {
+                    continue;
+                }
 
                 g.stock_data t = g.ogl_data[index];
                 double money_factor = t.전일종가 / g.억원;
 
-                g.코스닥프외순매수 += (int)((t.x[t.nrow - 1, 3] + t.x[t.nrow - 1, 5]) * money_factor);
+                g.코스닥프외순매수 += (int)((t.x[t.nrow - 1, 4] + t.x[t.nrow - 1, 5]) * money_factor);
                 g.코스닥외인순매수 += (int)(t.x[t.nrow - 1, 5] * money_factor);
                 g.코스닥매수배 = (int)(t.x[t.nrow - 1, 8] * g.kosdaq_mixed.weight[i]);
                 g.코스닥매도배 = (int)(t.x[t.nrow - 1, 9] * g.kosdaq_mixed.weight[i]);
@@ -940,11 +947,15 @@ namespace New_Tradegy.Library
             
             o.점수.총점 = post_score(o, check_row);
 
-          
+            PostPassing(o, check_row, true);
         }
 
         public static void PostPassing(g.stock_data o, int checkRow, bool add)
         {
+            //if(o.stock != "삐아") //?
+            //{
+            //    return;
+            //}
             bool previousPriceReset = false;
 
             if (o.x[checkRow, 1] < o.pass.previousPriceHigh)
@@ -967,7 +978,7 @@ namespace New_Tradegy.Library
                         o.분거래천[0] > 50 &&
                         o.분배수차[0] > 100 &&
                         o.분프로천[0] >= 0 &&
-                        g.add_interest)
+                        g.add_interest) // initially g.add_interest = false, Key "A" toggle false and true
                     {
                         if (g.관심종목.Count > 2)
                         {
@@ -1005,6 +1016,8 @@ namespace New_Tradegy.Library
             if (o.pass.previousPriceHigh > o.pass.year)
                 o.pass.yearStatus = 1;
         }
+
+
         // 통계 적용
         public static void post_score_급락(g.stock_data o, int check_row)
         {

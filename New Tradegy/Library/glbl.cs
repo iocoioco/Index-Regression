@@ -49,7 +49,7 @@ namespace New_Tradegy.Library
         public static bool confirm_buy = true;
         public static bool add_interest = false;
         public static bool confirm_sell = false;
-        public static bool draw_stock_shrink_or_not = false;
+        // public static bool draw_stock_shrink_or_not = false;
         public static bool settingBuy = false;
         public static bool settingSell = false;
 
@@ -311,8 +311,8 @@ namespace New_Tradegy.Library
 
 
 
-        public static int MkyCnt = 0;
-        public static int MkyDiv = 10;
+        public static int MarketeyeCount = 0;
+        public static int MarketeyeDividerForEvalStock = 10;
         public static int minuteSaveAll = 0;
         public static int alamed_hhmm = 0;
 
@@ -343,7 +343,7 @@ namespace New_Tradegy.Library
         public static int saved_Gid;
         public static int draw_selection = 1;
         public static int npts_fi_dwm = 40;
-        public static int NptsForSrkDrw = 30;
+        public static int NptsForShrinkDraw = 30;
         public static int npts_for_magenta_cyan_mark = 4;
 
         //public static int money_shift = 2;
@@ -549,7 +549,7 @@ namespace New_Tradegy.Library
             public string stock;
 
 
-            public bool SrkDrw = false;
+            public bool ShrinkDraw = false;
 
             //public bool in_group_or_not = false;
 
@@ -579,14 +579,11 @@ namespace New_Tradegy.Library
 
                 public double 총점;
 
-
                 public int 푀분_등수, 거분_등수;
                 public int 배차_등수, 배합_등수;
                 public int 그순; // 그룹_등수
 
                 public double 등합;
-
-
             }
             public score 점수 = new score();
             public class statics
@@ -620,8 +617,8 @@ namespace New_Tradegy.Library
             public long 전저가; //7 long
             public int 전저;
 
-            public long 매도1호가; // 8 long
-            public long 매수1호가; // 9 long
+            public long 매수1호가;
+            public long 매도1호가; // 8 long public long 매수1호가; // 9 long
 
             public ulong 거래량; // 10 ulong
             //public ulong 거래액_원; // 11 ulong
@@ -658,9 +655,7 @@ namespace New_Tradegy.Library
 
             public int 시간;
             public int 가격;
-
             public int 수급;
-
             public double 체강;
 
             public int 보유량;
@@ -671,15 +666,15 @@ namespace New_Tradegy.Library
             public long 평가금액; // Error, if use int instead of long
             public long 손익단가; // Error, if use int instead of long
 
-            public string dev_avr;
-            public double avr;
-            public double dev;
+            public string 일간변동평균편차;
+            public double 일간변동평균;
+            public double 일간변동편차;
 
-            public int max_dealt; // in testing, these are diplayed in textBox 10, 11,, 12 etc
-            public int min_dealt;
-            public int avr_dealt;
-            public ulong 일평균거래량;
+            public int 일최대거래액; // in testing, these are diplayed in textBox 10, 11,, 12 etc
+            public int 일최저거래액;
             public int 일평균거래액;
+            public ulong 일평균거래량;
+         
             public int 일평균푀돈액;
 
             public char 시장구분; // P 코스피, D 코스닥

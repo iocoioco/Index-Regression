@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -252,22 +253,16 @@ namespace New_Tradegy.Library
 
                         str += "\n" + sr.r3_display_매수_매도(o);
 
-                        if (dl.CheckPreviousLoss(g.clickedStock))
+                        if (DealManager.CheckPreviousLoss(g.clickedStock))
                             return;
-  
 
-                        using (var form = new Form_매수_매도(g.clickedStock, "매수 ?", 100, str))
-                        {
-                            DialogResult result = form.ShowDialog();
-
-                            if (result != DialogResult.OK)
-                            {
-                                return;
-                            }
-                           
-                        }
+                        bool isSell = false; // buying
+                        int Urgency = 100;
+                        var a = new jp();
+                        a.OpenOrUpdateConfirmationForm(isSell, g.clickedStock, Amount, Price, Urgency, str);
+                        
                     }
-                    dl.deal_exec("매수", g.clickedStock, Amount, Price, "03"); // Cntl + l1 
+                    DealManager.deal_exec("매수", g.clickedStock, Amount, Price, "03"); // Cntl + l1 
                     break;
 
                 case "l2":
@@ -415,13 +410,13 @@ namespace New_Tradegy.Library
             switch (selection)
             {
                 case "l1":
-                    if (o.SrkDrw)
+                    if (o.ShrinkDraw)
                     {
-                        o.SrkDrw = false;
+                        o.ShrinkDraw = false;
                     }
                     else
                     {
-                        o.SrkDrw = true;
+                        o.ShrinkDraw = true;
                     }
                     action = "B  B"; // both delete area, no post, no eval and both redraw
                     break;
@@ -546,7 +541,7 @@ namespace New_Tradegy.Library
 
                 case "l8":
                     o.수급과장배수 *= 0.66;
-                    action = "d  B";
+                    action = "B  B";
                     break;
 
                 case "l9": // g.Npts[1]++

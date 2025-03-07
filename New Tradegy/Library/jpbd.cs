@@ -7,338 +7,15 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipelines;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using static New_Tradegy.Library.g.stock_data;
 using static OpenQA.Selenium.BiDi.Modules.Script.RealmInfo;
 
 namespace New_Tradegy.Library
 {
-    public class Order
-    {
-        public string Stock { get; set; }
-        public int Price { get; set; }
-        public bool WasUpper { get; set; }
-        public int Quantity { get; set; }
-        public int UrgencyLevel { get; set; }
-
-        public Order(string stock, int price, bool wasUpper, int quantity, int urgencyLevel)
-        {
-            Stock = stock;
-            Price = price;
-            WasUpper = wasUpper;
-            Quantity = quantity;
-            UrgencyLevel = urgencyLevel;
-        }
-    }
-
-    public class StockExchange
-    {
-        private static CPTRADELib.CpTd0311 _cptd0311; //주문(현금 주문) 데이터를 요청
-        private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
-        private static CPTRADELib.CpTdUtil _cptdutil;
-        private static bool _checkedTradeInit = false;
-
-        public static string accountNo;
-        public static string accountGoodsStock;
-        public static string[] arrAccountGoodsStock;
-
-        public static List<Order> buyOrders = new List<Order>();
-        public static List<Order> sellOrders = new List<Order>();
-
-        public static void TradeInit()
-        {
-            if (_checkedTradeInit)
-                return;
-
-            _cptdutil = new CpTdUtil();
-
-            int rv = _cptdutil.TradeInit(0);
-            if (rv == 0)
-            {
-                _checkedTradeInit = true;
-
-                string[] arrAccount = (string[])_cptdutil.AccountNumber;
-                if (arrAccount.Length > 0)
-                {
-                    accountNo = arrAccount[0];
-
-                    arrAccountGoodsStock = (string[])_cptdutil.get_GoodsList(accountNo, CPE_ACC_GOODS.CPC_STOCK_ACC);    // 주식
-                    if (arrAccountGoodsStock.Length > 0)
-                        accountGoodsStock = arrAccountGoodsStock[0];
-                }
-            }
-            else if (rv == -1)
-            {
-                MessageBox.Show("계좌 비밀번호 오류 포함 에러.");
-                _checkedTradeInit = false;
-            }
-            else if (rv == 1)
-            {
-                MessageBox.Show("OTP/보안카드키가 잘못되었습니다.");
-                _checkedTradeInit = false;
-            }
-            else
-            {
-                MessageBox.Show("Error");
-                _checkedTradeInit = false;
-            }
-        }
-
-        public void MonitorPrices(string stock, int sellHogaVolume, int sellHogaPrice, int buyHogaVolume, int buyHogaPrice)
-        {
-            // buyOrders
-            foreach (var order in new List<Order>(buyOrders))
-            {
-                if (order.Stock == stock && order.Price == sellHogaPrice)
-                {
-                    string str = "";
-                    str += order.Stock + " : " + order.Price.ToString() + " X " + order.Quantity.ToString() +
-                                       " = " + (order.Price * order.Quantity / 10000).ToString() + "만원";
-                    int index = wk.return_index_of_ogldata(stock);
-                    if (index < 0)
-                    {
-                        return;
-                    }
-                    str += "\n" + sr.r3_display_매수_매도(g.ogl_data[index]);
-
-                    RemoveOrder(buyOrders, order);
-
-                    
-                    //? MonitorPrices
-                    using (var form = new Form_매수_매도(stock, "매수 ?", order.UrgencyLevel, str))
-                    {
-                        DialogResult result = form.ShowDialog();
-                        if (result == DialogResult.Yes) // 시장가
-                        {
-                            dl.deal_exec("매수", order.Stock, order.Quantity, order.Price, "03");
-                        }
-                        if (result == DialogResult.OK) // 지정가
-                        {
-
-                            dl.deal_exec("매수", order.Stock, order.Quantity, order.Price, "01");
-                        }
-                    }
-                }
-            }
-
-            // sellOrders
-            foreach (var order in new List<Order>(sellOrders))
-            {
-                if (order.Stock == stock && order.Price == buyHogaPrice)
-                {
-                    string str = "";
-                    str += order.Stock + " : " + order.Price.ToString() + " X " + order.Quantity.ToString() +
-                                       " = " + (order.Price * order.Quantity / 10000).ToString() + "만원";
-                    int index = wk.return_index_of_ogldata(stock);
-                    if (index < 0)
-                    {
-                        return;
-                    }
-                    str += "\n" + sr.r3_display_매수_매도(g.ogl_data[index]);
-
-                    RemoveOrder(sellOrders, order);
-
-                    //? MonitorPrices
-                    using (var form = new Form_매수_매도(stock, "매도 ?", order.UrgencyLevel, str))
-                    {
-                        DialogResult result = form.ShowDialog();
-                        if (result == DialogResult.Yes) // 시장가
-                        {
-                            dl.deal_exec("매도", order.Stock, order.Quantity, order.Price, "03");
-                        }
-                        if (result == DialogResult.OK) // 지정가
-                        {
-
-                            dl.deal_exec("매도", order.Stock, order.Quantity, order.Price, "01");
-                        }
-                    }
-                }
-            }
-
-
-
-            #region
-
-            //DateTime now = DateTime.Now;
-
-            //    // 매수 실행
-            //    foreach (var order in new List<Order>(buyOrders))
-            //    {
-            //        double volumeRatio = (double)sellHogaVolume / (buyHogaVolume + sellHogaVolume);
-            //        double buyThreshold = order.UrgencyLevel / 100.0;
-
-            //        if ((now - order.OrderTime) >= order.CancelThreshold)
-            //        {
-            //            RemoveOrder(buyOrders, order);
-            //        }
-            //        // order.Price higher than sellHogaPrice, Sudden drop of sellHogaPrice below order.Price
-            //        // cancell the order
-            //        else if (order.Stock == stock && sellHogaPrice < order.Price)
-            //        {
-            //            RemoveOrder(buyOrders, order);
-            //        }
-            //        else if (order.Stock == stock && sellHogaPrice == order.Price)
-            //        {
-            //            if (IsHogaGapAcceptable(sellHogaPrice, buyHogaPrice))
-            //            {
-            //                if (volumeRatio <= buyThreshold)
-            //                {
-            //                    ExecuteOrder("Buy", order);
-            //                    RemoveOrder(buyOrders, order);
-            //                }
-            //            }
-            //        }
-            //    }
-
-            //    // 매도 실행
-            //    foreach (var order in new List<Order>(sellOrders))
-            //    {
-            //        double volumeRatio = (double)buyHogaVolume / (buyHogaVolume + sellHogaVolume);
-            //        double sellThreshold = order.UrgencyLevel / 100.0;
-
-            //        if (IsSuddenDrop(sellHogaPrice, buyHogaPrice)) // 매수호가  & 매도호가 Gap Occurs
-            //        {
-            //            order.UrgencyLevel = 100;
-            //        }
-
-            //        if ((now - order.OrderTime) >= order.CancelThreshold)
-            //        {
-            //            RemoveOrder(sellOrders, order);
-            //        }
-            //        else if (order.Stock == stock && buyHogaPrice <= order.Price) // 주문가격 <= 매수호가
-            //        {
-            //            if (order.UrgencyLevel == 100 || volumeRatio <= sellThreshold)
-            //            {
-            //                ExecuteOrder("Sell", order);
-            //                RemoveOrder(sellOrders, order);
-            //            }
-            //        }
-            //    }
-            #endregion
-        }
-
-        public void AddBuyOrder(string stock, int price, bool wasUpper, int quantity, int urgencyLevel)
-        {
-            if (dl.CheckPreviousLoss(stock))
-                return;
-
-
-            // Find the existing order with the same stock and price
-            var existingOrder = buyOrders.Find(order => order.Stock == stock && order.Price == price);
-
-            // If such an order exists, remove it
-            if (existingOrder != null)
-            {
-                buyOrders.Remove(existingOrder);
-            }
-
-            buyOrders.Add(new Order(stock, price, wasUpper, quantity, urgencyLevel));
-        }
-
-        public void AddSellOrder(string stock, int price, bool wasUpper, int quantity, int urgencyLevel)
-        {
-            // Find the existing order with the same stock and price
-            var existingOrder = sellOrders.Find(order => order.Stock == stock && order.Price == price);
-
-            // If such an order exists, remove it
-            if (existingOrder != null)
-            {
-                sellOrders.Remove(existingOrder);
-            }
-
-            sellOrders.Add(new Order(stock, price, wasUpper, quantity, urgencyLevel));
-        }
-
-        private bool IsSuddenDrop(int sellHogaPrice, int buyHogaPrice)
-        {
-            return (sellHogaPrice - buyHogaPrice) > (int)TickDifference(sellHogaPrice);
-        }
-
-        private void ExecuteOrder(string buyorsell, Order order)
-        {
-            string 주문조건구분 = "0"; // 없음
-                                 // 주문호가구분 = "01"; // 지정가, "03" 시장가
-
-            TradeInit();
-            if (_checkedTradeInit == false)
-                return;
-
-            if (order.Quantity == 0)
-                return;
-
-            string stockcode = _cpstockcode.NameToCode(order.Stock);
-            _cptd0311 = new CPTRADELib.CpTd0311();
-
-            if (_cptd0311.GetDibStatus() == 1)
-                Trace.TraceInformation("DibRq 요청 수신대기 중 입니다. 수신이 완료된 후 다시 호출 하십시오.");
-
-            if (buyorsell == "Buy")
-            {
-                _cptd0311.SetInputValue(0, "2");    // 2:매수
-            }
-            else
-            {
-                _cptd0311.SetInputValue(0, "1");    // 1:매도
-            }
-
-            _cptd0311.SetInputValue(1, g.Account);  // 계좌번호
-            _cptd0311.SetInputValue(2, "01");     // 상품구분코드
-            _cptd0311.SetInputValue(3, stockcode);  // 종목코드
-            _cptd0311.SetInputValue(4, order.Quantity);  // 주문수량 
-            _cptd0311.SetInputValue(5, order.Price);    // 매수단가
-            _cptd0311.SetInputValue(7, 주문조건구분);  // 주문조건구분("0":없음,"1":IOC, "2":FOK)
-            _cptd0311.SetInputValue(8, "01");    // 주문호가구분("01":보통,"02":임의,"03":시장가,"05":조건부지정가 etc)
-
-            //string sRQName = order.Stock + " " + buyorsell + " " + order.Price + " " + order.Quantity+ " " + order.UrgencyLevel + " " + order.CancelThreshold;
-            //MessageBox.Show(sRQName);
-            int check = _cptd0311.BlockRequest();
-        }
-
-        private int TickDifference(double x)
-        {
-            if (x < 2000)
-            {
-                return 1;
-            }
-            else if (x < 5000)
-            {
-                return 5;
-            }
-            else if (x < 20000)
-            {
-                return 10;
-            }
-            else if (x < 50000)
-            {
-                return 50;
-            }
-            else if (x < 200000)
-            {
-                return 100;
-            }
-            else if (x < 500000)
-            {
-                return 500;
-            }
-            else
-            {
-                return 1000;
-            }
-        }
-
-        private bool IsHogaGapAcceptable(int sellHogaPrice, int buyHogaPrice)
-        {
-            double priceDifference = Math.Abs(sellHogaPrice - buyHogaPrice);
-            int allowedTickDifference = TickDifference(Math.Min(sellHogaPrice, buyHogaPrice));
-            return priceDifference <= allowedTickDifference;
-        }
-
-        private void RemoveOrder(List<Order> orderList, Order order)
-        {
-            orderList.Remove(order);
-        }
-    }
 
     class jp
     {
@@ -352,9 +29,9 @@ namespace New_Tradegy.Library
         private int Rows = 5;
         private string Stock;
 
-        
 
-        StockExchange stockExchange = new StockExchange();
+
+
 
         public DataGridView Generate(string stock)
         {
@@ -370,7 +47,7 @@ namespace New_Tradegy.Library
             int w2 = 61;
             int CellHeight = 27;
             Dtb = new DataTable();
-            
+
             Dtb.Columns.Add("매도");
             Dtb.Columns.Add("호가");
             Dtb.Columns.Add("매수");
@@ -379,7 +56,7 @@ namespace New_Tradegy.Library
             {
                 Dtb.Rows.Add("", "", "");
             }
-            
+
             Dgv = new DataGridView();
 
             Dgv.DataSource = Dtb;
@@ -412,7 +89,7 @@ namespace New_Tradegy.Library
 
             Dgv.DataError += (s, e) => wr.DataGridView_DataError(s, e, "jpjd Dgv");
             Dgv.DataError += new DataGridViewDataErrorEventHandler(dataGridView1_DataError);
-            Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None; 
+            Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             Dgv.Location = new Point(120, 0);
             Dgv.Size = new Size(w0 + w1 + w2, CellHeight * 13);
 
@@ -422,7 +99,7 @@ namespace New_Tradegy.Library
             Dgv.RowHeadersVisible = false;
             int fontsize = 9;
 
-       
+
             Dgv.DefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
             Dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
             Dgv.RowTemplate.Height = CellHeight;
@@ -436,7 +113,7 @@ namespace New_Tradegy.Library
             Dgv.AllowUserToAddRows = false;
             Dgv.AllowUserToDeleteRows = false;
             Dgv.Dock = System.Windows.Forms.DockStyle.None;
-      
+
             Dgv.ReadOnly = true;
             Dgv.RowHeadersVisible = false;
             Dgv.ColumnHeadersVisible = false;
@@ -460,9 +137,46 @@ namespace New_Tradegy.Library
             return Dgv;
         }
 
+        private Form_매수_매도 GetOpenTradeForm(string stockName)
+        {
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is Form_매수_매도 tradeForm && tradeForm._stock == stockName)
+                {
+                    return tradeForm; // Found an open form for the stock
+                }
+            }
+            return null; // No open form found
+        }
+
+        public void OpenOrUpdateConfirmationForm(bool isSell, string stockName, int Amount, int price, int Urgency, string str)
+        {
+            Form_매수_매도 f = GetOpenTradeForm(stockName);
+            if (f != null)
+            {
+                if (f._isSell == isSell)
+                {
+                    mc.Sound("", "not sold");
+                    return;
+                }
+                else
+                {
+                    // Update existing form
+                    f.UpdateForm(isSell, stockName, Amount, price, Urgency, str);
+                }
+
+            }
+            else
+            {
+                // Create and show a new non-blocking (modeless) confirmation form
+                Form_매수_매도 form = new Form_매수_매도(isSell, stockName, Amount, price, Urgency, str);
+                form.Show(); // Modeless (non-blocking)
+            }
+
+        }
         private void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right || Rows == 10) // 실수로 오른쪽 눌리는 경우 발생하여 추가
+            if (e.Button == MouseButtons.Right) // 오른쪽 버튼 사용 또는 10호가창 리턴
                 return;
 
             int Price = hg.HogaGetValue(Stock, e.RowIndex - Rows, 1);
@@ -478,227 +192,190 @@ namespace New_Tradegy.Library
             }
             g.stock_data o = g.ogl_data[index];
 
-            switch (e.ColumnIndex)
+
+
+
+            // 컬럼 1
+            if (e.ColumnIndex == 1)
             {
-                case 0: // 매도
-                    if (e.RowIndex >= 2 * Rows)
+                // Passing Price
+                if (e.RowIndex < Rows)
+                {
+                    if (Price == o.deal.upperPassingPrice)
                     {
-                        return;
-                    }
-                    var existingOrder = StockExchange.sellOrders.Find(order => order.Stock == Stock && order.Price == Price);
-
-                    // If such an order exists, remove it
-                    if (existingOrder != null)
-                    {
-                        StockExchange.sellOrders.Remove(existingOrder);
-                        return;
-                    }
-
-                    bool WasUpper = false;
-                    if (e.RowIndex < Rows)
-                        WasUpper = true;
-
-                    int Amount = g.일회거래액 * 10000 / Price;
-                    if (Amount == 0)
-                        Amount = 1;
-
-                    if (o.보유량 < Amount)
-                    {
-                        dl.DealCancelStock(Stock); // dgv_CellClick tr(2) 에러 메세지 20231122
-                        dl.deal_hold(); // dgv_CellClick tr(1)
-                        if (o.보유량 == 0)
-                        {
-                            return;
-                        }
-                    }
-                    if (o.보유량 < Amount)
-                    {
-                        Amount = o.보유량;
-                    }
-                    if (Amount == 0)
-                    {
-                        Amount = 1;
-                    }
-
-                    mc.Sound_돈(g.일회거래액);
-                    int Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[0].Width * 100) : 100;
-
-
-                    string str = "";
-                    if (g.confirm_sell)  // "03" <- 시장가 매도 ... 비상매도
-                    {
-                        str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
-                                   " = " + (Price * Amount / 10000).ToString() + "만원";
-
-                        using (var form = new Form_매수_매도(Stock, "매도 ?", Urgency, str))
-                        {
-                            DialogResult result = form.ShowDialog();
-                            if (result == DialogResult.Yes) // 시장가
-                            {
-                                dl.deal_exec("매도", Stock, Amount, Price, "03");
-                            }
-                            else if (result == DialogResult.OK) // 지정가
-                            {
-                                if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                                {
-                                    dl.deal_exec("매도", Stock, Amount, Price, "01");
-                                }
-                                else
-                                {
-                                    Urgency = form.The_urgency;
-                                
-                                    stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, Urgency);
-                                }
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
+                        o.deal.upperPassingPrice = 0;
                     }
                     else
                     {
-                        if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                        {
-                            dl.deal_exec("매도", Stock, Amount, Price, "01");
-                        }
-                        else
-                        {
-                            // Urgency and TimeThresh not used
-                            stockExchange.AddSellOrder(Stock, Price, WasUpper, Amount, Urgency);
-                        }
+                        o.deal.upperPassingPrice = Price;
                     }
-                    break;
-
-                case 1:
-                    // Passing Price
-                    if (e.RowIndex < Rows)
+                }
+                else if (e.RowIndex <= Rows)
+                {
+                    if (Price == o.deal.lowerPassingPrice)
                     {
-                        if (Price == o.deal.upperPassingPrice)
-                        {
-                            o.deal.upperPassingPrice = 0;
-                        }
-                        else
-                        {
-                            o.deal.upperPassingPrice = Price;
-                        }
+                        o.deal.lowerPassingPrice = 0;
                     }
-                    else if (e.RowIndex < 2 * Rows)
-                    {
-                        if (Price == o.deal.lowerPassingPrice)
-                        {
-                            o.deal.lowerPassingPrice = 0;
-                        }
-                        else
-                        {
-                            o.deal.lowerPassingPrice = Price;
-                        }
-                    }
-                    // 5 & 10 hoga toggle
                     else
                     {
-                        if (g.KODEX4.Contains(Stock))
-                        {
-                            return;
-                        }
-                        if (Rows == 5)
-                        {
-                            Rows = 10;
-                        }
-                        else
-                        {
-                            Rows = 5;
-                        }
+                        o.deal.lowerPassingPrice = Price;
                     }
-                    break;
-
-                case 2: // 매수
-                    if (e.RowIndex >= 2 * Rows)
+                }
+                // 5 & 10 hoga toggle
+                else if (e.ColumnIndex <= Rows * 2)
+                {
+                    if (g.KODEX4.Contains(Stock))
                     {
                         return;
                     }
-                    existingOrder = StockExchange.buyOrders.Find(order => order.Stock == Stock && order.Price == Price);
-
-                    // If such an order exists, remove it
-                    if (existingOrder != null)
+                    if (Rows == 5)
                     {
-                        StockExchange.buyOrders.Remove(existingOrder);
-                        return;
+                        Rows = 10;
                     }
-
-
-                    WasUpper = false;
-                    if (e.RowIndex < Rows)
-                        WasUpper = true;
-
-
-                    Amount = g.일회거래액 * 10000 / Price;
-                    if (Amount == 0)
+                    else
                     {
-                        Amount = 1;
+                        Rows = 5;
                     }
-
-                    mc.Sound_돈(g.일회거래액);
-                    Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[2].Width * 100) : 100;
-
-                    str = "";
-                    if (g.confirm_buy)
-                    {
-                        str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
-                                   " = " + (Price * Amount / 10000).ToString() + "만원";
-
-                        str += "\n" + sr.r3_display_매수_매도(o);
-
-                        if (dl.CheckPreviousLoss(Stock))
-                            return;
-
-                        using (var form = new Form_매수_매도(Stock, "매수 ?", Urgency, str))
-                        {
-                            DialogResult result = form.ShowDialog();
-                            if (result == DialogResult.Yes) // 시장가
-                            {
-                                dl.deal_exec("매수", Stock, Amount, Price, "03");
-                            }
-                            else if (result == DialogResult.OK) // 지정가
-                            {
-                                if (e.RowIndex == Rows - 1 || e.RowIndex == Rows)
-                                {
-                                    dl.deal_exec("매수", Stock, Amount, Price, "01");
-                                }
-                                else
-                                {
-                                    Urgency = form.The_urgency;
-                                
-                                    stockExchange.AddBuyOrder(Stock, Price, WasUpper, Amount, Urgency);
-                                }
-                            }
-                            else // 취소
-                            {
-                                return;
-                            }
-                        }
-                    }
-                    break;
+                }
+                return;
             }
 
+
+
+
+
+
+
+
+            // 컬럼 0, 2, 그 중 RowIndex >= Rows 리턴
+            if (e.RowIndex >= Rows * 2)
+            {
+                return;
+            }
+
+            // 바로 매수/매도 결정
+
+            bool isSell = false;
+            isSell = (e.ColumnIndex == 0);
+            bool isBuy = false;
+            isBuy = (e.ColumnIndex == 2);
+
+            if (isBuy)
+            {
+
+                var existingOrder = StockExchange.buyOrders.Find(order => order.Stock == Stock && order.Price == Price);
+
+                // If such an order exists, remove it
+                if (existingOrder != null)
+                {
+                    StockExchange.buyOrders.Remove(existingOrder);
+
+                }
+
+
+
+                int Amount = g.일회거래액 * 10000 / Price;
+                if (Amount == 0)
+                {
+                    Amount = 1;
+                }
+
+                mc.Sound_돈(g.일회거래액);
+                int Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[2].Width * 100) : 100;
+
+                string str = "";
+                if (g.confirm_buy)
+                {
+                    str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
+                               " = " + (Price * Amount / 10000).ToString() + "만원";
+
+                    str += "\n" + sr.r3_display_매수_매도(o);
+
+                    if (DealManager.CheckPreviousLoss(Stock))
+                    {
+                        return;
+                    }
+
+                    OpenOrUpdateConfirmationForm(isSell, Stock, Amount, Price, Urgency, str);
+                }
+                else
+                {
+                    DealManager.deal_exec("매수", Stock, Amount, Price, "01");
+                }
+            }
+
+
+            else
+            {
+                var existingOrder = StockExchange.sellOrders.Find(order => order.Stock == Stock && order.Price == Price);
+
+                // If such an order exists, remove it
+                if (existingOrder != null)
+                {
+                    StockExchange.sellOrders.Remove(existingOrder);
+
+                }
+
+                int Amount = g.일회거래액 * 10000 / Price;
+                if (Amount == 0)
+                    Amount = 1;
+
+                if (o.보유량 < Amount)
+                {
+                    DealManager.DealCancelStock(Stock); // dgv_CellClick tr(2) 에러 메세지 20231122
+                    DealManager.deal_hold(); // dgv_CellClick tr(1)
+                    if (o.보유량 == 0)
+                    {
+                        return;
+                    }
+                }
+                if (o.보유량 < Amount)
+                {
+                    Amount = o.보유량;
+                }
+                if (Amount == 0)
+                {
+                    Amount = 1;
+                }
+
+                mc.Sound_돈(g.일회거래액);
+                int Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[0].Width * 100) : 100;
+
+
+                string str = "";
+
+
+                if (g.confirm_sell)  // "03" <- 시장가 매도 ... 비상매도
+                {
+                    str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
+                               " = " + (Price * Amount / 10000).ToString() + "만원";
+
+                    str += "\n" + sr.r3_display_매수_매도(o);
+                    OpenOrUpdateConfirmationForm(isSell, Stock, Amount, Price, Urgency, str);
+                }
+                else
+                {
+                    DealManager.deal_exec("매도", Stock, Amount, Price, "01");
+                }
+            }
         }
 
         private void Unsubscribe()
         {
             //string stockcode = _cpstockcode.NameToCode(Stock);
             //_stockjpbid.SetInputValue(0, stockcode);
-     
+
             _stockjpbid.Received -= stockjpbid_Received; // Explicitly detach the event handler
             _stockjpbid.Unsubscribe();
             _stockjpbid = null; // Clear reference to help with memory management
-            
+
             g.jpjds.Remove(Stock);
             Dgv.Dispose();
-       
+
         }
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
-        private void stockjpbid_Received_old()
+        private void stockjpbid_Received()
         {
             lock (g.lockObject)
             {
@@ -797,7 +474,7 @@ namespace New_Tradegy.Library
                     string code = _stockjpbid.GetHeaderValue(0).ToString();
                     string stock = _cpstockcode.CodeToName(code).ToString();
 
-                    stockExchange.MonitorPrices(stock,
+                    StockExchange.Instance.MonitorPrices(stock,
                         Convert.ToInt32(Dtb.Rows[Rows - 1][0]),
                         Convert.ToInt32(Dtb.Rows[Rows - 1][1]),
                         Convert.ToInt32(Dtb.Rows[Rows][2]),
@@ -816,7 +493,7 @@ namespace New_Tradegy.Library
 
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
-        private void stockjpbid_Received()
+        private void stockjpbid_Received_new()
         {
             lock (g.lockObject)
             {
@@ -859,7 +536,7 @@ namespace New_Tradegy.Library
                         for (int i = 0; i < 5; i++) // Buying Side
                         {
                             int headerIndex = 20 + (i * 2); // Adjusting the header index dynamically
-                            int rowIndex = 10 + i; // Adjusting the DataTable row index for the bottom 5 rows
+                            int rowIndex = 9 + i; // Adjusting the DataTable row index for the bottom 5 rows
 
                             // Setting the buying price and divided amounts
                             Dtb.Rows[rowIndex][1] = _stockjpbid.GetHeaderValue(headerIndex).ToString();
@@ -873,7 +550,7 @@ namespace New_Tradegy.Library
                     string code = _stockjpbid.GetHeaderValue(0).ToString();
                     string stock = _cpstockcode.CodeToName(code).ToString();
 
-                    stockExchange.MonitorPrices(stock,
+                    StockExchange.Instance.MonitorPrices(stock,
                         Convert.ToInt32(Dtb.Rows[Rows - 1][0]),
                         Convert.ToInt32(Dtb.Rows[Rows - 1][1]),
                         Convert.ToInt32(Dtb.Rows[Rows][2]),
@@ -985,7 +662,7 @@ namespace New_Tradegy.Library
                     o.수익률 = (o.매수1호가 - o.장부가) / (double)o.매수1호가 * 100;
             }
             Dtb.Rows[2 * Rows + 1][0] = o.stock;
-            Dtb.Rows[2 * Rows + 1][1] = o.dev_avr;
+            Dtb.Rows[2 * Rows + 1][1] = o.일간변동평균편차;
             Dtb.Rows[2 * Rows + 1][2] = o.보유량.ToString() + "/" + o.수익률.ToString("F2");
 
             deal_호가_추가(); //\
@@ -1076,7 +753,7 @@ namespace New_Tradegy.Library
                 }
             }
             Dtb.Rows[2 * Rows + 1][0] = o.stock;
-            Dtb.Rows[2 * Rows + 1][1] = o.dev_avr;
+            Dtb.Rows[2 * Rows + 1][1] = o.일간변동평균편차;
             Dtb.Rows[2 * Rows + 1][2] = o.보유량.ToString() + "/" + o.수익률.ToString("F2");
 
 

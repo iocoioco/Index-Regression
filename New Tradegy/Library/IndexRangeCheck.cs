@@ -31,7 +31,7 @@ namespace New_Tradegy.Library
                 else
                 {
                     currentRangeKosdaq = rangeString;
-                    rangeString = indexPrice > 0 ? "q+" + rangeString : "q" + rangeString;
+                    rangeString = indexPrice > 0 ? "+" + rangeString : rangeString;
                 }
 
                 mc.Sound("코스피 코스닥", rangeString);

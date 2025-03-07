@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace New_Tradegy.Library
 {
-    internal class SuddenDrop
+    internal class temp_SuddenDrop
     {
 
         // Structure to store each buy/sell transaction

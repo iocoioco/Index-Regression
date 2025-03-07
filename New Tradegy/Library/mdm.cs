@@ -95,8 +95,8 @@ class mm
             if (index < 0) return;
             g.stock_data o = g.ogl_data[index];
 
-            //? chart area exists ? ; if not, create 
-             if (ChartAreaExists(chart, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test && !o.SrkDrw)
+            // chart area exists ? ; if not, create 
+             if (ChartAreaExists(chart, stock) && g.MarketeyeCount % g.MarketeyeDividerForEvalStock != 1 && g.connected && !g.test && !o.ShrinkDraw)
             {
                 UpdateSeries(chart, stock, g.nRow, g.nCol);
             }
@@ -284,8 +284,8 @@ class mm
             int index = wk.return_index_of_ogldata(stock);
             if (index < 0) return;
             g.stock_data o = g.ogl_data[index];
-            //? chart area exists ? ; if not, create it
-            if (ChartAreaExists(g.chart1, stock) && g.MkyCnt % g.MkyDiv != 1 && g.connected && !g.test && !o.SrkDrw)
+            // chart area exists ? ; if not, create it
+            if (ChartAreaExists(g.chart1, stock) && g.MarketeyeCount % g.MarketeyeDividerForEvalStock != 1 && g.connected && !g.test && !o.ShrinkDraw)
             {
                 UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
             }
@@ -334,7 +334,7 @@ class mm
 
                 
 
-                if (ChartAreaExists(g.chart1, stock) && g.connected && !g.test && !o.SrkDrw)
+                if (ChartAreaExists(g.chart1, stock) && g.connected && !g.test && !o.ShrinkDraw)
                 {
                     //if (isTotalPointsEqualSeriesPoints(g.chart1, stock))
                     //{
@@ -376,9 +376,9 @@ class mm
         // Get the data for the stock
         g.stock_data o = g.ogl_data[index];
         int totalPoints = o.nrow;
-        if (o.SrkDrw)
+        if (o.ShrinkDraw)
         {
-            totalPoints = totalPoints - g.NptsForSrkDrw;
+            totalPoints = totalPoints - g.NptsForShrinkDraw;
         }
 
         // Update or add points for each series in "KODEX" stock
@@ -446,7 +446,7 @@ class mm
 
         // Update or add points for "stockName 9" - the centerline
         string centerlineSeriesName = stockName + " 9";
-        if (chart.Series.IndexOf(centerlineSeriesName) != -1) //?
+        if (chart.Series.IndexOf(centerlineSeriesName) != -1) //
         {
             System.Windows.Forms.DataVisualization.Charting.Series centerlineSeries = chart.Series[centerlineSeriesName];
 
@@ -469,6 +469,7 @@ class mm
         chart.ChartAreas[stockName].AxisX.Interval = totalPoints - 1; // total number of point = 2, while mir 0820 -> 217
         chart.ChartAreas[stockName].AxisX.IntervalOffset = 1;
     }
+
     public static void SeriesGeneral(Chart chart, string stockName)
     {
         // Find the index of the stock data in ogl_data
@@ -481,10 +482,10 @@ class mm
         // Get the data for the stock
         g.stock_data o = g.ogl_data[index];
 
-        int totalPoints = o.nrow; //? modified for shrink draw : not sure to work or not
-        if (o.SrkDrw)
+        int totalPoints = o.nrow; // modified for shrink draw : not sure to work or not
+        if (o.ShrinkDraw)
         {
-            totalPoints = totalPoints - g.NptsForSrkDrw;
+            totalPoints = totalPoints - g.NptsForShrinkDraw;
         }
 
      
@@ -658,13 +659,13 @@ class mm
         if (o.nrow <= 1) // no data yet, i.e. only 0859 
             return null;
 
-        // g.NptsForSrkDrw is controlled by 'o' and 'O'
+      
         int StartNpts = g.Npts[0];
         int EndNpts = g.test ? Math.Min(g.Npts[1], o.nrow) : o.nrow;
 
-        if (o.SrkDrw)
+        if (o.ShrinkDraw)
         {
-            StartNpts = Math.Max(EndNpts - g.NptsForSrkDrw, g.Npts[0]);
+            StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
         }
 
 
@@ -855,7 +856,7 @@ class mm
         int StartNpts = 0;
         int EndNpts = -1;
 
-        if (!g.test) //?
+        if (!g.test) //
         {
             EndNpts = o.nrow;
         }
@@ -869,9 +870,9 @@ class mm
         }
         StartNpts = g.Npts[0];
 
-        if (o.SrkDrw == true)
+        if (o.ShrinkDraw == true)
         {
-            StartNpts = EndNpts - g.NptsForSrkDrw;
+            StartNpts = EndNpts - g.NptsForShrinkDraw;
             if (StartNpts < g.Npts[0])
             {
                 StartNpts = g.Npts[0];
@@ -1500,7 +1501,7 @@ class mm
 
     public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
     {
-        if (chart == g.chart1) //? ClearUnusedDataGridViews
+        if (chart == g.chart1) // ClearUnusedDataGridViews
         {
             stockswithbid.Add(fixedStocks[0]);
             stockswithbid.Add(fixedStocks[1]);
@@ -1707,7 +1708,7 @@ class mm
 
         //stock_title += " " + o.dev_avr; // 수급, 체강의 연속점수 삭제
         if (EndNpts - 1 >= 0)
-            stock_title += " " + x[EndNpts - 1, 10] + "/" + x[EndNpts - 1, 11] + "  " + o.dev_avr; // 수급, 체강의 연속점수
+            stock_title += " " + x[EndNpts - 1, 10] + "/" + x[EndNpts - 1, 11] + "  " + o.일간변동평균편차; // 수급, 체강의 연속점수
         return stock_title;
     }
 

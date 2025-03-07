@@ -535,10 +535,10 @@ namespace New_Tradegy.Library
             }
 
 
-            if (g.ogl_data[index].dev > 2.5)
+            if (g.ogl_data[index].일간변동편차 > 2.5)
             {
                 sw.WriteLine("{0,-10}{1,-15}{2,-10}{3,-10}{4,-10}{5,-10}{6,-10}{7,-10}",
-                  date, stock, earning, x[start, 0], x[start, 1], g.ogl_data[index].dev_avr,
+                  date, stock, earning, x[start, 0], x[start, 1], g.ogl_data[index].일간변동평균편차,
                   (int)((x[start, 2] + x[start, 3]) * g.ogl_data[index].전일종가 / 10000.0),
                   g.ogl_data[index].전일종가);
 

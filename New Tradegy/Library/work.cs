@@ -19,6 +19,7 @@ namespace New_Tradegy.Library
     internal class wk
     {
         static CPUTILLib.CpStockCode _cpstockcode;
+        
 
         public static void deleteChartAreaAnnotation(Chart chartName, string stockName)
         {
@@ -28,27 +29,27 @@ namespace New_Tradegy.Library
                 // Get the ChartArea
                 var chartArea = chartName.ChartAreas[stockName];
 
-            
-                    var annotationsToRemove = chartName.Annotations.Where(a => a.Name == stockName).ToList();
 
-                    foreach (var annotation in annotationsToRemove)
-                    {
-                        chartName.Annotations.Remove(annotation); // Remove the annotation from the chart
-                    }
-           
-                    // Remove all series associated with this ChartArea
-                    var seriesToRemove = chartName.Series
-                        .Where(s => s.ChartArea == stockName)
-                        .ToList();
+                var annotationsToRemove = chartName.Annotations.Where(a => a.Name == stockName).ToList();
 
-                    foreach (var series in seriesToRemove)
-                    {
-                        chartName.Series.Remove(series);
-                        //Console.WriteLine($"Removed series: {series.Name}");
-                    }
-                    chartName.ChartAreas.Remove(chartArea);
+                foreach (var annotation in annotationsToRemove)
+                {
+                    chartName.Annotations.Remove(annotation); // Remove the annotation from the chart
                 }
-            
+
+                // Remove all series associated with this ChartArea
+                var seriesToRemove = chartName.Series
+                    .Where(s => s.ChartArea == stockName)
+                    .ToList();
+
+                foreach (var series in seriesToRemove)
+                {
+                    chartName.Series.Remove(series);
+                    //Console.WriteLine($"Removed series: {series.Name}");
+                }
+                chartName.ChartAreas.Remove(chartArea);
+            }
+
             else
             {
                 //Console.WriteLine($"ChartArea with name {stockName} does not exist.");
@@ -349,44 +350,80 @@ namespace New_Tradegy.Library
         public static bool gen_ogl_data(string stock)
         {
             if (rd.read_단기과열(stock))
+            {
                 return false;
+            }
 
-            _cpstockcode = new CPUTILLib.CpStockCode();
+            double 일간변동평균 = 0, 일간변동편차 = 0;
+            int 일평균거래액 = 0, 일최저거래액 = 0, 일최대거래액 = 0;
+            ulong 일평균거래량 = 0;
+            string 일간변동평균편차 = "";
+
+            int days = 20;
+            일간변동평균편차 = calcurate_종목일중변동평균편차(stock, days, ref 일간변동평균, ref 일간변동편차,
+                ref 일평균거래액, ref 일최저거래액, ref 일최대거래액, ref 일평균거래량);
+
+            if (일최대거래액 < 30)
+            {
+                return false;
+            }
+            if (일간변동평균편차 == "")
+            {
+                return false;
+            }
+
+
+            
 
             var o = new g.stock_data();
+            o.일간변동평균 = 일간변동평균;
+            o.일간변동편차 = 일간변동편차;
+            o.일평균거래액 = 일평균거래액;
+            o.일최저거래액 = 일최저거래액;
+            o.일최대거래액 = 일최대거래액;
+            o.일평균거래량 = 일평균거래량;
+            o.일간변동평균편차 = 일간변동평균편차;
 
             o.stock = stock;
+            _cpstockcode = new CPUTILLib.CpStockCode();
             o.code = _cpstockcode.NameToCode(stock);
             if (o.code.Length != 7)
+            {
                 return false; //루미마이크로, 메디포럼제약 코드 못 찾음, 합병된 것으로 추정
+            }
+                
 
             o.전일종가 = rd.read_전일종가(stock);
             g.전일종가이상 = 1000; // also defined in glbl
             if (o.전일종가 < g.전일종가이상)
+            {
                 return false;
+            }
+                
 
-            o.avr = 0.0;
-            o.dev = 0.0;
-            o.dev_avr = "";
-            int days = 20;
-            o.dev_avr = calcurate_종목일중변동평균편차(stock, days, ref o.avr, ref o.dev,
-                ref o.avr_dealt, ref o.min_dealt, ref o.max_dealt, ref o.일평균거래량);
 
-            if (o.dev_avr == "")
-                return false;
 
 
             o.시총 = rd.read_시총(stock) / 100; // 시총 값 부정확 점검필요 
             if (o.시총 == -1)
+            {
                 return false;
+            }
+                
 
             o.전일거래액_천만원 = rd.read_전일종가_전일거래액_천만원(stock);
             if (o.전일거래액_천만원 == -1)
+            {
                 return false;
+            }
+                
 
             o.시장구분 = rd.read_코스피코스닥시장구분(stock);
             if (o.시장구분 != 'S' && o.시장구분 != 'D') // 코스피, 코스닥 아니면 통과
+            {
                 return false;
+            }
+                
 
             o.점수.그순 = 1000; // 임의로 그룹 순서 1,000 등으로
 
@@ -455,7 +492,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void 일최대거래액일정액이상종목선택(List<string> tsl, int 최소거래액이상_억원)
+        public static void 이십일중일최대거래액일정액이상종목선택(List<string> tsl, int 일거래액기준_억원)
         {
             var tuple = new List<Tuple<ulong, string>> { };
 
@@ -498,7 +535,7 @@ namespace New_Tradegy.Library
 
             foreach (var item in tuple)
             {
-                if (item.Item1 < (ulong)최소거래액이상_억원)
+                if (item.Item1 < (ulong)일거래액기준_억원)
                     continue;
                 tsl.Add(item.Item2);
             }
@@ -632,7 +669,7 @@ namespace New_Tradegy.Library
                 if (index < 0)
                     continue;
 
-                종목.Add(Tuple.Create(g.ogl_data[index].dev, stock));
+                종목.Add(Tuple.Create(g.ogl_data[index].일간변동편차, stock));
             }
             종목 = 종목.OrderByDescending(t => t.Item1).ToList();
 
@@ -654,7 +691,7 @@ namespace New_Tradegy.Library
                 if (index < 0)
                     continue;
 
-                종목.Add(Tuple.Create(g.ogl_data[index].avr, stock));
+                종목.Add(Tuple.Create(g.ogl_data[index].일간변동평균, stock));
             }
             종목 = 종목.OrderByDescending(t => t.Item1).ToList();
 
@@ -906,7 +943,7 @@ namespace New_Tradegy.Library
             if (!File.Exists(path))
                 return "";
 
-            List<string> lines = File.ReadLines(path).Reverse().Take(days + 100).ToList(); // 파일 후반 읽기
+            List<string> lines = File.ReadLines(path).Reverse().Take(days).ToList(); // 파일 후반 읽기
 
             if (lines.Count < 1) // 신규상장의 경우 데이터 숫자 20 보다 적음
                 return "";
@@ -914,7 +951,7 @@ namespace New_Tradegy.Library
             List<Double> day_list = new List<Double>();
             List<Double> long_day_list = new List<Double>();
 
-            int day_dealt;
+      
 
             avr_dealt = 0;
             max_dealt = 0;
@@ -943,7 +980,15 @@ namespace New_Tradegy.Library
                 double close_price = Convert.ToDouble(words[4]); // 종가
                 일평균거래량 += Convert.ToUInt64(words[5]); // 
 
-                day_dealt = (int)(Convert.ToInt32(words[5]) * close_price / g.억원); // 일거래량 X 종가 / 억원
+
+       
+                int day_dealt = 
+                    (int)((ulong)(Convert.ToDouble(words[4]) * Convert.ToUInt64(words[5]) / g.억원)); // 종가 * 당일거래량
+           
+
+
+
+                 // 일거래량 X 종가 / 억원
                 avr_dealt += day_dealt;
                 if (day_dealt > max_dealt)
                     max_dealt = day_dealt;
@@ -1170,7 +1215,7 @@ namespace New_Tradegy.Library
             if (value <= 0 || value > 6 * 60 + 21) // value가 0 이하 또는 381보다 크면 value = 381
                 value = 6 * 60 + 21;
 
-      
+
             double return_value = 381.0 / value;
             return return_value;
         }
@@ -1420,35 +1465,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        // 20240917
-        // to open a tab on the existing active tab on a window (by ChatGpt not working)
-        // Selenium is installed 
-        private static void OpenTabBySelenium(string t)
-        {
-            // Initialize ChromeDriver
-            var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\병신\mis\New Tradegy\bin\Debug");
-
-            IWebDriver driver = new ChromeDriver(chromeDriverService);
-            //IWebDriver driver = new ChromeDriver();
-
-            // Set an explicit wait (e.g., wait up to 10 seconds)
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10)); CacheVirtualItemsEventArgs:
-
-            // Open the first URL
-            driver.Navigate().GoToUrl("http://google.com");
-
-            // Wait for the page to load completely (e.g., by waiting for a specific element)
-            wait.Until(d => d.FindElement(By.Name("q"))); // Wait for the search box to be visible
-
-            // Reuse the same tab to open the second URL
-            driver.Navigate().GoToUrl(t);
-
-            // Wait for the page to load completely (optional)
-            //wait.Until(d => d.FindElement(By.CssSelector("some-selector"))); // Wait for a specific element on the second page
-
-            // Proceed with your automation, without needing Thread.Sleep
-            driver.Quit();
-        }
+  
 
         public static void call_네이버_차트(string stock, int selection, double xval)
         {

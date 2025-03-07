@@ -300,7 +300,7 @@ namespace New_Tradegy.Library
                 
             else
             {
-                str = o.stock + "   " + Math.Round(o.dev, 1) + "  " + (o.종거천 / 10).ToString("F0") + "\n\n";
+                str = o.stock + "   " + Math.Round(o.일간변동편차, 1) + "  " + (o.종거천 / 10).ToString("F0") + "\n\n";
 
                 for (int i = 0; i < 5; i++)
                 {
@@ -461,7 +461,7 @@ namespace New_Tradegy.Library
 
         public static string r3_display_lines_after_recalculation(g.stock_data o) // dgv_CellClick tr(4)
         {
-            string str = o.stock + "   " + Math.Round(o.dev, 1) + "  " + (o.종거천 / 10).ToString("F0") + "\n\n";
+            string str = o.stock + "   " + Math.Round(o.일간변동편차, 1) + "  " + (o.종거천 / 10).ToString("F0") + "\n\n";
             int end_row = 0;
 
             for (int i = 0; i< 5; i++)

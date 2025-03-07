@@ -115,11 +115,11 @@ namespace New_Tradegy.Library
                                 
                             break;
                         case "편차":
-                            value = o.dev;
+                            value = o.일간변동편차;
                             a_tuple.Add(Tuple.Create(value, o.stock));
                             break;
                         case "평균":
-                            value = o.avr;
+                            value = o.일간변동평균;
                             a_tuple.Add(Tuple.Create(value, o.stock));
                             break;
                     }
@@ -253,7 +253,7 @@ namespace New_Tradegy.Library
             }
 
             // 편차 일정 이하 및 배수차 일정 이하 -> 제외
-            if (g.v.편차이상 >= o.dev) // && g.v.배차이상 > o.분배수차[0])
+            if (g.v.편차이상 >= o.일간변동편차) // && g.v.배차이상 > o.분배수차[0])
                 return false;
 
             // 시총 이하 제외 또는 시총 이상 제외

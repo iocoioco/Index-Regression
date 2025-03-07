@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml.Linq;
 using static New_Tradegy.Library.g;
+using static OpenQA.Selenium.BiDi.Modules.Script.RealmInfo;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace New_Tradegy
@@ -27,64 +29,91 @@ namespace New_Tradegy
     
     public partial class Form_매수_매도 : Form
     {
-        public static string str;
-        string stock;
-        int _urgency;
-      
+        public static string _str;
+        public string _stock { get; private set; }
+        public bool _isSell { get; private set; }   // True if Sell, False if Buy
+        public int _urgency;
+        public int _amount;
+        public int _price;
+
+
+
+
+
 
 
         //private System.Windows.Forms.Button Yes;
 
-        public Form_매수_매도(string ReceivedStock, string text, int Urgency, string ReceivedString)
+        public Form_매수_매도(bool isSell, string ReceivedStock, int Amount, int Price, int Urgency, string ReceivedString)
         {
             
 
             InitializeComponent();
-            this.Text = text; // 매수 또는 매도
+            _isSell = isSell;
+            _stock = ReceivedStock;
+            _str = ReceivedString;
+            _urgency = Urgency;
+            _amount = Amount;
+            _price = Price;
 
-            stock = ReceivedStock;
-            str = ReceivedString;
+            if (isSell)
+            {
+                this.Text = "매도"; // 매수 또는 매도
+            }
+            else
+            {
+                this.Text = "매수"; // 매수 또는 매도
+            }
 
+
+
+           
             int blockStart = 1; //arbitrary numbers to test
             int blockLength = 15;
             richTextBox1.SelectionStart = blockStart;
             richTextBox1.SelectionLength = blockLength;
             richTextBox1.SelectionBackColor = Color.FromArgb(235, 255, 255);
 
-            Form se = (Form)Application.OpenForms["se"];
-            DataGridView dgv = fm.FindDataGridViewByName(se, stock);
-            this.Size = new Size(g.screenWidth / 5, 405);
-            this.Location = new Point(dgv.Location.X + g.screenWidth / g.nCol, dgv.Location.Y);
+            Form se = (Form)System.Windows.Forms.Application.OpenForms["se"];
+            DataGridView dgv = fm.FindDataGridViewByName(se, _stock);
+            this.Size = new Size(g.screenWidth / 6 + 40, g.screenHeight / 3 - 8);
+            this.Location = new Point(dgv.Location.X + g.screenWidth / g.nCol - 25, dgv.Location.Y + 22);
 
             richTextBox1.Location = new Point(0, 0);
             richTextBox1.Size = this.Size;
 
             _urgency = Urgency;
+
+           
         }
 
 
 
         private void Form_매수_매도_Load(object sender, EventArgs e)
         {
-            appendMemoRichTextBox(str, Color.Black, true);
+            appendMemoRichTextBox(_str, Color.Black, true);
 
-            Ok.TabIndex = 0;
-            Yes.TabIndex = 1;
-            Cancel.TabIndex = 2;
+            지정.TabIndex = 0;
+            시장.TabIndex = 1;
+            저장.TabIndex = 2;
+            취소.TabIndex = 3;
 
             // Adjust Ok and Cancel button positions
-            Yes.Size = new Size(80, 25);
-            Ok.Size = new Size(80, 25);
-            Cancel.Size = new Size(80, 25);
+            시장.Size = new Size(60, 25);
+            지정.Size = new Size(60, 25);
+            저장.Size = new Size(60, 25);
+            취소.Size = new Size(60, 25);
 
-            Yes.Location = new Point(this.Width / 8, (int)(this.Height * 0.80));
-            Ok.Location = new Point(this.Width / 8 * 3, (int)(this.Height * 0.80));
-            Cancel.Location = new Point(this.Width / 8 * 5, (int)(this.Height * 0.80));
+            시장.Location = new Point(this.Width / 10, (int)(this.Height * 0.750));
+            지정.Location = new Point(this.Width / 10 * 3, (int)(this.Height * 0.750));
+            저장.Location = new Point(this.Width / 10 * 5, (int)(this.Height * 0.750));
+            취소.Location = new Point(this.Width / 10 * 7, (int)(this.Height * 0.750));
 
             // Bring buttons to front
-            Yes.BringToFront();
-            Ok.BringToFront();
-            Cancel.BringToFront();
+            //시장.BringToFront();
+            //지정.BringToFront();
+            //저장.BringToFront();
+            //취소.BringToFront();
 
            
             // Urgency
@@ -94,9 +123,9 @@ namespace New_Tradegy
             hUrgencyScrollBar.Value = (int)(_urgency * 1.1);
             hUrgencyScrollBar.Name = "";
             hUrgencyScrollBar.Text = "";
-            hUrgencyScrollBar.Location = new Point(this.Width / 8, (int)(this.Height * 0.65));
-            int w = Cancel.Location.X + Cancel.Width - Yes.Location.X;
-            hUrgencyScrollBar.Size = new System.Drawing.Size(w, (int)(Ok.Size.Height * 1.0));
+            hUrgencyScrollBar.Location = new Point(this.Width / 10, (int)(this.Height * 0.6));
+            int w = 취소.Location.X + 취소.Width - 시장.Location.X;
+            hUrgencyScrollBar.Size = new System.Drawing.Size(w, (int)(지정.Size.Height * 1.0));
             hUrgencyScrollBar.Scroll += HUrgencyscrollBar_Scroll;
             hUrgencyScrollBar.BringToFront();
 
@@ -105,11 +134,47 @@ namespace New_Tradegy
             this.TopMost = true;
 
 
-            this.ActiveControl = Ok;
-            this.Ok.DialogResult = DialogResult.OK;
-            this.AcceptButton = Ok;
+            this.ActiveControl = 지정;
+            // this.지정.DialogResult = DialogResult.OK;
+            this.AcceptButton = 지정;
 
         }
+
+        public void UpdateForm(bool isSell, string stockName, int Amount, int price, int Urgency, string str)
+        {
+            this.Text = isSell ? "매도 ?" : "매수 ?";
+            _stock = stockName;
+            _price = price;
+            _amount = Amount;
+            _isSell = isSell;
+            _str = str;
+            _urgency = Urgency;
+  
+
+
+            UpdateUI();
+            //PositionForm();
+        }
+        private void UpdateUI()
+        {
+            richTextBox1.Text = _str;
+        }
+        //private void PositionForm()
+        //{
+        //    DataGridView dgv = fm.FindDataGridViewByName(Application.OpenForms["se"], stock);
+        //    if (dgv == null) return;
+
+        //    Point stockPosition = dgv.PointToScreen(Point.Empty);
+        //    int newX = stockPosition.X + dgv.Width + 10;
+        //    int newY = stockPosition.Y;
+
+        //    Rectangle screenBounds = Screen.PrimaryScreen.Bounds;
+        //    newX = Math.Min(newX, screenBounds.Width - this.Width - 10);
+        //    newY = Math.Min(newY, screenBounds.Height - this.Height - 10);
+
+        //    this.StartPosition = FormStartPosition.Manual;
+        //    this.Location = new Point(newX, newY);
+        //}
 
         public int The_urgency
         {
@@ -163,49 +228,58 @@ namespace New_Tradegy
             //richTextBox1.Text = richTextBox1.Text.Insert(richTextBox1.SelectionStart, text);
         }
 
-        private void Yes_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Yes;
-            this.Close();
-        }
 
-        private void Ok_Click(object sender, EventArgs e)
+
+        
+
+
+
+
+
+ 
+
+        
+        private void 시장_Click(object sender, EventArgs e)
         {
-            if (!Validate())
+            DealManager.deal_exec(_isSell ? "매도" : "매수", _stock, _amount, _price, "03");
+            this.BeginInvoke(new Action(() =>
             {
-                this.DialogResult = DialogResult.None;
-                this.Close();
-            }
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+                this.Close();  // Ensures form closes properly before reopening
+            }));
         }
 
-        private void Cancel_Click(object sender, EventArgs e)
+        private void 지정_Click(object sender, EventArgs e)
         {
-            if (!Validate())
+            DealManager.deal_exec(_isSell ? "매도" : "매수", _stock, _amount, _price, "01");
+            this.BeginInvoke(new Action(() =>
             {
-                this.DialogResult = DialogResult.None;
-                this.Close();
-            }
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+                this.Close();  // Ensures form closes properly before reopening
+            }));
         }
 
-        private void Form_매수_매도_ReiszeEnd(object sender, EventArgs e)
+        private void 저장_Click(object sender, EventArgs e)
         {
-            Location = this.Location;
-            Size = this.Size;
-        }
-
-        private void Ok_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if(e.KeyChar == (char)Keys.Escape)
+            if (_isSell)
             {
-                this.Close();
-                return;
+                StockExchange.Instance.AddSellOrder(_stock, _price, _amount, _urgency);
             }
-            ky.chart_keypress(e);
+            else
+            {
+                StockExchange.Instance.AddBuyOrder(_stock, _price, _amount, _urgency);
+            }
+            this.BeginInvoke(new Action(() =>
+            {
+                this.Close();  // Ensures form closes properly before reopening
+            }));
+
         }
 
+        private void 취소_Click(object sender, EventArgs e)
+        {
+            this.BeginInvoke(new Action(() =>
+            {
+                this.Close();  // Ensures form closes properly before reopening
+            }));
+        }
     }
 }

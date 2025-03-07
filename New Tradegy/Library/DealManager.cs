@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace New_Tradegy.Library
 {
-    public class dl
+    public class DealManager
     {
         private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
         private static readonly CPUTILLib.CpCodeMgr _cpcodemgr = new CPUTILLib.CpCodeMgr();
@@ -151,7 +151,7 @@ namespace New_Tradegy.Library
                 ulong a = _CpTd5342.GetHeaderValue(9);
                 ulong b = _CpTd5342.GetHeaderValue(10);
                 g.deal_profit = ((int)(a - b) / 10000);
-                if (g.MkyCnt == 0)
+                if (g.MarketeyeCount == 0)
                 {
                     g.deal_profit = g.deal_total_profit;
                 }
@@ -289,7 +289,7 @@ namespace New_Tradegy.Library
             {
                 double 수익률 = (double)(o.매수1호가 - o.장부가) / o.매수1호가 * 100;
 
-                if (수익률 < -0.3 && o.평가금액 > 1000000) // If loss detected and eval amount is over 1M
+                if (수익률 < -0.45 && o.평가금액 > 4500000) // If loss detected and eval amount is over 1M
                 {
                     mc.Sound("alarm", "lost already");
                     return true; // Block trade
@@ -498,6 +498,12 @@ namespace New_Tradegy.Library
             if (_checkedTradeInit == false)
                 return;
 
+            if (g.m_mapOrder == null)
+            {
+                // Handle the error, log it, or initialize it as needed.
+                return;
+            }
+
             List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
 
             foreach (DictionaryEntry de in g.m_mapOrder) // 에러 메세지 20231122, 이유는 알 수 없는 데 ...
@@ -679,7 +685,7 @@ namespace New_Tradegy.Library
                        Math.Round(o.프누천 / 10.0) + "  " +
                        Math.Round(o.외누천 / 10.0) + "  " +
                        Math.Round(o.기누천 / 10.0) + "\t\t" +
-                       o.x[o.nrow - 1, 10] + "/" + o.x[o.nrow - 1, 11] + "\t\t" + o.dev_avr;
+                       o.x[o.nrow - 1, 10] + "/" + o.x[o.nrow - 1, 11] + "\t\t" + o.일간변동평균편차;
             message += "\n";
             #endregion
 

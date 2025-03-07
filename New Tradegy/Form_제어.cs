@@ -141,19 +141,19 @@ namespace New_Tradegy
 
             // Row 8
             g.제어.dtb.Rows[8][0] = "수과";
-            g.제어.dtb.Rows[8][1] = 20; g.v.수급과장배수 = 20;
+            g.제어.dtb.Rows[8][1] = 50; g.v.수급과장배수 = 50;
             g.제어.dtb.Rows[8][2] = "배과";
             g.제어.dtb.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
             // Row 9
-            g.제어.dtb.Rows[9][0] = "평가";
-            g.제어.dtb.Rows[9][1] = 20; g.v.eval_per_marketeyes = 20;
-            g.제어.dtb.Rows[9][2] = "초간";
+            g.제어.dtb.Rows[9][0] = "Eval";
+            g.제어.dtb.Rows[9][1] = 10; g.MarketeyeDividerForEvalStock = 10;
+            g.제어.dtb.Rows[9][2] = "Post";
             g.제어.dtb.Rows[9][3] = 30; g.postInterval = 30;
 
             // Row 10
-            g.제어.dtb.Rows[10][0] = "Main";
-            g.제어.dtb.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0F;
+            g.제어.dtb.Rows[10][0] = "Font";
+            g.제어.dtb.Rows[10][1] = g.v.font = 17; g.v.font /= 2.0F;
             //g.제어.dtb.Rows[10][2] = "Form";
             //g.제어.dtb.Rows[10][3] = g.v.font = 15; g.v.font /= 2.0F;
 
@@ -201,7 +201,7 @@ namespace New_Tradegy
                         switch (e.ColumnIndex)
                         {
                             case 0:
-                                dl.deal_profit();
+                                DealManager.deal_profit();
                                 break;
                             case 1:
                                 Process.Start("chrome.exe", "https://kr.investing.com/currencies/usd-krw");
@@ -329,12 +329,12 @@ namespace New_Tradegy
                         {
                             return;
                         }
-                        g.v.시총이상 = newValue;
+                        g.v.시총이상 = newValue; 
                         g.제어.dtb.Rows[7][3] = newValue;
                         break;
 
                     case "수과":
-                        array = new int[] { 5, 10, 15, 20, 25, 30, 40, 60, 100 }; // 수과
+                        array = new int[] { 5, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100 }; // 수과
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)
                         {
@@ -355,25 +355,25 @@ namespace New_Tradegy
                         g.제어.dtb.Rows[8][3] = newValue;
                         break;
 
-                    case "평가": // not used
-                        array = new int[] { 2, 5, 7, 10, 15, 20, 25, 40, 60 }; // 평가
+                    case "Eval": // not used
+                        array = new int[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }; // 평가
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)
                         {
                             return;
                         }
-                        g.v.eval_per_marketeyes = newValue;
+                        g.MarketeyeDividerForEvalStock = newValue;
                         g.제어.dtb.Rows[9][1] = newValue;
                         break;
 
-                    case "초간":
+                    case "Post":
                         array = new int[] { 10, 15, 20, 25, 30, 40, 50, 60, 70 }; // 초간
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)
                         {
                             return;
                         }
-                        g.v.eval_per_marketeyes = newValue;
+                        g.postInterval = newValue;
                         g.제어.dtb.Rows[9][3] = newValue;
                         break;
 
@@ -385,7 +385,7 @@ namespace New_Tradegy
                     // 11  14.63
                     // 12  15.96
                     // 13  17.29
-                    case "Main":
+                    case "Font":
                         array = new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 };
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)

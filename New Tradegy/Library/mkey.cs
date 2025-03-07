@@ -56,7 +56,7 @@ namespace New_Tradegy
                     await marketeye();
                 }
 
-                //? Wait 250 milliseconds (non-blocking)
+                // Wait 250 milliseconds (non-blocking)
                 await Task.Delay(250);
             }
         }
@@ -615,16 +615,16 @@ namespace New_Tradegy
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];
             g.코스피지수 = q.x[q.nrow - 1, 1];
-            KospiIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kospi"); //?
+            KospiIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kospi"); //
 
             index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
             q = g.ogl_data[index];
             g.코스닥지수 = q.x[q.nrow - 1, 1];
-            KosdaqIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kosdaq"); //?p
+            KosdaqIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kosdaq"); //
 
             ps.post_코스닥_코스피_프외_순매수_배차_합산();
 
-            g.MkyCnt++;
+            g.MarketeyeCount++;
 
 
 

@@ -19,7 +19,7 @@ namespace New_Tradegy
         {
             InitializeComponent();
           
-            //? if(g.connected)
+            // if(g.connected)
                 this.FormClosed += new FormClosedEventHandler(Form_그룹_FormClosed);
         }
 

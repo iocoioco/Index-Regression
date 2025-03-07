@@ -245,7 +245,7 @@ namespace New_Tradegy.Library
                     break;
             }
             if (sConFlag == "1" || sConFlag == "2" || sConFlag == "4")
-                dl.deal_hold();
+                DealManager.deal_hold();
 
             dgv2_update(); // CpConclusion_Received()
         }

@@ -28,11 +28,13 @@ If the bid side replenishes quickly or large iceberg orders appear, it means big
 
 매도 : 프돈 매수에도 밀리는 가운데 프돈이 매도로 돌아서면 강하게 밀릴 수 있으므로 매도가 대부분의 경우 타당
 
-
+large bid disappear (program buy or fake)
 	
 
 매수 : 당일 계획 사전 준비 
+iceburg on ask and bid detection
 
+분당 배차가 엄청 크면 상승하는가 (해석적 접근 필요)
 
 
 🚀 3. Development Roadmap

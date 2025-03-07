@@ -210,9 +210,9 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 //Task task_deal_profit = Task.Run(async () => await dl.task_deal_profit());
 
-                dl.deal_processing();
-                dl.deal_hold(); // Initialize g.보유종목
-                dl.deal_deposit(); // button1 tr(1)
+                DealManager.deal_processing();
+                DealManager.deal_hold(); // Initialize g.보유종목
+                DealManager.deal_deposit(); // button1 tr(1)
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
                 // updated on 20241020 0300
@@ -565,9 +565,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 if (IsMarketOpen())
                 {
-                    if (g.MkyCnt > g.MkyCnt_draw_tick)
+                    if (g.MarketeyeCount > g.MarketeyeCount_draw_tick)
                     {
-                        if (g.MkyCnt % g.v.eval_per_marketeyes == 1)
+                        if (g.MarketeyeCount % g.v.eval_per_marketeyes == 1)
                         {
                             ev.eval_stock();  // Evaluate stock conditionally
                         }
@@ -576,7 +576,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                         mm.ManageChart2(); // not used, Task task_eval_draw
 
                         // Update the last draw tick
-                        g.MkyCnt_draw_tick = g.MkyCnt;
+                        g.MarketeyeCount_draw_tick = g.MarketeyeCount;
                     }
                 }
 
@@ -923,7 +923,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 //        int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm")); // timerEvalDrawTick
 //        string day = Convert.ToString(DateTime.Today.DayOfWeek);
 
-//        if (g.MkyCnt > g.MkyCnt_draw_tick // 평일 0900부터 1530까지 marketeye, eval, draw 작동
+//        if (g.MarketeyeCount > g.MarketeyeCount_draw_tick // 평일 0900부터 1530까지 marketeye, eval, draw 작동
 //        && HHmm >= 0900 && HHmm <= 1530 &&
 //        day != "Sunday" && day != "Saturday")
 //        {

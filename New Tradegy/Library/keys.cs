@@ -25,15 +25,12 @@ namespace New_Tradegy.Library
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    g.MkyDiv+= 2;
+                 
                     break;
 
                 case Keys.Down:
-                    g.MkyDiv-= 2;
-                    if(g.MkyDiv==0)
-                    {
-                        g.MkyDiv += 2;
-                    }
+                   
+                   
                         
                     break;
 
@@ -89,7 +86,7 @@ namespace New_Tradegy.Library
 
                         for (int i = g.m_mapOrder.Count - 1; i >= 0; i--)
                         {
-                            dl.DealCancelRowIndex(i); // Escape Key
+                            DealManager.DealCancelRowIndex(i); // Escape Key
                         }
                     }
                     break;
@@ -327,16 +324,16 @@ namespace New_Tradegy.Library
                     break;
 
                 case 'r':
-                    g.NptsForSrkDrw -= 10;
-                    if (g.NptsForSrkDrw <= 10)
+                    g.NptsForShrinkDraw -= 10;
+                    if (g.NptsForShrinkDraw <= 10)
                     {
-                        g.NptsForSrkDrw = 10;
+                        g.NptsForShrinkDraw = 10;
                     }
                     action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
                 case 'R':
-                    g.NptsForSrkDrw += 10;
+                    g.NptsForShrinkDraw += 10;
                     action = "d  B"; // del chartarea, post, eval, draw
                     break;
 
@@ -553,7 +550,7 @@ namespace New_Tradegy.Library
     
                 case 'F':
                     g.v.KeyString = "분거";
-                    action = " pem"; //?
+                    action = " pem"; 
                     break;
                 case '\u0006': // Ctrl + F
                                // Add TextBox

@@ -143,7 +143,7 @@ namespace New_Tradegy
                     continue;
                 }
                 g.stock_data o = g.ogl_data[index];
-                if (!mm.ChartAreaExists(g.chart2, stock) || o.SrkDrw || g.test) //?
+                if (!mm.ChartAreaExists(g.chart2, stock) || o.ShrinkDraw || g.test) 
                 {
                     mm.AreaStocks(g.chart2, stock, nRow, nCol);
                 }

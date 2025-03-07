@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.Cancel = new System.Windows.Forms.Button();
-            this.Ok = new System.Windows.Forms.Button();
-            this.Yes = new System.Windows.Forms.Button(); // Declare the Yes button
+            this.취소 = new System.Windows.Forms.Button();
+            this.지정 = new System.Windows.Forms.Button();
+            this.시장 = new System.Windows.Forms.Button();
+            this.저장 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -41,55 +42,61 @@
             this.richTextBox1.Size = new System.Drawing.Size(915, 703);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
-            //this.richTextBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.richTextBox1_KeyPress);
             // 
-            // Cancel
+            // 취소
             // 
-            this.Cancel.Location = new System.Drawing.Point(713, 660);
-            this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(200, 100);
-            this.Cancel.TabIndex = 1;
-            this.Cancel.Text = "취소";
-            this.Cancel.UseVisualStyleBackColor = true;
-            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-            //this.Cancel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Cancel_KeyPress);
+            this.취소.Location = new System.Drawing.Point(763, 660);
+            this.취소.Name = "취소";
+            this.취소.Size = new System.Drawing.Size(200, 100);
+            this.취소.TabIndex = 1;
+            this.취소.Text = "취소";
+            this.취소.UseVisualStyleBackColor = true;
+            this.취소.Click += new System.EventHandler(this.취소_Click);
             // 
-            // Ok
+            // 지정
             // 
-            this.Ok.Location = new System.Drawing.Point(281, 660);
-            this.Ok.Name = "Ok";
-            this.Ok.Size = new System.Drawing.Size(200, 100);
-            this.Ok.TabIndex = 2;
-            this.Ok.Text = "지정가";
-            this.Ok.UseVisualStyleBackColor = true;
-            this.Ok.Click += new System.EventHandler(this.Ok_Click);
-            this.Ok.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Ok_KeyPress);
+            this.지정.Location = new System.Drawing.Point(401, 686);
+            this.지정.Name = "지정";
+            this.지정.Size = new System.Drawing.Size(200, 100);
+            this.지정.TabIndex = 2;
+            this.지정.Text = "지정";
+            this.지정.UseVisualStyleBackColor = true;
+            this.지정.Click += new System.EventHandler(this.지정_Click);
             // 
-            // Yes
+            // 시장
             // 
-            this.Yes.Location = new System.Drawing.Point(497, 660); // Set the location for the Yes button
-            this.Yes.Name = "Yes";
-            this.Yes.Size = new System.Drawing.Size(200, 100);
-            this.Yes.TabIndex = 3;
-            this.Yes.Text = "시장가";
-            this.Yes.UseVisualStyleBackColor = true;
-            this.Yes.Click += new System.EventHandler(this.Yes_Click);
+            this.시장.Location = new System.Drawing.Point(195, 686);
+            this.시장.Name = "시장";
+            this.시장.Size = new System.Drawing.Size(200, 100);
+            this.시장.TabIndex = 3;
+            this.시장.Text = "시장";
+            this.시장.UseVisualStyleBackColor = true;
+            this.시장.Click += new System.EventHandler(this.시장_Click);
+            // 
+            // 저장
+            // 
+            this.저장.Location = new System.Drawing.Point(519, 470);
+            this.저장.Name = "저장";
+            this.저장.Size = new System.Drawing.Size(200, 100);
+            this.저장.TabIndex = 4;
+            this.저장.Text = "저장";
+            this.저장.UseVisualStyleBackColor = true;
+            this.저장.Click += new System.EventHandler(this.저장_Click);
             // 
             // Form_매수_매도
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 1040);
-            this.Controls.Add(this.Yes); // Add the Yes button to the form
-            this.Controls.Add(this.Ok);
-            this.Controls.Add(this.Cancel);
+            this.Controls.Add(this.저장);
+            this.Controls.Add(this.시장);
+            this.Controls.Add(this.지정);
+            this.Controls.Add(this.취소);
             this.Controls.Add(this.richTextBox1);
             this.Name = "Form_매수_매도";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Form_매수_매도";
             this.Load += new System.EventHandler(this.Form_매수_매도_Load);
-            this.ResizeEnd += new System.EventHandler(this.Form_매수_매도_ReiszeEnd);
-            //this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form_매수_매도_KeyPress);
             this.ResumeLayout(false);
 
         }
@@ -97,8 +104,9 @@
         #endregion
 
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.Button Cancel;
-        private System.Windows.Forms.Button Ok;
-        private System.Windows.Forms.Button Yes; // Declare the Yes button
+        private System.Windows.Forms.Button 취소;
+        private System.Windows.Forms.Button 지정;
+        private System.Windows.Forms.Button 시장; // Declare the Yes button
+        private System.Windows.Forms.Button 저장;
     }
 }

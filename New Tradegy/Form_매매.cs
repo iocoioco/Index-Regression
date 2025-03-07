@@ -146,7 +146,7 @@ namespace New_Tradegy
 
                     if (e.RowIndex < g.m_mapOrder.Count)
                     {
-                        dl.DealCancelRowIndex(e.RowIndex); // work_CellMouseClick
+                        DealManager.DealCancelRowIndex(e.RowIndex); // work_CellMouseClick
                         mc.Sound("Keys", "cancel");
                     }
                     break;
