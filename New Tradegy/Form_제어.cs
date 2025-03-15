@@ -355,7 +355,7 @@ namespace New_Tradegy
                         g.제어.dtb.Rows[8][3] = newValue;
                         break;
 
-                    case "Eval": // not used
+                    case "Eval": 
                         array = new int[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }; // 평가
                         newValue = FindNewValueFromArray(array, clickedValue, upper);
                         if (newValue < 0)

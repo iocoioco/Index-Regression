@@ -35,8 +35,7 @@ namespace New_Tradegy.Library
         public static int screenWidth;
 
         public static int date;
-        public static DateTime SavedTimeForDuration;
-
+        
 
 
         public static bool 시초 = true; // at the begining of market, try all stocks first and then use the order of evaluation

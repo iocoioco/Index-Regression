@@ -200,6 +200,7 @@
     <Compile Include="Library\read.cs" />
     <Compile Include="Library\scrp.cs" />
     <Compile Include="Library\strg.cs" />
+    <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\wndw.cs" />
     <Compile Include="Library\work.cs" />
     <Compile Include="Library\writ.cs" />

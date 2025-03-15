@@ -79,21 +79,7 @@ namespace New_Tradegy.Library
             mc.Sound("일반", "done");
         }
 
-        public static double WriteDuration(string fromorTo) // 소요시간 계산
-        {
-            if (fromorTo[0] == 'F')
-            {
-                g.SavedTimeForDuration = DateTime.Now;
-            }
-            else
-            {
-                TimeSpan duration = DateTime.Now.Subtract(g.SavedTimeForDuration);
-                double m = duration.TotalMilliseconds;
-                return m;
-                
-            }
-            return 0.0;
-        }
+        
 
         public static void append(string path, string t)
         {
