@@ -40,7 +40,7 @@ namespace New_Tradegy.Library
 
 
         public static bool 시초 = true; // at the begining of market, try all stocks first and then use the order of evaluation
-        //public static bool 돌파적용 = false;
+        // public static bool 돌파적용 = false;
 
         public static bool draw_history_forwards = false;
 
@@ -50,8 +50,8 @@ namespace New_Tradegy.Library
         public static bool add_interest = false;
         public static bool confirm_sell = false;
         // public static bool draw_stock_shrink_or_not = false;
-        public static bool settingBuy = false;
-        public static bool settingSell = false;
+        // public static bool settingBuy = false;
+        // public static bool settingSell = false;
 
         public static int deal_profit = 0;
         public static int deal_total_profit = 0;

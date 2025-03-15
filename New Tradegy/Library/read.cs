@@ -490,7 +490,10 @@ namespace New_Tradegy.Library
             g.ogl_data = g.ogl_data.OrderByDescending(x => x.전일거래액_천만원).ToList();
 
             foreach (var item in g.ogl_data)
+            {
                 g.sl.Add(item.stock);
+            }
+                
 
             rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.호가종목
 

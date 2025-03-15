@@ -452,16 +452,24 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l3":
-                    //if (g.clickedStock.Contains("KODEX 레버리지"))
-                    //    wn.Memo_TopMost();
-                    //else 
+                    string directoryPath = @"C:\병신\data\Stock Memo";
+                    string filePath = Path.Combine(directoryPath, g.clickedStock + ".txt");
 
-                    if (g.test)
+                    // Ensure the directory exists
+                    if (!Directory.Exists(directoryPath))
                     {
-                        g.Npts[0] = 0;
-                        g.Npts[1] = g.MAX_ROW;
-                        action = "BpeB";
+                        Directory.CreateDirectory(directoryPath);
                     }
+
+                    // Check if the file exists, if not create it
+                    if (!File.Exists(filePath))
+                    {
+                        using (File.Create(filePath)) { }  // Ensures the file is created and immediately released
+                    }
+
+                    // Open the file with the default text editor
+                    Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+
                     break;
 
                 case "l4":

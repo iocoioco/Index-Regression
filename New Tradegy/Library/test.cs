@@ -580,7 +580,8 @@ namespace New_Tradegy.Library
                     ulong e = 0;
                     //int long_high = 0;
 
-                    wk.calcurate_종목일중변동평균편차(stock, 20, ref avr, ref dev, ref a, ref b, ref c, ref e); // a,b,c -> avrage deal, max and min
+                    // not matching : subroutine changed, to test modify as subroutine
+                    // wk.calcurate_종목일중변동평균편차(stock, 20, ref avr, ref dev, ref a, ref b, ref c, ref e); // a,b,c -> avrage deal, max and min
                     if (stock.Contains("KODEX") || stock.Contains("혼합") || dev < 1.0)
                     {
                         continue;

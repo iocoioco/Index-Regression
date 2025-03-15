@@ -269,6 +269,8 @@ namespace New_Tradegy // added for test on 20241020 0300
         //    searchTextBox.Text = "";
         //}
 
+
+        // not used
         private static void SearchTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)

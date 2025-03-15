@@ -1,0 +1,178 @@
+﻿Use Singleton Pattern to Centralize Access
+
+2️⃣ Group Related Variables into Separate Classes
+    public class TradingConfig
+    {
+        public bool OptimumTrading { get; set; }
+        public bool 시초 { get; set; }
+        public bool Connected { get; set; }
+        public int 전일종가이상 { get; set; } = 1000;
+    }
+
+    public class SystemConfig
+    {
+        public int ScreenHeight { get; set; }
+        public int ScreenWidth { get; set; }
+        public string MachineName { get; set; }
+    }
+
+    public sealed class GlobalSettings
+    {
+        private static readonly Lazy<GlobalSettings> instance =
+            new Lazy<GlobalSettings>(() => new GlobalSettings());
+
+        public static GlobalSettings Instance => instance.Value;
+
+        // private set; -> Prevents replacing TradingConfig with a new object 
+        public TradingConfig Trading { get; private set; } = new TradingConfig();
+        public SystemConfig System { get; private set; } = new SystemConfig();
+    }
+
+    var settings = GlobalSettings.Instance;
+    Console.WriteLine(settings.Trading.전일종가이상); // Output: 1000 ✅
+    settings.Trading.전일종가이상 = 2000; // ✅ Allowed (changing internal value)
+
+3️⃣ Use ConcurrentDictionary for Thread-Safe Global Data
+    using System.Collections.Concurrent;
+
+    public sealed class GlobalSettings
+    {
+        private static readonly Lazy<GlobalSettings> instance =
+            new Lazy<GlobalSettings>(() => new GlobalSettings());
+
+        public static GlobalSettings Instance => instance.Value;
+
+        public ConcurrentDictionary<string, object> jpjds { get; private set; } = new ConcurrentDictionary<string, object>();
+    }
+
+4️⃣ Use Dependency Injection to Avoid Global Dependencies
+    public class TradingService
+    {
+        private readonly GlobalSettings _settings;
+
+        public TradingService(GlobalSettings settings)
+        {
+            _settings = settings;
+        }
+
+        public void StartTrading()
+        {
+            if (_settings.Trading.Connected)
+            {
+                // Trading logic
+            }
+        }
+    }
+
+
+
+
+public sealed class GlobalSettings
+{
+    public static readonly GlobalSettings Instance = new GlobalSettings();
+
+    private GlobalSettings() { } // Prevents external instantiation
+}
+
+public sealed class GlobalSettings
+{
+    private static readonly Lazy<GlobalSettings> instance =
+        new Lazy<GlobalSettings>(() => new GlobalSettings());
+
+    public static GlobalSettings Instance => instance.Value; // 🔥 Only created when first used
+
+    private GlobalSettings() { } // Prevents external instantiation
+}
+
+
+
+
+
+
+Problems:
+❌ Tests will always depend on real API calls.
+❌ Cannot test what happens when the API fails.
+❌ Slow and unreliable tests.
+
+public class StockService
+{
+    public double GetStockPrice(string stockName)
+    {
+        Console.WriteLine($"Fetching price for {stockName} from API...");
+        return 150.50; // Simulated API response
+    }
+}
+
+public class TradingBot
+{
+    private readonly StockService _stockService;
+
+    public TradingBot(StockService stockService)
+    {
+        _stockService = stockService;
+    }
+
+    public bool ShouldBuy(string stockName)
+    {
+        double price = _stockService.GetStockPrice(stockName);
+        return price < 100; // Buy if price is below 100
+    }
+}
+
+
+
+// Manual Mocking (Better Solution)
+// Instead of using StockService, we create a fake version that returns fixed values.
+
+public interface IStockService
+{
+    double GetStockPrice(string stockName);
+}
+
+public class StockService : IStockService
+{
+    public double GetStockPrice(string stockName)
+    {
+        Console.WriteLine($"Fetching price for {stockName} from API...");
+        return 150.50; // Simulated API response
+    }
+}
+
+public class TradingBot
+{
+    private readonly IStockService _stockService;
+
+    public TradingBot(IStockService stockService)
+    {
+        _stockService = stockService;
+    }
+
+    public bool ShouldBuy(string stockName)
+    {
+        double price = _stockService.GetStockPrice(stockName);
+        return price < 100; // Buy if price is below 100
+    }
+}
+
+public class MockStockService : IStockService
+{
+    public double GetStockPrice(string stockName)
+    {
+        return 80.00; // Simulated price for testing
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        IStockService mockService = new MockStockService(); // ✅ Use mock instead of real service
+        TradingBot bot = new TradingBot(mockService);
+
+        bool shouldBuy = bot.ShouldBuy("Samsung");
+
+        Console.WriteLine(shouldBuy ? "Buy the stock! ✅" : "Do not buy. ❌");
+        // Output: Buy the stock! ✅
+    }
+}
+

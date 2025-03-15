@@ -56,13 +56,23 @@ Phase 3: Advanced AI/ML Integration (Future)
 ✅ Improve correlation analysis to detect market-wide patterns.
 
 
+푀분(푀퍼분), 거분, 배차(real ?), 배합, 종누, 푀누(푀누퍼), 그룹(절친), 피로
+Real-Time Order Flow Imbalance – Measures aggressive buying/selling in the order book, useful for fine-tuning entry/exit points.
+Market Index Influence – Adjusting based on KOSPI/KOSDAQ movements to avoid misleading signals from overall market trends.
+Recent Large Trades (Volume Spikes) – Large, sudden trades by institutions can indicate upcoming momentum.
+Volatility Index (Intraday Standard Deviation) – High volatility can indicate instability, while low volatility may signal steady momentum.
+Historical Breakout Probability – Checking whether the stock has broken similar levels in the past under similar conditions.
+Real-Time Order Flow Imbalance – The difference between aggressive buyers and sellers in real time.
+Spread and Liquidity – Stocks with tight spreads and high liquidity tend to have more predictable momentum.
+Sector Rotation Influence – If money is flowing into/out of a particular sector, it might affect the stock's movement.
+Time Decay Effect (Intraday Pattern Analysis) – Evaluating if momentum tends to fade at certain hours (e.g., midday slowdowns, closing rallies).
+News Sentiment Impact – If there are significant news events affecting the stock or sector.
+Institutional Positioning Trends – If institutions have been net buyers/sellers for multiple days.
 
+X = sign(X) * square(|X|)
+𝑍 = (𝑋 − 𝜇) / σ 모든 변수는 log 상태에서 구해진 것임
 
-
-
-
-
-
+Standardized Intensity= Buy Intensity * square (DAMM+ϵ) ?
 
 매도
 

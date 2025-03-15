@@ -1,8 +1,6 @@
-﻿using MathNet.Numerics.Distributions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 /* 배점 : 대형주 배차 조건 충족시, 수일 과다 움직임 높게(dev 큰 종목 가능성 높음) + 배차
  *  1차 상승시 접근, 2차 이상 자제
@@ -68,10 +66,18 @@ namespace New_Tradegy.Library
                 post(o);
             }
 
+            //?
+            //Parallel.ForEach(Download_ogl_data_List, o =>
+            //{
+            //    post(o);  // ✅ Process multiple stocks in parallel
+
+            //});
+
+
             // eval or not in post_real
-            if(g.MarketeyeCount % g.MarketeyeDividerForEvalStock == 1)
+            if (g.MarketeyeCount % g.MarketeyeDividerForEvalStock == 1)
                 ev.eval_stock();
-            
+
 
             foreach (var o in Download_ogl_data_List)
             {
@@ -924,6 +930,30 @@ namespace New_Tradegy.Library
 
         public static void post(g.stock_data o)
         {
+            //?
+            //    public static void post(g.stock_data o)
+            //{
+            //    // ✅ Skip unnecessary calculations
+            //    if ((o.stock.Contains("KODEX") && !o.stock.Contains("레버리지")) ||
+            //        o.stock.Contains("KODSEF") ||
+            //        o.stock.Contains("TIGER") ||
+            //        o.stock.Contains("KBSTAR") ||
+            //        o.stock.Contains("HANARO"))
+            //    {
+            //        return;
+            //    }
+
+            //    int check_row = g.test ? Math.Min(g.Npts[1] - 1, o.nrow - 1) : o.nrow - 1;
+
+            //    lock (o) // ✅ Ensures only one thread modifies `o` at a time and o is not null
+            //    {
+            //        post_minute(o, check_row);
+            //        o.점수.총점 = post_score(o, check_row);
+            //        PostPassing(o, check_row, true);
+            //    }
+            //}
+
+
             if ((o.stock.Contains("KODEX") && !o.stock.Contains("레버리지")) ||
                 o.stock.Contains("KODSEF") ||
                 o.stock.Contains("TIGER") ||
@@ -944,7 +974,7 @@ namespace New_Tradegy.Library
             //    if (g.connected) ev.EvalKODEX(o);
             //    return;
             //}
-            
+
             o.점수.총점 = post_score(o, check_row);
 
             PostPassing(o, check_row, true);
@@ -1755,8 +1785,8 @@ namespace New_Tradegy.Library
             o.기누천 = o.x[check_row, 6] * money_factor;
             o.거누천 = o.x[check_row, 7] * money_factor;
             o.종거천 = o.x[check_row, 7] * money_factor * wk.누적거래액환산율(o.x[check_row, 0]); // 혼합, 계산은 하되 사용하지 않음
-            o.매도호가거래액_백만원 = (int)(o.최우선매도호가잔량 * money_factor * 10); 
-            o.매수호가거래액_백만원 = (int)(o.최우선매수호가잔량 * money_factor * 10); 
+            o.매도호가거래액_백만원 = (int)(o.최우선매도호가잔량 * money_factor * 10);
+            o.매수호가거래액_백만원 = (int)(o.최우선매수호가잔량 * money_factor * 10);
 
             // 혼합, 아래 계산은 하되 사용하지 않음
             if (g.test)

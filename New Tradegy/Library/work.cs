@@ -329,7 +329,14 @@ namespace New_Tradegy.Library
         public static int return_index_of_ogldata(string stock)
         {
             int index = -1;
-            index = g.ogl_data.FindIndex(x => x.stock == stock);
+            // index = g.ogl_data.FindIndex(x => x.stock == stock);
+
+
+            lock (g.ogl_data)
+            {
+                index = g.ogl_data.FindIndex(x => x.stock == stock);
+            }
+
 
             return index;
         }
@@ -350,55 +357,89 @@ namespace New_Tradegy.Library
         public static bool gen_ogl_data(string stock)
         {
             if (rd.read_단기과열(stock))
-            {
                 return false;
-            }
-
-            double 일간변동평균 = 0, 일간변동편차 = 0;
-            int 일평균거래액 = 0, 일최저거래액 = 0, 일최대거래액 = 0;
-            ulong 일평균거래량 = 0;
-            string 일간변동평균편차 = "";
 
             int days = 20;
-            일간변동평균편차 = calcurate_종목일중변동평균편차(stock, days, ref 일간변동평균, ref 일간변동편차,
-                ref 일평균거래액, ref 일최저거래액, ref 일최대거래액, ref 일평균거래량);
+            if (!종목일중변동자료계산(stock, days, out double 일간변동평균, out double 일간변동편차,
+                out int 일평균거래액, out int 일최저거래액, out int 일최대거래액, out ulong 일평균거래량, out string 일간변동평균편차) ||
+                일최대거래액 < 30 || string.IsNullOrEmpty(일간변동평균편차))
+            {
+                return false;
+            }
 
-            if (일최대거래액 < 30)
+            var o = new g.stock_data
             {
+                stock = stock,
+                일간변동평균 = 일간변동평균,
+                일간변동편차 = 일간변동편차,
+                일평균거래액 = 일평균거래액,
+                일최저거래액 = 일최저거래액,
+                일최대거래액 = 일최대거래액,
+                일평균거래량 = 일평균거래량,
+                일간변동평균편차 = 일간변동평균편차
+            };
+
+            var _cpstockcode = new CPUTILLib.CpStockCode();
+            o.code = _cpstockcode.NameToCode(stock);
+
+            if (o.code.Length != 7 || (o.전일종가 = rd.read_전일종가(stock)) < g.전일종가이상)
                 return false;
-            }
-            if (일간변동평균편차 == "")
-            {
-                return false;
-            }
+
+            //return true; // If you need to continue processing, otherwise remove this line.
+
+
+
+
+            //if (rd.read_단기과열(stock))
+            //{
+            //    return false;
+            //}
+
+            //double 일간변동평균 = 0, 일간변동편차 = 0;
+            //int 일평균거래액 = 0, 일최저거래액 = 0, 일최대거래액 = 0;
+            //ulong 일평균거래량 = 0;
+            //string 일간변동평균편차 = "";
+
+            //int days = 20;
+            //일간변동평균편차 = calcurate_종목일중변동평균편차(stock, days, ref 일간변동평균, ref 일간변동편차,
+            //    ref 일평균거래액, ref 일최저거래액, ref 일최대거래액, ref 일평균거래량);
+
+            //if (일최대거래액 < 30)
+            //{
+            //    return false;
+            //}
+            //if (일간변동평균편차 == "")
+            //{
+            //    return false;
+            //}
 
 
             
 
-            var o = new g.stock_data();
-            o.일간변동평균 = 일간변동평균;
-            o.일간변동편차 = 일간변동편차;
-            o.일평균거래액 = 일평균거래액;
-            o.일최저거래액 = 일최저거래액;
-            o.일최대거래액 = 일최대거래액;
-            o.일평균거래량 = 일평균거래량;
-            o.일간변동평균편차 = 일간변동평균편차;
+            //var o = new g.stock_data();
+            //o.일간변동평균 = 일간변동평균;
+            //o.일간변동편차 = 일간변동편차;
+            //o.일평균거래액 = 일평균거래액;
+            //o.일최저거래액 = 일최저거래액;
+            //o.일최대거래액 = 일최대거래액;
+            //o.일평균거래량 = 일평균거래량;
+            //o.일간변동평균편차 = 일간변동평균편차;
 
-            o.stock = stock;
-            _cpstockcode = new CPUTILLib.CpStockCode();
-            o.code = _cpstockcode.NameToCode(stock);
-            if (o.code.Length != 7)
-            {
-                return false; //루미마이크로, 메디포럼제약 코드 못 찾음, 합병된 것으로 추정
-            }
+            //o.stock = stock;
+            //_cpstockcode = new CPUTILLib.CpStockCode();
+            //o.code = _cpstockcode.NameToCode(stock);
+            //if (o.code.Length != 7)
+            //{
+            //    return false; //루미마이크로, 메디포럼제약 코드 못 찾음, 합병된 것으로 추정
+            //}
                 
 
-            o.전일종가 = rd.read_전일종가(stock);
-            g.전일종가이상 = 1000; // also defined in glbl
-            if (o.전일종가 < g.전일종가이상)
-            {
-                return false;
-            }
+            //o.전일종가 = rd.read_전일종가(stock);
+            //g.전일종가이상 = 1000; // also defined in glbl
+            //if (o.전일종가 < g.전일종가이상)
+            //{
+            //    return false;
+            //}
                 
 
 
@@ -927,10 +968,138 @@ namespace New_Tradegy.Library
 
         //         return 0;
         //     }
+        public static bool 종목일중변동자료계산(string stock, int days, out double avr, out double dev,
+                     out int avr_dealt, out int min_dealt, out int max_dealt, out ulong 일평균거래량, out string 일간변동평균편차)
+        {
+            avr = 0;
+            dev = 0;
+            avr_dealt = 0;
+            max_dealt = 0;
+            min_dealt = int.MaxValue;
+            일평균거래량 = 0;
+            일간변동평균편차 = "";
+
+            string path = $@"C:\병신\data\일\{stock}.txt";
+            if (!File.Exists(path)) return false;
+
+            var lines = File.ReadLines(path).Reverse().Take(days).ToList();
+            if (lines.Count < 1) return false; // 신규 상장 (less than `days` worth of data)
+
+            var day_list = new List<double>();
+            int total_dealt = 0, days_count = 0;
+
+            foreach (var line in lines)
+            {
+                var words = line.Split(' ');
+                if (words.Length != 10) return false; // Invalid data format
+
+                if (!double.TryParse(words[1], out double start_price) ||  // 시가
+                    !double.TryParse(words[4], out double close_price) ||  // 종가
+                    !ulong.TryParse(words[5], out ulong 거래량))           // 거래량
+                    return false;
+
+                int day_dealt = (int)((close_price * 거래량) / g.억원);
+                total_dealt += day_dealt;
+                max_dealt = Math.Max(max_dealt, day_dealt);
+                min_dealt = Math.Min(min_dealt, day_dealt);
+                일평균거래량 += 거래량;
+
+                if (start_price != 0)
+                    day_list.Add((close_price - start_price) / start_price * 100); // 변동률 (%)
+
+                days_count++;
+            }
+
+            if (days_count == 0) return false;
+
+            avr_dealt = total_dealt / days_count;
+            일평균거래량 /= (ulong)days_count;
+
+            // Compute avr before using it in any lambda expression
+            if (day_list.Count > 0)
+            {
+                double sum = 0;
+                foreach (var val in day_list) sum += val;
+                avr = sum / day_list.Count;  // Compute manually to avoid lambda usage
+            }
+
+            // Compute standard deviation safely without lambda
+            if (day_list.Count > 1)
+            {
+                double varianceSum = 0;
+                foreach (var val in day_list)
+                    varianceSum += Math.Pow(val - avr, 2);
+
+                dev = Math.Sqrt(varianceSum / (day_list.Count - 1));
+            }
+            else
+            {
+                dev = 0;
+            }
+
+            일간변동평균편차 = $"{avr:0.#}/{dev:0.#}";
+            return true;
+        }
+
+
+        //public static bool 종목일중변동자료계산_old(string stock, int days, out double avr, out double dev,
+        //                    out int avr_dealt, out int min_dealt, out int max_dealt, out ulong 일평균거래량, out string 일간변동평균편차)
+        //{
+        //    avr = 0;
+        //    dev = 0;
+        //    avr_dealt = 0;
+        //    max_dealt = 0;
+        //    min_dealt = int.MaxValue;
+        //    일평균거래량 = 0;
+        //    일간변동평균편차 = "";
+
+        //    string path = $@"C:\병신\data\일\{stock}.txt";
+        //    if (!File.Exists(path)) return false;
+
+        //    var lines = File.ReadLines(path).Reverse().Take(days).ToList();
+        //    if (lines.Count < 1) return false; // 신규 상장 (less than 20 days of data)
+
+        //    var day_list = new List<double>();
+        //    int total_dealt = 0, days_count = 0;
+
+        //    foreach (var line in lines)
+        //    {
+        //        var words = line.Split(' ');
+        //        if (words.Length != 10) return false; // Invalid data format
+
+        //        if (!double.TryParse(words[1], out double start_price) ||  // 시가
+        //            !double.TryParse(words[4], out double close_price) ||  // 종가
+        //            !ulong.TryParse(words[5], out ulong 거래량))           // 거래량
+        //            return false;
+
+        //        int day_dealt = (int)((close_price * 거래량) / g.억원);
+        //        total_dealt += day_dealt;
+        //        max_dealt = Math.Max(max_dealt, day_dealt);
+        //        min_dealt = Math.Min(min_dealt, day_dealt);
+        //        일평균거래량 += 거래량;
+
+        //        if (start_price != 0)
+        //            day_list.Add((close_price - start_price) / start_price * 100); // 변동률 (%)
+
+        //        days_count++;
+        //    }
+
+        //    if (days_count == 0) return false;
+
+        //    avr_dealt = total_dealt / days_count;
+        //    일평균거래량 /= (ulong)days_count;
+
+        //    // Calculate standard deviation
+        //    avr = day_list.Average();
+        //    dev = (day_list.Count > 1) ? Math.Sqrt(day_list.Average(x => Math.Pow(x - avr, 2))) : 0;
+
+        //    일간변동평균편차 = $"{avr:0.#}/{dev:0.#}";
+        //    return true;
+        //}
 
 
         // avr_dealt, min_dealt, max_dealt : not used, just for reference
-        public static string calcurate_종목일중변동평균편차(string stock, int days, ref double avr, ref double dev,
+        public static string calcurate_종목일중변동평균편차_old(string stock, int days, ref double avr, ref double dev,
                                     ref int avr_dealt, ref int min_dealt, ref int max_dealt, ref ulong 일평균거래량)
         {
             // code simplification

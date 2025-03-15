@@ -56,8 +56,8 @@ namespace New_Tradegy
                     await marketeye();
                 }
 
-                // Wait 250 milliseconds (non-blocking)
-                await Task.Delay(250);
+                // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
+                await Task.Delay(300);
             }
         }
 
