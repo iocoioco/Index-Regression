@@ -1,5 +1,6 @@
 ﻿using CPTRADELib;
 using OpenQA.Selenium.BiDi.Modules.Input;
+using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,7 +81,7 @@ namespace New_Tradegy.Library
 
             if (!g.jpjds.ContainsKey(stock))
             {
-                g.jpjds.Add(stock, _stockjpbid);
+                g.jpjds.TryAdd(stock, _stockjpbid);
             }
             else
             {
@@ -360,19 +361,38 @@ namespace New_Tradegy.Library
             }
         }
 
+
+        // by Chat Gpt 20250315
         private void Unsubscribe()
         {
-            //string stockcode = _cpstockcode.NameToCode(Stock);
-            //_stockjpbid.SetInputValue(0, stockcode);
+            // Step 1: Unsubscribe event
+            if (_stockjpbid != null)
+            {
+                _stockjpbid.Received -= stockjpbid_Received; // Explicitly detach the event handler
+                _stockjpbid.Unsubscribe(); // Unsubscribe from real-time data
+            }
 
-            _stockjpbid.Received -= stockjpbid_Received; // Explicitly detach the event handler
-            _stockjpbid.Unsubscribe();
-            _stockjpbid = null; // Clear reference to help with memory management
+            // Step 2: Remove stock from dictionary safely
+            if (g.jpjds.TryRemove(Stock, out object removedValue))
+            {
+                // If the removed object implements IDisposable, dispose it
+                if (removedValue is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
 
-            g.jpjds.Remove(Stock);
-            Dgv.Dispose();
+            // Step 3: Dispose of DataGridView safely
+            if (Dgv != null)
+            {
+                Dgv.Dispose();
+                Dgv = null; // Ensure reference is cleared
+            }
 
+            // Step 4: Nullify _stockjpbid for garbage collection
+            _stockjpbid = null;
         }
+
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
         private void stockjpbid_Received()

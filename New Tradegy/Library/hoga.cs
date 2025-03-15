@@ -139,33 +139,40 @@ namespace New_Tradegy.Library
             formLocation = new Point(g.screenWidth / g.rqwey_nCol * colId + xShift, g.screenHeight / g.rqwey_nRow * rowId + yShift);
         }
 
-        // close form and dgv with the name of stock
+
+        // by Chat Gpt 20250315
         public static bool HogaRemove(string stock)
         {
-            object a;
-
-            if (g.jpjds.TryGetValue(stock, out a))
+            if (g.jpjds.TryGetValue(stock, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
             {
-                // int sb = RemainSB();
-                DSCBO1Lib.StockJpbid _stockjpbid = (DSCBO1Lib.StockJpbid)a;
-                _stockjpbid.Unsubscribe(); // working
-                                           // Key was present; date is set to the value in the dictionary.
-                                           // sb = RemainSB();
+                // Unsubscribe from the stock data feed
+                _stockjpbid.Unsubscribe();
+
+                // Find the DataGridView by stock name and dispose of it safely
                 Form f = fm.FindFormByName("se");
-                DataGridView dgv = f.Controls.Find(stock, true).FirstOrDefault() as DataGridView;
-                dgv.Dispose();
-    
-                if (g.jpjds.ContainsKey(stock))
+                DataGridView dgv = f?.Controls.Find(stock, true).FirstOrDefault() as DataGridView;
+
+                if (dgv != null)
                 {
-                    g.jpjds.Remove(stock);
+                    dgv.Dispose();
                 }
+
+                // Remove the stock from the dictionary safely
+                if (g.jpjds.TryRemove(stock, out object removedValue))
+                {
+                    // If the removed object implements IDisposable, dispose of it
+                    if (removedValue is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                }
+
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
+
 
         // from HogaForm find value : rowShft 
         public static int HogaGetValue(string stock, int rowShift, int column)

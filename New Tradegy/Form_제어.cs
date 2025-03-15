@@ -1,5 +1,6 @@
 ﻿using New_Tradegy.Library;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -7,8 +8,31 @@ using System.Windows.Forms;
 
 namespace New_Tradegy
 {
+    // by Chat Gpt 20250315
     public partial class Form_제어 : Form
     {
+        // Dictionary for DataGridView controls and their settings.
+        private static readonly Dictionary<string, (int[], Action<int>)> controlConfigurations =
+     new Dictionary<string, (int[], Action<int>)>()
+
+{
+    { "종거", (new int[] { 0, 50, 100, 200, 500, 1000, 1500, 2000 }, val => g.v.종가기준추정거래액이상_천만원 = val * 10) },
+    { "분거", (new int[] { 0, 2, 5, 10, 20, 30, 50 }, val => g.v.분당거래액이상_천만원 = val) },
+    { "호가", (new int[] { 0, 5, 10, 20, 30, 50 }, val => g.v.호가거래액_백만원 = val) },
+    { "편차", (new int[] { 0, 1, 2, 3, 5, 7 }, val => g.v.편차이상 = val) },
+    { "배차", (new int[] { 0, 10, 25, 50, 75, 100 }, val => g.v.배차이상 = val) },
+    { "시총", (new int[] { 0, 10, 30, 50, 100, 200 }, val => g.v.시총이상 = val) },
+    { "수과", (new int[] { 5, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100 }, val => g.v.수급과장배수 = val) },
+    { "배과", (new int[] { 1, 2, 3, 4, 5, 7, 10 }, val => g.v.배수과장배수 = 1.0 / val) },
+    { "Eval", (new int[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }, val => g.MarketeyeDividerForEvalStock = val) },
+    { "Post", (new int[] { 10, 15, 20, 25, 30, 40, 50, 60, 70 }, val => g.postInterval = val) },
+    { "Font", (new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }, val => g.v.font = val / 2.0F) },
+    { "푀플", (new int[] { 0, 1 }, val => g.v.푀플 = val)  },
+    { "배플", (new int[] { 0, 1 }, val => g.v.배플 = val)  },
+    { "보유", (new int[] { 10, 50, 100, 250, 500, 1000 }, val => g.v.보유종목점검최소액 = val) },
+    { "선폭", (new int[] { 1, 2, 3 }, val => g.LineWidth = val) }
+};
+
 
         //DataGridView g.제어.dgv;
         int Rows = 15;
@@ -265,194 +289,15 @@ namespace New_Tradegy
                     return;
                 }
 
-                switch (clickedVariable)
-                {
-                    case "종거":
-                        int[] array = new int[] { 0, 50, 100, 200, 500, 1000, 1500, 2000 }; // 종거
-                        int newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.종가기준추정거래액이상_천만원 = newValue * 10; // 억원을 천만원으로
-                        g.제어.dtb.Rows[5][1] = newValue;
-                        break;
+                var (array, updateAction) = controlConfigurations[clickedVariable];
 
-                    case "분거":
-                        array = new int[] { 0, 2, 5, 10, 20, 30, 50 }; // 분거
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.분당거래액이상_천만원 = newValue;
-                        g.제어.dtb.Rows[5][3] = newValue;
-                        break;
+                int newValue = FindNewValueFromArray(array, clickedValue, upper);
+                if (newValue < 0 || !controlConfigurations.ContainsKey(clickedVariable)) return;
 
-                    case "호가":
-                        array = new int[] { 0, 5, 10, 20, 30, 50 }; // 호가
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.호가거래액_백만원 = newValue;
-                        g.제어.dtb.Rows[6][1] = newValue;
-                        break;
+                updateAction(newValue);
+                g.제어.dgv.Rows[e.RowIndex].Cells[e.ColumnIndex % 2 == 0 ? e.ColumnIndex + 1 : e.ColumnIndex].Value = newValue;
 
-                    case "편차":
-                        array = new int[] { 0, 1, 2, 3, 5, 7 }; // 편차
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.편차이상 = newValue;
-                        g.제어.dtb.Rows[6][3] = newValue;
-                        break;
-
-                    case "배차":
-                        array = new int[] { 0, 10, 25, 50, 75, 100 }; // 배차
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.배차이상 = newValue;
-                        g.제어.dtb.Rows[7][1] = newValue;
-                        break;
-
-                    case "시총":
-                        array = new int[] { 0, 10, 30, 50, 100, 200 }; // 시총 (백억 단위)
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.시총이상 = newValue; 
-                        g.제어.dtb.Rows[7][3] = newValue;
-                        break;
-
-                    case "수과":
-                        array = new int[] { 5, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100 }; // 수과
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.수급과장배수 = newValue;
-                        g.제어.dtb.Rows[8][1] = newValue;
-                        break;
-
-                    case "배과":
-                        array = new int[] { 1, 2, 3, 4, 5, 7, 10 }; // 배과
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.배수과장배수 = 1.0 / newValue;
-                        g.제어.dtb.Rows[8][3] = newValue;
-                        break;
-
-                    case "Eval": 
-                        array = new int[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }; // 평가
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.MarketeyeDividerForEvalStock = newValue;
-                        g.제어.dtb.Rows[9][1] = newValue;
-                        break;
-
-                    case "Post":
-                        array = new int[] { 10, 15, 20, 25, 30, 40, 50, 60, 70 }; // 초간
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.postInterval = newValue;
-                        g.제어.dtb.Rows[9][3] = newValue;
-                        break;
-
-                    // font and pixel used
-                    // 7   9.31
-                    // 8   10.64
-                    // 9   11.97
-                    // 10  13.30
-                    // 11  14.63
-                    // 12  15.96
-                    // 13  17.29
-                    case "Font":
-                        array = new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 };
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.v.font = (float)(newValue / 2.0F);
-                        g.제어.dtb.Rows[10][1] = newValue;
-                        break;
-
-                    case "보유":
-                        array = new int[] { 10, 50, 100, 250, 500, 1000 };
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-
-                        g.v.보유종목점검최소액 = newValue;
-                        g.제어.dtb.Rows[11][3] = newValue;
-                        break;
-
-                    case "푀플":
-                        if (g.v.푀플 == 0)
-                            g.v.푀플 = 1;
-                        else
-                            g.v.푀플 = 0;
-                        if (g.v.푀플 == 1)
-                            g.제어.dtb.Rows[12][1] = "1";
-                        else
-                            g.제어.dtb.Rows[12][1] = "0";
-                        break;
-
-                    case "배플":
-                        if (g.v.배플 == 0)
-                            g.v.배플 = 1;
-                        else
-                            g.v.배플 = 0;
-                        if (g.v.배플 == 1)
-                            g.제어.dtb.Rows[12][3] = "1";
-                        else
-                            g.제어.dtb.Rows[12][3] = "0";
-                        break;
-
-                    case "선폭":
-                        array = new int[] { 1, 2, 3 };
-                        newValue = FindNewValueFromArray(array, clickedValue, upper);
-                        if (newValue < 0)
-                        {
-                            return;
-                        }
-                        g.LineWidth = newValue;
-                        g.제어.dtb.Rows[13][1] = newValue;
-                        break;
-                }
-
-
-                g.chart1.Series.Clear();
-                g.chart1.ChartAreas.Clear();
-                g.chart1.Annotations.Clear();
-                g.chart2.Series.Clear();
-                g.chart2.ChartAreas.Clear();
-                g.chart2.Annotations.Clear();
-
-                ev.eval_stock();
-                mm.ManageChart1();
-                mm.ManageChart2();
+                RefreshCharts();
 
             }
 
@@ -460,43 +305,30 @@ namespace New_Tradegy
 
         }
 
+        private void RefreshCharts()
+        {
+            g.chart1.Series.Clear();
+            g.chart1.ChartAreas.Clear();
+            g.chart1.Annotations.Clear();
+            g.chart2.Series.Clear();
+            g.chart2.ChartAreas.Clear();
+            g.chart2.Annotations.Clear();
+
+            ev.eval_stock();
+            mm.ManageChart1();
+            mm.ManageChart2();
+        }
+
         private int FindNewValueFromArray(int[] array, int clickedValue, bool upper)
         {
-            int position = -1;
-            for (int i = 0; i < array.Length; i++)
-            {
-                {
-                    if (array[i] == clickedValue)
-                    {
+            int index = Array.IndexOf(array, clickedValue);
+            if (index == -1) return -1; // Not found
 
-                        if (upper)
-                        {
-                            position = i + 1;
-                            if (position >= array.Length)
-                            {
-                                position = 0;
-                            }
-                        }
-                        else
-                        {
-                            position = i - 1;
-                            if (position < 0)
-                            {
-                                position = array.Length - 1;
-                            }
-                        }
-                    }
-                }
-            }
-            if (position < 0)
-            {
-                return -1;
-            }
-            else
-            {
-                return array[position];
-            }
+            return upper
+                ? (index < array.Length - 1 ? array[index + 1] : clickedValue)
+                : (index > 0 ? array[index - 1] : clickedValue);
         }
+
 
         private void 제어_KeyPress(object sender, KeyPressEventArgs e)
         {

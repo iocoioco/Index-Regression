@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -13,8 +14,8 @@ namespace New_Tradegy.Library
         public static bool test;
 
         public static int postInterval = 30;
-        public static Dictionary<string, object> jpjds =
-            new Dictionary<string, object>();
+        public static ConcurrentDictionary<string, object> jpjds =
+            new ConcurrentDictionary<string, object>();
 
         public static bool workingday = false;
 

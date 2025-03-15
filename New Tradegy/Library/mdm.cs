@@ -1531,28 +1531,32 @@ class mm
             }
         }
 
-        // Safely handle unsubscriptions and removal
-        List<string> keysToRemove = new List<string>();
+
+        // by Chat Gpt 20250315
         foreach (var dgvName in notInStocksWithBid)
         {
-            // Unsubscribe and dispose
-            if (g.jpjds.TryGetValue(dgvName, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
+            // Try to get and remove the object from the dictionary
+            if (g.jpjds.TryRemove(dgvName, out object removedValue) && removedValue is DSCBO1Lib.StockJpbid _stockjpbid)
             {
                 try
                 {
+                    // Unsubscribe stock feed
                     _stockjpbid.Unsubscribe();
 
-                    // Find the DataGridView and dispose of it
+                    // Find and dispose of DataGridView
                     Form form = fm.FindFormByName("se");
                     DataGridView dgv = fm.FindDataGridViewByName(form, dgvName);
 
-                    if (dgv != null)
+                    if (dgv != null && !dgv.IsDisposed)
                     {
                         dgv.Dispose();
                     }
 
-                    // Mark for removal
-                    keysToRemove.Add(dgvName);
+                    // Dispose removed object if it's disposable
+                    if (removedValue is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1562,11 +1566,6 @@ class mm
             }
         }
 
-        // Remove from dictionary after iteration
-        foreach (var key in keysToRemove)
-        {
-            g.jpjds.Remove(key);
-        }
 
         stockswithbid.Remove(fixedStocks[0]);
         stockswithbid.Remove(fixedStocks[1]);
