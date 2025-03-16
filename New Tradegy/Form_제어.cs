@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace New_Tradegy
 {
     // by Chat Gpt 20250315
-    public partial class Form_제어 : Form
+    public partial class Form_제어 : Form 
     {
         // Dictionary for DataGridView controls and their settings.
         private static readonly Dictionary<string, (int[], Action<int>)> controlConfigurations =
