@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Electricity.txt = Electricity.txt
 		Fake Wall Detector.txt = Fake Wall Detector.txt
 		git.txt = git.txt
-		Program Tatics Simplified.txt = Program Tatics Simplified.txt
 		temp.txt = temp.txt
 		급락.txt = 급락.txt
 		빨리.txt = 빨리.txt
@@ -27,7 +26,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time etc.", "Program Variable and Time etc.", "{3DF9494C-3D57-4742-9E8E-5D67ABF1093F}"
 	ProjectSection(SolutionItems) = preProject
 		keys keyword - eval and draw(test and real).txt = keys keyword - eval and draw(test and real).txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program Reform", "{15289ED6-E810-4931-BC7A-AECA7E419E21}"
+	ProjectSection(SolutionItems) = preProject
+		Event Handler also Check StockData.txt = Event Handler also Check StockData.txt
+		General View of Class.txt = General View of Class.txt
+		Key.txt = Key.txt
 		Program Tatics Simplified.txt = Program Tatics Simplified.txt
+		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
+		StockData Class and StockManager Class.txt = StockData Class and StockManager Class.txt
+		trash.txt = trash.txt
 	EndProjectSection
 EndProject
 Global
@@ -46,6 +55,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3DF9494C-3D57-4742-9E8E-5D67ABF1093F} = {F8C1D470-EFC7-4A19-B359-C02780AD676C}
+		{15289ED6-E810-4931-BC7A-AECA7E419E21} = {F8C1D470-EFC7-4A19-B359-C02780AD676C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47FE268C-54A8-49F2-8493-0B16F0DF5A7E}

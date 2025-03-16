@@ -89,7 +89,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         {
             //md.ParentPassing(this);
 
-            g.MachineName = Environment.MachineName;
+            //g.MachineName = Environment.MachineName;
 
             //_cpcybos = null; after blocking g.connected becomes true
 
@@ -110,7 +110,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.screenHeight = workingRectangle.Height;
 
             chart1.Size = new Size(workingRectangle.Width, (int)(workingRectangle.Height) - 20);
-            if (g.MachineName == "HP")
+            if (Environment.MachineName == "HP")
             {
                 this.Location = new Point(0, 0);
                 chart1.Location = new Point(0, 0);
@@ -125,7 +125,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             this.WindowState = FormWindowState.Maximized; // this.WindowState
 
-            g.v.Screens = Screen.AllScreens.Count();
+            //g.v.Screens = Screen.AllScreens.Count();
             g.chart1 = chart1;
 
             g.Npts[0] = 0; //

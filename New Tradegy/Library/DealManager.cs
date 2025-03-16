@@ -112,13 +112,13 @@ namespace New_Tradegy.Library
 
             TradeInit();
             if (_checkedTradeInit == false)
-                return g.deal_total_profit;
+                return 0;
 
             _CpTd5342 = new CPTRADELib.CpTd5342();
             if (_CpTd5342.GetDibStatus() == 1)
             {
                 Trace.TraceInformation("DibRq 요청 수신대기 중 입니다. 수신이 완료된 후 다시 호출 하십시오.");
-                return g.deal_total_profit;
+                return 0;
             }
 
 
@@ -153,9 +153,9 @@ namespace New_Tradegy.Library
                 g.deal_profit = ((int)(a - b) / 10000);
                 if (g.MarketeyeCount == 0)
                 {
-                    g.deal_profit = g.deal_total_profit;
+                    g.deal_profit = 0;
                 }
-                if(g.제어.dtb.Rows[1][0].ToString() != g.deal_profit.ToString())
+                if (g.제어.dtb.Rows[1][0].ToString() != g.deal_profit.ToString())
                 {
                     g.제어.dtb.Rows[1][0] = g.deal_profit.ToString();
                 }
@@ -557,177 +557,177 @@ namespace New_Tradegy.Library
 
 
         // not used
-        public static string deal_trade_매수점검(g.stock_data o) // tr(1)
-        {
-            // warning message
-            string message = "";
+        //public static string deal_trade_매수점검(g.stock_data o) // tr(1)
+        //{
+        //    // warning message
+        //    string message = "";
 
-            // price, amount, intensity
-            #region
-            // price
-            int total_differ = 0;
-            int differ = 0;
-            if (o.nrow >= 2)
-                total_differ = o.x[o.nrow - 1, 1] - o.x[o.nrow - 2, 1];
+        //    // price, amount, intensity
+        //    #region
+        //    // price
+        //    int total_differ = 0;
+        //    int differ = 0;
+        //    if (o.nrow >= 2)
+        //        total_differ = o.x[o.nrow - 1, 1] - o.x[o.nrow - 2, 1];
 
-            for (int i = o.nrow - 2; i >= 0; i--)
-            {
-                if (i <= 0) break;
-                differ = o.x[i, 1] - o.x[i - 1, 1];
-                if (total_differ * differ < 0 && Math.Abs(differ) > g.v.neglectable_price_differ)
-                    break;
-                else total_differ += differ;
-            }
-            message = total_differ.ToString();
-            for (int i = 1; i < 5; i++)
-            {
-                if (o.nrow - i - 1 < 0)
-                    break;
-                differ = o.x[o.nrow - i, 1] - o.x[o.nrow - i - 1, 1];
-                if (differ >= 0)
-                    message += "\t" + "+" + differ.ToString();
-                else
-                    message += "\t" + differ.ToString();
-            }
-            message += "\t" + "  // price " + "\n";
+        //    for (int i = o.nrow - 2; i >= 0; i--)
+        //    {
+        //        if (i <= 0) break;
+        //        differ = o.x[i, 1] - o.x[i - 1, 1];
+        //        if (total_differ * differ < 0 && Math.Abs(differ) > g.v.neglectable_price_differ)
+        //            break;
+        //        else total_differ += differ;
+        //    }
+        //    message = total_differ.ToString();
+        //    for (int i = 1; i < 5; i++)
+        //    {
+        //        if (o.nrow - i - 1 < 0)
+        //            break;
+        //        differ = o.x[o.nrow - i, 1] - o.x[o.nrow - i - 1, 1];
+        //        if (differ >= 0)
+        //            message += "\t" + "+" + differ.ToString();
+        //        else
+        //            message += "\t" + differ.ToString();
+        //    }
+        //    message += "\t" + "  // price " + "\n";
 
-            // amount
-            message += o.x[o.nrow - 1, 2].ToString();
-            for (int i = 1; i < 5; i++)
-            {
-                if (o.nrow - i - 1 < 0)
-                    break;
-                differ = o.x[o.nrow - i, 2] - o.x[o.nrow - i - 1, 2];
-                if (differ >= 0)
-                    message += "\t" + "+" + differ.ToString();
-                else
-                    message += "\t" + differ.ToString();
-            }
-            message += "\t" + "  // amount " + "\n";
+        //    // amount
+        //    message += o.x[o.nrow - 1, 2].ToString();
+        //    for (int i = 1; i < 5; i++)
+        //    {
+        //        if (o.nrow - i - 1 < 0)
+        //            break;
+        //        differ = o.x[o.nrow - i, 2] - o.x[o.nrow - i - 1, 2];
+        //        if (differ >= 0)
+        //            message += "\t" + "+" + differ.ToString();
+        //        else
+        //            message += "\t" + differ.ToString();
+        //    }
+        //    message += "\t" + "  // amount " + "\n";
 
-            // intensity
-            message += (o.x[o.nrow - 1, 3] / 100).ToString();
-            for (int i = 1; i < 5; i++)
-            {
-                if (o.nrow - i - 1 < 0)
-                    break;
-                differ = (o.x[o.nrow - i, 3] - o.x[o.nrow - i - 1, 3]) / 100;
-                if (differ >= 0)
-                    message += "\t" + "+" + differ.ToString();
-                else
-                    message += "\t" + differ.ToString();
-            }
-            message += "\t" + "  // intensity " + "\n\n";
-            #endregion
+        //    // intensity
+        //    message += (o.x[o.nrow - 1, 3] / 100).ToString();
+        //    for (int i = 1; i < 5; i++)
+        //    {
+        //        if (o.nrow - i - 1 < 0)
+        //            break;
+        //        differ = (o.x[o.nrow - i, 3] - o.x[o.nrow - i - 1, 3]) / 100;
+        //        if (differ >= 0)
+        //            message += "\t" + "+" + differ.ToString();
+        //        else
+        //            message += "\t" + differ.ToString();
+        //    }
+        //    message += "\t" + "  // intensity " + "\n\n";
+        //    #endregion
 
-            // tick multiple & minute multiple
-            #region
-            for (int i = 0; i < 5; i++)
-                message += o.틱매수배[i].ToString() + "/" + o.틱매수배[i].ToString() + " \t";
-            message += "  // tick multiple " + "\n";
+        //    // tick multiple & minute multiple
+        //    #region
+        //    for (int i = 0; i < 5; i++)
+        //        message += o.틱매수배[i].ToString() + "/" + o.틱매수배[i].ToString() + " \t";
+        //    message += "  // tick multiple " + "\n";
 
-            for (int i = 0; i < 5; i++)
-                message += o.분매수배[i].ToString() + "/" + o.분매수배[i].ToString() + " \t";
-            message += "  // minute multiple " + "\n\n";
-            #endregion
+        //    for (int i = 0; i < 5; i++)
+        //        message += o.분매수배[i].ToString() + "/" + o.분매수배[i].ToString() + " \t";
+        //    message += "  // minute multiple " + "\n\n";
+        //    #endregion
 
-            // 틱프로천, 틱외인천 & 분프로천, 분외인천
-            #region
-            double money_factor = o.현재가 / g.천만원; // 천만원
+        //    // 틱프로천, 틱외인천 & 분프로천, 분외인천
+        //    #region
+        //    double money_factor = o.현재가 / g.천만원; // 천만원
 
-            double program_money = 0.0;
-            double foreign_money = 0.0;
-            double dealt_money = 0.0;
-            // str_add += String.Format("{0,12}", o.x[j, k] + " / " + o.x[j, k+1]); right justify
-            // str_add += String.Format("{0,-12}", o.x[j, k] + " / " + o.x[j, k+1]); left justify
+        //    double program_money = 0.0;
+        //    double foreign_money = 0.0;
+        //    double dealt_money = 0.0;
+        //    // str_add += String.Format("{0,12}", o.x[j, k] + " / " + o.x[j, k+1]); right justify
+        //    // str_add += String.Format("{0,-12}", o.x[j, k] + " / " + o.x[j, k+1]); left justify
 
-            // 틱프로천, 틱외인천
-            for (int i = 0; i < 4; i++)
-            {
-                program_money = (o.틱프로량[i] - o.틱프로량[i + 1]) * money_factor;
-                foreign_money = (o.틱외인량[i] - o.틱외인량[i + 1]) * money_factor;
-                dealt_money = (o.틱매수량[i] - o.틱매수량[i + 1] +
-                                                     o.틱매도량[i] - o.틱매도량[i + 1]) * money_factor;
+        //    // 틱프로천, 틱외인천
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        program_money = (o.틱프로량[i] - o.틱프로량[i + 1]) * money_factor;
+        //        foreign_money = (o.틱외인량[i] - o.틱외인량[i + 1]) * money_factor;
+        //        dealt_money = (o.틱매수량[i] - o.틱매수량[i + 1] +
+        //                                             o.틱매도량[i] - o.틱매도량[i + 1]) * money_factor;
 
-                if (foreign_money >= 0)
-                    message += String.Format("{0,-22}",
-                                     program_money.ToString("F1") + "+" +
-                                     foreign_money.ToString("F1") + "/" +
-                                     dealt_money.ToString("F1"));
-                else
-                    message += String.Format("{0,-22}",
-                                     program_money.ToString("F1") +
-                                     foreign_money.ToString("F1") + "/" +
-                                     dealt_money.ToString("F1"));
-            }
+        //        if (foreign_money >= 0)
+        //            message += String.Format("{0,-22}",
+        //                             program_money.ToString("F1") + "+" +
+        //                             foreign_money.ToString("F1") + "/" +
+        //                             dealt_money.ToString("F1"));
+        //        else
+        //            message += String.Format("{0,-22}",
+        //                             program_money.ToString("F1") +
+        //                             foreign_money.ToString("F1") + "/" +
+        //                             dealt_money.ToString("F1"));
+        //    }
 
-            // 분프로천, 분외인천
-            for (int i = 0; i < 4; i++)
-            {
-                program_money = (o.x[o.nrow - i - 1, 4] - o.x[o.nrow - i - 2, 4]) * money_factor;
-                foreign_money = (o.x[o.nrow - i - 1, 5] - o.x[o.nrow - i - 2, 5]) * money_factor;
-                dealt_money = (o.x[o.nrow - i - 1, 7] - o.x[o.nrow - i - 2, 7]) * money_factor;
+        //    // 분프로천, 분외인천
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        program_money = (o.x[o.nrow - i - 1, 4] - o.x[o.nrow - i - 2, 4]) * money_factor;
+        //        foreign_money = (o.x[o.nrow - i - 1, 5] - o.x[o.nrow - i - 2, 5]) * money_factor;
+        //        dealt_money = (o.x[o.nrow - i - 1, 7] - o.x[o.nrow - i - 2, 7]) * money_factor;
 
-                if (foreign_money >= 0)
-                    message += String.Format("{0,-22}",
-                                     program_money.ToString("F1") + "+" +
-                                     foreign_money.ToString("F1") + "/" +
-                                     dealt_money.ToString("F1"));
-                else
-                    message += String.Format("{0,-22}",
-                                     program_money.ToString("F1") +
-                                     foreign_money.ToString("F1") + "/" +
-                                     dealt_money.ToString("F1"));
-            }
-            message += "\n";
+        //        if (foreign_money >= 0)
+        //            message += String.Format("{0,-22}",
+        //                             program_money.ToString("F1") + "+" +
+        //                             foreign_money.ToString("F1") + "/" +
+        //                             dealt_money.ToString("F1"));
+        //        else
+        //            message += String.Format("{0,-22}",
+        //                             program_money.ToString("F1") +
+        //                             foreign_money.ToString("F1") + "/" +
+        //                             dealt_money.ToString("F1"));
+        //    }
+        //    message += "\n";
 
-            message +=
-                       Math.Round(o.프누천 / 10.0) + "  " +
-                       Math.Round(o.외누천 / 10.0) + "  " +
-                       Math.Round(o.기누천 / 10.0) + "\t\t" +
-                       o.x[o.nrow - 1, 10] + "/" + o.x[o.nrow - 1, 11] + "\t\t" + o.일간변동평균편차;
-            message += "\n";
-            #endregion
+        //    message +=
+        //               Math.Round(o.프누천 / 10.0) + "  " +
+        //               Math.Round(o.외누천 / 10.0) + "  " +
+        //               Math.Round(o.기누천 / 10.0) + "\t\t" +
+        //               o.x[o.nrow - 1, 10] + "/" + o.x[o.nrow - 1, 11] + "\t\t" + o.일간변동평균편차;
+        //    message += "\n";
+        //    #endregion
 
-            // 호가차
-            #region
-            long 호가차 = 0;
-            if (o.현재가 < 2000) 호가차 = 1;
-            else if (o.현재가 < 5000) 호가차 = 5;
-            else if (o.현재가 < 20000) 호가차 = 10;
-            else if (o.현재가 < 50000) 호가차 = 50;
-            else if (o.현재가 < 200000) 호가차 = 100;
-            else if (o.현재가 < 500000) 호가차 = 500;
-            else 호가차 = 1000;
+        //    // 호가차
+        //    #region
+        //    long 호가차 = 0;
+        //    if (o.현재가 < 2000) 호가차 = 1;
+        //    else if (o.현재가 < 5000) 호가차 = 5;
+        //    else if (o.현재가 < 20000) 호가차 = 10;
+        //    else if (o.현재가 < 50000) 호가차 = 50;
+        //    else if (o.현재가 < 200000) 호가차 = 100;
+        //    else if (o.현재가 < 500000) 호가차 = 500;
+        //    else 호가차 = 1000;
 
-            if (호가차 != 0)
-            {
-                if ((o.매도1호가 - o.매수1호가) / 호가차 != 1)
-                    message += "1호가차 이상";
-            }
-
-
-            // 0 - 2000 1
-            // 2,000 - 5,000 5
-            // 5,000 - 20,000 10
-            // 20,000 - 50,000 50
-            // 50,000 - 200,000 100
-            // 200,000 - 500,000 500
-            // 500,000 - 1,000
-            #endregion
-
-            message += "\n";
-
-            //+                      "틱거 미약\n" +
+        //    if (호가차 != 0)
+        //    {
+        //        if ((o.매도1호가 - o.매수1호가) / 호가차 != 1)
+        //            message += "1호가차 이상";
+        //    }
 
 
-            //                            "호가차 갭 점검\n" +
+        //    // 0 - 2000 1
+        //    // 2,000 - 5,000 5
+        //    // 5,000 - 20,000 10
+        //    // 20,000 - 50,000 50
+        //    // 50,000 - 200,000 100
+        //    // 200,000 - 500,000 500
+        //    // 500,000 - 1,000
+        //    #endregion
 
-            //                            "거분, 프외, 프퍼 한호가 차이 갭 있는 여부    거분, 프외, 프퍼" +
-            //                            "거분, 프외, 프퍼 한호가 차이 갭 있는 여부    거분, 프외, 프퍼 \n";
+        //    message += "\n";
 
-            return message;
-        }
+        //    //+                      "틱거 미약\n" +
+
+
+        //    //                            "호가차 갭 점검\n" +
+
+        //    //                            "거분, 프외, 프퍼 한호가 차이 갭 있는 여부    거분, 프외, 프퍼" +
+        //    //                            "거분, 프외, 프퍼 한호가 차이 갭 있는 여부    거분, 프외, 프퍼 \n";
+
+        //    return message;
+        //}
 
         // not implemented,
         // the buy or sell data saved in g.매매대기.Add(t) and

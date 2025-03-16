@@ -45,6 +45,8 @@ namespace New_Tradegy.Library
                 return stringList[index + 1];
 
         }
+
+        // not used
         public static int sender_to_chart_id(string name)
         {
             // for chart1, chart2, chart3
@@ -257,62 +259,59 @@ namespace New_Tradegy.Library
         }
 
 
-        public static void Speech(string speech)
-        {
-            var synthesizer = new SpeechSynthesizer();
-            synthesizer.SetOutputToDefaultAudioDevice();
-            synthesizer.Rate = -3;
+        //public static void Speech(string speech)
+        //{
+        //    var synthesizer = new SpeechSynthesizer();
+        //    synthesizer.SetOutputToDefaultAudioDevice();
+        //    synthesizer.Rate = -3;
 
-            synthesizer.Speak(speech);
-        }
+        //    synthesizer.Speak(speech);
+        //}
 
         // not used
-        public static void revovling_naver(int kospi_or_kosdaq)
-        {
+        //public static void revovling_naver(int kospi_or_kosdaq)
+        //{
 
-            wk.시총순서(g.sl); // revolving_naver
+        //    wk.시총순서(g.sl); // revolving_naver
 
-            if (kospi_or_kosdaq == 1) // kospi
-            {
-                for (int i = g.revolving_number_for_kospi; i <= g.sl.Count; i++)
-                {
-                    if (i == g.sl.Count)
-                        g.revolving_number_for_kospi = 0;
+        //    if (kospi_or_kosdaq == 1) // kospi
+        //    {
+        //        for (int i = g.revolving_number_for_kospi; i <= g.sl.Count; i++)
+        //        {
+        //            if (i == g.sl.Count)
+        //                g.revolving_number_for_kospi = 0;
 
-                    if (rd.read_코스피코스닥시장구분(g.sl[i]) == 'S')
-                    {
-                        wk.call_네이버(g.sl[i], "main"); // 1 fchart, 2 main, 3 frgn
-                        g.revolving_number_for_kospi = i + 1;
-                        break;
-                    }
-                }
-            }
-            else // kosdaq
-            {
-                for (int i = g.revolving_number_for_kosdaq; i <= g.sl.Count; i++)
-                {
-                    if (i == g.sl.Count)
-                        if (i == g.sl.Count)
-                            g.revolving_number_for_kosdaq = 0;
+        //            if (rd.read_코스피코스닥시장구분(g.sl[i]) == 'S')
+        //            {
+        //                wk.call_네이버(g.sl[i], "main"); // 1 fchart, 2 main, 3 frgn
+        //                g.revolving_number_for_kospi = i + 1;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    else // kosdaq
+        //    {
+        //        for (int i = g.revolving_number_for_kosdaq; i <= g.sl.Count; i++)
+        //        {
+        //            if (i == g.sl.Count)
+        //                if (i == g.sl.Count)
+        //                    g.revolving_number_for_kosdaq = 0;
 
-                    if (rd.read_코스피코스닥시장구분(g.sl[i]) == 'D')
-                    {
-                        wk.call_네이버(g.sl[i], "main"); // 1 chart, 2 main, 3 frgn
-                        g.revolving_number_for_kosdaq = i + 1;
-                        break;
-                    }
-                }
-            }
-        }
+        //            if (rd.read_코스피코스닥시장구분(g.sl[i]) == 'D')
+        //            {
+        //                wk.call_네이버(g.sl[i], "main"); // 1 chart, 2 main, 3 frgn
+        //                g.revolving_number_for_kosdaq = i + 1;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
 
         // 천만원 단위로 리턴
 
 
-        public static double ElapsedTime(DateTime start_time)
-        {
-            return DateTime.Now.Subtract(start_time).TotalMilliseconds;
-        }
+       
 
 
 
@@ -599,10 +598,10 @@ namespace New_Tradegy.Library
         }
 
 
-        public static double t()
-        {
-            return 0.1;
-        }
+        //public static double t()
+        //{
+        //    return 0.1;
+        //}
 
 
         //      public static void divide_그룹()

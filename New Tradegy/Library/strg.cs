@@ -339,22 +339,23 @@ namespace New_Tradegy.Library
             }
 
             g.stock_data o = g.ogl_data[index_1]; // p is used, because o is already using
-            g.stock_data s = o.ShallowCopy();
+            //g.stock_data s = o.ShallowCopy();
 
             string str = "";
-            int start_row, end_row;
-            int given_date = 0;
-
-            if (chart.Name == "chart1" && g.q == "h&s") // if h&s, read KODEX & general data
-            {
-                int clicked_sequence = g.nRow * col_id + row_id -6;
-                given_date = g.date_list[clicked_sequence];
-
-                s.nrow = 0;
-                s.nrow = rd.read_Stock_Minute(given_date, g.clickedStock, s.x);
-                if (s.nrow == 0)
-                    return;
-            }
+            
+            
+            // not done yet, need work for h&s
+            //if (chart.Name == "chart1" && g.q == "h&s") // if h&s, read KODEX & general data
+            //{
+            //    int given_date = 0;
+            //    int clicked_sequence = g.nRow * col_id + row_id -6;
+            //    //given_date = g.date_list[clicked_sequence]; // g.date_list.Count = 0, data not defined
+            //    var s = new g.stock_data(); // create new and vanish when exit
+            //    s.nrow = 0;
+            //    s.nrow = rd.read_Stock_Minute(given_date, g.clickedStock, s.x);
+            //    if (s.nrow == 0)
+            //        return;
+            //}
 
             str = r3_display_lines_header(o);
             str += r3_display_lines_body(o);

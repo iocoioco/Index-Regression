@@ -20,43 +20,43 @@ namespace New_Tradegy.Library
         static CPUTILLib.CpStockCode _cpstockcode;
 
         // not used
-        public static void read_관심제거추가(string stock)
-        {
-            return;
+        //public static void read_관심제거추가(string stock)
+        //{
+       
 
-            DateTime date = DateTime.Now;
-            int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
+        //    DateTime date = DateTime.Now;
+        //    int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
 
-            foreach (var item in g.관심삭제) // 3분 이상 지난 종목은 제외
-            {
-                if (HHmmss - item.Value > 300)
-                {
-                    g.관심삭제.Remove(item.Key);
-                }
-            }
+        //    foreach (var item in g.관심삭제) // 3분 이상 지난 종목은 제외
+        //    {
+        //        if (HHmmss - item.Value > 300)
+        //        {
+        //            g.관심삭제.Remove(item.Key);
+        //        }
+        //    }
 
-            g.관심삭제.Remove(stock); // by key, if exist remove
-            g.관심삭제.Add(stock, HHmmss);
-        }
+        //    g.관심삭제.Remove(stock); // by key, if exist remove
+        //    g.관심삭제.Add(stock, HHmmss);
+        //}
 
         // not used
-        public static bool read_관심제거여부(string stock)
-        {
-            return false;
+        //public static bool read_관심제거여부(string stock)
+        //{
+        //    return false;
 
-            DateTime date = DateTime.Now;
-            int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
+        //    DateTime date = DateTime.Now;
+        //    int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
 
-            foreach (var item in g.관심삭제)
-            {
-                if (HHmmss - item.Value > 300) // 3분 이상 지난 종목은 제외
-                {
-                    g.관심삭제.Remove(item.Key);
-                }
-            }
+        //    foreach (var item in g.관심삭제)
+        //    {
+        //        if (HHmmss - item.Value > 300) // 3분 이상 지난 종목은 제외
+        //        {
+        //            g.관심삭제.Remove(item.Key);
+        //        }
+        //    }
 
-            return g.관심삭제.ContainsKey(stock);
-        }
+        //    return g.관심삭제.ContainsKey(stock);
+        //}
 
         public static List<string> txtFilesInGivenDirectory(string directory)
         {
@@ -534,59 +534,61 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void read_상승() // file of 상승.txt not in 3 computers
-        {
-            string file = @"C:\병신\상승.txt";
 
-            if (!File.Exists(file))
-            {
-                g.eval_score[0, 0] = -2; // if file not exist, set the first data -2 (no more data)
-                return;
-            }
+        // not used
+        //public static void read_상승() // file of 상승.txt not in 3 computers
+        //{
+        //    string file = @"C:\병신\상승.txt";
 
-            string[] grlines = File.ReadAllLines(file, Encoding.Default);
-            List<string> list = new List<string>();
+        //    if (!File.Exists(file))
+        //    {
+        //        g.eval_score[0, 0] = -2; // if file not exist, set the first data -2 (no more data)
+        //        return;
+        //    }
 
-            int row_count = 0;
-            foreach (string line in grlines)
-            {
-                string[] words = line.Split('\t');
-                if (line == "") // first empty line met
-                    break;
+        //    string[] grlines = File.ReadAllLines(file, Encoding.Default);
+        //    List<string> list = new List<string>();
 
-                int lastRows = g.eval_score.GetUpperBound(0); // lastRows is 9, this is the dimension
-                int lastColumns = g.eval_score.GetUpperBound(1); // lastColu,mns is 11, this is the dimension
-                if (words.Length > lastColumns + 1) // number of columns should be less than 10
-                {
-                    MessageBox.Show("First Data Error in 상승.txt");
-                    break;
-                }
+        //    int row_count = 0;
+        //    foreach (string line in grlines)
+        //    {
+        //        string[] words = line.Split('\t');
+        //        if (line == "") // first empty line met
+        //            break;
 
-                for (int i = 0; i <= lastColumns; i++)
-                {
-                    if (i >= words.Length)
-                    {
-                        g.eval_score[row_count, i] = -1;
-                        continue;
-                    }
+        //        int lastRows = g.eval_score.GetUpperBound(0); // lastRows is 9, this is the dimension
+        //        int lastColumns = g.eval_score.GetUpperBound(1); // lastColu,mns is 11, this is the dimension
+        //        if (words.Length > lastColumns + 1) // number of columns should be less than 10
+        //        {
+        //            MessageBox.Show("First Data Error in 상승.txt");
+        //            break;
+        //        }
 
-                    bool success = true;
-                    success = int.TryParse(words[i], out g.eval_score[row_count, i]);
-                    if (!success)
-                    {
-                        g.eval_score[row_count, i] = -1;
-                    }
-                }
-                row_count++;
+        //        for (int i = 0; i <= lastColumns; i++)
+        //        {
+        //            if (i >= words.Length)
+        //            {
+        //                g.eval_score[row_count, i] = -1;
+        //                continue;
+        //            }
 
-                if (row_count >= lastRows) // if row of data is more than 10
-                {
-                    MessageBox.Show("Second Data Error in 상승.txt");
-                    break;
-                }
-            }
-            g.eval_score[row_count, 0] = -2; // no more date sign in the first column of (last + 1) line
-        }
+        //            bool success = true;
+        //            success = int.TryParse(words[i], out g.eval_score[row_count, i]);
+        //            if (!success)
+        //            {
+        //                g.eval_score[row_count, i] = -1;
+        //            }
+        //        }
+        //        row_count++;
+
+        //        if (row_count >= lastRows) // if row of data is more than 10
+        //        {
+        //            MessageBox.Show("Second Data Error in 상승.txt");
+        //            break;
+        //        }
+        //    }
+        //    g.eval_score[row_count, 0] = -2; // no more date sign in the first column of (last + 1) line
+        //}
 
         public static bool read_단기과열(string stock)
         {
@@ -704,9 +706,9 @@ namespace New_Tradegy.Library
                     //    라인분리(line, ref g.v.textbox_date_char_to_string);
                     //    break;
 
-                    case "neglectable_price_differ":
-                        라인분리(line, ref g.v.neglectable_price_differ);
-                        break;
+                    //case "neglectable_price_differ":
+                    //    라인분리(line, ref g.v.neglectable_price_differ);
+                    //    break;
 
                     //case "files_to_open_by_clicking_edge":
                     //    라인분리(line, ref g.v.files_to_open_by_clicking_edge);

@@ -223,19 +223,35 @@ namespace New_Tradegy.Library
                 return false;
         }
 
+        // Chat Gpt 20250316
         public static int return_integer_from_mixed_string(string input)
         {
-            int value = 0;
+            if (string.IsNullOrEmpty(input))
+                return 0; // Return 0 for empty or null input
+
+            long value = 0;
+            bool isNegative = false;
+
             foreach (char c in input)
             {
-                if ((c >= '0') && (c <= '9'))
+                if (c == '-' && value == 0)
+                {
+                    isNegative = true; // Handle negative sign (only at start)
+                }
+                else if (c >= '0' && c <= '9')
                 {
                     value = value * 10 + (c - '0');
+
+                    // Check for int overflow
+                    if (value > int.MaxValue)
+                        return isNegative ? int.MinValue : int.MaxValue;
                 }
             }
-            return value;
+
+            return isNegative ? (int)-value : (int)value;
         }
 
+        // Chat Gpt 20250316
         public static void Swap<T>(ref T lhs, ref T rhs)
         {
             T temp = lhs;
@@ -284,6 +300,8 @@ namespace New_Tradegy.Library
             }
         }
 
+
+        // not used
         public static double convert_time_to_6_digit_integer(string t)
         {
             double value;
@@ -341,6 +359,8 @@ namespace New_Tradegy.Library
             return index;
         }
 
+
+        // not used
         public static string return_dgv_stock(DataGridView dgv)
         {
             string dgv_stock = "";
@@ -382,7 +402,7 @@ namespace New_Tradegy.Library
             var _cpstockcode = new CPUTILLib.CpStockCode();
             o.code = _cpstockcode.NameToCode(stock);
 
-            if (o.code.Length != 7 || (o.전일종가 = rd.read_전일종가(stock)) < g.전일종가이상)
+            if (o.code.Length != 7 || (o.전일종가 = rd.read_전일종가(stock)) < 1000) // 전일종가 1,000 이상 
                 return false;
 
             //return true; // If you need to continue processing, otherwise remove this line.

@@ -466,7 +466,7 @@ namespace New_Tradegy.Library
                     List<string> list = new List<string> {  "피올", "닥올" };
                     g.v.KeyString = mc.cycleStrings(g.v.KeyString, list);
 
-                    g.v.columnsofoGl_data = 0; // number of column for group = 0
+                    //g.v.columnsofoGl_data = 0; // number of column for group = 0
                     g.q = "o&s";
                     g.gid = 0;
                     Form se = (Form)Application.OpenForms["se"];
@@ -652,21 +652,21 @@ namespace New_Tradegy.Library
 
 
                 case 'x':
-                    if (!g.test)
-                    {
-                        g.click_trade = !g.click_trade;
-                        if (g.click_trade)
-                        {
-                            mc.Sound("Keys", "click trade");
-                            g.제어.dgv.Rows[0].DefaultCellStyle.BackColor = Color.Red;
-                        }
+                    //if (!g.test)
+                    //{
+                    //    g.click_trade = !g.click_trade;
+                    //    if (g.click_trade)
+                    //    {
+                    //        mc.Sound("Keys", "click trade");
+                    //        g.제어.dgv.Rows[0].DefaultCellStyle.BackColor = Color.Red;
+                    //    }
 
-                        else
-                        {
-                            mc.Sound("Keys", "no click trade");
-                            g.제어.dgv.Rows[0].DefaultCellStyle.BackColor = Color.White;
-                        }
-                    }
+                    //    else
+                    //    {
+                    //        mc.Sound("Keys", "no click trade");
+                    //        g.제어.dgv.Rows[0].DefaultCellStyle.BackColor = Color.White;
+                    //    }
+                    //}
                     break;
 
                 case 'X':

@@ -285,8 +285,8 @@ namespace New_Tradegy.Library
                 int Urgency = (g.optimumTrading) ? (int)(e.X / (double)Dgv.Columns[2].Width * 100) : 100;
 
                 string str = "";
-                if (g.confirm_buy)
-                {
+                //if (g.confirm_buy)
+                //{
                     str += Stock + " : " + Price.ToString() + " X " + Amount.ToString() +
                                " = " + (Price * Amount / 10000).ToString() + "만원";
 
@@ -298,11 +298,11 @@ namespace New_Tradegy.Library
                     }
 
                     OpenOrUpdateConfirmationForm(isSell, Stock, Amount, Price, Urgency, str);
-                }
-                else
-                {
-                    DealManager.deal_exec("매수", Stock, Amount, Price, "01");
-                }
+                //}
+                //else
+                //{
+                //    DealManager.deal_exec("매수", Stock, Amount, Price, "01");
+                //}
             }
 
 

@@ -113,7 +113,7 @@ namespace New_Tradegy.Library
                 string str = "";
 
                 str += i.ToString() + "\n";
-                g.전일종가이상 =
+               
                 g.date = i;
                 string directory = @"C:\병신\분\" + g.date.ToString();
                 if (!Directory.Exists(directory))

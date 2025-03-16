@@ -23,13 +23,13 @@ namespace New_Tradegy
     { "배차", (new int[] { 0, 10, 25, 50, 75, 100 }, val => g.v.배차이상 = val) },
     { "시총", (new int[] { 0, 10, 30, 50, 100, 200 }, val => g.v.시총이상 = val) },
     { "수과", (new int[] { 5, 10, 15, 20, 25, 30, 40, 50, 60, 80, 100 }, val => g.v.수급과장배수 = val) },
-    { "배과", (new int[] { 1, 2, 3, 4, 5, 7, 10 }, val => g.v.배수과장배수 = 1.0 / val) },
+    //{ "배과", (new int[] { 1, 2, 3, 4, 5, 7, 10 }, val => g.v.배수과장배수 = 1.0 / val) },
     { "Eval", (new int[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }, val => g.MarketeyeDividerForEvalStock = val) },
     { "Post", (new int[] { 10, 15, 20, 25, 30, 40, 50, 60, 70 }, val => g.postInterval = val) },
     { "Font", (new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }, val => g.v.font = val / 2.0F) },
     { "푀플", (new int[] { 0, 1 }, val => g.v.푀플 = val)  },
     { "배플", (new int[] { 0, 1 }, val => g.v.배플 = val)  },
-    { "보유", (new int[] { 10, 50, 100, 250, 500, 1000 }, val => g.v.보유종목점검최소액 = val) },
+    //{ "보유", (new int[] { 10, 50, 100, 250, 500, 1000 }, val => g.v.보유종목점검최소액 = val) },
     { "선폭", (new int[] { 1, 2, 3 }, val => g.LineWidth = val) }
 };
 
@@ -121,7 +121,7 @@ namespace New_Tradegy
             //}
 
             // Row 1
-            // g.제어.dtb.Rows[1][0] = g.deal_profit;
+            g.제어.dtb.Rows[1][0] = 0; // initial setting of deal_profit;
             g.제어.dtb.Rows[1][1] = ""; // (int)usd_krw; 
             g.제어.dtb.Rows[1][2] = g.Nasdaq_지수;
             g.제어.dtb.Rows[1][3] = g.SP_지수;
@@ -166,8 +166,8 @@ namespace New_Tradegy
             // Row 8
             g.제어.dtb.Rows[8][0] = "수과";
             g.제어.dtb.Rows[8][1] = 50; g.v.수급과장배수 = 50;
-            g.제어.dtb.Rows[8][2] = "배과";
-            g.제어.dtb.Rows[8][3] = 1; g.v.배수과장배수 = 1;
+            //g.제어.dtb.Rows[8][2] = "배과";
+            //g.제어.dtb.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
             // Row 9
             g.제어.dtb.Rows[9][0] = "Eval";
@@ -185,8 +185,8 @@ namespace New_Tradegy
             //g.제어.dtb.Rows[11][0] = "mms";
             //g.제어.dtb.Rows[11][1] = 1000; g.marketeye_sleep_seconds = 1000;
 
-            g.제어.dtb.Rows[11][2] = "보유";
-            g.제어.dtb.Rows[11][3] = 10; g.v.보유종목점검최소액 = 10;
+            //g.제어.dtb.Rows[11][2] = "보유";
+            //g.제어.dtb.Rows[11][3] = 10; g.v.보유종목점검최소액 = 10;
 
             // Row 12
             g.제어.dtb.Rows[12][0] = "푀플";

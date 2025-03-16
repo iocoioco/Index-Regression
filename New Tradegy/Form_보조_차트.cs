@@ -67,14 +67,14 @@ namespace New_Tradegy
 
         private void ConfigureChartAndGridSize()
         {
-            if (g.MachineName == "HP")
+            if (Environment.MachineName == "HP")
             {
                 this.Location = new Point(-g.screenWidth / 2, 0);
             }
             else
             {
                 this.Location = new Point(g.screenWidth, 0);
-                if(g.v.Screens == 1) this.Location = new Point(g.screenWidth / 2, 0); // one screen
+                if(Screen.AllScreens.Count() == 1) this.Location = new Point(g.screenWidth / 2, 0); // one screen
             }
             this.Size = new Size(g.screenWidth / 2, g.screenHeight);
             chart2.Size = new Size(this.Width, this.Height);

@@ -270,82 +270,84 @@ namespace New_Tradegy.Library
             return true;
         }
 
-        public static void EvalKODEX(g.stock_data o)//, int[,] x) 20240130
-        {
-            if (o.stock == "KODEX 레버리지")
-            {
-                string sound = "";
-                int priceDifference = o.x[o.nrow - 1, 1] - g.priceKospiSounded;
 
-                if (Math.Abs(o.매수1호가 - g.kospi_was1호가) > 0)
-                {
-                    int HHmmssfff = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff")); // run_marketeye() 
-                    string str = HHmmssfff.ToString() + " ";
-                    for (int k = 1; k < 12; k++) // bound exist not the size
-                    {
-                        str += "\t" + o.x[o.nrow - 1, k];
-                    }
-                    g.코스피History.Add(str);
-                    g.kospi_was1호가 = (int)o.매수1호가;
-                }
+        // not used
+        //public static void EvalKODEX(g.stock_data o)//, int[,] x) 20240130
+        //{
+        //    if (o.stock == "KODEX 레버리지")
+        //    {
+        //        string sound = "";
+        //        int priceDifference = o.x[o.nrow - 1, 1] - g.priceKospiSounded;
 
-                // from (-5, 5) to (-10, 10) 20240831
-                if (priceDifference > -10 && priceDifference < 10)
-                    return;
-                if (priceDifference <= -15)
-                    sound = "p d d d";
-                else if (priceDifference <= -10)
-                    sound = "p d d";
-                else if (priceDifference <= -5)
-                    sound = "p d";
-                else if (priceDifference < 10)
-                    sound = "p u";
-                else if (priceDifference < 15)
-                    sound = "p u u";
-                else
-                    sound = "p u u u";
+        //        if (Math.Abs(o.매수1호가 - g.kospi_was1호가) > 0)
+        //        {
+        //            int HHmmssfff = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff")); // run_marketeye() 
+        //            string str = HHmmssfff.ToString() + " ";
+        //            for (int k = 1; k < 12; k++) // bound exist not the size
+        //            {
+        //                str += "\t" + o.x[o.nrow - 1, k];
+        //            }
+        //            g.코스피History.Add(str);
+        //            g.kospi_was1호가 = (int)o.매수1호가;
+        //        }
 
-                g.priceKospiSounded = o.x[o.nrow - 1, 1];
+        //        // from (-5, 5) to (-10, 10) 20240831
+        //        if (priceDifference > -10 && priceDifference < 10)
+        //            return;
+        //        if (priceDifference <= -15)
+        //            sound = "p d d d";
+        //        else if (priceDifference <= -10)
+        //            sound = "p d d";
+        //        else if (priceDifference <= -5)
+        //            sound = "p d";
+        //        else if (priceDifference < 10)
+        //            sound = "p u";
+        //        else if (priceDifference < 15)
+        //            sound = "p u u";
+        //        else
+        //            sound = "p u u u";
 
-                mc.Sound("코스피 코스닥", sound);
-            }
-            if (o.stock == "KODEX 코스닥150레버리지")
-            {
-                string sound = "";
-                int priceDifference = o.x[o.nrow - 1, 1] - g.priceKosdaqSounded;
+        //        g.priceKospiSounded = o.x[o.nrow - 1, 1];
 
-                if (Math.Abs(o.매수1호가 - g.kosdaq_was1호가) > 0)
-                {
-                    int HHmmssfff = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff"));
-                    string str = HHmmssfff.ToString() + " ";
-                    for (int k = 1; k < 12; k++) // bound exist not the size
-                    {
-                        str += "\t" + o.x[o.nrow - 1, k];
-                    }
-                    g.코스닥History.Add(str);
-                    g.kosdaq_was1호가 = (int)o.매수1호가;
-                }
+        //        mc.Sound("코스피 코스닥", sound);
+        //    }
+        //    if (o.stock == "KODEX 코스닥150레버리지")
+        //    {
+        //        string sound = "";
+        //        int priceDifference = o.x[o.nrow - 1, 1] - g.priceKosdaqSounded;
 
-                if (priceDifference > -10 && priceDifference < 10)
-                    return;
-                if (priceDifference <= -15)
-                    sound = "q d d d";
-                else if (priceDifference <= -10)
-                    sound = "q d d";
-                else if (priceDifference <= -5)
-                    sound = "q d";
-                else if (priceDifference < 10)
-                    sound = "q u";
-                else if (priceDifference < 15)
-                    sound = "q u u";
-                else
-                    sound = "q u u u";
+        //        if (Math.Abs(o.매수1호가 - g.kosdaq_was1호가) > 0)
+        //        {
+        //            int HHmmssfff = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff"));
+        //            string str = HHmmssfff.ToString() + " ";
+        //            for (int k = 1; k < 12; k++) // bound exist not the size
+        //            {
+        //                str += "\t" + o.x[o.nrow - 1, k];
+        //            }
+        //            g.코스닥History.Add(str);
+        //            g.kosdaq_was1호가 = (int)o.매수1호가;
+        //        }
 
-                g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
+        //        if (priceDifference > -10 && priceDifference < 10)
+        //            return;
+        //        if (priceDifference <= -15)
+        //            sound = "q d d d";
+        //        else if (priceDifference <= -10)
+        //            sound = "q d d";
+        //        else if (priceDifference <= -5)
+        //            sound = "q d";
+        //        else if (priceDifference < 10)
+        //            sound = "q u";
+        //        else if (priceDifference < 15)
+        //            sound = "q u u";
+        //        else
+        //            sound = "q u u u";
 
-                mc.Sound("코스피 코스닥", sound);
-            }
-        }
+        //        g.priceKosdaqSounded = o.x[o.nrow - 1, 1];
+
+        //        mc.Sound("코스피 코스닥", sound);
+        //    }
+        //}
 
         public static void eval_group() // duration 0.009 seconds
         {

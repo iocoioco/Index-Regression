@@ -241,9 +241,9 @@ namespace New_Tradegy.Library
 
                     mc.Sound_돈(g.일회거래액);
 
-                    str = "";
-                    if (g.confirm_buy)
-                    {
+                    string str = "";
+                    //if (g.confirm_buy)
+                    //{
                         str += g.clickedStock + " : " + Price.ToString() + " X " + Amount.ToString() +
                                    " = " + (Price * Amount / 10000).ToString() + "만원";
 
@@ -261,7 +261,7 @@ namespace New_Tradegy.Library
                         var a = new jp();
                         a.OpenOrUpdateConfirmationForm(isSell, g.clickedStock, Amount, Price, Urgency, str);
                         
-                    }
+                    //}
                     DealManager.deal_exec("매수", g.clickedStock, Amount, Price, "03"); // Cntl + l1 
                     break;
 
@@ -630,10 +630,10 @@ namespace New_Tradegy.Library
                     // h&s 진출
                     if (g.q == "h&s")
                     {
-                        g.q = g.saved_q;
+                        // g.q = g.saved_q; not used
 
                         g.Gid = g.saved_Gid;
-                        g.date = g.saved_date;
+                        //g.date = g.saved_date;
 
                         if (g.test)
                         {
@@ -660,11 +660,11 @@ namespace New_Tradegy.Library
                     // h&s 진입
                     else
                     {
-                        g.saved_q = g.q;
+                        // g.saved_q = g.q; not used
                         g.q = "h&s";
 
                         g.saved_Gid = g.Gid;
-                        g.saved_date = g.date;
+                        //g.saved_date = g.date;
                         g.moving_reference_date = g.date;
 
                         if (g.test)
