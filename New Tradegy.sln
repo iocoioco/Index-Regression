@@ -30,10 +30,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time e
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program Reform", "{15289ED6-E810-4931-BC7A-AECA7E419E21}"
 	ProjectSection(SolutionItems) = preProject
+		ClickHnadler.txt = ClickHnadler.txt
 		Event Handler also Check StockData.txt = Event Handler also Check StockData.txt
 		General View of Class.txt = General View of Class.txt
 		Key.txt = Key.txt
 		Program Tatics Simplified.txt = Program Tatics Simplified.txt
+		Scroll.txt = Scroll.txt
 		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
 		StockData Class and StockManager Class.txt = StockData Class and StockManager Class.txt
 		trash.txt = trash.txt

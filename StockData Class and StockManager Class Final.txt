@@ -172,3 +172,44 @@ public class MainForm : Form
         Console.WriteLine("All Items Selected!");
     }
 }
+
+using System;
+using System.Windows.Forms;
+
+public class KeyHandler
+{
+    private MainChartUpdater mainChartUpdater;
+    private SubChartUpdater subChartUpdater;
+
+    public KeyHandler(MainChartUpdater mainUpdater, SubChartUpdater subUpdater)
+    {
+        this.mainChartUpdater = mainUpdater;
+        this.subChartUpdater = subUpdater;
+    }
+
+    public bool ProcessKey(Keys keyData)
+    {
+        switch (keyData)
+        {
+            case Keys.F1:
+                Console.WriteLine("F1 Pressed - Updating Main Chart...");
+                mainChartUpdater.UpdateMainChart();
+                return true;
+
+            case Keys.F2:
+                Console.WriteLine("F2 Pressed - Updating Sub Chart...");
+                subChartUpdater.UpdateSubChart();
+                return true;
+
+            case Keys.F5:
+                Console.WriteLine("F5 Pressed - Refreshing Both Charts...");
+                mainChartUpdater.UpdateMainChart();
+                subChartUpdater.UpdateSubChart();
+                return true;
+
+            default:
+                return false;  // Pass the key to the next handler
+        }
+    }
+}
+
