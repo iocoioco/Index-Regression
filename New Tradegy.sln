@@ -33,12 +33,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program R
 		ClickHnadler.txt = ClickHnadler.txt
 		Event Handler also Check StockData.txt = Event Handler also Check StockData.txt
 		General View of Class.txt = General View of Class.txt
-		Key.txt = Key.txt
 		Program Tatics Simplified.txt = Program Tatics Simplified.txt
-		Scroll.txt = Scroll.txt
+		ProcessCmdKeyForm1Form2.txt = ProcessCmdKeyForm1Form2.txt
 		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
+		Scroll and Curve Height Adjuster.txt = Scroll and Curve Height Adjuster.txt
 		StockData Class and StockManager Class.txt = StockData Class and StockManager Class.txt
-		trash.txt = trash.txt
 	EndProjectSection
 EndProject
 Global
