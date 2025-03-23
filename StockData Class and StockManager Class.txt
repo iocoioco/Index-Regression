@@ -185,7 +185,7 @@ StockManager.Instance.AddOrUpdateStock(new StockData("TSLA"));
 Console.WriteLine(StockManager.Instance.StockDatabase.Count); // ✅ Output: 2
 
 
-class Program
+class Program 
 {
     static async Task Main()
     {
