@@ -21,12 +21,12 @@ namespace New_Tradegy.Library
 
         public static char PeoridNews = 'w';
         public static string Account;
-        //public static string MachineName;
+       
         public static bool shortform;
-        //public static int 전일종가이상 = 1000;
+        
 
 
-        //public static bool _checkedTradeInit = false;
+      
 
         public static bool connected = false;
 
@@ -36,33 +36,22 @@ namespace New_Tradegy.Library
         public static int screenWidth;
 
         public static int date;
-        //public static int saved_date;
+       
 
 
 
-        //public static bool 시초 = true; // at the begining of market, try all stocks first and then use the order of evaluation
-        // public static bool 돌파적용 = false;
-
+   
         public static bool draw_history_forwards = false;
 
 
-        //public static bool click_trade = false;
-        //public static bool confirm_buy = true;
+        
         public static bool add_interest = false;
         public static bool confirm_sell = false;
-        // public static bool draw_stock_shrink_or_not = false;
-        // public static bool settingBuy = false;
-        // public static bool settingSell = false;
+       
 
         public static int deal_profit = 0;
-        //public static int deal_total_profit = 0;
-        //public static int deal_finish_time = 0;
-        //public static int deal_maximum_loss = 0;
-
-        //public static string str;
-
-        //public static double box_percentage = 45;
-        //public static double non_box_half_percentage; 
+       
+      
 
         public class OrderItem
         {
@@ -106,8 +95,7 @@ namespace New_Tradegy.Library
 
 
         public static int MAX_ROW = 382; // XX 382 -> 500
-        //public static int saved_nrow;
-
+        
         public static int LineWidth = 2;
 
         public class form_size
@@ -115,23 +103,7 @@ namespace New_Tradegy.Library
             public int ch = 28;
 
 
-            public static int h = 28;
-
-
-            public int 상단_y = 0;
-            public int 호가_ht = h * 12;
-
-            public int 제어_y = h * 12;
-            public int 제어_ht = h * 3;
-
-            public int 매매_y = h * 15;
-            public int 매매_ht = h * 7;
-
-            public int 그룹_y = h * 22;
-            public int 그룹_ht = h * 3;
-
-            public int 하단_y = h * 25;
-            public int 호가폭감소 = 10;
+          
 
         }
         public static form_size formSize = new form_size();
@@ -145,74 +117,48 @@ namespace New_Tradegy.Library
             public DataGridView dgv;
             public int[,] itb = new int[21, 3];
         }
-        //public static List<dgvClass> 호가 = new List<dgvClass>();
+      
         public static dgvClass 매매 = new dgvClass();
         public static dgvClass 그룹 = new dgvClass();
         public static dgvClass 제어 = new dgvClass();
-        //public static dgvClass test = new dgvClass();
-
-
-
-        // list of variables``
-        //public static int revolving_number_for_kospi = 0; // used in misc : revoling_naver(int kospi_or_kosdaq) - not used
-        //public static int revolving_number_for_kosdaq = 0; // used in misc : revoling_naver(int kospi_or_kosdaq) - not used
-
-        //public static double 일중거래액환산율;
+       
         public static double 천만원 = 10000000.0;
         public static double 억원 = 100000000.0;
         public static Chart chart1;
         public static Chart chart2;
 
-        //public static char device = 'S'; // S Samsung, L Lg, C B2, c small notebookH
-
-        //public static string key_string = "총점";
-        // public static string saved_key_string = "";
-        //public static char current_key_char;
-        //public static char previousKeyChar;
-
+       
 
         public static string clickedStock = "";
-        //public static string savedClickedStock = "";
-        //public static int numberSameClickedStock = 0;
+       
         public static string clickedTitle = "";
-        //public static string saved_clickedTitle = "";
+       
 
 
         public static string q;
-        //public static string saved_q;
-        //public static string saved_check_q;
-        //public static string saved_working_q;
+      
 
 
 
 
 
 
-        //public static List<string> ogl = new List<string>();   // total set of single stock list
+        
         public static List<g.stock_data> ogl_data = new List<g.stock_data>();
         public static List<string> sl = new List<string>();   // selected single stock list from g.sl cal.
         public static List<string> dl = new List<string>();   // selected stocks for display
 
 
 
-        //public static List<List<string>> oGL = new List<List<string>>(); // large group set list
-                                                                         //public static List<string> oGL_title = new List<string>();
 
-
-
-
-
-
-
-        //public static List<List<string>> DL = new List<List<string>>(); // temporary working space for group list
         public static string oGl_data_selection = "총점"; // initial value
 
         public static List<string> 보유종목 = new List<string>();
-        //public static string 급락종목 = "";
+      
         public static List<string> 호가종목 = new List<string>();
         public static List<string> 관심종목 = new List<string>();
         public static List<string> 파일관심종목 = new List<string>();
-        //public static List<string> 상관절친종목 = new List<string>();
+      
 
         public class group_data
         {
@@ -225,15 +171,14 @@ namespace New_Tradegy.Library
         }
         public static List<g.group_data> oGL_data = new List<group_data>();
 
-        //public static Dictionary<string, int> 관심삭제 = new Dictionary<string, int>();
+    
         public static List<string> KODEX4 = new List<string>();   // 클릭된 종목, Toggle로 선택 & 취소
 
-        // public static List<string> 평불종목 = new List<string>();   // 매수된 종목
 
 
         public static List<string> 지수종목 = new List<string>();
-        //public static List<string> 코스피History = new List<string>();   // 매수된 종목
-        //public static List<string> 코스닥History = new List<string>();   // 클릭된 종목, Toggle로 선택 & 취소
+       
+
 
         public class kospi_kosdaq_mixed
         {
@@ -243,36 +188,14 @@ namespace New_Tradegy.Library
         public static kospi_kosdaq_mixed kospi_mixed = new kospi_kosdaq_mixed();
         public static kospi_kosdaq_mixed kosdaq_mixed = new kospi_kosdaq_mixed();
 
-        //public static List<List<string>> aV = new List<List<string>>(); // 평균거래량
-
-
-
-
-
-
-
-
-        public static int 틱_array_size = 60; //
-        public static int 분_array_size = 15; // 
         public static int stocks_per_marketeye = 200;
-        //public static int marketeye_sleep_seconds = 1000;
-
-        // public static int setting_text_count = 0;
-
-
-        //public static int kospi_value = -3000;
-        //public static int kosdq_value = -3000;
-        //public static int kospi_was1호가 = 0;
-        //public static int kosdaq_was1호가 = 0;
-
-        //public static int priceKospiSounded = 0;
-
-        //public static int priceKosdaqSounded = 0;
-
-
 
         public static int ogl_data_next = 0;
         public static int 예치금 = 0;
+
+        public static int 틱_array_size = 60; //
+        public static int 분_array_size = 15; // 
+       
 
         public static long 코스피매수배 = 0;
         public static long 코스피매도배 = 0;
@@ -282,6 +205,9 @@ namespace New_Tradegy.Library
         public static long 코스피기관순매수 = 0;
         public static long 코스피금투순매수 = 0;
         public static long 코스피연기순매수 = 0;
+        public static double[] kospi_틱매수배 = new double[틱_array_size]; // 
+        public static double[] kospi_틱매도배 = new double[틱_array_size]; // 
+
 
         public static long 코스닥매수배 = 0;
         public static long 코스닥매도배 = 0;
@@ -291,6 +217,8 @@ namespace New_Tradegy.Library
         public static long 코스닥기관순매수 = 0;
         public static long 코스닥금투순매수 = 0;
         public static long 코스닥연기순매수 = 0;
+        public static double[] kosdaq_틱매수배 = new double[틱_array_size]; // 
+        public static double[] kosdaq_틱매도배 = new double[틱_array_size]; // 
 
         public static int 코스피지수 = 0;
         public static int 코스닥지수 = 0;
@@ -301,11 +229,6 @@ namespace New_Tradegy.Library
         public static float SP_지수 = 0;
         public static float Nasdaq_지수 = 0;
 
-
-
-
-        //public static int window_x_size;
-        //public static int window_y_size;
 
         public static int rqwey_nCol = 10;
         public static int rqwey_nRow = 3;
@@ -321,15 +244,10 @@ namespace New_Tradegy.Library
 
 
         public static int moving_reference_date = 0;
-        //public static int saved_hs_date = 0;
-        //public static List<int> date_list = new List<int>();
 
         public static int[] Npts = new int[2];
 
         public static int[] SavedNpts = new int[2];
-
-        //public static string saved_stock;
-        //public static int[,] eval_score = new int[10, 12];
 
         public static int EndNptsBeforeExtend;
         public static bool EndNptsExtendedOrNot;
@@ -339,54 +257,28 @@ namespace New_Tradegy.Library
 
         public static int gid;
         public static int Gid;
-        //public static int Group_ranking_Gid;
         public static int saved_Gid;
         public static int draw_selection = 1;
         public static int npts_fi_dwm = 40;
         public static int NptsForShrinkDraw = 30;
         public static int npts_for_magenta_cyan_mark = 4;
 
-        //public static int money_shift = 2;
-
-
         public static double EPS = 0.0000001;
         public static double HUNDRED = 100.0;
         public static double THOUSAND = 1000.0;
-        //public static double TEN = 10.0;
-        //public static double 일중거래액환산율;
 
-        //public static double[] 누적 = new double[60 * 7];
-
-        public static double[] kospi_틱매수배 = new double[틱_array_size]; // 
-        public static double[] kospi_틱매도배 = new double[틱_array_size]; // 
-        public static double[] kosdaq_틱매수배 = new double[틱_array_size]; // 
-        public static double[] kosdaq_틱매도배 = new double[틱_array_size]; // 
-
-        //public static double[] screenFactor = new double[2];
-
-
-        //public static string saved_clickedStock;
-        //public static double saved_col_percentage;
+       
 
 
 
         public class variable
         {
-            // public int 점수선택 = 0; // 0 : 푀분 > 0 , 배차 > 0, 1 : 푀분 > 0, 2 : 배차 > 0, 3 : 푀분 + 배차 > 0, 4: no 선택
 
             public string KeyString = "총점";
             public string SubKeyStr = "그순";
             public string old_key_string = "푀분";
 
-            //public double old_분당거래액이상_천만원;// 분거
-            //public double old_호가거래액_백만원; // not active for g.tesing 호가
-            //public double old_편차이상; // 편차
-            //public double old_배차이상; // defined, but not used // 배차
-            //public double old_종가기준추정거래액이상_천만원; // 종거
-            //public double old_시총이상; // 시총
-            //public int old_배플;
-            //public int old_푀플;
-
+            
             public double 분당거래액이상_천만원; // in setting 10
             public double 호가거래액_백만원; // in setting 10
             public double 편차이상;  // in setting 1
@@ -399,40 +291,16 @@ namespace New_Tradegy.Library
 
 
 
-            //public int 보유종목점검최소액 = 9; // 만원으로 확인하도록 if(o.보유량 * o.매수1호가 / 10000.0 > g.v.보유종목점검최소액)
-            //public int 비상매도시손실율 = -2;
-
             public double 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
 
-            //public double 배수과장배수 = 1.0; // 수급 과장하여 표시하는 배수, p & P key control the value
-
-            //public string[] files_to_open_by_clicking_edge = new string[8];   // selected stocks for display
-
+          
             public int q_advance_lines = 15;
             public int Q_advance_lines = 150;
             public int r3_display_lines = 20;
 
-            // old version EvalKODEX()
-            //public int[] kospi_difference_for_sound = new int[3];
-            //public int[] kosdq_difference_for_sound = new int[3];
-
-            // new version eval_index()
-            //public int[] index_difference_sound = new int[3];
-
-
-            //public double 틱프돈천이상 = 10;
-            //public double 분프로천푀퍼티지이상 = 50;
-
-            //public int columnsofoGl_data;
-
-            //public int eval_per_marketeyes;
-
-            //public int neglectable_price_differ = 0; // 가격 상승 피로도 계산시 무시하는 가격 차이
-
             public float font = 16.0F;
 
 
-            //public int Screens;
         }
         public static variable v = new variable();
 

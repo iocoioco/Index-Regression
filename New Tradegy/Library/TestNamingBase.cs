@@ -1,8 +1,6 @@
 ﻿namespace New_Tradegy.Library
 {
-
-    internal class sl
+    internal class TestNamingBase
     {
-        
     }
 }

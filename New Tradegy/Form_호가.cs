@@ -22,14 +22,14 @@ namespace New_Tradegy
         // private static CPUTILLib.CpCybos _cpcybos;
         // Chart Chart;
 
-        string _stock;
+        //string _stock;
 
         public Form_호가(string stock)  
         {
          
             InitializeComponent();
 
-            _stock = stock;
+        //    _stock = stock;
 
         
         }
@@ -38,17 +38,17 @@ namespace New_Tradegy
         private void Form_호가_Load(object sender, EventArgs e)
         {
             
-            this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
+            //this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
 
-            this.Text = _stock;
-            this.Name = _stock;
+            //this.Text = _stock;
+            //this.Name = _stock;
 
-            this.MaximizeBox = false;
-            this.ControlBox = false;
+            //this.MaximizeBox = false;
+            //this.ControlBox = false;
 
-            var a = new jp();
+            //var a = new jp();
 
-            a.Generate(_stock);
+            //a.Generate(_stock);
         }
     }
 }

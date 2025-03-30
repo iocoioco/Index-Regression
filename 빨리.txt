@@ -8,6 +8,23 @@ https://www.youtube.com/shorts/YqoskF3Ky_k?feature=share
 https://www.youtube.com/shorts/Vo1HcQDto5A?feature=share
 https://www.youtube.com/shorts/lOSZQfYqdDI?feature=share
 
+
+Private field	_myField	camelCase with underscore _	StyleCop recommends underscore prefix
+Public field	MyField	PascalCase	Avoid public fields; use properties instead
+Local variable	myVariable	camelCase	Short & meaningful
+Parameter	inputValue	camelCase	No underscore
+Constant	MaxSize	PascalCase	Consider using const
+Static readonly field	DefaultTimeout	PascalCase	Like constants
+Property	UserName	PascalCase	Use auto-properties when possible
+Method	CalculateTotal()	PascalCase	Verb-based names
+Private method	LoadData()	PascalCase	No underscore even if private
+Class	OrderProcessor	PascalCase	Noun-based
+Interface	IStreamReader	PascalCase, prefix with I	Interface prefix I is standard
+Enum	LogLevel	PascalCase	Enum members also use PascalCase
+Enum member	Error, Warning	PascalCase	No prefixes
+
+
+
 20241228 : 
 w,q etc
 

@@ -132,7 +132,7 @@ namespace New_Tradegy.Library
 
         //    private void PositionForm()
         //    {
-        //        DataGridView dgv = fm.FindDataGridViewByName(Application.OpenForms["se"], stock);
+        //        DataGridView dgv = fm.FindDataGridViewByName(Application.OpenForms["Form1"], stock);
         //        if (dgv == null) return;
 
         //        Point stockPosition = dgv.PointToScreen(Point.Empty);

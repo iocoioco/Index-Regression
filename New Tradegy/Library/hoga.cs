@@ -149,7 +149,7 @@ namespace New_Tradegy.Library
                 _stockjpbid.Unsubscribe();
 
                 // Find the DataGridView by stock name and dispose of it safely
-                Form f = fm.FindFormByName("se");
+                Form f = fm.FindFormByName("Form1");
                 DataGridView dgv = f?.Controls.Find(stock, true).FirstOrDefault() as DataGridView;
 
                 if (dgv != null)
@@ -179,7 +179,7 @@ namespace New_Tradegy.Library
         {
             int return_value = -1;
 
-            Form se = fm.FindFormByName("se");
+            Form se = fm.FindFormByName("Form1");
             DataGridView dgv = fm.FindDataGridViewByName(se, stock);
             if (dgv == null)
             {

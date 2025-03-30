@@ -241,7 +241,7 @@ namespace New_Tradegy
                                     g.관심종목.Add(stock1);
                                 }
                             }
-                            Form se = fm.FindFormByName("se");
+                            Form se = fm.FindFormByName("Form1");
                             se.Text = words[1];
                             mm.ManageChart1(); // Memo, 선택된 상관 전체 관심종목 
                             return;
@@ -456,7 +456,7 @@ namespace New_Tradegy
                     appendMemoRichTextBox(file + "\n");
             }
         }
-
+        
         public string Memo_네이버_테마_순위(string url)
         {
             string 테마별시세 = "";

@@ -1,0 +1,117 @@
+﻿root = true
+
+[*.cs]
+
+####################################
+# General Analyzer Rules
+####################################
+
+# Show all Roslynator suggestions
+dotnet_analyzer_diagnostic.category-roslynator.severity = suggestion
+
+# Example: elevate a specific Roslynator rule to warning (optional)
+dotnet_diagnostic.RCS1110.severity = warning
+dotnet_diagnostic.RCS1085.severity = warning
+
+####################################
+# Naming Convention Rules
+####################################
+
+# 🔸 PRIVATE FIELDS: _camelCase
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.accessibility = private
+
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+dotnet_naming_rule.private_fields_underscore.severity = warning
+
+# 🔸 PUBLIC FIELDS: PascalCase
+dotnet_naming_symbols.public_fields.applicable_kinds = field
+dotnet_naming_symbols.public_fields.accessibility = public
+
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_rule.public_fields_pascal.symbols = public_fields
+dotnet_naming_rule.public_fields_pascal.style = pascal_case
+dotnet_naming_rule.public_fields_pascal.severity = warning
+
+# 🔸 LOCAL VARIABLES: camelCase
+dotnet_naming_symbols.local_variables.applicable_kinds = local
+
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+dotnet_naming_rule.local_variables_camel.symbols = local_variables
+dotnet_naming_rule.local_variables_camel.style = camel_case
+dotnet_naming_rule.local_variables_camel.severity = suggestion
+
+# 🔸 PARAMETERS: camelCase
+dotnet_naming_symbols.parameters.applicable_kinds = parameter
+
+dotnet_naming_rule.parameters_camel.symbols = parameters
+dotnet_naming_rule.parameters_camel.style = camel_case
+dotnet_naming_rule.parameters_camel.severity = suggestion
+
+# 🔸 CONSTANTS: PascalCase
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.required_modifiers = const
+
+dotnet_naming_rule.constants_pascal.symbols = constants
+dotnet_naming_rule.constants_pascal.style = pascal_case
+dotnet_naming_rule.constants_pascal.severity = warning
+
+# 🔸 STATIC READONLY FIELDS: PascalCase
+dotnet_naming_symbols.static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_fields.required_modifiers = static readonly
+
+dotnet_naming_rule.static_readonly_pascal.symbols = static_readonly_fields
+dotnet_naming_rule.static_readonly_pascal.style = pascal_case
+dotnet_naming_rule.static_readonly_pascal.severity = suggestion
+
+# 🔸 PROPERTIES: PascalCase
+dotnet_naming_symbols.properties.applicable_kinds = property
+
+dotnet_naming_rule.properties_pascal.symbols = properties
+dotnet_naming_rule.properties_pascal.style = pascal_case
+dotnet_naming_rule.properties_pascal.severity = warning
+
+# 🔸 METHODS: PascalCase
+dotnet_naming_symbols.methods.applicable_kinds = method
+
+dotnet_naming_rule.methods_pascal.symbols = methods
+dotnet_naming_rule.methods_pascal.style = pascal_case
+dotnet_naming_rule.methods_pascal.severity = warning
+
+# 🔸 CLASSES: PascalCase
+dotnet_naming_symbols.classes.applicable_kinds = class
+
+dotnet_naming_rule.classes_pascal.symbols = classes
+dotnet_naming_rule.classes_pascal.style = pascal_case
+dotnet_naming_rule.classes_pascal.severity = warning
+
+# 🔸 INTERFACES: PascalCase with "I" prefix
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+
+dotnet_naming_style.i_pascal_case.required_prefix = I
+dotnet_naming_style.i_pascal_case.capitalization = pascal_case
+
+dotnet_naming_rule.interfaces_i_prefix.symbols = interfaces
+dotnet_naming_rule.interfaces_i_prefix.style = i_pascal_case
+dotnet_naming_rule.interfaces_i_prefix.severity = warning
+
+# 🔸 ENUMS: PascalCase
+dotnet_naming_symbols.enums.applicable_kinds = enum
+
+dotnet_naming_rule.enums_pascal.symbols = enums
+dotnet_naming_rule.enums_pascal.style = pascal_case
+dotnet_naming_rule.enums_pascal.severity = warning
+
+# 🔸 ENUM MEMBERS: PascalCase
+dotnet_naming_symbols.enum_members.applicable_kinds = field
+dotnet_naming_symbols.enum_members.containing_types = enum
+
+dotnet_naming_rule.enum_members_pascal.symbols = enum_members
+dotnet_naming_rule.enum_members_pascal.style = pascal_case
+dotnet_naming_rule.enum_members_pascal.severity = warning

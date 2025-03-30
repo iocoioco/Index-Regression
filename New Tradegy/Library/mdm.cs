@@ -106,7 +106,7 @@ class mm
             }
 
             // Check if the form exists; if not, create it and set the location
-            Form form = fm.FindFormByName("se");
+            Form form = fm.FindFormByName("Form1");
             if (!fm.DoesDataGridViewExist(form, stock) && g.connected)
             {
                 var a = new jp();
@@ -268,7 +268,7 @@ class mm
             string stock = stocksWithBid[i];
 
             // Check if the form exists; if not, create it and set the location
-            Form form = fm.FindFormByName("se");
+            Form form = fm.FindFormByName("Form1");
             if (!fm.DoesDataGridViewExist(form, stock) && g.connected)
             {
                 var a = new jp();
@@ -1510,7 +1510,7 @@ class mm
         List<string> notInStocksWithBid = new List<string>();
 
         // Get the target form
-        Form se = Application.OpenForms["se"];
+        Form se = Application.OpenForms["Form1"];
         if (se == null)
         {
             MessageBox.Show("Form 'se' is not open.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1544,7 +1544,7 @@ class mm
                     _stockjpbid.Unsubscribe();
 
                     // Find and dispose of DataGridView
-                    Form form = fm.FindFormByName("se");
+                    Form form = fm.FindFormByName("Form1");
                     DataGridView dgv = fm.FindDataGridViewByName(form, dgvName);
 
                     if (dgv != null && !dgv.IsDisposed)
@@ -1984,7 +1984,7 @@ class mm
         RelocateChart1Area(chart, stockName, row, col);
 
         // Also set the position of the form next to it
-        Form form = fm.FindFormByName("se");
+        Form form = fm.FindFormByName("Form1");
         DataGridView dgv = fm.FindDataGridViewByName(form, stockName);
         if (dgv != null)
         {

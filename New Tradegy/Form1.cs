@@ -20,9 +20,10 @@ using static New_Tradegy.Library.sc;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
-
-    public partial class se : Form
+    public partial class Form1 : Form
     {
+    
+    
         // private Point mousePosition;
 
         // private static CPUTILLib.CpStockCode _cpstockcode;
@@ -47,22 +48,10 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-        private static se _instance;
-
-        public static se Instance
-        {
-            get
-            {
-                if (_instance == null || _instance.IsDisposed)
-                {
-                    _instance = new se();
-                }
-                return _instance;
-            }
-        }
+   
 
 
-        public se()
+        public Form1()
         {
             InitializeComponent();
 
@@ -87,12 +76,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //md.ParentPassing(this);
-
-            //g.MachineName = Environment.MachineName;
-
-            //_cpcybos = null; after blocking g.connected becomes true
-
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
 
@@ -102,8 +85,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
             else
                 g.connected = true;
-
-
 
             System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
             g.screenWidth = workingRectangle.Width;
@@ -119,18 +100,13 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 chart1.Location = new Point(0, 0);
             }
-                
-
-            // workingRectangle.Width = (int)(chart1.Width * 1.5);
 
             this.WindowState = FormWindowState.Maximized; // this.WindowState
 
-            //g.v.Screens = Screen.AllScreens.Count();
             g.chart1 = chart1;
 
             g.Npts[0] = 0; //
             g.Npts[1] = g.MAX_ROW; //
-
 
             g.q = "o&s";
 
@@ -143,23 +119,17 @@ namespace New_Tradegy // added for test on 20241020 0300
             Directory.CreateDirectory(newdirectory); // testing
 
             rd.read_변수(); //
+
             rd.read_무게(); //
 
             rd.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
 
             rd.read_or_set_stocks(); // duration : 0.36 seconds
 
-            //ms.setting_kodex_magnifier_shifter(); // duration 0.000 seconds
-
-            // rd.read_누적(g.누적); // not used in marketeye_received
-
-            // ms.setting_코스피_코스닥합성();
-
-            this.Text = g.v.KeyString; // 처음, 총점
+            this.Text = g.v.KeyString; // 시초에는 총점 
 
             Form Form_제어 = new Form_제어(); // info
             Form_제어.Show();
-
 
             Form Form_매매 = new Form_매매(); // work
             Form_매매.Show();
@@ -167,48 +137,13 @@ namespace New_Tradegy // added for test on 20241020 0300
             Form Form_그룹 = new Form_그룹(); // grup
             Form_그룹.Show();
 
-
-
-
-
-
             Form Form_보조_차트 = new Form_보조_차트();
-            //{
-            //    Size = new Size(1920 / 4, 900 / 3),
-            //    StartPosition = FormStartPosition.Manual // Prevent Windows from overriding the location
-            //};
+            
+            Form_보조_차트.Show(); // second chart
 
-            //if (Screen.AllScreens.Length == 1)
-            //{
-            //    Form_보조_차트.Location = new Point(0, 0); // Single monitor
-            //}
-            //else
-            //{
-            //    Form_보조_차트.Location = new Point(1920, 0); // Dual monitor
-            //}
-
-            //// Show the form and ensure location remains as set
-            Form_보조_차트.Show();
-            // Form_보조_차트.Location = new Point(0, 0); // Reapply location to handle potential adjustments
-
-            // Log final location
-            //int x = Form_보조_차트.Location.X;
-            //int y = Form_보조_차트.Location.Y;
-
-            //Form_보조_차트.BringToFront();
-
-            //Form_보조_차트.AutoScaleMode = AutoScaleMode.Dpi;
-
-
-
-
-
-
-            if (!g.test) 
+            if (!g.test) // for market trading
             {
                 cn.Init_CpConclusion();
-
-                //Task task_deal_profit = Task.Run(async () => await dl.task_deal_profit());
 
                 DealManager.deal_processing();
                 DealManager.deal_hold(); // Initialize g.보유종목
@@ -230,10 +165,6 @@ namespace New_Tradegy // added for test on 20241020 0300
                     await sc.task_major_indices();
                 });
 
-                // updated on 20241020
-                // Task Task_eval_draw = Task.Run(async () => await task_eval_draw());
-
-
                 // updated on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
@@ -241,8 +172,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
             rd.read_파일관심종목(); // duration 0.000 seconds
             mm.ManageChart1(); // all new, Form_1 start
-            //  chart1 only plot ... mm.ManageChart2(); // all new, Form_1 start
-
+          
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
             mc.Sound("일반", "to jsb");
@@ -595,7 +525,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
             string day = DateTime.Today.DayOfWeek.ToString();
 
-            return (HHmm >= 900 && HHmm <= 1530) && (day != "Sunday" && day != "Saturday");
+            return (HHmm >= 800 && HHmm <= 1530) && (day != "Sunday" && day != "Saturday");
         }
 
 

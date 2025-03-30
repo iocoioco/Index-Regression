@@ -124,7 +124,7 @@ namespace New_Tradegy.Library
             Dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(Dgv_CellMouseClick);
             Dgv.KeyPress += OnDataGirdView1_KeyPress;
 
-            Form form = fm.FindFormByName("se");
+            Form form = fm.FindFormByName("Form1");
             form.Controls.Add(Dgv);
 
             Dgv.Columns[0].Width = w0;

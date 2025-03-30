@@ -196,7 +196,7 @@ namespace New_Tradegy.Library
             if (g.date != datenow)
                 return false;
 
-            if (HHmm < 900 || HHmm > 1530) // 시작시간 0900
+            if (HHmm < 800 || HHmm > 1530) // 시작시간 0900
                 return false;
 
             //if (HHmm < 1000 || HHmm > 1630) // 시작시간 1000

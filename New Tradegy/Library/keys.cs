@@ -469,7 +469,7 @@ namespace New_Tradegy.Library
                     //g.v.columnsofoGl_data = 0; // number of column for group = 0
                     g.q = "o&s";
                     g.gid = 0;
-                    Form se = (Form)Application.OpenForms["se"];
+                    Form se = (Form)Application.OpenForms["Form1"];
                     se.Text = g.v.KeyString;
                     action = " pem"; // no del, post, eval, both draw
                     break;
@@ -494,7 +494,7 @@ namespace New_Tradegy.Library
                     g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_2);
                     g.q = "o&s";
                     g.gid = 0;
-                    se = (Form)Application.OpenForms["se"];
+                    se = (Form)Application.OpenForms["Form1"];
                     se.Text = g.v.KeyString;
                     action = " pem"; // no del, post, no eval, main draw
                     break;
@@ -504,7 +504,7 @@ namespace New_Tradegy.Library
                     g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_3);
                     g.q = "o&s";
                     g.gid = 0;
-                    se = (Form)Application.OpenForms["se"];
+                    se = (Form)Application.OpenForms["Form1"];
                     se.Text = g.v.KeyString;
                     action = " pem"; // no del, post, no eval, main draw
                     break;
@@ -531,7 +531,7 @@ namespace New_Tradegy.Library
                     g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_7);
                     g.q = "o&s"; 
                     g.gid = 0;
-                    se = (Form)Application.OpenForms["se"];
+                    se = (Form)Application.OpenForms["Form1"];
                     se.Text = g.v.KeyString;
                     action = " pem"; // no del, post, no eval, main draw
                     break;
@@ -566,7 +566,7 @@ namespace New_Tradegy.Library
                     g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_4);
                     g.q = "o&s";
                     g.gid = 0;
-                    se = (Form)Application.OpenForms["se"];
+                    se = (Form)Application.OpenForms["Form1"];
                     se.Text = g.v.KeyString;
                     action = " pem"; // no del, post, no eval, main draw
                     break;
@@ -579,7 +579,7 @@ namespace New_Tradegy.Library
                     g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_5);
                     g.q = "o&s";
                     g.gid = 0;
-                    se = (Form)Application.OpenForms["se"];
+                    se = (Form)Application.OpenForms["Form1"];
                     se.Text = g.v.KeyString;
                     action = " pem"; // no del, post, no eval, main draw
                     break;

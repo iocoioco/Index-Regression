@@ -74,7 +74,7 @@ namespace New_Tradegy
             richTextBox1.SelectionLength = blockLength;
             richTextBox1.SelectionBackColor = Color.FromArgb(235, 255, 255);
 
-            Form se = (Form)System.Windows.Forms.Application.OpenForms["se"];
+            Form se = (Form)System.Windows.Forms.Application.OpenForms["Form1"];
             DataGridView dgv = fm.FindDataGridViewByName(se, _stock);
             this.Size = new Size(g.screenWidth / 6 + 40, g.screenHeight / 3 - 8);
             this.Location = new Point(dgv.Location.X + g.screenWidth / g.nCol - 25, dgv.Location.Y + 22);
@@ -161,7 +161,7 @@ namespace New_Tradegy
         }
         //private void PositionForm()
         //{
-        //    DataGridView dgv = fm.FindDataGridViewByName(Application.OpenForms["se"], stock);
+        //    DataGridView dgv = fm.FindDataGridViewByName(Application.OpenForms["Form1"], stock);
         //    if (dgv == null) return;
 
         //    Point stockPosition = dgv.PointToScreen(Point.Empty);

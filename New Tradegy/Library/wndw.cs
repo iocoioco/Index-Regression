@@ -26,10 +26,10 @@ namespace New_Tradegy.Library
             //    Memo_1.TopMost = true;
             //}
 
-            Form Memo = new Memo();
-            Memo.Size = new Size(359, 405);
-            Memo.Location = new Point(809, 509);
-            Memo.Show();
+            Form memo = new Memo();
+            memo.Size = new Size(359, 405);
+            memo.Location = new Point(809, 509);
+            memo.Show();
             //Memo.TopMost = true;    
         }
     }

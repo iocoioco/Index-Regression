@@ -22,7 +22,7 @@ namespace New_Tradegy.Library
         // not used
         //public static void read_관심제거추가(string stock)
         //{
-       
+
 
         //    DateTime date = DateTime.Now;
         //    int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
@@ -382,12 +382,12 @@ namespace New_Tradegy.Library
                     }
                 }
 
-                for(int j = 0; j < o.nrow; j++) // 전체 0.002seconds
+                for (int j = 0; j < o.nrow; j++) // 전체 0.002seconds
                 {
                     ps.PostPassing(o, j, false); // initialization
                 }
                 #endregion
-                
+
             }
 
             // 기존에는 코스피, 코스닥에 들어간 모든 돈을 억 단위로 
@@ -396,7 +396,7 @@ namespace New_Tradegy.Library
             // 사용
 
 
-  
+
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             if (g.ogl_data[index].x[0, 3] > 1000)
@@ -406,85 +406,44 @@ namespace New_Tradegy.Library
         // 업종, 10억이상, 상관, 상관, 통계
         public static void gen_ogldata_oGLdata()
         {
-            double td = 0;
-            List<string> total_stock_list = new List<string>();
+            // double td = 0;
+            // List<string> total_stock_list = new List<string>();
             List<string> tgl_title = new List<string>();
             List<List<string>> tgl = new List<List<string>>();
-            List<string> 상관_group_total_stock_list = new List<string>();
+            // List<string> 상관_group_total_stock_list = new List<string>();
             List<List<string>> Gl = new List<List<string>>();
             List<List<string>> GL = new List<List<string>>();
 
-            if (g.shortform)
+            if (!g.shortform)
             {
-            }
-            else
-            {
-                total_stock_list = rd.read_그룹_네이버_업종(Gl, GL); // 2734 종목(20250224 기준), duration 2.7 seconds
+                StockManager.AddIfMissing(rd.read_그룹_네이버_업종(Gl, GL)); // replaces total_stock_list = ...
             }
 
-            // total_stock_list : 20일 최대거래액 30억 이상 종목만 total_stock_list에
-            // 저장 (2400여 개 종목 중 1200개 정도 total_stock_list에 다시 저장
-           
-
-            // 상관.txt에 있는 종목을 상관_group_total_stock_list에 저장
-            // tgl_title : group 이름
-            // tgl : 각 그룹별 종목
-            rd.read_상관(상관_group_total_stock_list, tgl_title, tgl, total_stock_list); // duration 1.3 seconds
-
-            //int 일거래액기준 = 30; // 30억
-            //wk.이십일중일최대거래액일정액이상종목선택(total_stock_list, 일거래액기준); // 1211 종목(20250224 기준) // duration 0.8 seconds
-    
-            // if exist read
-            // 상관_group_total_stock_list 중 중복되지 않는 종목 1200여 개 total_stock_list.추가
-            //foreach (var item in 상관_group_total_stock_list)
-            //{
-            //    if (total_stock_list.Contains(item))
-            //        continue;
-            //    else
-            //        total_stock_list.Add(item);
-            //}
-
-            // 지수종목 
+            rd.read_상관(tgl_title, tgl, StockManager.TotalStockList); // duration 1.3 seconds
 
             rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
 
             rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
 
+            StockManager.AddIfMissing(g.kospi_mixed.stock);
+            StockManager.AddIfMissing(g.kosdaq_mixed.stock);
+            StockManager.AddIfMissing(new[] {
+                "KODEX 레버리지",
+                "KODEX 200선물인버스2X",
+                "KODEX 코스닥150레버리지",
+                "KODEX 코스닥150선물인버스"
+            });
+
       
 
-            foreach (string t in g.지수종목) // 1244 종목(20250224 기준) 왜 33 종목이 늘었지 ? // duration 0.000 seconds
-            {
-                if (!total_stock_list.Contains(t))
-                    total_stock_list.Add(t);
-            }
-
-            // some stocks missing whole data, possibly due to stop deal
-            //if(total_stock_list.Contains("씨케이에이치"))
-            //{
-            //    int a = 1;
-            //}
-
-            foreach (var stock in total_stock_list) // duration 5.86 seconds
+            foreach (var stock in StockManager.TotalStockList) // StockManager.TotalStockList is used only in this method
             {
                 wk.gen_ogl_data(stock);
             }
-                
-
-            // 개별 종목이 그룹에 속하는 지 여부 bool로 기록
-            //for (int i = 0; i < GL.Count; i++)
-            //{
-            //    for (int j = 0; j < GL[i].Count; j++)
-            //    {
-            //        int index = wk.return_index_of_ogldata(GL[i][j]);
-            //        if (index < 0)
-            //            continue;
-            //        g.stock_data o = g.ogl_data[index];
-            //        o.in_group_or_not = true;
-            //    }
-            //}
 
             // 통계 숫자 1200여 개 .ogl_data 숫자 1581 MODI
             rd.read_통계();
+
             rd.read_절친();
 
             g.ogl_data = g.ogl_data.OrderByDescending(x => x.전일거래액_천만원).ToList();
@@ -493,14 +452,10 @@ namespace New_Tradegy.Library
             {
                 g.sl.Add(item.stock);
             }
-                
 
             rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.호가종목
 
             wk.gen_oGL_data(tgl_title, tgl); // generate oGL_data
-
-            //rd.calculation_wieght_mixed_kospi_kosdaq(g.kospi_mixed);
-            //rd.calculation_wieght_mixed_kospi_kosdaq(g.kosdaq_mixed);
         }
 
         public static void read_파일관심종목()
@@ -624,9 +579,9 @@ namespace New_Tradegy.Library
         public static int read_데이터컬럼들(string filename, int[] c_id, string[,] x)
         {
             /* 파일이름, 구하고자하는 컬럼 번호를 주면 x[,] 저장 nrow 반환
-	   * public static int read_데이터컬럼들
-		 (string filename, int[] c_id, string[,] x)
-	   * */
+        * public static int read_데이터컬럼들
+         (string filename, int[] c_id, string[,] x)
+        * */
 
             if (!File.Exists(filename)) return -1;
             string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
@@ -684,7 +639,7 @@ namespace New_Tradegy.Library
             //g.deal_total_profit = Convert.ToInt32(strs[2]);
 
             //strs = grlines[4 + add].Split(' ');
-            
+
             //g.전일종가이상 = Convert.ToInt32(strs[0]);
         }
 
@@ -1271,20 +1226,20 @@ namespace New_Tradegy.Library
             //g.평불종목.Add("코스피혼합");
             //g.평불종목.Add("코스닥혼합");
 
-            g.지수종목.Clear();
-            foreach (string stock in g.kospi_mixed.stock)
-            {
-                g.지수종목.Add(stock);
-            }
-            foreach (string stock in g.kosdaq_mixed.stock)
-            {
-                g.지수종목.Add(stock);
-            }
+            //g.지수종목.Clear();
+            //foreach (string stock in g.kospi_mixed.stock)
+            //{
+            //    g.지수종목.Add(stock);
+            //}
+            //foreach (string stock in g.kosdaq_mixed.stock)
+            //{
+            //    g.지수종목.Add(stock);
+            //}
 
-            g.지수종목.Add("KODEX 레버리지"); // 0504
-            g.지수종목.Add("KODEX 200선물인버스2X");
-            g.지수종목.Add("KODEX 코스닥150레버리지");
-            g.지수종목.Add("KODEX 코스닥150선물인버스");
+            //g.지수종목.Add("KODEX 레버리지"); // 0504
+            //g.지수종목.Add("KODEX 200선물인버스2X");
+            //g.지수종목.Add("KODEX 코스닥150레버리지");
+            //g.지수종목.Add("KODEX 코스닥150선물인버스");
         }
 
         static List<double> AdjustToSumOne(List<double> numbers)
@@ -1309,7 +1264,7 @@ namespace New_Tradegy.Library
             return adjustedNumbers;
         }
 
-        
+
 
         public static void read_그룹_네이버_테마(List<string> tsl, List<string> tsl_그룹_상관, List<string> GL_title, List<List<string>> GL)
         {
@@ -1342,7 +1297,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void read_상관(List<string> gl, List<string> GL_title, List<List<string>> GL, List<string> stocks_over_deal_per_day)
+        public static void read_상관(List<string> GL_title, List<List<string>> GL, List<string> stocks_over_deal_per_day)
         {
             string filename = @"C:\병신\data\상관.txt";
 
@@ -1404,8 +1359,7 @@ namespace New_Tradegy.Library
 
                         if (!temp_Gl.Contains(new_name))
                             temp_Gl.Add(new_name); // large group GL 
-                        if (!gl.Contains(new_name))
-                            gl.Add(new_name);
+             
                     }
                 }
             }
@@ -1827,7 +1781,7 @@ namespace New_Tradegy.Library
                     FoundLine++;
             }
             string aline = File.ReadLines(path).Skip(FoundLine - 1).Take(1).First();
-            
+
             string[] words = aline.Split(' ');
             return Convert.ToInt32(words[4]);
         }

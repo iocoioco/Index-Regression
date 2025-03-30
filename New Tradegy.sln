@@ -8,9 +8,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8C1D470-EFC7-4A19-B359-C02780AD676C}"
 	ProjectSection(SolutionItems) = preProject
 		Electricity.txt = Electricity.txt
+		.editorconfig = .editorconfig
 		Fake Wall Detector.txt = Fake Wall Detector.txt
 		git.txt = git.txt
+		StyleCop.json = StyleCop.json
 		temp.txt = temp.txt
+		TextFile1.txt = TextFile1.txt
 		급락.txt = 급락.txt
 		빨리.txt = 빨리.txt
 		상한_상승_보합_등.cs = 상한_상승_보합_등.cs
@@ -33,10 +36,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program R
 		ClickHnadler.txt = ClickHnadler.txt
 		Event Handler also Check StockData.txt = Event Handler also Check StockData.txt
 		General View of Class.txt = General View of Class.txt
-		Program Tatics Simplified.txt = Program Tatics Simplified.txt
 		ProcessCmdKeyForm1Form2.txt = ProcessCmdKeyForm1Form2.txt
-		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
+		Program Tatics Simplified.txt = Program Tatics Simplified.txt
 		Scroll and Curve Height Adjuster.txt = Scroll and Curve Height Adjuster.txt
+		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
 		StockData Class and StockManager Class.txt = StockData Class and StockManager Class.txt
 	EndProjectSection
 EndProject

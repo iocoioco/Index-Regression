@@ -14,9 +14,9 @@ namespace New_Tradegy
     [STAThread]
     static void Main()
      {
-    Application.EnableVisualStyles();
-    Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new se());
-    }
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+     }
   }
 }

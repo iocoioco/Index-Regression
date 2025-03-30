@@ -2,7 +2,7 @@
 
 namespace New_Tradegy
 {
-  partial class se
+  partial class Form1
   {
     // <summary>
     // Required designer variable.
@@ -107,7 +107,7 @@ namespace New_Tradegy
             this.Font = new System.Drawing.Font("Gulim", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Name = "se";
+            this.Name = "Form1";
             this.Text = "20";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();

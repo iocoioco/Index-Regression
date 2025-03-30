@@ -355,7 +355,7 @@ namespace New_Tradegy.Library
                     int HHmm = Convert.ToInt32(date.ToString("HHmm"));
 
                     // Check if the task should be performed based on time and day
-                    if (HHmm >= 900 && HHmm < 1521 && date.DayOfWeek != DayOfWeek.Sunday 
+                    if (HHmm >= 800 && HHmm < 1521 && date.DayOfWeek != DayOfWeek.Sunday 
                         && date.DayOfWeek != DayOfWeek.Saturday && g.connected)
                     {
                         run_us_index_append_or_replace();

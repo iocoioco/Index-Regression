@@ -273,7 +273,7 @@ namespace New_Tradegy
             int HHmm = Convert.ToInt32(date.ToString("HHmm")); // run_task_read_eval_score()
             int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
 
-            if (HHmm < 900 || HHmm >= 1521) // 시작시간 9시인 경우
+            if (HHmm < 800 || HHmm >= 1521) // 시작시간 9시인 경우
                 return;
 
             //if (HHmm < 1000 || HHmm >= 1621) // 시작시간 10시인 경우

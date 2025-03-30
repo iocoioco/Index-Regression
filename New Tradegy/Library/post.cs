@@ -36,7 +36,7 @@ namespace New_Tradegy.Library
     {
         public static void ManageChart1Invoke()
         {
-            Form se = (Form)Application.OpenForms["se"];
+            Form se = (Form)Application.OpenForms["Form1"];
             if (se.InvokeRequired)
             {
                 se.Invoke(new Action(mm.ManageChart1));

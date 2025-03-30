@@ -761,7 +761,7 @@ namespace New_Tradegy.Library
             }
 
             //wk.BringToFront();
-            //Form f = (Form)Application.OpenForms["se"];
+            //Form f = (Form)Application.OpenForms["Form1"];
             //if (f != null)
             //{
             //    f.Activate();
