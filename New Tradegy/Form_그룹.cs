@@ -42,7 +42,7 @@ namespace New_Tradegy
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
            
             //this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
-            this.Size = new Size(g.screenWidth / g.rqwey_nCol, g.formSize.ch * 10 + 12);
+            this.Size = new Size(g.screenWidth / g.rqwey_nCol, g.DgvCellHeight * 10 + 12);
             this.Location = new Point(g.screenWidth / g.rqwey_nCol * (g.rqwey_nCol - 1), g.screenHeight / g.rqwey_nRow * 2 + 37);
 
             this.Name = "Form_그룹";
@@ -64,7 +64,7 @@ namespace New_Tradegy
             g.그룹.dgv.ReadOnly = true;
             g.그룹.dgv.DefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
             g.그룹.dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
-            g.그룹.dgv.RowTemplate.Height = g.formSize.ch;
+            g.그룹.dgv.RowTemplate.Height = g.DgvCellHeight;
             g.그룹.dgv.ForeColor = Color.Black;
 
             if(!g.test)

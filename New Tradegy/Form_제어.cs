@@ -46,7 +46,7 @@ namespace New_Tradegy
         private void Form_제어_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Size = new Size(g.screenWidth / g.nCol - 20, g.formSize.ch * 3);
+            this.Size = new Size(g.screenWidth / g.nCol - 20, g.DgvCellHeight * 3);
             int a = g.screenHeight;
 
             this.Location = new Point(g.screenWidth / g.nCol + 10, g.screenHeight / 3 + 2); // + 30 remove from width
@@ -71,7 +71,7 @@ namespace New_Tradegy
             g.제어.dgv.ReadOnly = true;
             g.제어.dgv.DefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
             g.제어.dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontsize, FontStyle.Bold);
-            g.제어.dgv.RowTemplate.Height = g.formSize.ch;
+            g.제어.dgv.RowTemplate.Height = g.DgvCellHeight;
             g.제어.dgv.ForeColor = Color.Black;
             g.제어.dgv.ScrollBars = ScrollBars.Vertical;
             g.제어.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;

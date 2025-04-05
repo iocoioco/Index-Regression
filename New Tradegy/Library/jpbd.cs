@@ -14,6 +14,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using static New_Tradegy.Library.g.stock_data;
 using static OpenQA.Selenium.BiDi.Modules.Script.RealmInfo;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library
 {
@@ -79,9 +80,9 @@ namespace New_Tradegy.Library
 
             _stockjpbid.Subscribe();
 
-            if (!g.jpjds.ContainsKey(stock))
+            if (!g.BookBidInstances.ContainsKey(stock))
             {
-                g.jpjds.TryAdd(stock, _stockjpbid);
+                g.BookBidInstances.TryAdd(stock, _stockjpbid);
             }
             else
             {
@@ -373,7 +374,7 @@ namespace New_Tradegy.Library
             }
 
             // Step 2: Remove stock from dictionary safely
-            if (g.jpjds.TryRemove(Stock, out object removedValue))
+            if (g.BookBidInstances.TryRemove(Stock, out object removedValue))
             {
                 // If the removed object implements IDisposable, dispose it
                 if (removedValue is IDisposable disposable)
@@ -665,8 +666,7 @@ namespace New_Tradegy.Library
                     Dtb.Rows[Rows - 1][2] = (o.프누천 / 10.0).ToString("0.##");
                 }
 
-
-                if (valdn > g.EPS)
+                if(MathUtils.IsSafeToDivide(valdn))
                 {
                     Dtb.Rows[2 * Rows]["호가"] = ((valup - valdn) / (double)valdn * 100.0).ToString("0.##");
                 }

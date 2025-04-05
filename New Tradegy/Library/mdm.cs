@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms.VisualStyles;
 using static New_Tradegy.Library.g;
-using static New_Tradegy.Library.g.stock_data;
+using New_Tradegy.Library.Utils;
 
 class mm
 {
@@ -40,7 +40,7 @@ class mm
     static float annotationHeight = 33.333F - chartAreaHeight;
 
     static int dgvWidth = g.screenWidth / g.nCol;    // Position based on screen width
-    static int dgvHeight = g.formSize.ch * 12;
+    static int dgvHeight = g.DgvCellHeight * 12;
 
     static int formWidth = g.screenWidth / g.nCol;    // Position based on screen width
     static int formHeight = g.screenHeight / g.nRow;
@@ -1536,7 +1536,7 @@ class mm
         foreach (var dgvName in notInStocksWithBid)
         {
             // Try to get and remove the object from the dictionary
-            if (g.jpjds.TryRemove(dgvName, out object removedValue) && removedValue is DSCBO1Lib.StockJpbid _stockjpbid)
+            if (g.BookBidInstances.TryRemove(dgvName, out object removedValue) && removedValue is DSCBO1Lib.StockJpbid _stockjpbid)
             {
                 try
                 {
@@ -1968,7 +1968,7 @@ class mm
             case 5:
             case 6:
                 double multiplier = 1;
-                if (o.x[o.nrow - 1, 7] > g.EPS) // 누적거래량 ! = 0
+                if(MathUtils.IsSafeToDivide(o.x[o.nrow - 1, 7]))
                 {
                     multiplier = 100.0 / o.x[o.nrow - 1, 7] * g.v.수급과장배수 * o.수급과장배수; // marketeye 
                 }

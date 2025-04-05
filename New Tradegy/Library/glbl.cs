@@ -11,103 +11,39 @@ namespace New_Tradegy.Library
 {
     public class g
     {
-        public static bool test;
+        // AppState
+        public static bool test; // test or real
+        public static int date; // current day for display
 
-        public static int postInterval = 30;
-        public static ConcurrentDictionary<string, object> jpjds =
-            new ConcurrentDictionary<string, object>();
+        // ScreenConfig
+        public static int screenHeight; // window height
+        public static int screenWidth; // window width
 
-        public static bool workingday = false;
+        // TradingSettings
+        public static bool optimumTrading = false; // fire buy or sell along with book bid/ask ratio 
+        public static bool add_interest = false; // add stock or not to the 관심종목 when stocks active
+        public static bool confirm_sell = false; // sell by click or modal display to confirm sell condition
+        public static int 일회거래액 = 0; // amount of deal money in 10 thousands Won
 
-        public static char PeoridNews = 'w';
-        public static string Account;
-       
-        public static bool shortform;
-        
+        public static int deal_profit = 0; // profit for the day
 
-
-      
-
-        public static bool connected = false;
-
-        public static bool optimumTrading = false;
-
-        public static int screenHeight;
-        public static int screenWidth;
-
-        public static int date;
+        // Constants
+        public static string Account; // DaiShin Account number
+        public static double 천만원 = 10000000.0; // unit for division
+        public static double 억원 = 100000000.0; // unit for division
+        public static double HUNDRED = 100.0;
+        public static double THOUSAND = 1000.0;
        
 
+        // InputControl
+        public static bool shortform; // shortform includes less number of stocks for test purpose 
 
 
-   
-        public static bool draw_history_forwards = false;
+        // ChartManager
+        public static bool draw_history_forwards = false; // move date forwards or backwards for history analysis
 
-
-        
-        public static bool add_interest = false;
-        public static bool confirm_sell = false;
-       
-
-        public static int deal_profit = 0;
-       
-      
-
-        public class OrderItem
-        {
-            public string stock; // 종목
-            public string m_sCode; // 종목코드
-            public string buyorSell; // 매수, 매도, 보유
-
-            public int m_ordKey; // 주문번호
-            public int m_ordOrgKey; // 원주문번호
-
-            // public string m_sText;
-            public int m_nAmt; // 주문수량
-            public int m_nContAmt; // 체결수량
-            public int m_nPrice; //주문단가
-                                 // public string m_sCredit;
-            public int m_nModAmt; // 접수시 주문수량 = 정정취소 가능수량
-
-            public string m_sHogaFlag; // 주문호가구분코드내용
-        }
-        public static Hashtable m_mapOrder;
-
-        public static Color[] Colors = new Color[]
-            {
-                Color.FromArgb(255, 200, 255),    // 보통 빨강
-                Color.FromArgb(255, 200, 200),   // 옅은 빨강
-                Color.FromArgb(200, 255, 255),   // 보통 주황
-                Color.FromArgb(200, 255, 200),   // 옅은 주황
-                Color.FromArgb(255, 255, 200),   // 보통 노랑
-                Color.FromArgb(200, 200, 255), // 옅은 노랑
-               
-            };
-
-
-
-
-
-
-        public static int 일회거래액 = 0;
-        public static readonly object lockObject = new object(); // Make sure it's initialized
-
-
-
-        public static int MAX_ROW = 382; // XX 382 -> 500
-        
-        public static int LineWidth = 2;
-
-        public class form_size
-        {
-            public int ch = 28;
-
-
-          
-
-        }
-        public static form_size formSize = new form_size();
-
+        // DgvControl
+        public static int DgvCellHeight = 28;
         public class dgvClass
         {
             public string stock;
@@ -117,26 +53,49 @@ namespace New_Tradegy.Library
             public DataGridView dgv;
             public int[,] itb = new int[21, 3];
         }
-      
         public static dgvClass 매매 = new dgvClass();
         public static dgvClass 그룹 = new dgvClass();
         public static dgvClass 제어 = new dgvClass();
-       
-        public static double 천만원 = 10000000.0;
-        public static double 억원 = 100000000.0;
-        public static Chart chart1;
-        public static Chart chart2;
 
-       
+        // StockGroup
 
-        public static string clickedStock = "";
-       
-        public static string clickedTitle = "";
-       
+        // Index
+
+        // Score
+
+        // Sectors
+
+        // OrderItem
+
+        // APIControl
+        public static bool connected = false; // Daishin API connected or not
+
+        // PostControl
+        public static int postInterval = 30; // seconds to be interpolated to 1 minutes
+
+        // MiscControl
+        public static char PeoridNews = 'w'; // google search 'd' past day, 'w' past month
+   
+        // FontAndThemeAndColor
+        public static Color[] Colors = new Color[] // five color set for annotation and chartarea based on activity
+        {
+            Color.FromArgb(255, 200, 255),    // 보통 빨강
+            Color.FromArgb(255, 200, 200),   // 옅은 빨강
+            Color.FromArgb(200, 255, 255),   // 보통 주황
+            Color.FromArgb(200, 255, 200),   // 옅은 주황
+            Color.FromArgb(255, 255, 200),   // 보통 노랑
+            Color.FromArgb(200, 200, 255), // 옅은 노랑
+               
+        };
+        public static int LineWidth = 2; // curve width for default 
 
 
-        public static string q;
-      
+        // InputTracking
+
+        // BookBid(was jpjs
+        public static ConcurrentDictionary<string, object> BookBidInstances = // bookbid instances dictionary
+           new ConcurrentDictionary<string, object>(); 
+
 
 
 
@@ -144,58 +103,78 @@ namespace New_Tradegy.Library
 
 
         
-        public static List<g.stock_data> ogl_data = new List<g.stock_data>();
-        public static List<string> sl = new List<string>();   // selected single stock list from g.sl cal.
-        public static List<string> dl = new List<string>();   // selected stocks for display
+       
 
+        
+        
+        
 
+       
 
+        
+        
 
-        public static string oGl_data_selection = "총점"; // initial value
+       
+        
+        public static readonly object lockObject = new object(); // Make sure it's initialized
 
-        public static List<string> 보유종목 = new List<string>();
-      
-        public static List<string> 호가종목 = new List<string>();
-        public static List<string> 관심종목 = new List<string>();
-        public static List<string> 파일관심종목 = new List<string>();
-      
+        public static int MAX_ROW = 382; // maximum rows of minute data for each stock from 0859 to 1520
 
-        public class group_data
+        
+        
+   
+
+     
+
+       
+        public static Chart chart1; // main chart
+        public static Chart chart2; // sub chart
+
+        public static string clickedStock = ""; // target stock to be used
+        public static string clickedTitle = ""; // target group title to be used
+
+        public static string q; // mode of display (h : history etc.)
+
+        public static List<g.stock_data> ogl_data = new List<g.stock_data>(); // stock data holder
+        public static List<string> sl = new List<string>();   // selected single stock based on ranking
+        public static List<string> dl = new List<string>();   // selected stocks for display on chart1 (main chart)
+
+        public static string oGl_data_selection = "총점"; // group ranking calculation ciriterion
+
+        public static List<string> 보유종목 = new List<string>(); // stock holding
+
+        public static List<string> 호가종목 = new List<string>(); // stocks with bookbid on chart1 (main chart)
+        public static List<string> 관심종목 = new List<string>(); // stocks without bookbid which has higher ranking
+        public static List<string> 파일관심종목 = new List<string>(); // stocks saved in file name of "관심.txt"
+
+        public class group_data // group of stocks (sector wise)
         {
-            public string title;
-            public List<string> stocks = new List<string>();
+            public string title; // group title
+            public List<string> stocks = new List<string>(); // stocks in group
 
             public double 총점, 수평, 강평;
             public double 프누, 종누, 거분, 배합, 푀분, 배차, 가증, 분거, 상순, 저순;
-            public double average_price;
+
         }
-        public static List<g.group_data> oGL_data = new List<group_data>();
+        public static List<g.group_data> oGL_data = new List<group_data>(); // group data list
 
-    
-        public static List<string> KODEX4 = new List<string>();   // 클릭된 종목, Toggle로 선택 & 취소
+        public static List<string> KODEX4 = new List<string>();   // Kospi leverage inverse and Kosdaq leverage inverse : 4 stocks
 
-
-
-        public static List<string> 지수종목 = new List<string>();
-       
-
-
-        public class kospi_kosdaq_mixed
+        public class kospi_kosdaq_mixed // 
         {
             public List<string> stock = new List<string>();
             public List<double> weight = new List<double>();
         }
-        public static kospi_kosdaq_mixed kospi_mixed = new kospi_kosdaq_mixed();
-        public static kospi_kosdaq_mixed kosdaq_mixed = new kospi_kosdaq_mixed();
+        public static kospi_kosdaq_mixed kospi_mixed = new kospi_kosdaq_mixed(); // stocks for kospi index 
+        public static kospi_kosdaq_mixed kosdaq_mixed = new kospi_kosdaq_mixed(); // stocks for kosdaq index 
 
-        public static int stocks_per_marketeye = 200;
+        public static int stocks_per_marketeye = 200; // max. number of stocks to be downloaded at a time thru. API 
 
-        public static int ogl_data_next = 0;
-        public static int 예치금 = 0;
+        public static int ogl_data_next = 0; // sequential index among total stocks to be downloaded next time thru. API anong
+        public static int 예치금 = 0; // deposit money in 10 thousands Won
 
-        public static int 틱_array_size = 60; //
+        public static int 틱_array_size = 60; // 
         public static int 분_array_size = 15; // 
-       
 
         public static long 코스피매수배 = 0;
         public static long 코스피매도배 = 0;
@@ -207,7 +186,6 @@ namespace New_Tradegy.Library
         public static long 코스피연기순매수 = 0;
         public static double[] kospi_틱매수배 = new double[틱_array_size]; // 
         public static double[] kospi_틱매도배 = new double[틱_array_size]; // 
-
 
         public static long 코스닥매수배 = 0;
         public static long 코스닥매도배 = 0;
@@ -225,60 +203,46 @@ namespace New_Tradegy.Library
         public static float 상해종합지수 = 0;
         public static float 항생지수 = 0;
         public static float 니케이지수 = 0;
-
         public static float SP_지수 = 0;
         public static float Nasdaq_지수 = 0;
 
+        public static int rqwey_nCol = 10; // number of chart area columns in main chart
+        public static int rqwey_nRow = 3; // number of chart area rows in main chart
 
-        public static int rqwey_nCol = 10;
-        public static int rqwey_nRow = 3;
+        public static int MarketeyeCount = 0; // total count of API download from start of market
+        public static int MarketeyeDividerForEvalStock = 10; // evaluation of stocks after how many MarketeyeCount increases
+        public static int minuteSaveAll = 0; // to block repeated saving of minute data of all stocks (every hour saved)
+        public static int alamed_hhmm = 0; // to bock alarm repeated like "Taiwan market open"
 
+        public static int moving_reference_date = 0; // to check history data
 
+        public static int[] Npts = new int[2]; // total number of point from start Npts[0] to current Npts[1] used for test
 
-        public static int MarketeyeCount = 0;
-        public static int MarketeyeDividerForEvalStock = 10;
-        public static int minuteSaveAll = 0;
-        public static int alamed_hhmm = 0;
+        public static int[] SavedNpts = new int[2]; // when check history data and get back to the current data 
 
+        public static int EndNptsBeforeExtend; // shrink draw i.e to check recent 30 points data not whole data
+        public static bool EndNptsExtendedOrNot; // shrink draw i.e to check recent 30 points data not whole data
+        public static int NptsForShrinkDraw = 30; // how many points backwards used from the last minute
 
+        public static int nCol = 10;  // number of chart area columns in main chart
+        public static int nRow = 3; // number of chart area rows in main chart
 
+        public static int gid; // start index of stock to display in the rank
+        public static int Gid; // start index of group to display in the rank
+        public static int saved_Gid; // saved Gid for return from history display
+        public static int draw_selection = 1; // 1, normal, 2, days 3, Bollinder
+        public static int npts_fi_dwm = 40; // draw_selection = 2, how many days to display
 
-        public static int moving_reference_date = 0;
-
-        public static int[] Npts = new int[2];
-
-        public static int[] SavedNpts = new int[2];
-
-        public static int EndNptsBeforeExtend;
-        public static bool EndNptsExtendedOrNot;
-
-        public static int nCol = 10;
-        public static int nRow = 3;
-
-        public static int gid;
-        public static int Gid;
-        public static int saved_Gid;
-        public static int draw_selection = 1;
-        public static int npts_fi_dwm = 40;
-        public static int NptsForShrinkDraw = 30;
-        public static int npts_for_magenta_cyan_mark = 4;
-
-        public static double EPS = 0.0000001;
-        public static double HUNDRED = 100.0;
-        public static double THOUSAND = 1000.0;
-
-       
+        public static int npts_for_magenta_cyan_mark = 4; // magenta and cyan marking on price curve repetition criterion
 
 
-
+        // variables : chart1 control, stock selection, font etc
         public class variable
         {
-
             public string KeyString = "총점";
             public string SubKeyStr = "그순";
             public string old_key_string = "푀분";
 
-            
             public double 분당거래액이상_천만원; // in setting 10
             public double 호가거래액_백만원; // in setting 10
             public double 편차이상;  // in setting 1
@@ -288,74 +252,53 @@ namespace New_Tradegy.Library
 
             public int 푀플 = 1;
             public int 배플 = 1;
-
-
-
             public double 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
 
-          
             public int q_advance_lines = 15;
             public int Q_advance_lines = 150;
             public int r3_display_lines = 20;
 
             public float font = 16.0F;
-
-
         }
         public static variable v = new variable();
 
-
+        // kodex (price, program buy, others buy, retail buys)
+        // for kospi leverage inverse and kosdaq leverage and inverse
         public static double[,] kodex_magnifier = new double[4, 4];
-
-
-
-
 
         public class score
         {
             public List<List<double>> dev = new List<List<double>>();
             public List<List<double>> mkc = new List<List<double>>();
             public List<List<double>> avr = new List<List<double>>();
-
             public List<List<double>> 돌파 = new List<List<double>>();
             public List<List<double>> 눌림 = new List<List<double>>();
-
             public List<List<double>> 가연 = new List<List<double>>();
             public List<List<double>> 가분 = new List<List<double>>();
             public List<List<double>> 가틱 = new List<List<double>>();
             public List<List<double>> 가반 = new List<List<double>>();
             public List<List<double>> 가지 = new List<List<double>>();
             public List<List<double>> 가위 = new List<List<double>>();
-
             public List<List<double>> 수연 = new List<List<double>>();
             public List<List<double>> 수지 = new List<List<double>>();
             public List<List<double>> 수위 = new List<List<double>>();
-
             public List<List<double>> 강연 = new List<List<double>>();
             public List<List<double>> 강지 = new List<List<double>>();
             public List<List<double>> 강위 = new List<List<double>>();
-
             public List<List<double>> 푀분 = new List<List<double>>();
             public List<List<double>> 프틱 = new List<List<double>>();
             public List<List<double>> 프지 = new List<List<double>>();
             public List<List<double>> 프퍼 = new List<List<double>>();
             public List<List<double>> 프누 = new List<List<double>>();
-
-
             public List<List<double>> 거분 = new List<List<double>>();
             public List<List<double>> 거틱 = new List<List<double>>();
             public List<List<double>> 거일 = new List<List<double>>();
-
             public List<List<double>> 배차 = new List<List<double>>();
             public List<List<double>> 배반 = new List<List<double>>();
             public List<List<double>> 배합 = new List<List<double>>();
-
-
             public List<List<double>> 급락 = new List<List<double>>();
             public List<List<double>> 잔잔 = new List<List<double>>();
-
             public List<List<double>> 그룹 = new List<List<double>>();
-
 
             public double 푀분_wgt;
             public double 거분_wgt;
@@ -366,6 +309,10 @@ namespace New_Tradegy.Library
             public double 기타_wgt;
         }
         public static score s = new score();
+
+
+
+
 
 
 

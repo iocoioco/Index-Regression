@@ -1,4 +1,5 @@
 ﻿using New_Tradegy.Library;
+using New_Tradegy.Library.Trackers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,8 +36,8 @@ namespace New_Tradegy
 
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
             this.FormBorderStyle = FormBorderStyle.None;//윈도우테두리제거방법
-            this.Size = new Size(g.screenWidth / g.nCol - scrollbarWidth - 3, g.formSize.ch * 10 - 7);
-            this.Location = new Point(g.screenWidth / g.rqwey_nCol + 10, g.screenHeight / 3 + g.formSize.ch * 3 + 3); // + 30 deleted from width
+            this.Size = new Size(g.screenWidth / g.nCol - scrollbarWidth - 3, g.DgvCellHeight * 10 - 7);
+            this.Location = new Point(g.screenWidth / g.rqwey_nCol + 10, g.screenHeight / 3 + g.DgvCellHeight * 3 + 3); // + 30 deleted from width
 
 
             g.매매.dgv = new DataGridView();
@@ -52,7 +53,7 @@ namespace New_Tradegy
             g.매매.dgv.ReadOnly = true;
             g.매매.dgv.DefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
             g.매매.dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
-            g.매매.dgv.RowTemplate.Height = g.formSize.ch - 1;
+            g.매매.dgv.RowTemplate.Height = g.DgvCellHeight - 1;
             g.매매.dgv.ForeColor = Color.Black;
             g.매매.dgv.ScrollBars = ScrollBars.None;
             g.매매.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
@@ -144,7 +145,7 @@ namespace New_Tradegy
                     if (!g.connected)
                         return;
 
-                    if (e.RowIndex < g.m_mapOrder.Count)
+                    if (e.RowIndex < OrderTracker.OrderMap.Count)
                     {
                         DealManager.DealCancelRowIndex(e.RowIndex); // work_CellMouseClick
                         mc.Sound("Keys", "cancel");

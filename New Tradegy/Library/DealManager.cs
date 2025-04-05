@@ -13,7 +13,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading;
 using CPSYSDIBLib;
 using System.Threading.Tasks;
-
+using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Models;
 namespace New_Tradegy.Library
 {
     public class DealManager
@@ -252,7 +253,7 @@ namespace New_Tradegy.Library
 
                 for (int i = 0; i < int.Parse(_cptd5339.GetHeaderValue(5).ToString()); i++)
                 {
-                    g.OrderItem item = new g.OrderItem();
+                    OrderItem item = new OrderItem();
                     item.stock = (string)_cptd5339.GetDataValue(4, i); // 종목명
                     item.m_ordKey = (int)_cptd5339.GetDataValue(1, i); // 주문번호
                     item.m_ordOrgKey = (int)_cptd5339.GetDataValue(2, i);
@@ -271,7 +272,9 @@ namespace New_Tradegy.Library
 
                     item.m_sHogaFlag = _cptd5339.GetDataValue(21, i); // 주문호가구분코드내용
 
-                    g.m_mapOrder[item.m_ordKey] = item;
+                    OrderTracker.Add(item);
+
+
                 }
             }
         }
@@ -432,7 +435,16 @@ namespace New_Tradegy.Library
         }
 
         //주문관리(취소 주문)
-        public static void DealCancelRowIndex(int rowindex) // tr(1)
+        public static void DealCancelRowIndex(int rowindex)
+        {
+            var data = OrderTracker.GetOrderByRowIndex(rowindex);
+            if (data == null)
+                return;
+
+            DealCancelOrder(data);
+        }
+
+        public static void DealCancelOrder(OrderItem data)
         {
             if (!g.connected)
                 return;
@@ -440,49 +452,33 @@ namespace New_Tradegy.Library
             TradeInit();
             if (_checkedTradeInit == false)
             {
-                MessageBox.Show("Trade initialization failed.", "Error", MessageBoxButtons.OK, 
-                    MessageBoxIcon.Error);
-                return;
-            }
-
-            List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
-            if (keyColl == null || rowindex >= keyColl.Count)
-            {
-                MessageBox.Show("Invalid rowindex or keyColl is null.", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            g.OrderItem data = (g.OrderItem)g.m_mapOrder[keyColl[rowindex]];
-            if (data == null)
-            {
-                MessageBox.Show("Order data is null.", "Error", MessageBoxButtons.OK, 
+                MessageBox.Show("Trade initialization failed.", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
             }
 
             int 원주문번호 = data.m_ordKey;
             string stockcode = _cpstockcode.NameToCode(data.stock);
+
             if (string.IsNullOrEmpty(stockcode))
             {
-                MessageBox.Show("Invalid stock code.", "Error", MessageBoxButtons.OK, 
+                MessageBox.Show("Invalid stock code.", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
             }
 
             _cptd0314 = new CPTRADELib.CpTd0314();
 
-            // 미체결 주문번호입력에 따른 선택적 취소
-            _cptd0314.SetInputValue(1, 원주문번호);// 원주문번호 
-            _cptd0314.SetInputValue(2, g.Account);// 계좌번호 
-            _cptd0314.SetInputValue(3, "01"); // 상품관리구분코드
-            _cptd0314.SetInputValue(4, stockcode);// 종목코드
-            _cptd0314.SetInputValue(5, 0);// 0 : 전체 취소, 숫자입력 : 입력숫자만큼 취소
+            _cptd0314.SetInputValue(1, 원주문번호);     // 원주문번호
+            _cptd0314.SetInputValue(2, g.Account);     // 계좌번호
+            _cptd0314.SetInputValue(3, "01");          // 상품관리구분코드
+            _cptd0314.SetInputValue(4, stockcode);     // 종목코드
+            _cptd0314.SetInputValue(5, 0);             // 0: 전체 취소
 
             int result = _cptd0314.BlockRequest();
             if (result != 0)
             {
-                MessageBox.Show($"Order cancellation failed with result code: {result}", 
+                MessageBox.Show($"Order cancellation failed with result code: {result}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -498,17 +494,11 @@ namespace New_Tradegy.Library
             if (_checkedTradeInit == false)
                 return;
 
-            if (g.m_mapOrder == null)
-            {
-                // Handle the error, log it, or initialize it as needed.
-                return;
-            }
+            var keyList = OrderTracker.OrderMap.Keys.ToList();
 
-            List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
-
-            foreach (DictionaryEntry de in g.m_mapOrder) // 에러 메세지 20231122, 이유는 알 수 없는 데 ...
+            foreach (var kvp in OrderTracker.OrderMap)
             {
-                g.OrderItem data = de.Value as g.OrderItem;
+                var data = kvp.Value;
 
                 if (data.stock == stock)
                 {

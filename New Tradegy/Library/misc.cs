@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library
 {
@@ -173,7 +174,7 @@ namespace New_Tradegy.Library
         // not used
         public static void marketeye_record_변곡(g.stock_data o)
         {
-            if (o.통계.프분_dev > g.EPS)
+            if (MathUtils.IsSafeToDivide(o.통계.프분_dev))
             {
                 if (Math.Abs(o.틱프로천[0]) > 0)
                 {

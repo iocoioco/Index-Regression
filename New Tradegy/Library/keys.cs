@@ -14,6 +14,8 @@ using New_Tradegy.Library;
 using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.g.stock_data;
 using System.Collections;
+using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Trackers;
 
 namespace New_Tradegy.Library
 {
@@ -82,11 +84,22 @@ namespace New_Tradegy.Library
                     else
                     {
                         mc.Sound("Keys", "cancel");
-                        List<int> keyColl = g.m_mapOrder.Keys.Cast<int>().ToList();
 
-                        for (int i = g.m_mapOrder.Count - 1; i >= 0; i--)
+                        // The following code replaced by the unblocked code
+                        //List<int> keyColl = OrderTracker.OrderMap.Keys.Cast<int>().ToList();
+
+                        //for (int i = OrderTracker.OrderMap.Count - 1; i >= 0; i--)
+                        //{
+                        //    DealManager.DealCancelRowIndex(i); // Escape Key
+                        //}
+
+
+
+                        for (int i = OrderTracker.OrderMap.Count - 1; i >= 0; i--)
                         {
-                            DealManager.DealCancelRowIndex(i); // Escape Key
+                            var data = OrderTracker.GetOrderByRowIndex(i);
+                            if (data != null)
+                                DealManager.DealCancelOrder(data);
                         }
                     }
                     break;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using New_Tradegy.Library.Utils;
 
 /* 배점 : 대형주 배차 조건 충족시, 수일 과다 움직임 높게(dev 큰 종목 가능성 높음) + 배차
  *  1차 상승시 접근, 2차 이상 자제
@@ -166,14 +167,15 @@ namespace New_Tradegy.Library
             double sending_value;
 
             // prep 에서 -> 통계.프분_dev, 통계.프분_avr 계산하였으나 푀분에 적용함.
-            if (o.통계.프분_dev > g.EPS)
+            // 배합, 천만원
+            if (MathUtils.IsSafeToDivide(o.통계.프분_dev))
             {
                 sending_value = (o.분프로천[0] + o.분외인천[0]) / (o.통계.프분_dev);
-
-                //post_score_interpolation(g.s.푀분, sending_value, ref o.점수.푀분); // 프분, 천만원
                 o.점수.푀분 = sending_value;
                 if (o.분프로천[0] > 5 && o.분외인천[0] > 5)
+                {
                     o.점수.푀분 *= 1.5;
+                }
             }
             else
             {
@@ -195,7 +197,7 @@ namespace New_Tradegy.Library
             //o.점수.거분 *= g.s.거분_wgt;
 
 
-            if (o.통계.배차_dev > g.EPS)
+            if (MathUtils.IsSafeToDivide(o.통계.배차_dev))
             {
                 sending_value = (o.분배수차[0] - o.통계.배차_avr) / o.통계.배차_dev;
                 //post_score_interpolation(g.s.배차, sending_value, ref o.점수.배차); // 배차, 천만원
@@ -207,10 +209,9 @@ namespace New_Tradegy.Library
             }
             o.점수.배차 *= g.s.배차_wgt;
 
-            if (o.통계.배합_dev > g.EPS)
+            if (MathUtils.IsSafeToDivide(o.통계.배합_dev))
             {
                 sending_value = (o.분배수합[0] - o.통계.배합_avr) / o.통계.배합_dev;
-                //post_score_interpolation(g.s.배합, sending_value, ref o.점수.배합); // 배합, 천만원
                 o.점수.배합 = sending_value;
             }
             else
@@ -1713,14 +1714,17 @@ namespace New_Tradegy.Library
             else
             {
                 double divider = s[position][0] - s[position - 1][0];
-                if (divider < g.EPS)
-                    획득점수 = 0;
-                else
+
+                if (MathUtils.IsSafeToDivide(divider))
                 {
                     l_ratio = (s[position][0] - 성적) / divider;
                     u_ratio = (성적 - s[position - 1][0]) / divider;
 
                     획득점수 = 배점 * (s[position - 1][1] * l_ratio + s[position][1] * u_ratio);
+                }
+                else
+                {
+                    획득점수 = 0;
                 }
             }
         }
@@ -1827,6 +1831,46 @@ namespace New_Tradegy.Library
                 {
                     if (o.틱의시간[i] == 0) // no data for the tick, i.e. not downloaded yet
                     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         SelectedTickSequence = i - 1;
                         break;
                     }

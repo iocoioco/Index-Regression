@@ -96,11 +96,11 @@ namespace New_Tradegy.Library
             formSize.Width = g.screenWidth / 11;      // main form column => 11 ea 1920 / 11 = 174
             if (rows == 5)
             {
-                formSize.Height = g.formSize.ch * 12; // height of a row * 12 rows for 5 Hoga
+                formSize.Height = g.DgvCellHeight * 12; // height of a row * 12 rows for 5 Hoga
             }
             else
             {
-                formSize.Height = g.formSize.ch * 22; // height of a row * 22 rows for 10 Hoga
+                formSize.Height = g.DgvCellHeight * 22; // height of a row * 22 rows for 10 Hoga
             }
 
             // Column
@@ -133,7 +133,7 @@ namespace New_Tradegy.Library
             int yShift = 0;
             if (rows == 10 && rowId == 2)
             {
-                yShift = g.formSize.ch * 4;
+                yShift = g.DgvCellHeight * 4;
             }
 
             formLocation = new Point(g.screenWidth / g.rqwey_nCol * colId + xShift, g.screenHeight / g.rqwey_nRow * rowId + yShift);
@@ -143,7 +143,7 @@ namespace New_Tradegy.Library
         // by Chat Gpt 20250315
         public static bool HogaRemove(string stock)
         {
-            if (g.jpjds.TryGetValue(stock, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
+            if (g.BookBidInstances.TryGetValue(stock, out object a) && a is DSCBO1Lib.StockJpbid _stockjpbid)
             {
                 // Unsubscribe from the stock data feed
                 _stockjpbid.Unsubscribe();
@@ -158,7 +158,7 @@ namespace New_Tradegy.Library
                 }
 
                 // Remove the stock from the dictionary safely
-                if (g.jpjds.TryRemove(stock, out object removedValue))
+                if (g.BookBidInstances.TryRemove(stock, out object removedValue))
                 {
                     // If the removed object implements IDisposable, dispose of it
                     if (removedValue is IDisposable disposable)

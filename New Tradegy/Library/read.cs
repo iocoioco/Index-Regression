@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using System.Diagnostics;                   // 필요함.
-
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library
 {
@@ -406,17 +406,14 @@ namespace New_Tradegy.Library
         // 업종, 10억이상, 상관, 상관, 통계
         public static void gen_ogldata_oGLdata()
         {
-            // double td = 0;
-            // List<string> total_stock_list = new List<string>();
+           
             List<string> tgl_title = new List<string>();
             List<List<string>> tgl = new List<List<string>>();
-            // List<string> 상관_group_total_stock_list = new List<string>();
-            List<List<string>> Gl = new List<List<string>>();
-            List<List<string>> GL = new List<List<string>>();
+           
 
             if (!g.shortform)
             {
-                StockManager.AddIfMissing(rd.read_그룹_네이버_업종(Gl, GL)); // replaces total_stock_list = ...
+                StockManager.AddIfMissing(rd.read_그룹_네이버_업종()); // replaces total_stock_list = ...
             }
 
             rd.read_상관(tgl_title, tgl, StockManager.TotalStockList); // duration 1.3 seconds
@@ -1157,15 +1154,19 @@ namespace New_Tradegy.Library
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        if (g.kodex_magnifier[i, j] < g.EPS)
-                            g.kodex_magnifier[i, j] = 1.0;
-
-                        str += g.kodex_magnifier[i, j];
-                        if (j < 3)
-                            str += "\t";
+                        if (MathUtils.IsSafeToDivide(g.kodex_magnifier[i, j]))
+                        {
+                            str += g.kodex_magnifier[i, j];
+                            if (j < 3)
+                                str += "\t";
+                            else
+                            {
+                                str += "\n";
+                            }
+                        }
                         else
                         {
-                            str += "\n";
+                            g.kodex_magnifier[i, j] = 1.0;
                         }
                     }
                 }
@@ -1801,7 +1802,8 @@ namespace New_Tradegy.Library
             return Convert.ToInt32(words[4]);
         }
 
-        public static List<string> read_그룹_네이버_업종(List<List<string>> Gl, List<List<string>> GL)
+      
+        public static List<string> read_그룹_네이버_업종_old(List<List<string>> Gl, List<List<string>> GL)
         {
             _cpstockcode = new CPUTILLib.CpStockCode();
 
@@ -1869,6 +1871,7 @@ namespace New_Tradegy.Library
             return uniqueItemsList;
         }
 
+
         public static List<string> read_그룹_네이버_업종() // this is for single list of stocks in 그룹_네이버_업종
         {
             _cpstockcode = new CPUTILLib.CpStockCode();
@@ -1880,6 +1883,9 @@ namespace New_Tradegy.Library
             {
                 return gl_list;
             }
+
+            List<string> 제외 = new List<string>();
+            제외 = read_제외(); // read_그룹_네이버_업종
 
             string[] grlines = File.ReadAllLines(filepath, Encoding.Default);
 
@@ -1905,6 +1911,9 @@ namespace New_Tradegy.Library
                     if (marketKind == 'S' || marketKind == 'D')
                     { }
                     else
+                        continue;
+
+                    if (제외.Contains(stock))
                         continue;
 
                     gl_list.Add(stock); // for single

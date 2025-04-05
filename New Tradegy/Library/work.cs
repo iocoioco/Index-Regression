@@ -405,62 +405,7 @@ namespace New_Tradegy.Library
             if (o.code.Length != 7 || (o.전일종가 = rd.read_전일종가(stock)) < 1000) // 전일종가 1,000 이상 
                 return false;
 
-            //return true; // If you need to continue processing, otherwise remove this line.
-
-
-
-
-            //if (rd.read_단기과열(stock))
-            //{
-            //    return false;
-            //}
-
-            //double 일간변동평균 = 0, 일간변동편차 = 0;
-            //int 일평균거래액 = 0, 일최저거래액 = 0, 일최대거래액 = 0;
-            //ulong 일평균거래량 = 0;
-            //string 일간변동평균편차 = "";
-
-            //int days = 20;
-            //일간변동평균편차 = calcurate_종목일중변동평균편차(stock, days, ref 일간변동평균, ref 일간변동편차,
-            //    ref 일평균거래액, ref 일최저거래액, ref 일최대거래액, ref 일평균거래량);
-
-            //if (일최대거래액 < 30)
-            //{
-            //    return false;
-            //}
-            //if (일간변동평균편차 == "")
-            //{
-            //    return false;
-            //}
-
-
-            
-
-            //var o = new g.stock_data();
-            //o.일간변동평균 = 일간변동평균;
-            //o.일간변동편차 = 일간변동편차;
-            //o.일평균거래액 = 일평균거래액;
-            //o.일최저거래액 = 일최저거래액;
-            //o.일최대거래액 = 일최대거래액;
-            //o.일평균거래량 = 일평균거래량;
-            //o.일간변동평균편차 = 일간변동평균편차;
-
-            //o.stock = stock;
-            //_cpstockcode = new CPUTILLib.CpStockCode();
-            //o.code = _cpstockcode.NameToCode(stock);
-            //if (o.code.Length != 7)
-            //{
-            //    return false; //루미마이크로, 메디포럼제약 코드 못 찾음, 합병된 것으로 추정
-            //}
-                
-
-            //o.전일종가 = rd.read_전일종가(stock);
-            //g.전일종가이상 = 1000; // also defined in glbl
-            //if (o.전일종가 < g.전일종가이상)
-            //{
-            //    return false;
-            //}
-                
+           
 
 
 

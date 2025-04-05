@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy
 {
@@ -399,7 +400,7 @@ namespace New_Tradegy
                 int before_time_6int = o.x[comparison_row, 0];
                 double totalSeconds = mc.total_Seconds(before_time_6int, HHmmss);
                 double multiple_factor;
-                if (totalSeconds > g.EPS && o.일평균거래량 > 100)
+                if (MathUtils.IsSafeToDivide(totalSeconds) && o.일평균거래량 > 100)
                 {
                     multiple_factor = 60.0 / totalSeconds * 380.0 / o.일평균거래량 * 10.0;
 
@@ -497,7 +498,7 @@ namespace New_Tradegy
                 totalSeconds = mc.total_Seconds(o.틱의시간[0], HHmmss); // second can be zero, oops
                 double 틱매수체결배수 = 0.0;
                 double 틱매도체결배수 = 0.0;
-                if (totalSeconds > g.EPS)
+                if (MathUtils.IsSafeToDivide(totalSeconds))
                 {
                     multiple_factor = 0.0;
                     if (o.일평균거래량 > 100)

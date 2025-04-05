@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library
 {
@@ -105,7 +106,9 @@ namespace New_Tradegy.Library
                                 program_money_per_minute = (t.x[j, 4] - t.x[j - 1, 4]) * money_factor;
                                 foreign_money_per_minute = (t.x[j, 5] - t.x[j - 1, 5]) * money_factor;
                                 dealt_money_per_minute = (t.x[j, 7] - t.x[j - 1, 7]) * money_factor;
-                                if (dealt_money_per_minute > g.EPS)
+
+
+                                if (MathUtils.IsSafeToDivide(dealt_money_per_minute))
                                 {
                                     //percentage_program_and_foreign_per_minute = (double)(program_money_per_minute + foreign_money_per_minute) /
                                     //    dealt_money_per_minute * 100.0;
@@ -245,7 +248,7 @@ namespace New_Tradegy.Library
                                 program_money_per_minute = (t.x[j, 4] - t.x[j - 1, 4]) * money_factor;
                                 foreign_money_per_minute = (t.x[j, 5] - t.x[j - 1, 5]) * money_factor;
                                 dealt_money_per_minute = (t.x[j, 7] - t.x[j - 1, 7]) * money_factor;
-                                if (dealt_money_per_minute > g.EPS)
+                                if (MathUtils.IsSafeToDivide(dealt_money_per_minute))
                                 {
                                     //percentage_program_and_foreign_per_minute = (double)(program_money_per_minute + foreign_money_per_minute) /
                                     //    dealt_money_per_minute * 100.0;
@@ -418,7 +421,7 @@ namespace New_Tradegy.Library
                             program_money_per_minute = (x[j, 4] - x[j - 1, 4]) * money_factor;
                             foreign_money_per_minute = (x[j, 5] - x[j - 1, 5]) * money_factor;
                             dealt_money_per_minute = (x[j, 7] - x[j - 1, 7]) * money_factor;
-                            if (dealt_money_per_minute > g.EPS)
+                            if (MathUtils.IsSafeToDivide(dealt_money_per_minute))
                             {
                                 //percentage_program_and_foreign_per_minute = (double)(program_money_per_minute + foreign_money_per_minute) /
                                 //    dealt_money_per_minute * 100.0;
@@ -531,7 +534,7 @@ namespace New_Tradegy.Library
                             program_money_per_minute = (o.x[j, 4] - o.x[j - 1, 4]) * money_factor;
                             foreign_money_per_minute = (o.x[j, 5] - o.x[j - 1, 5]) * money_factor;
                             dealt_money_per_minute = (o.x[j, 7] - o.x[j - 1, 7]) * money_factor;
-                            if (dealt_money_per_minute > g.EPS)
+                            if (MathUtils.IsSafeToDivide(dealt_money_per_minute))
                             {
                                 //percentage_program_and_foreign_per_minute = (double)(program_money_per_minute + foreign_money_per_minute) /
                                 //    dealt_money_per_minute * 100.0;
