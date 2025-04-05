@@ -26,8 +26,8 @@ namespace New_Tradegy
             this.Text = "Form_지수_조정" + " (" + _stock + ")";
 
 
-            int w = g.chart1.Bounds.Width / 4;
-            int h = g.chart1.Bounds.Height / 4;
+            int w = g.ChartManager.Chart1.Bounds.Width / 4;
+            int h = g.ChartManager.Chart1.Bounds.Height / 4;
 
             int id = 0;
             for (int i = 0; i < g.KODEX4.Count; i++)
@@ -115,8 +115,8 @@ namespace New_Tradegy
                 int index = wk.return_index_of_ogldata(g.clickedStock);
                 g.stock_data o = g.ogl_data[index];
 
-                wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock); // KODEX
-                wk.deleteChartAreaAnnotation(g.chart2, g.clickedStock); // KODEX
+                wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, g.clickedStock); // KODEX
+                wk.deleteChartAreaAnnotation(g.ChartManager.Chart2, g.clickedStock); // KODEX
                 mm.ManageChart1(); // single KODEX, HScrollBar_Scroll
                 mm.ManageChart2(); // signle KODEX, HScrollBar_Scroll
 

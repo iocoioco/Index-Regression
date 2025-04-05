@@ -380,7 +380,7 @@ namespace New_Tradegy.Library
             if (action[0] != ' ')
             {
                 if (action[0] == 'm' || action[3] == 'B')
-                    mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
+                    mm.ClearChartAreaAndAnnotations(g.ChartManager.Chart1, g.clickedStock);
                 if (action[0] == 's' || action[0] == 'B')
                     mm.ManageChart2(); // key multi for test
             }
@@ -431,8 +431,8 @@ namespace New_Tradegy.Library
                             form.Dispose();
                         }
 
-                        int w = g.chart1.Bounds.Width;
-                        int h = g.chart1.Bounds.Height;
+                        int w = g.ChartManager.Chart1.Bounds.Width;
+                        int h = g.ChartManager.Chart1.Bounds.Height;
 
                         Form Form_지수_조정_ = new Form_지수_조정(g.clickedStock);
 
@@ -487,7 +487,7 @@ namespace New_Tradegy.Library
       
                         if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2])
                         {
-                            wk.deleteChartAreaAnnotation(g.chart1, g.clickedStock);
+                            wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, g.clickedStock);
                             if (g.clickedStock == g.KODEX4[0]) mm.fixedStocks[0] = g.KODEX4[1];
                             if (g.clickedStock == g.KODEX4[1]) mm.fixedStocks[0] = g.KODEX4[0];
                             if (g.clickedStock == g.KODEX4[2]) mm.fixedStocks[1] = g.KODEX4[3];
@@ -743,7 +743,7 @@ namespace New_Tradegy.Library
             if (action[0] != ' ')
             {
                 if (action[0] == 'm' || action[0] == 'B')
-                    mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
+                    mm.ClearChartAreaAndAnnotations(g.ChartManager.Chart1, g.clickedStock);
                 if (action[0] == 's' || action[0] == 'B')
                     mm.ManageChart2(); // key multi for test
             }

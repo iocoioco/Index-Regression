@@ -231,7 +231,7 @@ namespace New_Tradegy
                         {
                             foreach (string stockName in g.관심종목)
                             {
-                                wk.deleteChartAreaAnnotation(g.chart1, stockName);
+                                wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, stockName);
                             }
                             g.관심종목.Clear();
                             foreach (var stock1 in g.oGL_data[i].stocks)
@@ -277,7 +277,7 @@ namespace New_Tradegy
                         {
                             foreach (string stockName in g.관심종목)
                             {
-                                wk.deleteChartAreaAnnotation(g.chart1, stockName);
+                                wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, stockName);
                             }
                             g.관심종목.Clear();
                             foreach (var stock2 in GL[i])

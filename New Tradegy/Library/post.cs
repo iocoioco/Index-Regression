@@ -1730,51 +1730,7 @@ namespace New_Tradegy.Library
                 }
             }
         }
-        // not used
-        // 특정조건을 만족하면 관심에 추가
-        //public static void marketeye_received_틱프로천_ebb_tide(g.stock_data o)
-        //{
-        //    if (o.stock.Contains("혼합") || o.stock.Contains("KODEX"))
-        //        return;
-
-        //    if (g.add_interest) // g.add_insterest default -> false in glbl.c
-        //    {
-        //        Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-        //        if (Form_보조_차트 != null)
-        //        {
-        //            if (!ev.eval_inclusion(o) || o.틱프로천[0] <= 0) // not included or o.틱프로천[0] <= 0, return
-        //                return;
-
-        //            bool add_stock = false;
-        //            for (int i = 1; i < MarketData.TickArraySize; i++)
-        //            {
-        //                if (o.틱프로천[i] < 0)
-        //                {
-        //                    add_stock = true;
-        //                    break;
-        //                }
-        //            }
-
-        //            if (add_stock)
-        //                Form_보조_차트.Form_보조_차트_DRAW(o.stock);
-        //        }
-
-        //        // bool add = false;
-
-        //        //if (o.틱프로천[0] + o.틱외인천[0] > 100)
-        //        //    add = true;
-
-        //        //if (o.분프로천[0] + o.분외인천[0] > 300)
-        //        //    add = true;
-
-        //        //if (o.분거래천[0] > 1000)
-        //        //    add = true;
-
-        //        //if (o.pass.pass_level == 2 && o.분배수차[0] > 100 && o.분거래천[0] > 50)
-        //        //    add = true;
-        //    }
-        //}
-
+       
         public static void post_minute(g.stock_data o, int check_row) // 
         {
             if (o.nrow < 2) // not started download

@@ -48,6 +48,7 @@ namespace New_Tradegy.Library
             int w0 = 61;
             int w1 = 50;
             int w2 = 61;
+
             int CellHeight = 27;
             Dtb = new DataTable();
 

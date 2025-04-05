@@ -190,6 +190,8 @@
     <Compile Include="Library\Models\MarketData.cs" />
     <Compile Include="Library\Models\OrderItem.cs" />
     <Compile Include="Library\Models\StockData.cs" />
+    <Compile Include="Library\Trackers\ChartHandler.cs" />
+    <Compile Include="Library\Trackers\ChartManager.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
     <Compile Include="Library\Order_processor.cs" />
     <Compile Include="Library\Real Intensity Calculation.cs" />

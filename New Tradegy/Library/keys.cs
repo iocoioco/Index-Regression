@@ -837,7 +837,7 @@ namespace New_Tradegy.Library
 
             
             if (action[0] != ' ')
-                mm.ClearChartAreaAndAnnotations(g.chart1, g.clickedStock);
+                mm.ClearChartAreaAndAnnotations(g.ChartManager.Chart1, g.clickedStock);
             if (action[1] != ' ')
                 ps.post_test();
             if (action[2] != ' ')

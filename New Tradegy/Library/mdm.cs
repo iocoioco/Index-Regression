@@ -122,11 +122,11 @@ class mm
                     Dgv.Location = new Point((g.screenWidth / g.nCol) + 10, (g.screenHeight / g.nRow) * 2 - 4 * 2);
             }
         }
-        g.chart1.Invalidate();
+        g.ChartManager.Chart1.Invalidate();
 
-        int areasCount = g.chart1.ChartAreas.Count;
-        int annotationsCount = g.chart1.Annotations.Count;
-        int seriesCount = g.chart1.Series.Count;
+        int areasCount = g.ChartManager.Chart1.ChartAreas.Count;
+        int annotationsCount = g.ChartManager.Chart1.Annotations.Count;
+        int seriesCount = g.ChartManager.Chart1.Series.Count;
     }
 
     // Use SuspendLayout and ResumeLayout to batch updates on the chart.
@@ -232,30 +232,16 @@ class mm
 
     public static void ManageChart1()
     {
-        // First, handle the fixed elements
 
-        //int index = wk.return_index_of_ogldata("KODEX 레버리지");
-        //g.stock_data o = g.ogl_data[index];
-        //o.nrow = 7;
 
-        //index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
-        //o = g.ogl_data[index];
-        //o.nrow = 7;
-
-        IndexStocks(g.chart1);
+        IndexStocks(g.ChartManager.Chart1);
 
 
         HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
 
 
 
-        //g.dl.Clear();
-        //g.dl.Add("삼성전자");
-        //index = wk.return_index_of_ogldata("삼성전자");
-        //o = g.ogl_data[index];
 
-        //o.nrow = 11;
-        //ps.post(o);
 
 
 
@@ -286,17 +272,17 @@ class mm
             if (index < 0) return;
             g.stock_data o = g.ogl_data[index];
             // chart area exists ? ; if not, create it
-            if (ChartAreaExists(g.chart1, stock) && g.MarketeyeCount % g.MarketeyeDividerForEvalStock != 1 && g.connected && !g.test && !o.ShrinkDraw)
+            if (ChartAreaExists(g.ChartManager.Chart1, stock) && g.MarketeyeCount % g.MarketeyeDividerForEvalStock != 1 && g.connected && !g.test && !o.ShrinkDraw)
             {
-                UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
+                UpdateSeries(g.ChartManager.Chart1, stock, g.nRow, g.nCol);
             }
             else
             {
-                AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
+                AreaStocks(g.ChartManager.Chart1, stock, g.nRow, g.nCol); // location 
             }
 
             // Relocate chart area and dataGridView for hogaCount stocks
-            RelocateChartDgv(g.chart1, stock, currentRow, currentCol);
+            RelocateChartDgv(g.ChartManager.Chart1, stock, currentRow, currentCol);
 
             currentRow++;
             if (currentRow >= g.nRow)
@@ -310,9 +296,9 @@ class mm
             }
         }
 
-        int areasCount = g.chart1.ChartAreas.Count;
-        int annotationsCount = g.chart1.Annotations.Count;
-        int seriesCount = g.chart1.Series.Count;
+        int areasCount = g.ChartManager.Chart1.ChartAreas.Count;
+        int annotationsCount = g.ChartManager.Chart1.Annotations.Count;
+        int seriesCount = g.ChartManager.Chart1.Series.Count;
 
         // Handle the remaining chart areas without forms
         for (int i = 0; i < g.dl.Count; i++)
@@ -335,34 +321,28 @@ class mm
 
                 
 
-                if (ChartAreaExists(g.chart1, stock) && g.connected && !g.test && !o.ShrinkDraw)
+                if (ChartAreaExists(g.ChartManager.Chart1, stock) && g.connected && !g.test && !o.ShrinkDraw)
                 {
-                    //if (isTotalPointsEqualSeriesPoints(g.chart1, stock))
-                    //{
-                    UpdateSeries(g.chart1, stock, g.nRow, g.nCol);
-                    //}
-                    //else
-                    //{
-                    //    ClearChartAreaAndAnnotations(g.chart1, stock);
-                    //    AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
-                    //}
+    
+                    UpdateSeries(g.ChartManager.Chart1, stock, g.nRow, g.nCol);
+        
                 }
                 else
                 {
-                    AreaStocks(g.chart1, stock, g.nRow, g.nCol); // location 
+                    AreaStocks(g.ChartManager.Chart1, stock, g.nRow, g.nCol); // location 
                 }
 
-                RelocateChart1Area(g.chart1, stock, i % g.nRow, i / g.nRow + 2);
+                RelocateChart1Area(g.ChartManager.Chart1, stock, i % g.nRow, i / g.nRow + 2);
             }
         }
-        ClearUnusedChartAreasAndAnnotations(g.chart1, g.dl);
-        ClearUnusedDataGridViews(g.chart1, stocksWithBid);
+        ClearUnusedChartAreasAndAnnotations(g.ChartManager.Chart1, g.dl);
+        ClearUnusedDataGridViews(g.ChartManager.Chart1, stocksWithBid);
 
-        g.chart1.Invalidate();
+        g.ChartManager.Chart1.Invalidate();
 
-        areasCount = g.chart1.ChartAreas.Count;
-        annotationsCount = g.chart1.Annotations.Count;
-        seriesCount = g.chart1.Series.Count;
+        areasCount = g.ChartManager.Chart1.ChartAreas.Count;
+        annotationsCount = g.ChartManager.Chart1.Annotations.Count;
+        seriesCount = g.ChartManager.Chart1.Series.Count;
     }
 
     public static void SeriesKodex(Chart chart, string stockName)
@@ -759,7 +739,7 @@ class mm
         chart.ChartAreas[area].AxisX.Interval = TotalNumberPoint - 1;
         chart.ChartAreas[area].AxisX.IntervalOffset = 1;
 
-        if (chart == g.chart1)
+        if (chart == g.ChartManager.Chart1)
         {
             float cellWidth = 100 / g.nCol;
             chart.ChartAreas[area].Position = stockName == "KODEX 레버리지" ?
@@ -1094,7 +1074,7 @@ class mm
         location[0] = 0; // X-coordinate (left edge)
         location[1] = 0; // Y-coordinate (top edge)
 
-        if (chart == g.chart1)
+        if (chart == g.ChartManager.Chart1)
             AddRectangleAnnotationWithText(chart, annotation, new RectangleF(location[0], location[1], // 0, 0
                 100 / nCol, (int)annotationHeight + 2), area, Color.Black, BackColor);
         else
@@ -1502,7 +1482,7 @@ class mm
 
     public static void ClearUnusedDataGridViews(Chart chart, List<string> stockswithbid)
     {
-        if (chart == g.chart1) // ClearUnusedDataGridViews
+        if (chart == g.ChartManager.Chart1) // ClearUnusedDataGridViews
         {
             stockswithbid.Add(fixedStocks[0]);
             stockswithbid.Add(fixedStocks[1]);
@@ -1580,7 +1560,7 @@ class mm
             .Select(ca => ca.Name)
             .ToList())
         {
-            if (stockName.Contains("KODEX") && chart == g.chart1)
+            if (stockName.Contains("KODEX") && chart == g.ChartManager.Chart1)
             {
                 continue;
             }

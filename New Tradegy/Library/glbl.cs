@@ -7,15 +7,19 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Trackers;
 namespace New_Tradegy.Library
 {
     public class g
     {
+        public static ChartManager ChartManager;
+
         // AppState
         public static bool test; // test or real
         public static int date; // current day for display
 
         // ScreenConfig
+       
         public static int screenHeight; // window height
         public static int screenWidth; // window width
 
@@ -24,6 +28,7 @@ namespace New_Tradegy.Library
         public static bool add_interest = false; // add stock or not to the 관심종목 when stocks active
         public static bool confirm_sell = false; // sell by click or modal display to confirm sell condition
         public static int 일회거래액 = 0; // amount of deal money in 10 thousands Won
+        
 
         public static int deal_profit = 0; // profit for the day
 
@@ -33,25 +38,27 @@ namespace New_Tradegy.Library
         public static double 억원 = 100000000.0; // unit for division
         public static double HUNDRED = 100.0;
         public static double THOUSAND = 1000.0;
-       
+        public static int DgvCellHeight = 28;
 
         // InputControl
         public static bool shortform; // shortform includes less number of stocks for test purpose 
 
 
         // ChartManager
+        public static Chart chart1; // main chart
+        public static Chart chart2; // sub chart
         public static bool draw_history_forwards = false; // move date forwards or backwards for history analysis
 
         // DgvControl
-        public static int DgvCellHeight = 28;
+        
         public class dgvClass
         {
-            public string stock;
-            public string code;
-            public int index;
+            //public string stock;
+            //public string code;
+            //public int index;
             public DataTable dtb;
             public DataGridView dgv;
-            public int[,] itb = new int[21, 3];
+            //public int[,] itb = new int[21, 3];
         }
         public static dgvClass 매매 = new dgvClass();
         public static dgvClass 그룹 = new dgvClass();
@@ -127,8 +134,7 @@ namespace New_Tradegy.Library
      
 
        
-        public static Chart chart1; // main chart
-        public static Chart chart2; // sub chart
+
 
         public static string clickedStock = ""; // target stock to be used
         public static string clickedTitle = ""; // target group title to be used
@@ -279,39 +285,6 @@ namespace New_Tradegy.Library
         public static score s = new score();
 
 
-
-        //public static int MarketData.TickArraySize = 60; // 
-        //public static int MarketData.MinuteArraySize = 15; // 
-
-        //public static long 코스피매수배 = 0;
-        //public static long 코스피매도배 = 0;
-        //public static long 코스피프외순매수 = 0;
-        //public static long 코스피개인순매수 = 0;
-        //public static long 코스피외인순매수 = 0;
-        //public static long 코스피기관순매수 = 0;
-        //public static long 코스피금투순매수 = 0;
-        //public static long 코스피연기순매수 = 0;
-        //public static double[] kospi_틱매수배 = new double[MarketData.TickArraySize]; // 
-        //public static double[] kospi_틱매도배 = new double[MarketData.TickArraySize]; // 
-
-        //public static long 코스닥매수배 = 0;
-        //public static long 코스닥매도배 = 0;
-        //public static long 코스닥프외순매수 = 0;
-        //public static long 코스닥개인순매수 = 0;
-        //public static long 코스닥외인순매수 = 0;
-        //public static long 코스닥기관순매수 = 0;
-        //public static long 코스닥금투순매수 = 0;
-        //public static long 코스닥연기순매수 = 0;
-        //public static double[] kosdaq_틱매수배 = new double[MarketData.TickArraySize]; // 
-        //public static double[] kosdaq_틱매도배 = new double[MarketData.TickArraySize]; // 
-
-        //public static int 코스피지수 = 0;
-        //public static int 코스닥지수 = 0;
-        //public static float 상해종합지수 = 0;
-        //public static float 항생지수 = 0;
-        //public static float 니케이지수 = 0;
-        //public static float SP_지수 = 0;
-        //public static float Nasdaq_지수 = 0;
 
 
 

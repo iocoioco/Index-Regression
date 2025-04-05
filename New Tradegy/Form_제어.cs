@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Trackers;
 
 namespace New_Tradegy
 {
@@ -308,12 +309,7 @@ namespace New_Tradegy
 
         private void RefreshCharts()
         {
-            g.chart1.Series.Clear();
-            g.chart1.ChartAreas.Clear();
-            g.chart1.Annotations.Clear();
-            g.chart2.Series.Clear();
-            g.chart2.ChartAreas.Clear();
-            g.chart2.Annotations.Clear();
+            g.ChartManager.ClearAll();
 
             ev.eval_stock();
             mm.ManageChart1();

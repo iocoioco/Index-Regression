@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.g;
+using New_Tradegy.Library.Trackers;
 
 namespace New_Tradegy
 {
@@ -52,7 +53,7 @@ namespace New_Tradegy
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
         {
-            g.chart2 = chart2;
+            g.ChartManager.SetChart2(chart2);
 
             // Configure DataGridView appearance
             ConfigureDataGridView();
@@ -128,7 +129,7 @@ namespace New_Tradegy
             if (g.v.SubKeyStr != PreSubKeyStr) // if g.v.SubKeyStr changes, Clear Chart
             {
                 PreSubKeyStr = g.v.SubKeyStr;
-                ChartClear();
+                g.ChartManager.Chart2Handler.Clear();
             }
 
 
@@ -143,31 +144,31 @@ namespace New_Tradegy
                     continue;
                 }
                 g.stock_data o = g.ogl_data[index];
-                if (!mm.ChartAreaExists(g.chart2, stock) || o.ShrinkDraw || g.test) 
+                if (!mm.ChartAreaExists(g.ChartManager.Chart2, stock) || o.ShrinkDraw || g.test) 
                 {
-                    mm.AreaStocks(g.chart2, stock, nRow, nCol);
+                    mm.AreaStocks(g.ChartManager.Chart2, stock, nRow, nCol);
                 }
                 else
                 {
-                    mm.UpdateSeries(g.chart2, stock, nRow, nCol); // includes annotation update too
+                    mm.UpdateSeries(g.ChartManager.Chart2, stock, nRow, nCol); // includes annotation update too
                 }
         
             }
 
-            int areasCount = g.chart2.ChartAreas.Count;
-            int annotationsCount = g.chart2.Annotations.Count;
-            int seriesCount = g.chart2.Series.Count;
+            int areasCount = g.ChartManager.Chart2.ChartAreas.Count;
+            int annotationsCount = g.ChartManager.Chart2.Annotations.Count;
+            int seriesCount = g.ChartManager.Chart2.Series.Count;
 
             RelocateChart2AreasAndAnnotations();
             mm.ClearUnusedChartAreasAndAnnotations(chart2, displayList);
 
-            areasCount = g.chart2.ChartAreas.Count;
-            areasCount = g.chart2.Annotations.Count;
-            areasCount = g.chart2.Series.Count;
+            areasCount = g.ChartManager.Chart2.ChartAreas.Count;
+            areasCount = g.ChartManager.Chart2.Annotations.Count;
+            areasCount = g.ChartManager.Chart2.Series.Count;
 
             dataGridView1.Refresh();
 
-            g.chart2.Invalidate();
+            g.ChartManager.Chart2.Invalidate();
         }
 
         public void RelocateChart2AreasAndAnnotations()
@@ -531,41 +532,9 @@ namespace New_Tradegy
             else { nCol = 5; nRow = 3; }
         }
 
-        public static void ChartClear()
-        {
-            g.chart2.Series.Clear();
-            g.chart2.ChartAreas.Clear();
-            g.chart2.Annotations.Clear();
-        }
 
-        /// <summary>
-        /// Updates stock data selectively based on the provided stock data list.
-        /// </summary>
-        /// <param name="updatedStocks">List of updated stock data.</param>
-        //public void UpdateStockData(List<StockPoint> updatedStocks)
-        //{
-        //    foreach (var stockData in updatedStocks)
-        //    {
-        //        if (!displayList.Contains(stockData.Stock)) continue;
 
-        //        if (stockData.Stock.Contains("KODEX"))
-        //        {
-        //            mm.UpdateChartSeriesKodex(g.chart2, stockData.Stock);
-        //        }
-        //        else
-        //        {
-        //            mm.UpdateChartSeriesGeneral(g.chart2, stockData.Stock);
-        //        }
 
-        //        // Update or add annotation
-        //        if (!stockData.Stock.Contains("KODEX"))
-        //        {
-        //            mm.UpdateAnnotation(g.chart2, stockData.Stock);
-        //        }
-        //    }
-
-        //    g.chart2.Invalidate(); // Redraw the chart
-        //}
 
         private void chart2_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -666,7 +635,7 @@ namespace New_Tradegy
         private void UpdateAnnotation(string stock, StockPoint stockData)
         {
             var annotationName = $"Annotation_{stock}";
-            var existingAnnotation = g.chart2.Annotations
+            var existingAnnotation = g.ChartManager.Chart2.Annotations
                 .FirstOrDefault(a => a.Name == annotationName);
 
             if (existingAnnotation != null)
@@ -687,7 +656,7 @@ namespace New_Tradegy
                     Font = new Font("Arial", 10, FontStyle.Bold),
                     ForeColor = Color.Black
                 };
-                g.chart2.Annotations.Add(newAnnotation);
+                g.ChartManager.Chart2.Annotations.Add(newAnnotation);
             }
         }
     }

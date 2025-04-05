@@ -11,6 +11,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using CPSYSDIBLib;
 using New_Tradegy.Library;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Trackers;
 namespace New_Tradegy.Library
     
 {
@@ -88,7 +89,7 @@ namespace New_Tradegy.Library
                     if (g.Npts[1] >= 382)
                         g.Npts[1] = 382;
 
-                    //dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
+                    //dr.draw_stock(g.ChartManager.Chart1, g.nRow, g.nCol, i, stock);
                 }
 
             }
@@ -208,25 +209,19 @@ namespace New_Tradegy.Library
                     if (g.Npts[1] >= 382)
                         g.Npts[1] = 382;
 
-                    //dr.draw_stock(g.chart1, g.nRow, g.nCol, i, stock);
+                    //dr.draw_stock(g.ChartManager.Chart1, g.nRow, g.nCol, i, stock);
 
                 }
                 return;
 
                 // Thread.Sleep(6000);
 
-                //foreach (Series series in g.chart1.Series)
+                //foreach (Series series in g.ChartManager.Chart1.Series)
                 //{
                 //    series.Points.Clear();
                 //}
 
-                foreach (Series series in g.chart1.Series)
-                {
-                    series.Points.Clear();
-                }
-                g.chart1.Series.Clear();
-                g.chart1.ChartAreas.Clear();
-                g.chart1.Legends.Clear();
+                g.ChartManager.Chart1Handler.Clear();
 
 
             }

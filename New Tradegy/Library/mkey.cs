@@ -428,7 +428,7 @@ namespace New_Tradegy
                 {
                     t[3] = (int)MarketData.Instance.KospiProgramNetBuy +  // 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
                            (int)MarketData.Instance.KospiForeignNetBuy;
-                        t[4] = (int)MarketData.Instance.KospiInstitutionNetBuy; // from cpsvrnew7222
+                    t[4] = (int)MarketData.Instance.KospiInstitutionNetBuy; // from cpsvrnew7222
                     t[5] = (int)MarketData.Instance.KospiForeignNetBuy; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
                     t[6] = (int)MarketData.Instance.KospiRetailNetBuy; // from cpsvrnew7222
                     t[10] = (int)(MarketData.Instance.NasdaqIndex * g.THOUSAND);
@@ -440,7 +440,7 @@ namespace New_Tradegy
                            (int)MarketData.Instance.KosdaqForeignNetBuy; // t[3] : 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
                     t[4] = (int)MarketData.Instance.KosdaqInstitutionNetBuy; // from cpsvrnew7222
                     t[5] = (int)MarketData.Instance.KosdaqForeignNetBuy; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
-                    t[6] = (int)MarketData.Instance.KosdaqProgramNetBuy; // from cpsvrnew7222
+                    t[6] = (int)MarketData.Instance.KosdaqRetailNetBuy; // from cpsvrnew7222
                     t[10] = (int)(MarketData.Instance.NasdaqIndex * g.THOUSAND);  // was MarketData.Instance.KosdaqInvestmentNetBuy;
                     t[11] = (int)MarketData.Instance.KosdaqPensionNetBuy; // from cpsvrnew7222
                 }
