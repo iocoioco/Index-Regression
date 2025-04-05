@@ -6,7 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-
+using New_Tradegy.Library.Models;
 namespace New_Tradegy.Library
 {
     public class g
@@ -173,39 +173,7 @@ namespace New_Tradegy.Library
         public static int ogl_data_next = 0; // sequential index among total stocks to be downloaded next time thru. API anong
         public static int 예치금 = 0; // deposit money in 10 thousands Won
 
-        public static int 틱_array_size = 60; // 
-        public static int 분_array_size = 15; // 
-
-        public static long 코스피매수배 = 0;
-        public static long 코스피매도배 = 0;
-        public static long 코스피프외순매수 = 0;
-        public static long 코스피개인순매수 = 0;
-        public static long 코스피외인순매수 = 0;
-        public static long 코스피기관순매수 = 0;
-        public static long 코스피금투순매수 = 0;
-        public static long 코스피연기순매수 = 0;
-        public static double[] kospi_틱매수배 = new double[틱_array_size]; // 
-        public static double[] kospi_틱매도배 = new double[틱_array_size]; // 
-
-        public static long 코스닥매수배 = 0;
-        public static long 코스닥매도배 = 0;
-        public static long 코스닥프외순매수 = 0;
-        public static long 코스닥개인순매수 = 0;
-        public static long 코스닥외인순매수 = 0;
-        public static long 코스닥기관순매수 = 0;
-        public static long 코스닥금투순매수 = 0;
-        public static long 코스닥연기순매수 = 0;
-        public static double[] kosdaq_틱매수배 = new double[틱_array_size]; // 
-        public static double[] kosdaq_틱매도배 = new double[틱_array_size]; // 
-
-        public static int 코스피지수 = 0;
-        public static int 코스닥지수 = 0;
-        public static float 상해종합지수 = 0;
-        public static float 항생지수 = 0;
-        public static float 니케이지수 = 0;
-        public static float SP_지수 = 0;
-        public static float Nasdaq_지수 = 0;
-
+        
         public static int rqwey_nCol = 10; // number of chart area columns in main chart
         public static int rqwey_nRow = 3; // number of chart area rows in main chart
 
@@ -312,6 +280,38 @@ namespace New_Tradegy.Library
 
 
 
+        //public static int MarketData.TickArraySize = 60; // 
+        //public static int MarketData.MinuteArraySize = 15; // 
+
+        //public static long 코스피매수배 = 0;
+        //public static long 코스피매도배 = 0;
+        //public static long 코스피프외순매수 = 0;
+        //public static long 코스피개인순매수 = 0;
+        //public static long 코스피외인순매수 = 0;
+        //public static long 코스피기관순매수 = 0;
+        //public static long 코스피금투순매수 = 0;
+        //public static long 코스피연기순매수 = 0;
+        //public static double[] kospi_틱매수배 = new double[MarketData.TickArraySize]; // 
+        //public static double[] kospi_틱매도배 = new double[MarketData.TickArraySize]; // 
+
+        //public static long 코스닥매수배 = 0;
+        //public static long 코스닥매도배 = 0;
+        //public static long 코스닥프외순매수 = 0;
+        //public static long 코스닥개인순매수 = 0;
+        //public static long 코스닥외인순매수 = 0;
+        //public static long 코스닥기관순매수 = 0;
+        //public static long 코스닥금투순매수 = 0;
+        //public static long 코스닥연기순매수 = 0;
+        //public static double[] kosdaq_틱매수배 = new double[MarketData.TickArraySize]; // 
+        //public static double[] kosdaq_틱매도배 = new double[MarketData.TickArraySize]; // 
+
+        //public static int 코스피지수 = 0;
+        //public static int 코스닥지수 = 0;
+        //public static float 상해종합지수 = 0;
+        //public static float 항생지수 = 0;
+        //public static float 니케이지수 = 0;
+        //public static float SP_지수 = 0;
+        //public static float Nasdaq_지수 = 0;
 
 
 
@@ -325,10 +325,10 @@ namespace New_Tradegy.Library
                 public double 틱프로잠정합_천 = 0.0;
                 public double 틱외인잠정합_천 = 0.0;
 
-                public double[] 틱프로천 = new double[틱_array_size];
-                public double[] 틱외인천 = new double[틱_array_size];
-                public int[] 틱의가격 = new int[틱_array_size];
-                public int[] 틱의시간 = new int[틱_array_size];
+                public double[] 틱프로천 = new double[MarketData.TickArraySize];
+                public double[] 틱외인천 = new double[MarketData.TickArraySize];
+                public int[] 틱의가격 = new int[MarketData.TickArraySize];
+                public int[] 틱의시간 = new int[MarketData.TickArraySize];
             }
             public t 변곡 = new t();
 
@@ -498,40 +498,40 @@ namespace New_Tradegy.Library
             public int[,] x = new int[MAX_ROW, 12];
 
             // 틱 데이터
-            public int[] 틱의시간 = new int[틱_array_size]; // 틱의시간    // 호가창 tT
-            public int[] 틱의가격 = new int[틱_array_size]; // 틱의가격    // 호가창
-            public int[] 틱의수급 = new int[틱_array_size]; // 틱의수급
-            public int[] 틱의체강 = new int[틱_array_size]; // 틱의체강
+            public int[] 틱의시간 = new int[MarketData.TickArraySize]; // 틱의시간    // 호가창 tT
+            public int[] 틱의가격 = new int[MarketData.TickArraySize]; // 틱의가격    // 호가창
+            public int[] 틱의수급 = new int[MarketData.TickArraySize]; // 틱의수급
+            public int[] 틱의체강 = new int[MarketData.TickArraySize]; // 틱의체강
 
-            public int[] 틱매수량 = new int[틱_array_size]; // 틱매수량
-            public int[] 틱매도량 = new int[틱_array_size]; // 틱매도량
-            public int[] 틱매수배 = new int[틱_array_size]; // 틱매수배
-            public int[] 틱매도배 = new int[틱_array_size]; // 틱매도배
+            public int[] 틱매수량 = new int[MarketData.TickArraySize]; // 틱매수량
+            public int[] 틱매도량 = new int[MarketData.TickArraySize]; // 틱매도량
+            public int[] 틱매수배 = new int[MarketData.TickArraySize]; // 틱매수배
+            public int[] 틱매도배 = new int[MarketData.TickArraySize]; // 틱매도배
 
-            public int[] 틱배수차 = new int[틱_array_size];  // 틱배수차
-            public int[] 틱배수합 = new int[틱_array_size];  // 틱배수합
-            public int[] 틱프외퍼 = new int[틱_array_size];  // 틱프외퍼
+            public int[] 틱배수차 = new int[MarketData.TickArraySize];  // 틱배수차
+            public int[] 틱배수합 = new int[MarketData.TickArraySize];  // 틱배수합
+            public int[] 틱프외퍼 = new int[MarketData.TickArraySize];  // 틱프외퍼
 
-            public int[] 틱프로량 = new int[틱_array_size]; // 틱프로량  
-            public double[] 틱프로천 = new double[틱_array_size]; // 틱프돈천
+            public int[] 틱프로량 = new int[MarketData.TickArraySize]; // 틱프로량  
+            public double[] 틱프로천 = new double[MarketData.TickArraySize]; // 틱프돈천
 
-            public int[] 틱외인량 = new int[틱_array_size]; // 틱외인량
-            public double[] 틱외인천 = new double[틱_array_size]; // 틱외돈천                  //
+            public int[] 틱외인량 = new int[MarketData.TickArraySize]; // 틱외인량
+            public double[] 틱외인천 = new double[MarketData.TickArraySize]; // 틱외돈천                  //
 
-            public double[] 틱거래천 = new double[틱_array_size]; // 틱거돈천
+            public double[] 틱거래천 = new double[MarketData.TickArraySize]; // 틱거돈천
 
-            public int[] 틱매도잔 = new int[틱_array_size]; // 최우선매도호가잔량
-            public int[] 틱매수잔 = new int[틱_array_size]; // 최우선매수호가잔량
+            public int[] 틱매도잔 = new int[MarketData.TickArraySize]; // 최우선매도호가잔량
+            public int[] 틱매수잔 = new int[MarketData.TickArraySize]; // 최우선매수호가잔량
 
 
             // 분 데이터
-            public double[] 분프로천 = new double[분_array_size]; // 분프로천
-            public double[] 분외인천 = new double[분_array_size]; // 분외인천
-            public double[] 분거래천 = new double[분_array_size]; // 분거래천
-            public int[] 분매수배 = new int[분_array_size]; // 분매수배
-            public int[] 분매도배 = new int[분_array_size]; // 분매도배
-            public int[] 분배수차 = new int[분_array_size];  // 분배수차
-            public int[] 분배수합 = new int[분_array_size];  // 분배수차
+            public double[] 분프로천 = new double[MarketData.MinuteArraySize]; // 분프로천
+            public double[] 분외인천 = new double[MarketData.MinuteArraySize]; // 분외인천
+            public double[] 분거래천 = new double[MarketData.MinuteArraySize]; // 분거래천
+            public int[] 분매수배 = new int[MarketData.MinuteArraySize]; // 분매수배
+            public int[] 분매도배 = new int[MarketData.MinuteArraySize]; // 분매도배
+            public int[] 분배수차 = new int[MarketData.MinuteArraySize];  // 분배수차
+            public int[] 분배수합 = new int[MarketData.MinuteArraySize];  // 분배수차
 
             // 일 데이터
             public double 프누천;

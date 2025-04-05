@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.Support.UI;
 
 using SeleniumExtras.WaitHelpers;   // For WaitHelpers
-
+using New_Tradegy.Library.Models;
 
 
 namespace New_Tradegy.Library
@@ -336,19 +336,19 @@ namespace New_Tradegy.Library
 
                     // Parse the indices data and update variables
                     if (float.TryParse(table[1][7].Trim('%'), out float SP_지수))
-                        g.SP_지수 = SP_지수;
+                        MarketData.Instance.Snp500Index = SP_지수;
 
                     if (float.TryParse(table[2][7].Trim('%'), out float Nasdaq_지수))
-                        g.Nasdaq_지수 = Nasdaq_지수;
+                        MarketData.Instance.NasdaqIndex = Nasdaq_지수;
 
                     // Update the global data table
-                    if(g.제어.dtb.Rows[1][2].ToString() != g.Nasdaq_지수.ToString())
+                    if(g.제어.dtb.Rows[1][2].ToString() != MarketData.Instance.NasdaqIndex.ToString())
                     {
-                        g.제어.dtb.Rows[1][2] = g.Nasdaq_지수.ToString();
+                        g.제어.dtb.Rows[1][2] = MarketData.Instance.NasdaqIndex.ToString();
                     }
-                    if (g.제어.dtb.Rows[1][3].ToString() != g.SP_지수.ToString())
+                    if (g.제어.dtb.Rows[1][3].ToString() != MarketData.Instance.Snp500Index.ToString())
                     {
-                        g.제어.dtb.Rows[1][3] = g.SP_지수.ToString();
+                        g.제어.dtb.Rows[1][3] = MarketData.Instance.Snp500Index.ToString();
                     }
 
                     DateTime date = DateTime.Now;
@@ -409,7 +409,7 @@ namespace New_Tradegy.Library
                 if (append_or_replace_row >= g.MAX_ROW)
                     return;
 
-                o.x[append_or_replace_row, 10] = (int)(g.Nasdaq_지수 * g.HUNDRED); // AAA teethed pattern
+                o.x[append_or_replace_row, 10] = (int)(MarketData.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
             }
         }
 
@@ -461,33 +461,35 @@ namespace New_Tradegy.Library
                     .ToList();
 
                 // Parse and update indices
-                string t = table[32][6].Trim(new Char[] { '%' });
-                float.TryParse(t, out g.상해종합지수);
+                if (float.TryParse(table[32][6].Trim('%'), out float val1))
+                    MarketData.Instance.ShanghaiIndex = val1;
 
-                t = table[36][6].Trim(new Char[] { '%' });
-                float.TryParse(t, out g.항생지수);
+                if (float.TryParse(table[36][6].Trim('%'), out float val2))
+                    MarketData.Instance.HangSengIndex = val2;
 
-                t = table[29][6].Trim(new Char[] { '%' });
-                float.TryParse(t, out g.니케이지수);
+                if (float.TryParse(table[29][6].Trim('%'), out float val3))
+                    MarketData.Instance.NikkeiIndex = val3;
+
+
 
                 float 대만가권;
-                t = table[37][6].Trim(new Char[] { '%' });
+                string t = table[37][6].Trim(new Char[] { '%' });
                 float.TryParse(t, out 대만가권);
 
                 // Update global data table
-                if (g.제어.dtb.Rows[2][0].ToString() != g.상해종합지수.ToString())
+                if (g.제어.dtb.Rows[2][0].ToString() != MarketData.Instance.ShanghaiIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][0] = g.상해종합지수.ToString();
+                    g.제어.dtb.Rows[2][0] = MarketData.Instance.ShanghaiIndex.ToString();
                 }
 
-                if (g.제어.dtb.Rows[2][1].ToString() != g.항생지수.ToString())
+                if (g.제어.dtb.Rows[2][1].ToString() != MarketData.Instance.HangSengIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][1] = g.항생지수.ToString();
+                    g.제어.dtb.Rows[2][1] = MarketData.Instance.HangSengIndex.ToString();
                 }
 
-                if (g.제어.dtb.Rows[2][2].ToString() != g.니케이지수.ToString())
+                if (g.제어.dtb.Rows[2][2].ToString() != MarketData.Instance.NikkeiIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][2] = g.니케이지수.ToString();
+                    g.제어.dtb.Rows[2][2] = MarketData.Instance.NikkeiIndex.ToString();
                 }
 
                 if (g.제어.dtb.Rows[2][3].ToString() != 대만가권.ToString())

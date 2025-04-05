@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using static New_Tradegy.Library.g.stock_data;
 using static OpenQA.Selenium.BiDi.Modules.Script.RealmInfo;
 using New_Tradegy.Library.Utils;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library
 {
@@ -658,8 +659,8 @@ namespace New_Tradegy.Library
                 // 일반 - 프누억
                 if (g.KODEX4.Contains(Stock))
                 {
-                    Dtb.Rows[Rows - 2][2] = (g.코스피지수 / 100.0).ToString("0.##"); ;
-                    Dtb.Rows[Rows - 1][2] = (g.코스닥지수 / 100.0).ToString("0.##"); ;
+                    Dtb.Rows[Rows - 2][2] = (MarketData.Instance.KospiIndex / 100.0).ToString("0.##"); ;
+                    Dtb.Rows[Rows - 1][2] = (MarketData.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
                 }
                 else
                 {
@@ -745,8 +746,8 @@ namespace New_Tradegy.Library
             // 프누억
             if (Stock.Contains("KODEX"))
             {
-                Dtb.Rows[Rows - 2][2] = (g.코스피지수 / 100.0).ToString("0.##"); ;
-                Dtb.Rows[Rows - 1][2] = (g.코스닥지수 / 100.0).ToString("0.##"); ;
+                Dtb.Rows[Rows - 2][2] = (MarketData.Instance.KospiIndex / 100.0).ToString("0.##"); ;
+                Dtb.Rows[Rows - 1][2] = (MarketData.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
             }
             else
             {

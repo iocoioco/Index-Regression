@@ -13,32 +13,32 @@ namespace New_Tradegy.Library.Models
 
         private MarketData() { }
 
-        public const int TickArraySize = 60;
-        public const int MinuteArraySize = 15;
+        public const int TickArraySize = 60; // const static implicitly
+        public const int MinuteArraySize = 15; // const static implicitly
 
         // KOSPI
-        public long KospiBuyTotal { get; set; }
-        public long KospiSellTotal { get; set; }
+        public long KospiBuyPower { get; set; }
+        public long KospiSellPower { get; set; }
         public long KospiProgramNetBuy { get; set; }
         public long KospiRetailNetBuy { get; set; }
         public long KospiForeignNetBuy { get; set; }
         public long KospiInstitutionNetBuy { get; set; }
-        public long KospiInvestmentNetBuy { get; set; }
+        public long KospiInvestmentNetBuy { get; set; } // 금투
         public long KospiPensionNetBuy { get; set; }
-        public double[] KospiTickBuyRatio { get; } = new double[TickArraySize];
-        public double[] KospiTickSellRatio { get; } = new double[TickArraySize];
+        public double[] KospiTickBuyPower { get; } = new double[TickArraySize];
+        public double[] KospiTickSellPower { get; } = new double[TickArraySize];
 
         // KOSDAQ
-        public long KosdaqBuyTotal { get; set; }
-        public long KosdaqSellTotal { get; set; }
+        public long KosdaqBuyPower { get; set; }
+        public long KosdaqSellPower { get; set; }
         public long KosdaqProgramNetBuy { get; set; }
         public long KosdaqRetailNetBuy { get; set; }
         public long KosdaqForeignNetBuy { get; set; }
         public long KosdaqInstitutionNetBuy { get; set; }
-        public long KosdaqInvestmentNetBuy { get; set; }
+        public long KosdaqInvestmentNetBuy { get; set; } // 금투
         public long KosdaqPensionNetBuy { get; set; }
-        public double[] KosdaqTickBuyRatio { get; } = new double[TickArraySize];
-        public double[] KosdaqTickSellRatio { get; } = new double[TickArraySize];
+        public double[] KosdaqTickBuyPower { get; } = new double[TickArraySize];
+        public double[] KosdaqTickSellPower { get; } = new double[TickArraySize];
 
         // Indexes
         public int KospiIndex { get; set; }

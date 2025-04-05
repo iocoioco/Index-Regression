@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy
 {
@@ -123,14 +124,14 @@ namespace New_Tradegy
             // Row 1
             g.제어.dtb.Rows[1][0] = 0; // initial setting of deal_profit;
             g.제어.dtb.Rows[1][1] = ""; // (int)usd_krw; 
-            g.제어.dtb.Rows[1][2] = g.Nasdaq_지수;
-            g.제어.dtb.Rows[1][3] = g.SP_지수;
+            g.제어.dtb.Rows[1][2] = MarketData.Instance.NasdaqIndex;
+            g.제어.dtb.Rows[1][3] = MarketData.Instance.Snp500Index;
 
             // Row 2
 
             g.제어.dtb.Rows[2][0] = ""; //상해
             g.제어.dtb.Rows[2][1] = ""; // 홍콩
-            g.제어.dtb.Rows[2][2] = g.니케이지수;
+            g.제어.dtb.Rows[2][2] = MarketData.Instance.NikkeiIndex;
             g.제어.dtb.Rows[2][2] = ""; // 대만가권
 
 

@@ -10,7 +10,9 @@ using System.Threading;
 using System.Windows.Forms.DataVisualization.Charting;
 using CPSYSDIBLib;
 using New_Tradegy.Library;
+using New_Tradegy.Library.Models;
 namespace New_Tradegy.Library
+    
 {
     public class ts
     {
@@ -126,7 +128,7 @@ namespace New_Tradegy.Library
                 for (int j = 1; j < o.nrow; j++)
                 {
                     //ps.post_코스닥_코스피_프외_순매수_배차_합산(j);
-                    str += (o.x[j, 3]).ToString() + "\t" + g.코스피프외순매수 + "\n";
+                    str += (o.x[j, 3]).ToString() + "\t" + MarketData.Instance.KospiProgramNetBuy + "\n";
 
                 }
                 str += "\n\n";
