@@ -607,7 +607,7 @@ namespace New_Tradegy
                     o.분배수합[1] = o.분매수배[1] + o.분매도배[1];
                 }
 
-                o.downloaded = true;
+           
 
                 // ps.marketeye_received_틱프로천_ebb_tide(o); // not defined clearly, so return doing nothing
                 // do not know what is going on in the routine,

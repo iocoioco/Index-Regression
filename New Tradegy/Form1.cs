@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using static New_Tradegy.Library.sc;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Core;
 
 //using NLog;
 
@@ -78,7 +79,9 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            g.ChartManager = new ChartManager(); // this will be used globally
+            g.Repository = new StockRepository();
+            
+            g.StockManager = new StockManager(g.Repository); 
             g.ChartManager.SetChart1(chart1);
 
             _cpcybos = new CPUTILLib.CpCybos();
