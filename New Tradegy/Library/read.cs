@@ -413,18 +413,18 @@ namespace New_Tradegy.Library
 
             if (!g.shortform)
             {
-                StockManager.AddIfMissing(rd.read_그룹_네이버_업종()); // replaces total_stock_list = ...
+                g.StockManager.AddIfMissing(rd.read_그룹_네이버_업종()); // replaces total_stock_list = ...
             }
 
-            rd.read_상관(tgl_title, tgl, StockManager.TotalStockList); // duration 1.3 seconds
+            rd.read_상관(tgl_title, tgl, g.StockManager.TotalStockList); // duration 1.3 seconds
 
             rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
 
             rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
 
-            StockManager.AddIfMissing(g.kospi_mixed.stock);
-            StockManager.AddIfMissing(g.kosdaq_mixed.stock);
-            StockManager.AddIfMissing(new[] {
+            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
+            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
+            g.StockManager.AddIfMissing(new[] {
                 "KODEX 레버리지",
                 "KODEX 200선물인버스2X",
                 "KODEX 코스닥150레버리지",
@@ -433,7 +433,7 @@ namespace New_Tradegy.Library
 
       
 
-            foreach (var stock in StockManager.TotalStockList) // StockManager.TotalStockList is used only in this method
+            foreach (var stock in g.StockManager.TotalStockList) // StockManager.TotalStockList is used only in this method
             {
                 wk.gen_ogl_data(stock);
             }

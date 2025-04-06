@@ -22,7 +22,7 @@ namespace New_Tradegy.Library
         public List<string> Friends { get; set; } = new List<string>();
 
         public MarketSnapshot Market { get; set; } = new MarketSnapshot();
-        public TickData Tick { get; set; } = new TickData();
+        public TickData TickData { get; set; } = new TickData();
         public MinuteData Minute { get; set; } = new MinuteData();
         public DailyData Daily { get; set; } = new DailyData();
 
@@ -73,7 +73,7 @@ namespace New_Tradegy.Library
         //public double 거분;
         //public double 배차, 배합;
         //public double 급락, 급상;
-        //public double 총점;
+        public double 총점;
         //public int 푀분_등수, 거분_등수;
         //public int 배차_등수, 배합_등수;
         //public int 그순;
@@ -105,7 +105,7 @@ namespace New_Tradegy.Library
     // Models/TickData.cs
     public class TickData
     {
-        // Add Tick-level arrays here later
+        public double[] 틱프로천 = new double[MarketData.TickArraySize]; // 틱프돈천
     }
 
     // Models/MinuteData.cs

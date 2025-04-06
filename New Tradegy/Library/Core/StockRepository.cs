@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Core
@@ -11,27 +7,24 @@ namespace New_Tradegy.Library.Core
     {
         private Dictionary<string, StockData> _data = new Dictionary<string, StockData>();
 
-        public void AddOrUpdate(string code, StockData data)
+        public void AddOrUpdate(string stock, StockData data)
         {
-            _data[code] = data;
+            _data[stock] = data;
         }
 
-        public StockData Get(string code)
+        public StockData Get(string stock)
         {
-            return _data.TryGetValue(code, out var result) ? result : null;
+            return _data.TryGetValue(stock, out var result) ? result : null;
         }
 
-        public bool Contains(string code)
+        public bool Contains(string stock)
         {
-            return _data.ContainsKey(code);
+            return _data.ContainsKey(stock);
         }
 
-        // ✅ Add this method:
         public IEnumerable<StockData> GetAll()
         {
             return _data.Values;
         }
     }
-
-
 }

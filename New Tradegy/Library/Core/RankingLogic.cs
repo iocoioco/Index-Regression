@@ -26,3 +26,4 @@ namespace New_Tradegy.Library.Core
 
         // Add more strategies as needed
     }
+}

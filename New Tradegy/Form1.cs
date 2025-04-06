@@ -80,10 +80,10 @@ namespace New_Tradegy // added for test on 20241020 0300
         private void Form1_Load(object sender, EventArgs e)
         {
             g.Repository = new StockRepository();
-            
-            g.StockManager = new StockManager(g.Repository); 
+            g.StockManager = new StockManager(g.Repository);
+            g.ChartManager = new ChartManager();
             g.ChartManager.SetChart1(chart1);
-
+              
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
 

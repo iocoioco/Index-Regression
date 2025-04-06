@@ -1,9 +1,7 @@
-﻿using New_Tradegy.Library.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
 
 namespace New_Tradegy
@@ -13,32 +11,28 @@ namespace New_Tradegy
         private readonly StockRepository _repository;
 
         public List<string> TotalStockList { get; } = new List<string>();
-
         public List<string> RankingList { get; private set; } = new List<string>();
         public List<string> HoldingList { get; private set; } = new List<string>();
         public List<string> InterestedList { get; private set; } = new List<string>();
 
         public Dictionary<string, List<string>> Groups { get; private set; } = new Dictionary<string, List<string>>();
 
-
-
-
         public StockManager(StockRepository repository)
         {
             _repository = repository;
         }
 
-        public void UpdateTick(string code, double[] newTickPro)
+        public void UpdateTick(string stock, double[] newTickPro)
         {
-            var data = _repository.Get(code);
+            var data = _repository.Get(stock);
             if (data == null) return;
 
-            Array.Copy(newTickPro, data.Tick.ProK, Math.Min(newTickPro.Length, data.Tick.TickProK.Length));
+            Array.Copy(newTickPro, data.Reflection.ProgramK, Math.Min(newTickPro.Length, data.Reflection.ProgramK.Length));
         }
 
-        public double GetTotalScore(string code)
+        public double GetTotalScore(string stock)
         {
-            var data = _repository.Get(code);
+            var data = _repository.Get(stock);
             return data?.Score.총점 ?? 0.0;
         }
 
@@ -56,9 +50,8 @@ namespace New_Tradegy
             var all = _repository.GetAll();
             RankingList = RankingLogic
                 .RankByTotalScore(all)
-                .Select(s => s.Code)
+                .Select(s => s.Stock)
                 .ToList();
         }
     }
-
 }

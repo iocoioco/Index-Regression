@@ -178,6 +178,8 @@
     <Compile Include="Library\buys.cs" />
     <Compile Include="Library\clic.cs" />
     <Compile Include="Library\cncl.cs" />
+    <Compile Include="Library\Core\GroupManager.cs" />
+    <Compile Include="Library\Core\GroupRepository.cs" />
     <Compile Include="Library\Core\RankingLogic.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="Library\Core\TradingEngine.cs" />
@@ -188,6 +190,7 @@
     <Compile Include="Library\IndexRangeCheck.cs" />
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\mdm.cs" />
+    <Compile Include="Library\Models\GroupData.cs" />
     <Compile Include="Library\Models\MarketData.cs" />
     <Compile Include="Library\Models\OrderItem.cs" />
     <Compile Include="Library\Models\StockData.cs" />

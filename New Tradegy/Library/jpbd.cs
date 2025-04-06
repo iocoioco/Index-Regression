@@ -205,24 +205,24 @@ namespace New_Tradegy.Library
                 // Passing Price
                 if (e.RowIndex < Rows)
                 {
-                    if (Price == o.deal.upperPassingPrice)
+                    if (Price == o.pass.upperPassingPrice)
                     {
-                        o.deal.upperPassingPrice = 0;
+                        o.pass.upperPassingPrice = 0;
                     }
                     else
                     {
-                        o.deal.upperPassingPrice = Price;
+                        o.pass.upperPassingPrice = Price;
                     }
                 }
                 else if (e.RowIndex <= Rows)
                 {
-                    if (Price == o.deal.lowerPassingPrice)
+                    if (Price == o.pass.lowerPassingPrice)
                     {
-                        o.deal.lowerPassingPrice = 0;
+                        o.pass.lowerPassingPrice = 0;
                     }
                     else
                     {
-                        o.deal.lowerPassingPrice = Price;
+                        o.pass.lowerPassingPrice = Price;
                     }
                 }
                 // 5 & 10 hoga toggle
@@ -786,22 +786,22 @@ namespace New_Tradegy.Library
 
 
             // upperPassingPrice
-            if (o.deal.upperPassingPrice > 0)
+            if (o.pass.upperPassingPrice > 0)
             {
-                if (o.매도1호가 >= o.deal.upperPassingPrice)
+                if (o.매도1호가 >= o.pass.upperPassingPrice)
                 {
                     mc.Sound("일반", "passing upper"); // StopLoss[1]
-                    o.deal.upperPassingPrice = 0;
+                    o.pass.upperPassingPrice = 0;
                 }
             }
 
             // lowerPassingPrice
-            if (o.deal.lowerPassingPrice > 0)
+            if (o.pass.lowerPassingPrice > 0)
             {
-                if (o.매수1호가 <= o.deal.lowerPassingPrice)
+                if (o.매수1호가 <= o.pass.lowerPassingPrice)
                 {
                     mc.Sound("일반", "passing lower"); // Stop Loss[0]
-                    o.deal.lowerPassingPrice = 0;
+                    o.pass.lowerPassingPrice = 0;
                 }
             }
 
@@ -851,13 +851,13 @@ namespace New_Tradegy.Library
 
 
             //  Coloring upperPassingPrice in column 1
-            if (o.deal.upperPassingPrice > 0 || o.deal.lowerPassingPrice > 0)
+            if (o.pass.upperPassingPrice > 0 || o.pass.lowerPassingPrice > 0)
             {
                 for (int i = 0; i < 2 * Rows; i++)
                 {
                     if (int.TryParse(Dtb.Rows[i][1].ToString(), out int price))
                     {
-                        if (price == o.deal.upperPassingPrice || price == o.deal.lowerPassingPrice)
+                        if (price == o.pass.upperPassingPrice || price == o.pass.lowerPassingPrice)
                         {
                             cellColors[i, 1] = Color.Yellow;
                         }
