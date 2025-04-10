@@ -207,7 +207,7 @@ namespace New_Tradegy.Library
                             o.변곡.틱프로잠정합_천 = o.틱프로천[0];
                         }
                     }
-                    if (o.변곡.array_count == MarketData.TickArraySize)
+                    if (o.변곡.array_count == MajorIndex.TickArraySize)
                     {
                         marketeye_record_변곡_write(o);
                     }
@@ -231,7 +231,7 @@ namespace New_Tradegy.Library
 
             string str = sr.r3_display_lines_after_recalculation(o); // marketeye_record
 
-            for (int i = MarketData.TickArraySize - 1; i >= 0; i--) // record
+            for (int i = MajorIndex.TickArraySize - 1; i >= 0; i--) // record
             {
                 str += o.틱의시간[i].ToString();
                 str += "\t" + o.틱의가격[i].ToString();

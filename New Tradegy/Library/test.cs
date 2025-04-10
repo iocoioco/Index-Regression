@@ -129,7 +129,7 @@ namespace New_Tradegy.Library
                 for (int j = 1; j < o.nrow; j++)
                 {
                     //ps.post_코스닥_코스피_프외_순매수_배차_합산(j);
-                    str += (o.x[j, 3]).ToString() + "\t" + MarketData.Instance.KospiProgramNetBuy + "\n";
+                    str += (o.x[j, 3]).ToString() + "\t" + MajorIndex.Instance.KospiProgramNetBuy + "\n";
 
                 }
                 str += "\n\n";

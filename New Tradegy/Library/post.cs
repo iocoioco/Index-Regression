@@ -887,10 +887,10 @@ namespace New_Tradegy.Library
 
         public static void post_코스닥_코스피_프외_순매수_배차_합산()
         {
-            MarketData.Instance.KospiSellPower = 0;
+            MajorIndex.Instance.KospiSellPower = 0;
     
-            MarketData.Instance.KospiProgramNetBuy = 0;
-            MarketData.Instance.KospiForeignNetBuy = 0;
+            MajorIndex.Instance.KospiProgramNetBuy = 0;
+            MajorIndex.Instance.KospiForeignNetBuy = 0;
 
             for (int i = 0; i < g.kospi_mixed.stock.Count; i++)
             {
@@ -903,16 +903,16 @@ namespace New_Tradegy.Library
                 g.stock_data t = g.ogl_data[index];
                 double money_factor = t.전일종가 / g.억원;
 
-                MarketData.Instance.KospiProgramNetBuy += (int)(t.x[t.nrow - 1, 4] * money_factor); // 4 : 프로그램, 5: 외인, 6: 기관
-                MarketData.Instance.KospiForeignNetBuy += (int)(t.x[t.nrow - 1, 5] * money_factor);
-                MarketData.Instance.KospiBuyPower = (int)(t.x[t.nrow - 1, 8] * g.kospi_mixed.weight[i]);
-                MarketData.Instance.KospiSellPower = (int)(t.x[t.nrow - 1, 9] * g.kospi_mixed.weight[i]);
+                MajorIndex.Instance.KospiProgramNetBuy += (int)(t.x[t.nrow - 1, 4] * money_factor); // 4 : 프로그램, 5: 외인, 6: 기관
+                MajorIndex.Instance.KospiForeignNetBuy += (int)(t.x[t.nrow - 1, 5] * money_factor);
+                MajorIndex.Instance.KospiBuyPower = (int)(t.x[t.nrow - 1, 8] * g.kospi_mixed.weight[i]);
+                MajorIndex.Instance.KospiSellPower = (int)(t.x[t.nrow - 1, 9] * g.kospi_mixed.weight[i]);
             }
 
-            MarketData.Instance.KosdaqBuyPower = 0;
-            MarketData.Instance.KosdaqSellPower = 0;
-            MarketData.Instance.KosdaqProgramNetBuy = 0;
-            MarketData.Instance.KosdaqForeignNetBuy = 0;
+            MajorIndex.Instance.KosdaqBuyPower = 0;
+            MajorIndex.Instance.KosdaqSellPower = 0;
+            MajorIndex.Instance.KosdaqProgramNetBuy = 0;
+            MajorIndex.Instance.KosdaqForeignNetBuy = 0;
             for (int i = 0; i < g.kosdaq_mixed.stock.Count; i++)
             {
                 int index = wk.return_index_of_ogldata(g.kosdaq_mixed.stock[i]);
@@ -924,10 +924,10 @@ namespace New_Tradegy.Library
                 g.stock_data t = g.ogl_data[index];
                 double money_factor = t.전일종가 / g.억원;
 
-                MarketData.Instance.KosdaqProgramNetBuy += (int)(t.x[t.nrow - 1, 4] * money_factor);
-                MarketData.Instance.KosdaqForeignNetBuy += (int)(t.x[t.nrow - 1, 5] * money_factor);
-                MarketData.Instance.KosdaqBuyPower = (int)(t.x[t.nrow - 1, 8] * g.kosdaq_mixed.weight[i]);
-                MarketData.Instance.KosdaqSellPower = (int)(t.x[t.nrow - 1, 9] * g.kosdaq_mixed.weight[i]);
+                MajorIndex.Instance.KosdaqProgramNetBuy += (int)(t.x[t.nrow - 1, 4] * money_factor);
+                MajorIndex.Instance.KosdaqForeignNetBuy += (int)(t.x[t.nrow - 1, 5] * money_factor);
+                MajorIndex.Instance.KosdaqBuyPower = (int)(t.x[t.nrow - 1, 8] * g.kosdaq_mixed.weight[i]);
+                MajorIndex.Instance.KosdaqSellPower = (int)(t.x[t.nrow - 1, 9] * g.kosdaq_mixed.weight[i]);
             }
         }
 
@@ -1078,7 +1078,7 @@ namespace New_Tradegy.Library
             int rise_count = 0;
             for (int i = check_row; i >= 1; i--)
             {
-                if (i >= MarketData.MinuteArraySize)
+                if (i >= MajorIndex.MinuteArraySize)
                     break;
 
                 if (o.x[i, 1] - o.x[i - 1, 1] > 0) // || o.x[i, 8] - o.x[i, 9] > 0)
@@ -1759,7 +1759,7 @@ namespace New_Tradegy.Library
                 else
                     return;
 
-                for (int i = 0; i < MarketData.MinuteArraySize - 1; i++)
+                for (int i = 0; i < MajorIndex.MinuteArraySize - 1; i++)
                 {
                     if (check_row - i - 1 < 0)
                         break;
@@ -1782,10 +1782,10 @@ namespace New_Tradegy.Library
                 if (o.일평균거래량 == 0 || o.전일종가 == 0)
                     return;
 
-                int SelectedTickSequence = MarketData.TickArraySize - 1; // if not found, use the last time 
+                int SelectedTickSequence = MajorIndex.TickArraySize - 1; // if not found, use the last time 
 
                 double elapsed_seconds = 0;
-                for (int i = 1; i < MarketData.TickArraySize; i++) // MDF 2023 0301 g.array_size = 30
+                for (int i = 1; i < MajorIndex.TickArraySize; i++) // MDF 2023 0301 g.array_size = 30
                 {
                     if (o.틱의시간[i] == 0) // no data for the tick, i.e. not downloaded yet
                     {
@@ -1842,7 +1842,7 @@ namespace New_Tradegy.Library
                 }
 
                 if (SelectedTickSequence == 0)
-                    SelectedTickSequence = MarketData.TickArraySize - 1;
+                    SelectedTickSequence = MajorIndex.TickArraySize - 1;
 
 
                 if (SelectedTickSequence > 0) // more than one tick

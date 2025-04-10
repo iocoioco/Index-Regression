@@ -1701,8 +1701,8 @@ class mm
         {
             for (int i = 0; i < 3; i++)
             {
-                tick_minute_string += ((int)(MarketData.Instance.KospiTickBuyPower[i])).ToString() + "/" + //ToString("0.#");
-                        ((int)(MarketData.Instance.KospiTickSellPower[i])).ToString() + "  ";
+                tick_minute_string += ((int)(MajorIndex.Instance.KospiTickBuyPower[i])).ToString() + "/" + //ToString("0.#");
+                        ((int)(MajorIndex.Instance.KospiTickSellPower[i])).ToString() + "  ";
             }
             tick_minute_string += "\n";
         }
@@ -1710,8 +1710,8 @@ class mm
         {
             for (int i = 0; i < 3; i++)
             {
-                tick_minute_string += ((int)(MarketData.Instance.KospiTickSellPower[i])).ToString() + "/" + //ToString("0.#");
-                        ((int)(MarketData.Instance.KospiTickBuyPower[i])).ToString() + "  ";
+                tick_minute_string += ((int)(MajorIndex.Instance.KospiTickSellPower[i])).ToString() + "/" + //ToString("0.#");
+                        ((int)(MajorIndex.Instance.KospiTickBuyPower[i])).ToString() + "  ";
             }
             tick_minute_string += "\n";
         }
@@ -1720,8 +1720,8 @@ class mm
         {
             for (int i = 0; i < 3; i++)
             {
-                tick_minute_string += ((int)(MarketData.Instance.KosdaqTickBuyPower[i])).ToString() + "/" + //ToString("0.#");
-                        ((int)(MarketData.Instance.KosdaqTickSellPower[i])).ToString() + "  ";
+                tick_minute_string += ((int)(MajorIndex.Instance.KosdaqTickBuyPower[i])).ToString() + "/" + //ToString("0.#");
+                        ((int)(MajorIndex.Instance.KosdaqTickSellPower[i])).ToString() + "  ";
             }
             tick_minute_string += "\n";
         }
@@ -1729,8 +1729,8 @@ class mm
         {
             for (int i = 0; i < 3; i++) // 
             {
-                tick_minute_string += ((int)(MarketData.Instance.KosdaqTickSellPower[i])).ToString() + "/" + //ToString("0.#");
-                    ((int)(MarketData.Instance.KosdaqTickBuyPower[i])).ToString() + "  ";
+                tick_minute_string += ((int)(MajorIndex.Instance.KosdaqTickSellPower[i])).ToString() + "/" + //ToString("0.#");
+                    ((int)(MajorIndex.Instance.KosdaqTickBuyPower[i])).ToString() + "  ";
             }
             tick_minute_string += "\n";
         }

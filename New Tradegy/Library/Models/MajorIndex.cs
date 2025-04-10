@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace New_Tradegy.Library.Models
 {
-    public sealed class MarketData
+    public sealed class MajorIndex
     {
-        private static readonly Lazy<MarketData> _instance = new Lazy<MarketData>(() => new MarketData());
-        public static MarketData Instance => _instance.Value;
+        private static readonly Lazy<MajorIndex> _instance = new Lazy<MajorIndex>(() => new MajorIndex());
+        public static MajorIndex Instance => _instance.Value;
 
-        private MarketData() { }
+        private MajorIndex() { }
 
         public const int TickArraySize = 60; // const static implicitly
         public const int MinuteArraySize = 15; // const static implicitly

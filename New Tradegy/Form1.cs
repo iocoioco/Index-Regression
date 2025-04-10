@@ -15,6 +15,7 @@ using static New_Tradegy.Library.sc;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
+using System.Text;
 
 //using NLog;
 
@@ -79,11 +80,32 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            g.Repository = new StockRepository();
-            g.StockManager = new StockManager(g.Repository);
+            StockRepository Repository = StockRepository.Instance;
+            g.StockManager = new StockManager(Repository);
+          
+            rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
+            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
+            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
+
+            g.StockManager.AddIfMissing(new[] {
+                "KODEX 레버리지",
+                "KODEX 200선물인버스2X",
+                "KODEX 코스닥150레버리지",
+                "KODEX 코스닥150선물인버스"
+            });
+
+            g.StockManager.AddIfMissing(File.ReadAllLines(@"C:\병신\DataStockSelected\StockSelection.txt",
+                Encoding.UTF8).ToList());
+
+            g.GroupManager = new GroupManager(); // group data is loaded into 
+            var groups = GroupRepository.LoadGroups();
+            GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt");
+
+
             g.ChartManager = new ChartManager();
             g.ChartManager.SetChart1(chart1);
-              
+            
+
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
 
@@ -310,10 +332,10 @@ namespace New_Tradegy // added for test on 20241020 0300
                                 if (_cpsvrnew7222.BlockRequest() == 0)
                                 {
                                     //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
-                                    MarketData.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                                    MarketData.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
-                                    MarketData.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
-                                    MarketData.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
+                                    MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+                                    MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
+                                    MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
+                                    MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
                                     //int KOSPI = (int)_cpsvrnew7222.GetDataValue(1, 0);
                                     //Logger.Info($"KOSPI: {KOSPI}");
                                     success = true;
@@ -402,11 +424,11 @@ namespace New_Tradegy // added for test on 20241020 0300
                             {
                                 if (_cpsvrnew7222.BlockRequest() == 0)
                                 {
-                                    MarketData.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+                                    MajorIndex.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
                                     //MarketData.Instance.KosdaqForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED); //
-                                    MarketData.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
-                                    MarketData.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
-                                    MarketData.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
+                                    MajorIndex.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
+                                    MajorIndex.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
+                                    MajorIndex.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
                                     //int KOSDAQ = (int)_cpsvrnew7222.GetDataValue(1, 0);
                                     //Logger.Info($"KOSDAQ: {KOSDAQ}");
                                     success = true;
@@ -696,11 +718,11 @@ namespace New_Tradegy // added for test on 20241020 0300
                     if (_cpsvrnew7222.BlockRequest() == 0)
                     {
                         //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
-                        MarketData.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+                        MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
                         // MarketData.Instance.KospiForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
-                        MarketData.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
-                        MarketData.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
-                        MarketData.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
+                        MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
+                        MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
+                        MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
                     }
                 }
 
@@ -714,11 +736,11 @@ namespace New_Tradegy // added for test on 20241020 0300
                 {
                     if (_cpsvrnew7222.BlockRequest() == 0)
                     {
-                        MarketData.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                        //MarketData.Instance.KosdaqForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED); //
-                        MarketData.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
-                        MarketData.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
-                        MarketData.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
+                        MajorIndex.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+                        //MajorIndex.Instance.KosdaqForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED); //
+                        MajorIndex.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
+                        MajorIndex.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
+                        MajorIndex.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
                     }
                 }
             }

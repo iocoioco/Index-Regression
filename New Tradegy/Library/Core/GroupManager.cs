@@ -10,12 +10,15 @@ namespace New_Tradegy.Library.Core
     public class GroupManager
     {
         private List<GroupData> _groups = new List<GroupData>();
-        private GroupRepository _repository;
 
-        public GroupManager(GroupRepository repository)
+        public GroupManager()
         {
-            _repository = repository;
-            _groups = _repository.LoadGroups(); // Load at start
+            _groups = GroupRepository.LoadGroups(); // Use static directly
+        }
+
+        public void Save()
+        {
+            GroupRepository.SaveGroups(_groups); // Use static directly
         }
 
         public List<GroupData> GetAll() => _groups;
@@ -35,10 +38,7 @@ namespace New_Tradegy.Library.Core
             _groups = _groups.OrderByDescending(g => g.TotalScore).ToList();
         }
 
-        public void Save()
-        {
-            _repository.SaveGroups(_groups);
-        }
+ 
     }
 
 }

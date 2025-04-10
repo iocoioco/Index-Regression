@@ -125,14 +125,14 @@ namespace New_Tradegy
             // Row 1
             g.제어.dtb.Rows[1][0] = 0; // initial setting of deal_profit;
             g.제어.dtb.Rows[1][1] = ""; // (int)usd_krw; 
-            g.제어.dtb.Rows[1][2] = MarketData.Instance.NasdaqIndex;
-            g.제어.dtb.Rows[1][3] = MarketData.Instance.Snp500Index;
+            g.제어.dtb.Rows[1][2] = MajorIndex.Instance.NasdaqIndex;
+            g.제어.dtb.Rows[1][3] = MajorIndex.Instance.Snp500Index;
 
             // Row 2
 
             g.제어.dtb.Rows[2][0] = ""; //상해
             g.제어.dtb.Rows[2][1] = ""; // 홍콩
-            g.제어.dtb.Rows[2][2] = MarketData.Instance.NikkeiIndex;
+            g.제어.dtb.Rows[2][2] = MajorIndex.Instance.NikkeiIndex;
             g.제어.dtb.Rows[2][2] = ""; // 대만가권
 
 

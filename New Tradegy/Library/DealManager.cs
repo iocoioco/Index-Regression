@@ -253,7 +253,7 @@ namespace New_Tradegy.Library
 
                 for (int i = 0; i < int.Parse(_cptd5339.GetHeaderValue(5).ToString()); i++)
                 {
-                    OrderItem item = new OrderItem();
+                    OD item = new OD();
                     item.stock = (string)_cptd5339.GetDataValue(4, i); // 종목명
                     item.m_ordKey = (int)_cptd5339.GetDataValue(1, i); // 주문번호
                     item.m_ordOrgKey = (int)_cptd5339.GetDataValue(2, i);
@@ -444,7 +444,7 @@ namespace New_Tradegy.Library
             DealCancelOrder(data);
         }
 
-        public static void DealCancelOrder(OrderItem data)
+        public static void DealCancelOrder(OD data)
         {
             if (!g.connected)
                 return;

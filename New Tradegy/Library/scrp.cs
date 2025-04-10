@@ -336,19 +336,19 @@ namespace New_Tradegy.Library
 
                     // Parse the indices data and update variables
                     if (float.TryParse(table[1][7].Trim('%'), out float SP_지수))
-                        MarketData.Instance.Snp500Index = SP_지수;
+                        MajorIndex.Instance.Snp500Index = SP_지수;
 
                     if (float.TryParse(table[2][7].Trim('%'), out float Nasdaq_지수))
-                        MarketData.Instance.NasdaqIndex = Nasdaq_지수;
+                        MajorIndex.Instance.NasdaqIndex = Nasdaq_지수;
 
                     // Update the global data table
-                    if(g.제어.dtb.Rows[1][2].ToString() != MarketData.Instance.NasdaqIndex.ToString())
+                    if(g.제어.dtb.Rows[1][2].ToString() != MajorIndex.Instance.NasdaqIndex.ToString())
                     {
-                        g.제어.dtb.Rows[1][2] = MarketData.Instance.NasdaqIndex.ToString();
+                        g.제어.dtb.Rows[1][2] = MajorIndex.Instance.NasdaqIndex.ToString();
                     }
-                    if (g.제어.dtb.Rows[1][3].ToString() != MarketData.Instance.Snp500Index.ToString())
+                    if (g.제어.dtb.Rows[1][3].ToString() != MajorIndex.Instance.Snp500Index.ToString())
                     {
-                        g.제어.dtb.Rows[1][3] = MarketData.Instance.Snp500Index.ToString();
+                        g.제어.dtb.Rows[1][3] = MajorIndex.Instance.Snp500Index.ToString();
                     }
 
                     DateTime date = DateTime.Now;
@@ -409,7 +409,7 @@ namespace New_Tradegy.Library
                 if (append_or_replace_row >= g.MAX_ROW)
                     return;
 
-                o.x[append_or_replace_row, 10] = (int)(MarketData.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
+                o.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
             }
         }
 
@@ -462,13 +462,13 @@ namespace New_Tradegy.Library
 
                 // Parse and update indices
                 if (float.TryParse(table[32][6].Trim('%'), out float val1))
-                    MarketData.Instance.ShanghaiIndex = val1;
+                    MajorIndex.Instance.ShanghaiIndex = val1;
 
                 if (float.TryParse(table[36][6].Trim('%'), out float val2))
-                    MarketData.Instance.HangSengIndex = val2;
+                    MajorIndex.Instance.HangSengIndex = val2;
 
                 if (float.TryParse(table[29][6].Trim('%'), out float val3))
-                    MarketData.Instance.NikkeiIndex = val3;
+                    MajorIndex.Instance.NikkeiIndex = val3;
 
 
 
@@ -477,19 +477,19 @@ namespace New_Tradegy.Library
                 float.TryParse(t, out 대만가권);
 
                 // Update global data table
-                if (g.제어.dtb.Rows[2][0].ToString() != MarketData.Instance.ShanghaiIndex.ToString())
+                if (g.제어.dtb.Rows[2][0].ToString() != MajorIndex.Instance.ShanghaiIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][0] = MarketData.Instance.ShanghaiIndex.ToString();
+                    g.제어.dtb.Rows[2][0] = MajorIndex.Instance.ShanghaiIndex.ToString();
                 }
 
-                if (g.제어.dtb.Rows[2][1].ToString() != MarketData.Instance.HangSengIndex.ToString())
+                if (g.제어.dtb.Rows[2][1].ToString() != MajorIndex.Instance.HangSengIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][1] = MarketData.Instance.HangSengIndex.ToString();
+                    g.제어.dtb.Rows[2][1] = MajorIndex.Instance.HangSengIndex.ToString();
                 }
 
-                if (g.제어.dtb.Rows[2][2].ToString() != MarketData.Instance.NikkeiIndex.ToString())
+                if (g.제어.dtb.Rows[2][2].ToString() != MajorIndex.Instance.NikkeiIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][2] = MarketData.Instance.NikkeiIndex.ToString();
+                    g.제어.dtb.Rows[2][2] = MajorIndex.Instance.NikkeiIndex.ToString();
                 }
 
                 if (g.제어.dtb.Rows[2][3].ToString() != 대만가권.ToString())

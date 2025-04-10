@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.g.stock_data;
+using System.Collections.Concurrent;
 
 namespace New_Tradegy.Library
 {
@@ -374,7 +375,7 @@ namespace New_Tradegy.Library
         }
 
 
-        public static bool gen_ogl_data(string stock)
+        public static bool gen_ogl_data(string stock, ConcurrentDictionary<string, double> map)
         {
             if (rd.read_단기과열(stock))
                 return false;
@@ -405,17 +406,11 @@ namespace New_Tradegy.Library
             if (o.code.Length != 7 || (o.전일종가 = rd.read_전일종가(stock)) < 1000) // 전일종가 1,000 이상 
                 return false;
 
-           
-
-
-
-
-            o.시총 = rd.read_시총(stock) / 100; // 시총 값 부정확 점검필요 
+            o.시총 = (map.TryGetValue(stock, out var value) ? value : -1) / 100; // 시총 값 부정확 점검필요 
             if (o.시총 == -1)
             {
                 return false;
             }
-                
 
             o.전일거래액_천만원 = rd.read_전일종가_전일거래액_천만원(stock);
             if (o.전일거래액_천만원 == -1)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
+using New_Tradegy.Library;
 
 namespace New_Tradegy
 {
@@ -24,7 +25,7 @@ namespace New_Tradegy
 
         public void UpdateTick(string stock, double[] newTickPro)
         {
-            var data = _repository.Get(stock);
+            var data = _repository.GetOrThrow(stock);
             if (data == null) return;
 
             Array.Copy(newTickPro, data.Reflection.ProgramK, Math.Min(newTickPro.Length, data.Reflection.ProgramK.Length));
@@ -32,7 +33,7 @@ namespace New_Tradegy
 
         public double GetTotalScore(string stock)
         {
-            var data = _repository.Get(stock);
+            var data = _repository.GetOrThrow(stock);
             return data?.Score.총점 ?? 0.0;
         }
 
@@ -47,8 +48,8 @@ namespace New_Tradegy
 
         public void UpdateRankingByTotalScore()
         {
-            var all = _repository.GetAll();
-            RankingList = RankingLogic
+            var all = _repository.AllDatas;
+            RankingList = RankLogic
                 .RankByTotalScore(all)
                 .Select(s => s.Stock)
                 .ToList();

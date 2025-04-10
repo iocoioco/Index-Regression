@@ -35,12 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLineProgram">
-      <HintPath>..\..\MyMedialLite\MyMediaLite-3.11\MyMediaLite-3.11\lib\mymedialite\CommandLineProgram.dll</HintPath>
-    </Reference>
-    <Reference Include="glbl">
-      <HintPath>..\glbl\bin\Debug\netstandard2.0\glbl.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.71.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.71\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -50,17 +44,11 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="MyMediaLite">
-      <HintPath>..\..\MyMedialLite\MyMediaLite-3.11\MyMediaLite-3.11\lib\mymedialite\MyMediaLite.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.5.3.4\lib\net46\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="oper">
-      <HintPath>..\oper\bin\Debug\netstandard2.0\oper.dll</HintPath>
     </Reference>
     <Reference Include="SeleniumExtras.WaitHelpers, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetSeleniumExtras.WaitHelpers.3.11.0\lib\net45\SeleniumExtras.WaitHelpers.dll</HintPath>
@@ -113,9 +101,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="WebDriver, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Selenium.WebDriver.4.27.0\lib\netstandard2.0\WebDriver.dll</HintPath>
-    </Reference>
-    <Reference Include="work">
-      <HintPath>..\work\bin\Debug\netstandard2.0\work.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -180,9 +165,9 @@
     <Compile Include="Library\cncl.cs" />
     <Compile Include="Library\Core\GroupManager.cs" />
     <Compile Include="Library\Core\GroupRepository.cs" />
-    <Compile Include="Library\Core\RankingLogic.cs" />
+    <Compile Include="Library\Core\StockManager.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
-    <Compile Include="Library\Core\TradingEngine.cs" />
+    <Compile Include="Library\Core\TradingEngline.cs" />
     <Compile Include="Library\DealManager.cs" />
     <Compile Include="Library\eval.cs" />
     <Compile Include="Library\form.cs" />
@@ -191,15 +176,15 @@
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\mdm.cs" />
     <Compile Include="Library\Models\GroupData.cs" />
-    <Compile Include="Library\Models\MarketData.cs" />
+    <Compile Include="Library\Models\MajorIndex.cs" />
     <Compile Include="Library\Models\OrderItem.cs" />
     <Compile Include="Library\Models\StockData.cs" />
+    <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\Trackers\ChartHandler.cs" />
     <Compile Include="Library\Trackers\ChartManager.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
     <Compile Include="Library\Order_processor.cs" />
     <Compile Include="Library\Real Intensity Calculation.cs" />
-    <Compile Include="Library\StockData.cs" />
     <Compile Include="Library\StockExchange.cs" />
     <Compile Include="Library\temp_ModallessForm_매수_매도.cs" />
     <Compile Include="Library\sell.cs" />
@@ -234,7 +219,6 @@
     <Compile Include="Library\mkey.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Library\Core\StockManager.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>

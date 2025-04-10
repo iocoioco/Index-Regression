@@ -426,23 +426,23 @@ namespace New_Tradegy
                 // 7 거래량, 8 매수배, 9 매도배, 10 Nasdaq_지수, 11 연기금순매수액(억)
                 if (o.stock.Contains("KODEX 레버리지") || o.stock.Contains("KODEX 200선물인버스2X")) // full
                 {
-                    t[3] = (int)MarketData.Instance.KospiProgramNetBuy +  // 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
-                           (int)MarketData.Instance.KospiForeignNetBuy;
-                    t[4] = (int)MarketData.Instance.KospiInstitutionNetBuy; // from cpsvrnew7222
-                    t[5] = (int)MarketData.Instance.KospiForeignNetBuy; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
-                    t[6] = (int)MarketData.Instance.KospiRetailNetBuy; // from cpsvrnew7222
-                    t[10] = (int)(MarketData.Instance.NasdaqIndex * g.THOUSAND);
-                    t[11] = (int)MarketData.Instance.KospiPensionNetBuy; // From cpsvrnew7222
+                    t[3] = (int)MajorIndex.Instance.KospiProgramNetBuy +  // 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
+                           (int)MajorIndex.Instance.KospiForeignNetBuy;
+                    t[4] = (int)MajorIndex.Instance.KospiInstitutionNetBuy; // from cpsvrnew7222
+                    t[5] = (int)MajorIndex.Instance.KospiForeignNetBuy; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[6] = (int)MajorIndex.Instance.KospiRetailNetBuy; // from cpsvrnew7222
+                    t[10] = (int)(MajorIndex.Instance.NasdaqIndex * g.THOUSAND);
+                    t[11] = (int)MajorIndex.Instance.KospiPensionNetBuy; // From cpsvrnew7222
                 }
                 else if (o.stock.Contains("KODEX 코스닥150레버리지") || o.stock.Contains("KODEX 코스닥150선물인버스")) // full
                 {
-                    t[3] = (int)MarketData.Instance.KosdaqProgramNetBuy +  // 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
-                           (int)MarketData.Instance.KosdaqForeignNetBuy; // t[3] : 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
-                    t[4] = (int)MarketData.Instance.KosdaqInstitutionNetBuy; // from cpsvrnew7222
-                    t[5] = (int)MarketData.Instance.KosdaqForeignNetBuy; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
-                    t[6] = (int)MarketData.Instance.KosdaqRetailNetBuy; // from cpsvrnew7222
-                    t[10] = (int)(MarketData.Instance.NasdaqIndex * g.THOUSAND);  // was MarketData.Instance.KosdaqInvestmentNetBuy;
-                    t[11] = (int)MarketData.Instance.KosdaqPensionNetBuy; // from cpsvrnew7222
+                    t[3] = (int)MajorIndex.Instance.KosdaqProgramNetBuy +  // 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
+                           (int)MajorIndex.Instance.KosdaqForeignNetBuy; // t[3] : 지수 종목 프로 + 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[4] = (int)MajorIndex.Instance.KosdaqInstitutionNetBuy; // from cpsvrnew7222
+                    t[5] = (int)MajorIndex.Instance.KosdaqForeignNetBuy; // 지수 종목 외인 매수합, post_지수_프외()에서 시간대별 계산
+                    t[6] = (int)MajorIndex.Instance.KosdaqRetailNetBuy; // from cpsvrnew7222
+                    t[10] = (int)(MajorIndex.Instance.NasdaqIndex * g.THOUSAND);  // was MarketData.Instance.KosdaqInvestmentNetBuy;
+                    t[11] = (int)MajorIndex.Instance.KosdaqPensionNetBuy; // from cpsvrnew7222
                 }
                 else // 일반, 10 수급연속, 11 체강연속 below
                 {
@@ -519,7 +519,7 @@ namespace New_Tradegy
 
                 double money_factor = o.전일종가 / g.천만원;
                 // shift tick data[i]
-                for (int i = MarketData.TickArraySize - 1; i >= 1; i--) // marketeye_receive
+                for (int i = MajorIndex.TickArraySize - 1; i >= 1; i--) // marketeye_receive
                 {
                     o.틱의시간[i] = o.틱의시간[i - 1];
                     o.틱의가격[i] = o.틱의가격[i - 1];
@@ -579,7 +579,7 @@ namespace New_Tradegy
                 // minute data[0] calculated in post_minute for both testing and real
                 if (append)
                 {
-                    for (int i = MarketData.MinuteArraySize - 1; i >= 2; i--) // marketeye_receive
+                    for (int i = MajorIndex.MinuteArraySize - 1; i >= 2; i--) // marketeye_receive
                     {
                         o.분프로천[i] = o.분프로천[i - 1];
                         o.분외인천[i] = o.분외인천[i - 1];
@@ -619,12 +619,12 @@ namespace New_Tradegy
 
             int index = wk.return_index_of_ogldata("KODEX 레버리지");
             g.stock_data q = g.ogl_data[index];
-            MarketData.Instance.KospiIndex = q.x[q.nrow - 1, 1];
+            MajorIndex.Instance.KospiIndex = q.x[q.nrow - 1, 1];
             KospiIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kospi"); //
 
             index = wk.return_index_of_ogldata("KODEX 코스닥150레버리지");
             q = g.ogl_data[index];
-            MarketData.Instance.KosdaqIndex = q.x[q.nrow - 1, 1];
+            MajorIndex.Instance.KosdaqIndex = q.x[q.nrow - 1, 1];
             KosdaqIndexRangeTrack.CheckIndexAndSound(q.x[q.nrow - 1, 1], "Kosdaq"); //
 
             ps.post_코스닥_코스피_프외_순매수_배차_합산();
@@ -697,13 +697,13 @@ namespace New_Tradegy
             }
             // 0, 1, 2, 3, 7, 8, 9 used upside
             // 4, 5, 6, 10, 11 used down below
-            t[4] = MarketData.Instance.ShanghaiIndex * g.HUNDRED;
-            t[5] = MarketData.Instance.HangSengIndex * g.HUNDRED;
-            t[6] = MarketData.Instance.NikkeiIndex * g.HUNDRED;
+            t[4] = MajorIndex.Instance.ShanghaiIndex * g.HUNDRED;
+            t[5] = MajorIndex.Instance.HangSengIndex * g.HUNDRED;
+            t[6] = MajorIndex.Instance.NikkeiIndex * g.HUNDRED;
             //t[8] = 매수배; // no need to multiply g.TEN, each item already multiplied
             //t[9] = 매도배; // no need to multiply g.TEN, each item already multiplied
-            t[10] = (int)(MarketData.Instance.Snp500Index * g.HUNDRED);
-            t[11] = (int)(MarketData.Instance.NasdaqIndex * g.HUNDRED);
+            t[10] = (int)(MajorIndex.Instance.Snp500Index * g.HUNDRED);
+            t[11] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED);
 
             int mixed_index = wk.return_index_of_ogldata(mixed_stock);
             if (mixed_index < 0)
@@ -736,17 +736,17 @@ namespace New_Tradegy
             }
 
             // 틱  배수만 우선 정리
-            for (int i = MarketData.TickArraySize - 1; i >= 1; i--) // marketeye_receive
+            for (int i = MajorIndex.TickArraySize - 1; i >= 1; i--) // marketeye_receive
             {
                 if (mixed_stock.Contains("코스피혼합"))
                 {
-                    MarketData.Instance.KospiTickBuyPower[i] = MarketData.Instance.KospiTickBuyPower[i - 1];
-                    MarketData.Instance.KospiTickSellPower[i] = MarketData.Instance.KospiTickSellPower[i - 1];
+                    MajorIndex.Instance.KospiTickBuyPower[i] = MajorIndex.Instance.KospiTickBuyPower[i - 1];
+                    MajorIndex.Instance.KospiTickSellPower[i] = MajorIndex.Instance.KospiTickSellPower[i - 1];
                 }
                 if (mixed_stock.Contains("코스닥혼합"))
                 {
-                    MarketData.Instance.KosdaqTickBuyPower[i] = MarketData.Instance.KosdaqTickBuyPower[i - 1];
-                    MarketData.Instance.KosdaqTickSellPower[i] = MarketData.Instance.KosdaqTickSellPower[i - 1];
+                    MajorIndex.Instance.KosdaqTickBuyPower[i] = MajorIndex.Instance.KosdaqTickBuyPower[i - 1];
+                    MajorIndex.Instance.KosdaqTickSellPower[i] = MajorIndex.Instance.KosdaqTickSellPower[i - 1];
                 }
             }
 
@@ -754,13 +754,13 @@ namespace New_Tradegy
             // 현재의 틱 값에 다시 저장하여야 하므로 주의
             if (mixed_stock.Contains("코스피혼합"))
             {
-                MarketData.Instance.KospiTickBuyPower[0] = tick_매수배;
-                MarketData.Instance.KospiTickSellPower[0] = tick_매도배;
+                MajorIndex.Instance.KospiTickBuyPower[0] = tick_매수배;
+                MajorIndex.Instance.KospiTickSellPower[0] = tick_매도배;
             }
             if (mixed_stock.Contains("코스닥혼합"))
             {
-                MarketData.Instance.KosdaqTickBuyPower[0] = tick_매수배;
-                MarketData.Instance.KosdaqTickSellPower[0] = tick_매도배;
+                MajorIndex.Instance.KosdaqTickBuyPower[0] = tick_매수배;
+                MajorIndex.Instance.KosdaqTickSellPower[0] = tick_매도배;
             }
         }
 

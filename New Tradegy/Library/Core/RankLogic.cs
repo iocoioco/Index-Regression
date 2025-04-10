@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Core
 {
-    public static class RankingLogic
+    public static class RankLogic
     {
         public static List<StockData> RankByTotalScore(IEnumerable<StockData> stocks)
         {
@@ -19,7 +20,7 @@ namespace New_Tradegy.Library.Core
         public static List<StockData> RankByProgramAmount(IEnumerable<StockData> stocks)
         {
             return stocks
-                .OrderByDescending(s => s.TickData.틱프로천.Sum())
+                .OrderByDescending(s => s.API.틱프로천.Sum())
                 .Take(50)
                 .ToList();
         }

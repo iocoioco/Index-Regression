@@ -660,8 +660,8 @@ namespace New_Tradegy.Library
                 // 일반 - 프누억
                 if (g.KODEX4.Contains(Stock))
                 {
-                    Dtb.Rows[Rows - 2][2] = (MarketData.Instance.KospiIndex / 100.0).ToString("0.##"); ;
-                    Dtb.Rows[Rows - 1][2] = (MarketData.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
+                    Dtb.Rows[Rows - 2][2] = (MajorIndex.Instance.KospiIndex / 100.0).ToString("0.##"); ;
+                    Dtb.Rows[Rows - 1][2] = (MajorIndex.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
                 }
                 else
                 {
@@ -747,8 +747,8 @@ namespace New_Tradegy.Library
             // 프누억
             if (Stock.Contains("KODEX"))
             {
-                Dtb.Rows[Rows - 2][2] = (MarketData.Instance.KospiIndex / 100.0).ToString("0.##"); ;
-                Dtb.Rows[Rows - 1][2] = (MarketData.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
+                Dtb.Rows[Rows - 2][2] = (MajorIndex.Instance.KospiIndex / 100.0).ToString("0.##"); ;
+                Dtb.Rows[Rows - 1][2] = (MajorIndex.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
             }
             else
             {
