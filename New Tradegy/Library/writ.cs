@@ -1,4 +1,5 @@
-﻿using System;
+﻿using New_Tradegy.Library.Core;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -34,52 +35,53 @@ namespace New_Tradegy.Library
             e.ThrowException = false;
         }
 
+
+        // modified by Sensei
         public static async Task SaveAllStocks()
         {
-
-          if (g.test) // never save during test
-                return;
+            if (g.test)
+                return; // ❌ Don't save during test mode
 
             rd.read_write_kodex_magnifier("write");
 
-            string directory = @"C:\병신\분" + "\\" + g.date.ToString();
-            Directory.CreateDirectory(directory); //if Exist, will pass
+            string directory = $@"C:\병신\분\{g.date}";
+            Directory.CreateDirectory(directory);
 
-            for (int i = 0; i < g.ogl_data.Count; i++)
+            foreach (var t in StockRepository.Instance.AllDatas)
             {
-                g.stock_data t = g.ogl_data[i];
+                string file = Path.Combine(directory, t.Stock + ".txt");
 
-                string file = directory + "\\" + t.stock + ".txt";
-                if (File.Exists(file)) // if file not exist, create new
-                {
-                    File.Delete(file);
-                }
-                int lastRow = 381;      // int lastRow = x.GetUpperBound(0);
-                int lastColumn = 11;   //  int lastColumn = x.GetUpperBound(1);
+                if (File.Exists(file))
+                    File.Delete(file); // clean slate
 
-                string str = "";
-                for (int j = 0; j <= lastRow; j++) // bound exist not the size
+                StringBuilder sb = new StringBuilder();
+                int lastRow = 381;
+                int lastColumn = 11;
+
+                for (int j = 0; j <= lastRow; j++)
                 {
-                    if (t.x[j, 0] == 0 || t.x[j, 0] > 152100) // if time is not set then stop writing
+                    if (t.API.x[j, 0] == 0 || t.API.x[j, 0] > 152100)
                         break;
 
-                    for (int k = 0; k <= lastColumn; k++) // bound exist not the size
+                    for (int k = 0; k <= lastColumn; k++)
                     {
-                        if (k == 0)
-                            str += t.x[j, k];
-
-                        else
-                            str += "\t" + t.x[j, k];
+                        if (k > 0)
+                            sb.Append('\t');
+                        sb.Append(t.API.x[j, k]);
                     }
-                    str += "\n";
+
+                    sb.AppendLine();
                 }
-                File.WriteAllText(file, str);
+
+                File.WriteAllText(file, sb.ToString());
             }
 
             mc.Sound("일반", "done");
+            await Task.CompletedTask; // async compliance
         }
 
-        
+
+
 
         public static void append(string path, string t)
         {

@@ -163,6 +163,7 @@
     <Compile Include="Library\buys.cs" />
     <Compile Include="Library\clic.cs" />
     <Compile Include="Library\cncl.cs" />
+    <Compile Include="Library\Core\BatchSelector.cs" />
     <Compile Include="Library\Core\GroupManager.cs" />
     <Compile Include="Library\Core\GroupRepository.cs" />
     <Compile Include="Library\Core\StockManager.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Library\Models\OrderItem.cs" />
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
+    <Compile Include="Library\temp.cs" />
     <Compile Include="Library\Trackers\ChartHandler.cs" />
     <Compile Include="Library\Trackers\ChartManager.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />

@@ -14,6 +14,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.g.stock_data;
 using System.Collections.Concurrent;
+using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library
 {
@@ -191,24 +193,25 @@ namespace New_Tradegy.Library
 
         public static bool isWorkingHour()
         {
-            DateTime date = DateTime.Now;
-            int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
-            int datenow = Convert.ToInt32(DateTime.Now.ToString("yyyyMMdd"));
-            if (g.date != datenow)
+            DateTime now = DateTime.Now;
+
+            // ⏰ Market date check
+            int currentDate = Convert.ToInt32(now.ToString("yyyyMMdd"));
+            if (g.date != currentDate)
                 return false;
 
-            if (HHmm < 800 || HHmm > 1530) // 시작시간 0900
+            // 📆 Skip weekends
+            if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
                 return false;
 
-            //if (HHmm < 1000 || HHmm > 1630) // 시작시간 1000
-            //    return false;
-
-            if (date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday)
+            // 🕘 Market hours (adjust as needed)
+            int HHmm = now.Hour * 100 + now.Minute;
+            if (HHmm < 800 || HHmm > 1530)
                 return false;
 
-            else
-                return true;
+            return true;
         }
+
 
         public static bool isStock(string stock)
         {
@@ -374,8 +377,67 @@ namespace New_Tradegy.Library
             return dgv_stock;
         }
 
-
         public static bool gen_ogl_data(string stock, ConcurrentDictionary<string, double> map)
+        {
+            if (rd.read_단기과열(stock))
+                return false;
+
+            int days = 20;
+            if (!종목일중변동자료계산(stock, days, out double 일간변동평균, out double 일간변동편차,
+                out int 일평균거래액, out int 일최저거래액, out int 일최대거래액, out ulong 일평균거래량, out string 일간변동평균편차) ||
+                일최대거래액 < 30 || string.IsNullOrEmpty(일간변동평균편차))
+            {
+                return false;
+            }
+
+            var cpStockCode = new CPUTILLib.CpStockCode();
+            string code = cpStockCode.NameToCode(stock);
+            long 전일종가 = rd.read_전일종가(stock);
+            if (code.Length != 7 || 전일종가 < 1000)
+                return false;
+
+            if (!map.TryGetValue(stock, out var 시총값))
+                return false;
+
+            double 전일거래액_천만원 = rd.read_전일종가_전일거래액_천만원(stock);
+            if (전일거래액_천만원 == -1)
+                return false;
+
+            char 시장구분 = rd.read_코스피코스닥시장구분(stock);
+            if (시장구분 != 'S' && 시장구분 != 'D')
+                return false;
+
+            var data = new StockData
+            {
+                Stock = stock
+            };
+
+            // 🧮 Set values into Statistics
+            data.Statistics.일간변동평균 = 일간변동평균;
+            data.Statistics.일간변동편차 = 일간변동편차;
+            data.Statistics.일평균거래액 = 일평균거래액;
+            data.Statistics.일최저거래액 = 일최저거래액;
+            data.Statistics.일최대거래액 = 일최대거래액;
+            data.Statistics.일평균거래량 = 일평균거래량;
+            data.Statistics.일간변동평균편차 = 일간변동평균편차;
+            data.Statistics.시장구분 = 시장구분;
+            data.Statistics.시총 = 시총값 / 100.0;
+
+            // 📊 API section (전일종가 + calculated 전일거래액_천만원)
+            data.API.전일종가 = 전일종가;
+            data.API.전일거래액_천만원 = 전일거래액_천만원;
+
+            // 📌 Set default Score
+            data.Score.그순 = 1000;
+
+            // 🗃️ Save to repository
+            StockRepository.Instance.AddOrUpdate(stock, data);
+
+            return true;
+        }
+
+
+        public static bool gen_ogl_data_old(string stock, ConcurrentDictionary<string, double> map)
         {
             if (rd.read_단기과열(stock))
                 return false;

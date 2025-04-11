@@ -466,9 +466,11 @@ namespace New_Tradegy.Library
             rd.read_절친();
 
 
+            var sortedList = StockRepository.Instance
+    .AllDatas
+    .OrderByDescending(x => x.API.전일거래액_천만원)
+    .ToList();
 
-
-            g.ogl_data = g.ogl_data.OrderByDescending(x => x.전일거래액_천만원).ToList();
 
             foreach (var item in g.ogl_data)
             {
@@ -482,76 +484,6 @@ namespace New_Tradegy.Library
             rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
         }
 
-
-        public static void gen_ogldata_oGLdata_old()
-        {
-
-            List<string> tgl_title = new List<string>();
-            List<List<string>> tgl = new List<List<string>>();
-
-
-            if (!g.shortform)
-            {
-                g.StockManager.AddIfMissing(rd.read_그룹_네이버_업종()); // replaces total_stock_list = ...
-            }
-
-            rd.read_상관(tgl_title, tgl, g.StockManager.TotalStockList); // duration 1.3 seconds
-
-            rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
-
-
-
-            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
-            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
-            g.StockManager.AddIfMissing(new[] {
-                "KODEX 레버리지",
-                "KODEX 200선물인버스2X",
-                "KODEX 코스닥150레버리지",
-                "KODEX 코스닥150선물인버스"
-            });
-
-
-
-            var 시총Map = new ConcurrentDictionary<string, double>(
-            File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
-            .Select(line => line.Trim().Split(' '))
-            .Where(parts => parts.Length >= 2)
-            .Where(parts => !parts[0].Contains("KODEX") && !parts[0].Contains("레버리지") && !parts[0].Contains("인버스"))
-            .ToDictionary(
-                parts => parts[0].Replace("_", " "),
-                parts => double.TryParse(parts[1], out var v) ? v : -1
-            ));
-
-
-            foreach (var stock in g.StockManager.TotalStockList) // StockManager.TotalStockList is used only in this method
-            {
-                wk.gen_ogl_data(stock, 시총Map);
-            }
-
-            // 통계 숫자 1200여 개 .ogl_data 숫자 1581 MODI
-
-
-
-            rd.read_통계();
-
-            rd.read_절친();
-
-
-
-
-            g.ogl_data = g.ogl_data.OrderByDescending(x => x.전일거래액_천만원).ToList();
-
-            foreach (var item in g.ogl_data)
-            {
-                g.sl.Add(item.stock);
-            }
-
-            rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.호가종목
-
-            wk.gen_oGL_data(tgl_title, tgl); // generate oGL_data
-
-            rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
-        }
 
         public static void read_파일관심종목()
         {
@@ -914,7 +846,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void ReadBestFriends(SR repository)
+        public static void ReadBestFriends(StockRepository repository)
         {
             string filePath = @"C:\병신\data\Correlation.txt";
 
