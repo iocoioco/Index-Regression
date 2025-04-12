@@ -1,18 +1,10 @@
 ﻿using CPTRADELib;
-using MathNet.Numerics.Distributions;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Threading;
-using CPSYSDIBLib;
-using System.Threading.Tasks;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Models;
 namespace New_Tradegy.Library
@@ -85,28 +77,6 @@ namespace New_Tradegy.Library
                 _checkedTradeInit = false;
             }
         }
-
-
-        //public static async Task task_deal_profit()
-        //{
-        //    while (true)
-        //    {
-        //        // Execute your deal profit logic
-        //        deal_profit();
-
-        //        // Wait asynchronously for 60 seconds (non-blocking)
-        //        await Task.Delay(60 * 1000);
-        //    }
-        //}
-
-        //public static void task_deal_profit_old()
-        //{
-        //    while (true)
-        //    {
-        //        deal_profit();
-        //        Thread.Sleep(60 * 1000);
-        //    }
-        //}
 
         public static int deal_profit()
         {

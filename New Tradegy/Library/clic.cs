@@ -1,25 +1,12 @@
 ﻿
-using CPSYSDIBLib;
-using MathNet.Numerics.Random;
-using New_Tradegy.Library;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
-using System.IO.Pipelines;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Xml.Linq;
-using static New_Tradegy.Library.g;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+
 
 namespace New_Tradegy.Library
 {
@@ -213,8 +200,125 @@ namespace New_Tradegy.Library
             // throw new Exception("Failed to get a valid price after multiple attempts.");
         }
 
+        using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
-        public static void CntlLeftRightAction(Chart chart, string selection, int row_id, int col_id)
+namespace New_Tradegy.Library
+    {
+        internal class ChartClickHandler
+        {
+            private static CPUTILLib.CpCybos _cpcybos;
+
+            public static string GetClickedStockFromChart(Chart chart, int rows, int columns, List<string> displayList, MouseEventArgs e, ref string selection, ref int cellX, ref int cellY)
+            {
+                double width = chart.Bounds.Width;
+                double height = chart.Bounds.Height;
+
+                double normX = (e.X / width) * 100.0;
+                double normY = (e.Y / height) * 100.0;
+
+                normX = Math.Clamp(normX, 0, 100);
+                normY = Math.Clamp(normY, 0, 100);
+
+                double cellWidth = 100.0 / columns;
+                cellX = (int)(normX / cellWidth);
+
+                double cellHeight = 100.0 / rows;
+                if (chart.Name == "chart1" && cellX == 0)
+                    cellHeight = 100.0 / 2.0;
+
+                cellY = (int)(normY / cellHeight);
+
+                cellX = Math.Min(cellX, columns - 1);
+                cellY = Math.Min(cellY, rows - 1);
+
+                double percentX = (normX % cellWidth) / cellWidth * 100.0;
+                double percentY = (normY % cellHeight) / cellHeight * 100.0;
+
+                selection = e.Button == MouseButtons.Left ? "l" : "r";
+
+                int section = 9;
+                if (percentX > 66.66)
+                    section = percentY switch
+                    {
+                        < 33.33 => 1,
+                        < 66.66 => 4,
+                        _ => 7
+                    };
+                else if (percentX > 33.33)
+                    section = percentY switch
+                    {
+                        < 33.33 => 2,
+                        < 66.66 => 5,
+                        _ => 8
+                    };
+                else
+                    section = percentY switch
+                    {
+                        < 33.33 => 3,
+                        < 66.66 => 6,
+                        _ => 9
+                    };
+
+                selection += section.ToString();
+
+                string clickedStock = null;
+                if (chart.Name == "chart1")
+                {
+                    if (g.q == "h&s") return g.clickedStock;
+                    if (cellX == 0)
+                        clickedStock = cellY == 0 ? g.KODEX4[0] : g.KODEX4[2];
+                    else if (cellX >= 2)
+                    {
+                        int seq = (cellX - 2) * rows + cellY;
+                        if (seq < displayList.Count)
+                            clickedStock = displayList[seq];
+                    }
+                }
+                else
+                {
+                    if (g.q == "h&s") return g.clickedStock;
+                    int seq = rows * cellX + cellY;
+                    if (seq < displayList.Count)
+                        clickedStock = displayList[seq];
+                }
+
+                return clickedStock;
+            }
+
+            public static Form GetActiveForm()
+            {
+                var active = Form.ActiveForm;
+                if (active != null) return active;
+
+                foreach (Form f in Application.OpenForms)
+                {
+                    if (f.IsMdiContainer && f.ActiveMdiChild != null)
+                        return f.ActiveMdiChild;
+                }
+                return null;
+            }
+
+            private static int RetryGetPrice(string stock, int maxTries, int delayMs)
+            {
+                for (int i = 0; i < maxTries; i++)
+                {
+                    int price = hg.HogaGetValue(stock, -1, 1);
+                    if (price > 0) return price;
+                    System.Threading.Thread.Sleep(delayMs);
+                }
+                return -1;
+            }
+        }
+    }
+
+
+    public static void CntlLeftRightAction(Chart chart, string selection, int row_id, int col_id)
         {
             string action = "    ";
             switch (selection)
@@ -653,9 +757,6 @@ namespace New_Tradegy.Library
                         {
                             g.제어.dtb.Rows[0][0] = newValue;
                         }
-
-
-
                     }
                     // h&s 진입
                     else
@@ -737,9 +838,6 @@ namespace New_Tradegy.Library
                     break;
             }
 
-
-
-
             if (action[0] != ' ')
             {
                 if (action[0] == 'm' || action[0] == 'B')
@@ -759,23 +857,6 @@ namespace New_Tradegy.Library
                 if (action[3] == 's' || action[3] == 'B')
                     mm.ManageChart2(); // key multi for test
             }
-
-            //wk.BringToFront();
-            //Form f = (Form)Application.OpenForms["Form1"];
-            //if (f != null)
-            //{
-            //    f.Activate();
-            //}
-        }
-
-        public static int RemainSB()
-        {
-            _cpcybos = new CPUTILLib.CpCybos();
-            if (_cpcybos == null)
-                return 400;
-            return _cpcybos.GetLimitRemainCount(CPUTILLib.LIMIT_TYPE.LT_SUBSCRIBE);               // 400건의 요청으로 제한   
         }
     }
-
-
 }

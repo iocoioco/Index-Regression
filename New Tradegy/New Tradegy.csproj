@@ -160,7 +160,8 @@
     </Compile>
     <Compile Include="Library\BadNamingTest - Copy.cs" />
     <Compile Include="Library\BadNamingTest.cs" />
-    <Compile Include="Library\buys.cs" />
+    <Compile Include="Library\ChartClickHandler\ChartClickHandler.cs" />
+    <Compile Include="Library\ChartClickHandler\CharterClickMapper.cs" />
     <Compile Include="Library\clic.cs" />
     <Compile Include="Library\cncl.cs" />
     <Compile Include="Library\Core\BatchSelector.cs" />
