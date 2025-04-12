@@ -16,7 +16,7 @@ namespace New_Tradegy.Library
         public static StockRepository Repository;
         public static ChartManager ChartManager;
         public static StockManager StockManager;
-
+        public static Chart1Manager Chart1Manager;
 
         public static GroupManager GroupManager;
         //public static Dictionary<string, StockData> Ogldata = new Dictionary<string, StockData>();

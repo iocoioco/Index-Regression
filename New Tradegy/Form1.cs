@@ -80,9 +80,12 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            StockRepository Repository = StockRepository.Instance;
-            g.StockManager = new StockManager(Repository);
-          
+            g.Chart1Manager = new Chart1Manager();
+            g.Chart1Manager.Initialize(chart1, this);
+            StockManagerEvents.ListsChanged += () => g.Chart1Manager.RefreshDisplay();
+
+
+
             rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
             g.StockManager.AddIfMissing(g.kospi_mixed.stock);
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);

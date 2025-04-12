@@ -1,44 +1,46 @@
-﻿using New_Tradegy.Library.Models;
-using System;
+﻿using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
-namespace New_Tradegy.Library.Core
+public class GroupManager
 {
-    public class GroupManager
+    private List<GroupData> _groups;
+    public List<GroupData> RankingList { get; private set; } = new List<GroupData>();
+
+    public GroupManager()
     {
-        private List<GroupData> _groups = new List<GroupData>();
-
-        public GroupManager()
-        {
-            _groups = GroupRepository.LoadGroups(); // Use static directly
-        }
-
-        public void Save()
-        {
-            GroupRepository.SaveGroups(_groups); // Use static directly
-        }
-
-        public List<GroupData> GetAll() => _groups;
-
-        public GroupData FindByTitle(string title)
-        {
-            return _groups.FirstOrDefault(g => g.Title == title);
-        }
-
-        public void AddGroup(GroupData group)
-        {
-            _groups.Add(group);
-        }
-
-        public void SortByTotalScoreDescending()
-        {
-            _groups = _groups.OrderByDescending(g => g.TotalScore).ToList();
-        }
-
- 
+        _groups = GroupRepository.LoadGroups();
     }
 
+    public void Save()
+    {
+        GroupRepository.SaveGroups(_groups);
+    }
+
+    public List<GroupData> GetAll() => _groups;
+
+    public GroupData FindByTitle(string title)
+    {
+        return _groups.FirstOrDefault(g => g.Title == title);
+    }
+
+    public void AddGroup(GroupData group)
+    {
+        if (!_groups.Any(g => g.Title == group.Title))
+            _groups.Add(group);
+    }
+
+    public void ReplaceGroups(List<GroupData> newGroups)
+    {
+        _groups = newGroups;
+    }
+
+    public int Count => _groups.Count;
+
+    public void SortBy(Func<GroupData, double> selector)
+    {
+        RankingList = _groups.OrderByDescending(selector).ToList();
+    }
 }

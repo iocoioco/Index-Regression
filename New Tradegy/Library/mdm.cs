@@ -232,19 +232,8 @@ class mm
 
     public static void ManageChart1()
     {
-
-
         IndexStocks(g.ChartManager.Chart1);
-
-
         HogaCountDiplayList(); // 보유, 호가, 관심종목, sl
-
-
-
-
-
-
-
 
         // Now, handle the rest of the dynamically generated elements as before
         int currentRow = 0;
@@ -263,11 +252,6 @@ class mm
                 dgv.Height = DgvCellHeight * 12;
             }
 
-
-
-
-
-  
             int index = wk.return_index_of_ogldata(stock);
             if (index < 0) return;
             g.stock_data o = g.ogl_data[index];
@@ -317,15 +301,9 @@ class mm
 
             if (wk.isStock(stock) && !stocksWithBid.Contains(stock))
             {
-            
-
-                
-
                 if (ChartAreaExists(g.ChartManager.Chart1, stock) && g.connected && !g.test && !o.ShrinkDraw)
                 {
-    
                     UpdateSeries(g.ChartManager.Chart1, stock, g.nRow, g.nCol);
-        
                 }
                 else
                 {

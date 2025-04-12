@@ -184,6 +184,7 @@
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\temp.cs" />
+    <Compile Include="Library\Trackers\Chart1Manager.cs" />
     <Compile Include="Library\Trackers\ChartHandler.cs" />
     <Compile Include="Library\Trackers\ChartManager.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />

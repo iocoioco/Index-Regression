@@ -32,10 +32,6 @@ namespace New_Tradegy.Library
         private int Rows = 5;
         private string Stock;
 
-
-
-
-
         public DataGridView Generate(string stock)
         {
             if (!g.connected)
@@ -178,6 +174,7 @@ namespace New_Tradegy.Library
             }
 
         }
+        
         private void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right) // 오른쪽 버튼 사용 또는 10호가창 리턴
@@ -364,7 +361,6 @@ namespace New_Tradegy.Library
             }
         }
 
-
         // by Chat Gpt 20250315
         private void Unsubscribe()
         {
@@ -395,7 +391,6 @@ namespace New_Tradegy.Library
             // Step 4: Nullify _stockjpbid for garbage collection
             _stockjpbid = null;
         }
-
 
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
         private void stockjpbid_Received()
@@ -513,8 +508,6 @@ namespace New_Tradegy.Library
             }
         }
 
-
-
         // updated on 20241020, lock, BeginLoadData, EndLoadData added
         private void stockjpbid_Received_new()
         {
@@ -588,9 +581,6 @@ namespace New_Tradegy.Library
                 }
             }
         }
-
-
-
 
         private void request_호가()
         {

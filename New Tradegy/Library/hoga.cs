@@ -11,10 +11,12 @@ using System.Windows.Forms;
 namespace New_Tradegy.Library
 {
 
-    internal class hg
+    internal class hg // not updated by Sensei
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
+
+        // not used
         public static bool HogaInsert(string stock, int rows, int rowId, int colId)
         {
             bool inserted = false;
@@ -52,6 +54,9 @@ namespace New_Tradegy.Library
 
             return inserted;
         }
+
+
+        // not used
         public static bool HogaInsert(string stock)
         {
             if (HogaFormNameGivenStock(stock) != null)

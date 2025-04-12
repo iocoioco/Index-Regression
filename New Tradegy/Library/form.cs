@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace New_Tradegy.Library
 {
-    internal class fm
+    internal class fm // not update by Sensei
     {
         public static Form FindFormByName(string formName)
         {
