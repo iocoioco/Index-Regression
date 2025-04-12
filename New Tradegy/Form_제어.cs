@@ -119,11 +119,11 @@ namespace New_Tradegy
 
             //if (g.connected)
             //{
-            //    dl.deal_profit();
+            //    dl.UpdateDealProfit();
             //}
 
             // Row 1
-            g.제어.dtb.Rows[1][0] = 0; // initial setting of deal_profit;
+            g.제어.dtb.Rows[1][0] = 0; // initial setting of UpdateDealProfit;
             g.제어.dtb.Rows[1][1] = ""; // (int)usd_krw; 
             g.제어.dtb.Rows[1][2] = MajorIndex.Instance.NasdaqIndex;
             g.제어.dtb.Rows[1][3] = MajorIndex.Instance.Snp500Index;
@@ -218,7 +218,7 @@ namespace New_Tradegy
                         switch (e.ColumnIndex)
                         {
                             case 3:
-                                //dl.deal_deposit();
+                                //dl.UpdateAvailableDeposit();
                                 break;
                         }
                         break;
@@ -227,7 +227,7 @@ namespace New_Tradegy
                         switch (e.ColumnIndex)
                         {
                             case 0:
-                                DealManager.deal_profit();
+                                DealManager.UpdateDealProfit();
                                 break;
                             case 1:
                                 Process.Start("chrome.exe", "https://kr.investing.com/currencies/usd-krw");

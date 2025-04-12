@@ -171,6 +171,7 @@
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="Library\Core\TradingEngline.cs" />
     <Compile Include="Library\DealManager.cs" />
+    <Compile Include="Library\Deals\DealMananager.cs" />
     <Compile Include="Library\eval.cs" />
     <Compile Include="Library\form.cs" />
     <Compile Include="Library\hoga.cs" />

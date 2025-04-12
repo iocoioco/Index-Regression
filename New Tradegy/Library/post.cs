@@ -81,7 +81,7 @@ namespace New_Tradegy.Library
                 if (g.보유종목.Contains(data.Stock)) // Stock is the name
                 {
                     cn.dgv2_update(); // update DGV for holding stock
-                    marketeye_received_푀분의매수매도_소리내기(data); // renamed to match new structure
+                    marketeye_received_보유종목_푀분의매수매도_소리내기(data); // renamed to match new structure
                 }
             }
 

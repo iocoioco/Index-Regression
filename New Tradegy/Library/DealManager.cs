@@ -9,7 +9,7 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Models;
 namespace New_Tradegy.Library
 {
-    public class DealManager
+    public class DealManagerOld
     {
         private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
         private static readonly CPUTILLib.CpCodeMgr _cpcodemgr = new CPUTILLib.CpCodeMgr();
@@ -78,7 +78,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static int deal_profit()
+        public static int UpdateDealProfit()
         {
 
             TradeInit();
@@ -121,23 +121,23 @@ namespace New_Tradegy.Library
             {
                 ulong a = _CpTd5342.GetHeaderValue(9);
                 ulong b = _CpTd5342.GetHeaderValue(10);
-                g.deal_profit = ((int)(a - b) / 10000);
+                g.UpdateDealProfit = ((int)(a - b) / 10000);
                 if (g.MarketeyeCount == 0)
                 {
-                    g.deal_profit = 0;
+                    g.UpdateDealProfit = 0;
                 }
-                if (g.제어.dtb.Rows[1][0].ToString() != g.deal_profit.ToString())
+                if (g.제어.dtb.Rows[1][0].ToString() != g.UpdateDealProfit.ToString())
                 {
-                    g.제어.dtb.Rows[1][0] = g.deal_profit.ToString();
+                    g.제어.dtb.Rows[1][0] = g.UpdateDealProfit.ToString();
                 }
                 
-                return g.deal_profit;
+                return g.UpdateDealProfit;
             }
-            return g.deal_profit;
+            return g.UpdateDealProfit;
         }
 
 
-        public static void deal_deposit() // tr(1)
+        public static void UpdateAvailableDeposit() // tr(1)
         {
             if (!g.connected)
                 return;

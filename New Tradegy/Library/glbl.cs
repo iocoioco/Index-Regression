@@ -31,13 +31,14 @@ namespace New_Tradegy.Library
         public static int screenWidth; // window width
 
         // TradingSettings
+        public static int DealProfit;
         public static bool optimumTrading = false; // fire buy or sell along with book bid/ask ratio 
         public static bool add_interest = false; // add stock or not to the 관심종목 when stocks active
         public static bool confirm_sell = false; // sell by click or modal display to confirm sell condition
         public static int 일회거래액 = 0; // amount of deal money in 10 thousands Won
         
 
-        public static int deal_profit = 0; // profit for the day
+        public static int UpdateDealProfit = 0; // profit for the day
 
         // Constants
         public static string Account; // DaiShin Account number

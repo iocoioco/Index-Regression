@@ -177,7 +177,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 DealManager.deal_processing();
                 DealManager.deal_hold(); // Initialize g.보유종목
-                DealManager.deal_deposit(); // button1 tr(1)
+                DealManager.UpdateAvailableDeposit(); // button1 tr(1)
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
                 // updated on 20241020 0300
