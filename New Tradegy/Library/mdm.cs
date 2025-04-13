@@ -13,6 +13,7 @@ using System.Windows.Forms.VisualStyles;
 using static New_Tradegy.Library.g;
 using New_Tradegy.Library.Utils;
 using New_Tradegy.Library.Models;
+using System.Security.Cryptography.X509Certificates;
 
 class mm
 {
@@ -838,9 +839,6 @@ class mm
             }
         }
  
-        
-
-
         // 단일가거래 종목은 차트 포함시키지 않음
         // 동신건설 거래정지 종목으로 return
         if (o.x[EndNpts - 1, 3] == 0)
@@ -848,7 +846,6 @@ class mm
 
         // The start of area and drawing of stock
         string area = stockName;
-
 
         if (chart.InvokeRequired)
         {
@@ -864,174 +861,8 @@ class mm
             chart.ChartAreas.Add(area);
         }
 
-        int TotalNumberPoint = 0;
-        int[] dataTypesToDraw = { 1, 2, 3 }; // Only price, amount, intensity, and centerline
-
-        for (int i = 1; i < 10; i++)
-        {
-            if (i == 4 || i == 5 || i == 6 || i == 7 || i == 8 || i == 9) continue;
-
-            sid = stockName + " " + i.ToString();
-            System.Windows.Forms.DataVisualization.Charting.Series t = new System.Windows.Forms.DataVisualization.Charting.Series(sid)
-            {
-                ChartArea = area,
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Date,
-                IsVisibleInLegend = false
-            };
-
-            if (chart.InvokeRequired)
-            {
-                chart1.Invoke(new Action(() =>
-                {
-                    // Update the chart here
-                    chart.Series.Add(t);
-                }));
-            }
-            else
-            {
-                // Update the chart here
-                chart.Series.Add(t);
-            }
-
-            TotalNumberPoint = 0;
-
-            for (int k = StartNpts; k < EndNpts; k++)
-            {
-                if (o.x[k, 0] == 0)
-                {
-                    if (TotalNumberPoint < 2) return null;
-                    else break;
-                }
-
-                int value = 0;
-                switch (i)
-                {
-                    case 1: // price
-                        value = GeneralValue(o, k, 1);
-                        break;
-                    case 2: // amount
-                        value = GeneralValue(o, k, 2);
-                        break;
-                    case 3: // intensity
-                        value = GeneralValue(o, k, 3);
-                        break;
-
-                }
-
-                //if (i != 9) // Skip further processing for centerline as it's already set
-                //{
-
-                if (chart.InvokeRequired)
-                {
-                    chart.Invoke(new Action(() =>
-                    {
-                        // Update the chart here
-                        t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
-                    }));
-                }
-                else
-                {
-                    // Update the chart here
-                    t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
-                }
-
-                TotalNumberPoint++;
-
-                y_min = Math.Min(y_min, value);
-                y_max = Math.Max(y_max, value);
-            }
-
-            if (TotalNumberPoint < 2) return null;
-
-            int MarkStartPoint = StartNpts + 1;
-
-            MarkGeneral(chart, MarkStartPoint, t);
-            LabelGeneral(chart, t);
-
-            // Apply styles based on series type
-            switch (i)
-            {
-                case 1: // Price
-                    t.Color = colorGeneral[1];
-                    t.BorderWidth = g.LineWidth;
-                    break;
-                case 2: // Amount
-                    t.Color = colorGeneral[2];
-                    t.BorderWidth = 1;
-                    break;
-                case 3: // Intensity
-                    t.Color = colorGeneral[3];
-                    t.BorderWidth = 1;
-                    break;
-                case 9: // Centerline
-                    t.Color = Color.Magenta;
-                    t.BorderWidth = 1;
-                    break;
-            }
-        }
-
-
-
-
-
-        int[] id = { 4, 5, 6 }; // IDs for program, foreign, institute
-        for (int i = 0; i < id.Length; i++)
-        {
-            sid = stockName + " " + id[i].ToString();
-
-            // Initialize and configure the Series
-            System.Windows.Forms.DataVisualization.Charting.Series t = new System.Windows.Forms.DataVisualization.Charting.Series(sid)
-            {
-                ChartArea = area,
-                ChartType = SeriesChartType.Line,
-                XValueType = ChartValueType.Date,
-                IsVisibleInLegend = false
-            };
-            chart.Series.Add(t);
-
-            // Populate data points for each ID
-            for (int k = StartNpts; k < EndNpts; k++)
-            {
-                if (o.x[k, 0] == 0) // If time is 0, break as it indicates the end of data
-                    break;
-
-                int value = GeneralValue(o, k, id[i]);
-
-                t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value); // Add data point
-
-                // Update y-axis min and max for scaling
-                y_min = Math.Min(y_min, value);
-                y_max = Math.Max(y_max, value);
-            }
-
-            // Draw stock markers for visualization
-            int MarkStartPoint = StartNpts + 1;
-            MarkGeneral(chart, MarkStartPoint, t);
-            LabelGeneral(chart, t);
-
-
-
-
-            // Set color and border width based on id type
-            switch (id[i])
-            {
-                case 4: // Program
-                    t.Color = colorGeneral[4];
-                    t.BorderWidth = g.LineWidth;
-                    break;
-                case 5: // Foreign
-                    t.Color = colorGeneral[5];
-                    t.BorderWidth = g.LineWidth;
-                    break;
-                case 6: // Institute
-                    t.Color = colorGeneral[6];
-                    t.BorderWidth = g.LineWidth;
-                    break;
-                default:
-                    break;
-            }
-        }
+        DrawSeriesLines(chart, StockData o, stockName, area,
+                                    StartNpts, EndNpts, ref y_min, ref y_max);
 
         string annotation = AnnotationGeneral(chart, o, o.x, StartNpts, EndNpts, o.nrow); // g.test, o.nrow = g.MAX_ROW
 
@@ -1062,11 +893,6 @@ class mm
             AddRectangleAnnotationWithText(chart, annotation, new RectangleF(location[0], location[1] + 3,
                 100 / nCol, (int)annotationHeight + 2), area, Color.Black, BackColor);
 
-
-
-
-
-
         // Remove the y-axis labels
         chart.ChartAreas[area].AxisY.LabelStyle.Enabled = false;
 
@@ -1083,29 +909,12 @@ class mm
         chart.ChartAreas[area].AxisY.Minimum = y_min - padding;
         chart.ChartAreas[area].AxisY.Maximum = y_max + padding * 1.5;
 
-
-        // Disable the secondary Y-axis
-        // chart.ChartAreas[area].AxisY2.Enabled = AxisEnabled.False;
-
-        // Optional: Disable grid lines and tick marks for clarity (if enabled elsewhere)
-        // chart.ChartAreas[area].AxisY2.MajorGrid.Enabled = false;
-        // chart.ChartAreas[area].AxisY2.MajorTickMark.Enabled = false;
-        // chart.ChartAreas[area].AxisY2.MinorGrid.Enabled = false;
-        // chart.ChartAreas[area].AxisY2.LabelStyle.Enabled = false;
-
-
         chart.ChartAreas[area].AxisX.LabelStyle.Enabled = true;
         chart.ChartAreas[area].AxisX.MajorGrid.Enabled = false;
+        int TotalNumberPoint = EndNpts - StartNpts;
         chart.ChartAreas[area].AxisX.Interval = TotalNumberPoint - 1; // total number of point = 2, while mir 0820 -> 217
         chart.ChartAreas[area].AxisX.IntervalOffset = 1;
-        // chart.ChartAreas[area].Position.X = location[0]; // 0
-
-
-
-
-
-
-
+ 
         chart.ChartAreas[area].AxisX.LabelStyle.Font
             = new Font("Arial", 7, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
         chart.ChartAreas[area].AxisY.LabelStyle.Font
@@ -2169,3 +1978,173 @@ class mm
     }
 }
 
+
+
+// replace by DrawSeriesLines
+//int TotalNumberPoint = 0;
+//int[] dataTypesToDraw = { 1, 2, 3 }; // Only price, amount, intensity, and centerline
+
+//for (int i = 1; i < 10; i++)
+//{
+//    if (i == 4 || i == 5 || i == 6 || i == 7 || i == 8 || i == 9) continue;
+
+//    sid = stockName + " " + i.ToString();
+//    System.Windows.Forms.DataVisualization.Charting.Series t = new System.Windows.Forms.DataVisualization.Charting.Series(sid)
+//    {
+//        ChartArea = area,
+//        ChartType = SeriesChartType.Line,
+//        XValueType = ChartValueType.Date,
+//        IsVisibleInLegend = false
+//    };
+
+//    if (chart.InvokeRequired)
+//    {
+//        chart1.Invoke(new Action(() =>
+//        {
+//            // Update the chart here
+//            chart.Series.Add(t);
+//        }));
+//    }
+//    else
+//    {
+//        // Update the chart here
+//        chart.Series.Add(t);
+//    }
+
+//    TotalNumberPoint = 0;
+
+//    for (int k = StartNpts; k < EndNpts; k++)
+//    {
+//        if (o.x[k, 0] == 0)
+//        {
+//            if (TotalNumberPoint < 2) return null;
+//            else break;
+//        }
+
+//        int value = 0;
+//        switch (i)
+//        {
+//            case 1: // price
+//                value = GeneralValue(o, k, 1);
+//                break;
+//            case 2: // amount
+//                value = GeneralValue(o, k, 2);
+//                break;
+//            case 3: // intensity
+//                value = GeneralValue(o, k, 3);
+//                break;
+
+//        }
+
+//        //if (i != 9) // Skip further processing for centerline as it's already set
+//        //{
+
+//        if (chart.InvokeRequired)
+//        {
+//            chart.Invoke(new Action(() =>
+//            {
+//                // Update the chart here
+//                t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+//            }));
+//        }
+//        else
+//        {
+//            // Update the chart here
+//            t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value);
+//        }
+
+//        TotalNumberPoint++;
+
+//        y_min = Math.Min(y_min, value);
+//        y_max = Math.Max(y_max, value);
+//    }
+
+//    if (TotalNumberPoint < 2) return null;
+
+//    int MarkStartPoint = StartNpts + 1;
+
+//    MarkGeneral(chart, MarkStartPoint, t);
+//    LabelGeneral(chart, t);
+
+//    // Apply styles based on series type
+//    switch (i)
+//    {
+//        case 1: // Price
+//            t.Color = colorGeneral[1];
+//            t.BorderWidth = g.LineWidth;
+//            break;
+//        case 2: // Amount
+//            t.Color = colorGeneral[2];
+//            t.BorderWidth = 1;
+//            break;
+//        case 3: // Intensity
+//            t.Color = colorGeneral[3];
+//            t.BorderWidth = 1;
+//            break;
+//        case 9: // Centerline
+//            t.Color = Color.Magenta;
+//            t.BorderWidth = 1;
+//            break;
+//    }
+//}
+
+
+
+
+//int[] id = { 4, 5, 6 }; // IDs for program, foreign, institute
+//for (int i = 0; i < id.Length; i++)
+//{
+//    sid = stockName + " " + id[i].ToString();
+
+//    // Initialize and configure the Series
+//    System.Windows.Forms.DataVisualization.Charting.Series t = new System.Windows.Forms.DataVisualization.Charting.Series(sid)
+//    {
+//        ChartArea = area,
+//        ChartType = SeriesChartType.Line,
+//        XValueType = ChartValueType.Date,
+//        IsVisibleInLegend = false
+//    };
+//    chart.Series.Add(t);
+
+//    // Populate data points for each ID
+//    for (int k = StartNpts; k < EndNpts; k++)
+//    {
+//        if (o.x[k, 0] == 0) // If time is 0, break as it indicates the end of data
+//            break;
+
+//        int value = GeneralValue(o, k, id[i]);
+
+//        t.Points.AddXY(((int)(o.x[k, 0] / g.HUNDRED)).ToString(), value); // Add data point
+
+//        // Update y-axis min and max for scaling
+//        y_min = Math.Min(y_min, value);
+//        y_max = Math.Max(y_max, value);
+//    }
+
+//    // Draw stock markers for visualization
+//    int MarkStartPoint = StartNpts + 1;
+//    MarkGeneral(chart, MarkStartPoint, t);
+//    LabelGeneral(chart, t);
+
+
+
+
+//    // Set color and border width based on id type
+//    switch (id[i])
+//    {
+//        case 4: // Program
+//            t.Color = colorGeneral[4];
+//            t.BorderWidth = g.LineWidth;
+//            break;
+//        case 5: // Foreign
+//            t.Color = colorGeneral[5];
+//            t.BorderWidth = g.LineWidth;
+//            break;
+//        case 6: // Institute
+//            t.Color = colorGeneral[6];
+//            t.BorderWidth = g.LineWidth;
+//            break;
+//        default:
+//            break;
+//    }
+//}
