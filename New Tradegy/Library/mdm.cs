@@ -940,7 +940,6 @@ class mm
 
                 y_min = Math.Min(y_min, value);
                 y_max = Math.Max(y_max, value);
-                //}
             }
 
             if (TotalNumberPoint < 2) return null;
@@ -971,6 +970,10 @@ class mm
                     break;
             }
         }
+
+
+
+
 
         int[] id = { 4, 5, 6 }; // IDs for program, foreign, institute
         for (int i = 0; i < id.Length; i++)

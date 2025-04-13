@@ -187,6 +187,7 @@
     <Compile Include="Library\Trackers\Chart1Manager.cs" />
     <Compile Include="Library\Trackers\ChartHandler.cs" />
     <Compile Include="Library\Trackers\ChartManager.cs" />
+    <Compile Include="Library\Trackers\ChartRenderer.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
     <Compile Include="Library\Order_processor.cs" />
     <Compile Include="Library\Real Intensity Calculation.cs" />

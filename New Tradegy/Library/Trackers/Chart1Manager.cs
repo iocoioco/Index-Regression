@@ -26,47 +26,57 @@ namespace New_Tradegy.Library.Trackers
             _bookBids = new BookBidManager(_parent);
         }
 
-        public void DisplayAll()
+        public void RefreshDisplay()
+        {
+            // Step 1: Holding
+            var holding = g.StockManager.HoldingList.Distinct().ToList();
+
+            // Step 2: InterestedWithBid (excluding holding)
+            var withBid = g.StockManager.InterestedWithBidList
+                            .Where(s => !holding.Contains(s))
+                            .Distinct()
+                            .ToList();
+
+            // Step 3: InterestedOnly (excluding holding + withBid)
+            var onlyChart = g.StockManager.InterestedOnlyList
+                              .Where(s => !holding.Contains(s) && !withBid.Contains(s))
+                              .Distinct()
+                              .ToList();
+
+            // Step 4: RankingList (excluding all prior)
+            var ranked = g.StockManager.RankingList
+                           .Where(s => !holding.Contains(s) && !withBid.Contains(s) && !onlyChart.Contains(s))
+                           .Distinct()
+                           .ToList();
+
+            var stocksWithBid = holding.Concat(withBid).ToList();
+            var onlyCharts = onlyChart.Concat(ranked).ToList();
+
+            Display(stocksWithBid, onlyCharts);
+        }
+
+        public void Display(List<string> stocksWithBid, List<string> onlyChart)
         {
             _layout.Reset();
 
-            foreach (var stock in g.StockManager.HoldingList)
-                AddChart(stock, true);
-
-            foreach (var stock in g.StockManager.InterestedWithBidList)
+            foreach (string stock in stocksWithBid)
             {
-                if (!g.StockManager.HoldingList.Contains(stock))
-                    AddChart(stock, true);
-            }
+                var data = StockRepository.Instance.GetOrThrow(stock);
+                (int row, int col) = _layout.GetNext(true);
 
-            foreach (var stock in g.StockManager.InterestedOnlyList)
-            {
-                if (!g.StockManager.HoldingList.Contains(stock) &&
-                    !g.StockManager.InterestedWithBidList.Contains(stock))
-                    AddChart(stock, false);
-            }
+                ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
 
-            foreach (var stock in g.StockManager.RankingList)
-            {
-                if (!g.StockManager.HoldingList.Contains(stock) &&
-                    !g.StockManager.InterestedWithBidList.Contains(stock) &&
-                    !g.StockManager.InterestedOnlyList.Contains(stock))
-                    AddChart(stock, false);
-            }
-        }
-
-        private void AddChart(string stock, bool withBookBid)
-        {
-            var data = StockRepository.Instance.GetOrThrow(stock);
-            var (row, col) = _layout.GetNext(withBookBid);
-
-            ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
-
-            if (withBookBid)
-            {
                 var bidView = _bookBids.GetOrCreate(stock);
                 bidView.Location = _layout.GetBookBidLocation(row, col);
                 _parent.Controls.Add(bidView);
+            }
+
+            foreach (string stock in onlyChart)
+            {
+                var data = StockRepository.Instance.GetOrThrow(stock);
+                (int row, int col) = _layout.GetNext(false);
+
+                ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
             }
         }
 
@@ -75,17 +85,6 @@ namespace New_Tradegy.Library.Trackers
             ChartRenderer.ClearUnused(_chart, activeStocks);
             _bookBids.RemoveUnused(activeStocks);
         }
-
-        public void RefreshDisplay()
-        {
-            // regroup the lists as needed here or pass from outside
-            var stocksWithBid = g.StockManager.InterestedWithBidList.Concat(g.StockManager.HoldingList).Distinct().ToList();
-            var onlyCharts = g.StockManager.InterestedOnlyList.Concat(g.StockManager.RankingList).Distinct()
-                               .Where(s => !stocksWithBid.Contains(s)).ToList();
-
-            Display(stocksWithBid, onlyCharts); // calls Chart1Manager.Display()
-        }
-
     }
 
     public class ChartGridLayout
