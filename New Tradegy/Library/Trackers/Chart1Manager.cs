@@ -18,72 +18,80 @@ namespace New_Tradegy.Library.Trackers
         private ChartGridLayout _layout;
         private BookBidManager _bookBids;
 
+        private List<string> _prevWithBid = new List<string>();
+        private List<string> _prevWithoutBid = new List<string>();
+        private const int MaxSpaces = 24;
+
         public void Initialize(Chart chart, Control parent)
         {
             _chart = chart;
             _parent = parent;
             _layout = new ChartGridLayout(g.nRow, g.nCol);
-            _bookBids = new BookBidManager(_parent);
+            _bookBids = new BookBidManager(_layout);
         }
 
-        public void RefreshDisplay()
+        public void UpdateLayoutIfChanged()
         {
-            // Step 1: Holding
-            var holding = g.StockManager.HoldingList.Distinct().ToList();
+            var holdings = g.StockManager.HoldingList;
+            var interestedWithBid = g.StockManager.InterestedWithBidList;
+            var interestedOnly = interestedWithBid.Except(holdings).ToList();
+            var ranking = g.StockManager.RankingList;
 
-            // Step 2: InterestedWithBid (excluding holding)
-            var withBid = g.StockManager.InterestedWithBidList
-                            .Where(s => !holding.Contains(s))
-                            .Distinct()
-                            .ToList();
+            var withBookBid = holdings.Concat(interestedWithBid.Except(holdings)).Distinct().ToList();
+            var withoutBookBid = interestedOnly.Concat(ranking).Where(s => !withBookBid.Contains(s)).Distinct().ToList();
 
-            // Step 3: InterestedOnly (excluding holding + withBid)
-            var onlyChart = g.StockManager.InterestedOnlyList
-                              .Where(s => !holding.Contains(s) && !withBid.Contains(s))
-                              .Distinct()
-                              .ToList();
+            // Enforce max space constraint: withBookBid.Count * 2 + withoutBookBid.Count <= 24
+            int availableSpaces = MaxSpaces;
+            int maxWithBookBid = Math.Min(withBookBid.Count, MaxSpaces / 2);
+            withBookBid = withBookBid.Take(maxWithBookBid).ToList();
+            availableSpaces -= withBookBid.Count * 2;
+            withoutBookBid = withoutBookBid.Take(availableSpaces).ToList();
 
-            // Step 4: RankingList (excluding all prior)
-            var ranked = g.StockManager.RankingList
-                           .Where(s => !holding.Contains(s) && !withBid.Contains(s) && !onlyChart.Contains(s))
-                           .Distinct()
-                           .ToList();
+            bool changed =
+                !_prevWithBid.SequenceEqual(withBookBid) ||
+                !_prevWithoutBid.SequenceEqual(withoutBookBid);
 
-            var stocksWithBid = holding.Concat(withBid).ToList();
-            var onlyCharts = onlyChart.Concat(ranked).ToList();
-
-            Display(stocksWithBid, onlyCharts);
+            if (changed)
+            {
+                RefreshChart1Layout(withBookBid, withoutBookBid);
+                _prevWithBid = withBookBid.ToList();
+                _prevWithoutBid = withoutBookBid.ToList();
+            }
         }
 
-        public void Display(List<string> stocksWithBid, List<string> onlyChart)
+        public void RefreshChart1Layout(List<string> withBookBid, List<string> withoutBookBid)
         {
             _layout.Reset();
+            _chart.Series.Clear();
+            _chart.ChartAreas.Clear();
+            _chart.Annotations.Clear();
+            _bookBids.Clear();
 
-            foreach (string stock in stocksWithBid)
+            string[,] gridMap = new string[3, 8];
+
+            foreach (var stock in withBookBid)
             {
-                var data = StockRepository.Instance.GetOrThrow(stock);
-                (int row, int col) = _layout.GetNext(true);
-
-                ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
-
-                var bidView = _bookBids.GetOrCreate(stock);
-                bidView.Location = _layout.GetBookBidLocation(row, col);
-                _parent.Controls.Add(bidView);
+                var (row, col) = _layout.GetNext(true);
+                CreateChartArea(stock, row, col);
+                _bookBids.GetOrCreate(stock, row, col);
+                gridMap[row, col] = stock;
+                gridMap[row, col + 1] = " "; // bookbid placeholder
             }
 
-            foreach (string stock in onlyChart)
+            foreach (var stock in withoutBookBid)
             {
-                var data = StockRepository.Instance.GetOrThrow(stock);
-                (int row, int col) = _layout.GetNext(false);
-
-                ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
+                var (row, col) = _layout.GetNext(false);
+                CreateChartArea(stock, row, col);
+                gridMap[row, col] = stock;
             }
+
+            // Optionally store or log gridMap for debugging or UI interaction mapping
         }
 
-        public void ClearUnused(List<string> activeStocks)
+        public void CreateChartArea(string stock, int row, int col)
         {
-            ChartRenderer.ClearUnused(_chart, activeStocks);
-            _bookBids.RemoveUnused(activeStocks);
+            var data = StockRepository.Instance.GetOrThrow(stock);
+            ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
         }
     }
 
@@ -130,47 +138,72 @@ namespace New_Tradegy.Library.Trackers
 
     public class BookBidManager
     {
-        private Dictionary<string, jp> _map = new();
-        private Control _parent;
+        private readonly Dictionary<string, jp> _jpMap = new Dictionary<string, jp>();
+        private readonly Dictionary<string, DataGridView> _gridMap = new Dictionary<string, DataGridView>();
+        private readonly ChartGridLayout _layout;
 
-        public BookBidManager(Control parent)
+        public BookBidManager(ChartGridLayout layout)
         {
-            _parent = parent;
+            _layout = layout;
         }
 
-        public DataGridView GetOrCreate(string stock)
+        public DataGridView GetOrCreate(string stock, int row, int col)
         {
-            if (!_map.ContainsKey(stock))
+            if (_gridMap.TryGetValue(stock, out var existingGrid))
+                return existingGrid;
+
+            var jpInstance = new jp();
+            _jpMap[stock] = jpInstance;
+
+            var grid = jpInstance.Generate(stock);
+            _gridMap[stock] = grid;
+
+            grid.Location = _layout.GetBookBidLocation(row, col);
+            grid.Visible = true;
+
+            g.MainForm.Invoke((MethodInvoker)(() => g.MainForm.Controls.Add(grid)));
+
+            return grid;
+        }
+
+        public void Remove(string stock)
+        {
+            if (_gridMap.TryGetValue(stock, out var grid))
             {
-                var jpObj = new jp();
-                _map[stock] = jpObj;
-                return jpObj.Generate(stock);
+                if (grid.Parent != null)
+                    g.MainForm.Invoke((MethodInvoker)(() => g.MainForm.Controls.Remove(grid)));
+                grid.Dispose();
+                _gridMap.Remove(stock);
             }
-            return _map[stock].View;
+
+            _jpMap.Remove(stock);
         }
 
-        public void RemoveUnused(List<string> activeStocks)
+        public bool Exists(string stock)
         {
-            var removeList = new List<string>();
+            return _gridMap.ContainsKey(stock);
+        }
 
-            foreach (var kv in _map)
+        public void OpenConfirmation(string stock, bool isSell, int qty, int price, int urgency, string message)
+        {
+            if (_jpMap.TryGetValue(stock, out var jpInstance))
             {
-                if (!activeStocks.Contains(kv.Key))
-                {
-                    _parent.Controls.Remove(kv.Value.View);
-                    removeList.Add(kv.Key);
-                }
+                jpInstance.OpenOrUpdateConfirmationForm(isSell, stock, qty, price, urgency, message);
             }
-
-            foreach (var key in removeList)
-                _map.Remove(key);
         }
 
-        public void ClearAll()
+        public void Clear()
         {
-            foreach (var item in _map.Values)
-                _parent.Controls.Remove(item.View);
-            _map.Clear();
+            foreach (var grid in _gridMap.Values)
+            {
+                if (grid.Parent != null)
+                    grid.Parent.Controls.Remove(grid);
+                grid.Dispose();
+            }
+
+            _gridMap.Clear();
+            _jpMap.Clear();
+            _layout.Reset();
         }
     }
 

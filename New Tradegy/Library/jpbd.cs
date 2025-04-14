@@ -19,7 +19,6 @@ using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library
 {
-
     class jp
     {
         private CPUTILLib.CpCybos _cpcybos;
@@ -894,14 +893,6 @@ namespace New_Tradegy.Library
         private void OnDataGirdView1_KeyPress(object sender, KeyPressEventArgs e)
         {
             ky.chart_keypress(e);
-        }
-
-        private int RemainSB()
-        {
-            _cpcybos = new CPUTILLib.CpCybos();
-            if (_cpcybos == null)
-                return 400;
-            return _cpcybos.GetLimitRemainCount(CPUTILLib.LIMIT_TYPE.LT_SUBSCRIBE);               // 400건의 요청으로 제한   
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)

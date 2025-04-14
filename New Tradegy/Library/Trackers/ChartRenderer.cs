@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
@@ -79,12 +81,14 @@ namespace New_Tradegy.Library.Trackers
         public static void UpdateAnnotation(Chart chart, StockData data, int row, int col)
         {
             string name = data.Stock + "_anno";
-            if (!chart.Annotations.IsNameUnique(name))
+
+            var anno = chart.Annotations.FirstOrDefault(a => a.Name == name) as TextAnnotation;
+
+            if (anno != null)
             {
-                var anno = chart.Annotations[name] as TextAnnotation;
-                if (anno != null)
+                anno.Text = data.Api.현재가.ToString();
+                if (chart.Series.Contains(data.Stock))
                 {
-                    anno.Text = data.Api.현재가.ToString();
                     anno.AnchorDataPoint = chart.Series[data.Stock].Points.LastOrDefault();
                 }
             }
@@ -131,7 +135,6 @@ namespace New_Tradegy.Library.Trackers
             foreach (var anno in unusedAnnotations)
                 chart.Annotations.Remove(anno);
         }
-
 
         static ChartArea GeneralArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
         {
@@ -214,7 +217,6 @@ namespace New_Tradegy.Library.Trackers
 
             return chartArea;
         }
-
 
         private static bool DrawSeriesLines(Chart chart, StockData o, string stockName, string area,
                                  int StartNpts, int EndNpts, ref double y_min, ref double y_max)
@@ -314,5 +316,371 @@ namespace New_Tradegy.Library.Trackers
             return value;
         }
 
+        public static void MarkGeneral(Chart chart, int MarkStartPoint, Series series)
+        {
+            // Extract series information
+            string stock = "";
+            string chartAreaName = "";
+            int columnIndex = 0;
+            int endPoint = 0;
+            SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
+
+            var data = StockRepository.Instance.GetOrThrow(stock);
+            if (data == null) return;
+
+            var x = data.Api.x;
+
+            // Mark only for price, amount, intensity
+            if (columnIndex > 3) return;
+
+            for (int m = MarkStartPoint; m <= endPoint; m++)
+            {
+                if (columnIndex == 1) // price
+                {
+                    int priceChange = x[m, 1] - x[m - 1, 1];
+
+                    if (priceChange >= 100)
+                    {
+                        if (priceChange > 300)
+                            series.Points[m].MarkerColor = Color.Black;
+                        else if (priceChange > 200)
+                            series.Points[m].MarkerColor = Color.Blue;
+                        else if (priceChange > 150)
+                            series.Points[m].MarkerColor = Color.Green;
+                        else
+                            series.Points[m].MarkerColor = Color.Red;
+
+                        series.Points[m].MarkerSize = 6;
+                        series.Points[m].MarkerStyle = MarkerStyle.Cross;
+                    }
+
+                    if (x[m, 0] >= 90200)
+                    {
+                        int diff = x[m, 8] - x[m, 9];
+                        if (diff > 100)
+                        {
+                            series.Points[m].MarkerSize = 9;
+                            series.Points[m].MarkerStyle = MarkerStyle.Circle;
+
+                            if (diff > 500)
+                                series.Points[m].MarkerColor = Color.Black;
+                            else if (diff > 300)
+                                series.Points[m].MarkerColor = Color.Blue;
+                            else if (diff > 200)
+                                series.Points[m].MarkerColor = Color.Green;
+                            else
+                                series.Points[m].MarkerColor = Color.Red;
+                        }
+                    }
+
+                    if (data.Api.분거래천[0] > 10)
+                    {
+                        int markSize = 0;
+                        Color color = Color.White;
+                        double val = data.Api.분거래천[0];
+
+                        if (val < 50) { color = Color.Red; markSize = 10; }
+                        else if (val < 100) { color = Color.Red; markSize = 15; }
+                        else if (val < 200) { color = Color.Green; markSize = 15; }
+                        else if (val < 300) { color = Color.Green; markSize = 20; }
+                        else if (val < 500) { color = Color.Blue; markSize = 20; }
+                        else if (val < 800) { color = Color.Blue; markSize = 30; }
+                        else if (val < 1200) { color = Color.Black; markSize = 30; }
+                        else if (val < 1700) { color = Color.Black; markSize = 40; }
+                        else { color = Color.Black; markSize = 50; }
+
+                        series.Points[0].MarkerColor = color;
+                        series.Points[0].MarkerSize = markSize;
+
+                        if (priceChange >= 0)
+                            series.Points[0].MarkerStyle = MarkerStyle.Circle;
+                        else
+                            series.Points[0].MarkerStyle = MarkerStyle.Cross;
+                    }
+                }
+
+                // amount or intensity mark
+                if (columnIndex == 2 || columnIndex == 3)
+                {
+                    int threshold = g.npts_for_magenta_cyan_mark;
+                    if (x[m, columnIndex + 8] >= threshold)
+                    {
+                        series.Points[m].MarkerColor = columnIndex == 2 ? Color.Magenta : Color.Cyan;
+                        series.Points[m].MarkerStyle = MarkerStyle.Cross;
+                        series.Points[m].MarkerSize = 7;
+                    }
+                }
+            }
+        }
+
+        public static void SeriesInfomation(System.Windows.Forms.DataVisualization.Charting.Series t,
+      ref string chartAreaName, ref string Stock, ref int ColumnIndex, ref int EndPoint)
+        {
+            // Get the last occurrence of the delimiter ' '
+            string[] parts = t.Name.Split(' ');
+            if (parts.Length < 2)
+            {
+                throw new InvalidOperationException("Invalid format in t.Name. Expected format: <StockName> <Number>");
+            }
+
+            // Extract stock name and number
+            Stock = string.Join(" ", parts.Take(parts.Length - 1)); // Join all parts except the last as stock name
+            chartAreaName = t.ChartArea;
+
+            ColumnIndex = int.Parse(parts[parts.Length - 1]); // Parse the last part as an integer
+
+            EndPoint = t.Points.Count - 1; // Extract EndPoint from the series' Points.Count
+
+
+        }
+
+        public static void LabelGeneral(Chart chart, Series t)
+        {
+            // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
+            // 1, 4, 5 extened label
+            // 2, 3 only 1 label
+            // 6 no label
+            string stock = "";
+            string chartAreaName = "";
+            int columnIndex = 0;
+            int markingPoint = 0;
+
+            SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
+
+            var data = StockRepository.Instance.GetOrThrow(stock);
+            if (data == null) return;
+
+            var api = data.Api;
+            var post = data.Post;
+            int totalPoints = g.test ? Math.Min(g.Npts[1], api.nrow) : api.nrow;
+
+            string s = "";
+
+            switch (columnIndex)
+            {
+                case 1: // price
+                    s = "      " + api.x[totalPoints - 1, columnIndex].ToString();
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (totalPoints - 2 - k < 0) break;
+                        int d = api.x[totalPoints - 1 - k, columnIndex] - api.x[totalPoints - 2 - k, columnIndex];
+                        s += (d >= 0 ? "+" : "") + d.ToString("F0");
+                    }
+                    break;
+
+                case 2: // amount
+                    s = api.x[totalPoints - 1, columnIndex].ToString();
+                    break;
+
+                case 3: // intensity
+                    s = (api.x[totalPoints - 1, columnIndex] / 100).ToString();
+                    break;
+
+                case 4: // program
+                    s = (post.프누천 / 10.0).ToString("F1");
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (totalPoints - 2 - k < 0) break;
+                        double d = api.분프로천[k] / 10.0;
+                        s += (d >= 0 ? "+" : "") + d.ToString("F1");
+                    }
+                    break;
+
+                case 5: // foreign
+                    s = (post.외누천 / 10.0).ToString("F1");
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (totalPoints - 2 - k < 0) break;
+                        double d = api.분외인천[k] / 10.0;
+                        s += (d >= 0 ? "+" : "") + d.ToString("F1");
+                    }
+                    break;
+
+                case 6:
+                    return;
+            }
+
+            t.Points[markingPoint].Label = s;
+            t.LabelForeColor = colorGeneral[columnIndex];
+
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+        }
+
+        public static string AnnotationGeneral(Chart chart, StockData o, int[,] x, int StartNpts, int EndNpts, int total_nrow)
+        {
+            string stock = o.Stock;
+            string stock_title = "";
+
+            // 일반의 첫째 라인
+            if (g.StockManager.HoldingList.Contains(stock))
+                stock_title = "$$" + stock_title;
+            else if (g.StockManager.InterestedWithBidList.Contains(stock))
+                stock_title = "@ " + stock_title;
+            else if (g.StockManager.InterestedOnlyList.Contains(stock))
+                stock_title = "@ " + stock_title;
+
+            if (stock == "KODEX 레버리지")
+                stock_title += "코스피\n";
+            else if (stock == "KODEX 코스닥150레버리지")
+                stock_title += "코스닥\n";
+            else
+                stock_title += stock.Length >= 5 ? stock.Substring(0, 5) : stock;
+
+            stock_title += o.Misc.oGL_sequence_id < 0 ? "%" : " ";
+            stock_title += Math.Round(o.Post.종거천 / 10.0) + "  " +
+                           (o.Post.프누천 / 10.0).ToString("F1") + "  " +
+                           (o.Post.외누천 / 10.0).ToString("F1") + "  " +
+                           (o.Post.기누천 / 10.0).ToString("F1");
+
+            stock_title += "\n" + AnnotationGeneralMinute(o, x, StartNpts, EndNpts);
+
+            if (!g.KODEX4.Contains(stock))
+            {
+                stock_title += "\n";
+                if (o.Api.분외인천[0] >= 0)
+                    stock_title += o.Api.분프로천[0].ToString("F0") + "+" + o.Api.분외인천[0].ToString("F0") + "/" + o.Api.분거래천[0].ToString("F0");
+                else
+                    stock_title += o.Api.분프로천[0].ToString("F0") + o.Api.분외인천[0].ToString("F0") + "/" + o.Api.분거래천[0].ToString("F0");
+
+                for (int i = 1; i < 5; i++)
+                {
+                    stock_title += "   " + (o.Api.분프로천[i] + o.Api.분외인천[i]).ToString("F0") + "/" + o.Api.분거래천[i].ToString("F0");
+                }
+
+                stock_title += "\n";
+                stock_title += o.Score.푀분.ToString("F0");
+                stock_title += o.Score.배차 >= 0 ? "+" : "";
+                stock_title += o.Score.배차.ToString("F0");
+                stock_title += o.Score.배합 >= 0 ? "+" : "";
+                stock_title += o.Score.배합.ToString("F0");
+                stock_title += "+" + o.Score.그순.ToString("F0");
+
+                if (EndNpts - 1 >= 0)
+                    stock_title += " (" + o.Api.x[EndNpts - 1, 1].ToString() + " / " + o.Api.현재가.ToString("#,##0") + ")";
+            }
+            else
+            {
+                stock_title += "\n(" + o.Api.x[EndNpts - 1, 1].ToString() + "/" + o.Api.현재가.ToString("#,##0") + ")";
+            }
+
+            if (EndNpts - 1 >= 0)
+                stock_title += " " + o.Api.x[EndNpts - 1, 10] + "/" + o.Api.x[EndNpts - 1, 11] + "  " + o.Statistics.일간변동평균편차;
+
+            return stock_title;
+        }
+
+        private static void CalculateHeights(float fontSize, int numLines, int numRows, out double annotationHeight, out double chartAreaHeight)
+        {
+            // Get screen height in pixels
+            Rectangle workingArea = Screen.PrimaryScreen.WorkingArea;
+            int screenHeight = workingArea.Height;
+
+            // Approximate conversion from point size to pixels
+            double pointToPixel = 1.33;
+            double annotationPixelHeight = fontSize * numLines * pointToPixel;
+
+            // Available space in chart terms (percentage-based)
+            double totalHeightPercent = 100.0;
+            double rowHeightPercent = totalHeightPercent / numRows;
+
+            // Calculate how much of that row goes to annotation (in percent)
+            annotationHeight = (annotationPixelHeight / screenHeight) * totalHeightPercent;
+            chartAreaHeight = rowHeightPercent - annotationHeight;
+        }
+
+        private static void AddRectangleAnnotationWithText(
+    Chart chart,
+    string text,
+    RectangleF rect,
+    string chartAreaName,
+    Color textColor,
+    Color backgroundColor)
+        {
+            // Retrieve the chart area safely
+            var chartArea = chart.ChartAreas.FirstOrDefault(area => area.Name == chartAreaName);
+            if (chartArea == null)
+                throw new ArgumentException($"ChartArea '{chartAreaName}' does not exist.");
+
+            // Calculate relative position within the ChartArea
+            double relativeX = chartArea.Position.X + (rect.X * chartArea.Position.Width / 100.0);
+            double relativeY = chartArea.Position.Y; // Align top of the area
+
+            // Optionally scale width/height relative to ChartArea if needed
+            double relativeWidth = rect.Width; // Could be scaled if necessary
+            double relativeHeight = rect.Height; // Could be scaled if necessary
+
+            // Create and configure the annotation
+            var annotation = new RectangleAnnotation
+            {
+                Name = chartAreaName,  // Optional: reuse chart area name as annotation name
+                Text = text,
+                Font = new Font("Arial", g.v.font),
+                X = relativeX,
+                Y = relativeY,
+                Width = relativeWidth,
+                Height = relativeHeight,
+                LineColor = Color.Transparent,
+                BackColor = backgroundColor,
+                ForeColor = textColor,
+                ClipToChartArea = "", // set to chartAreaName if you want strict clipping
+                AxisXName = chartAreaName + "\\X",
+                AxisYName = chartAreaName + "\\Y",
+                Alignment = ContentAlignment.TopLeft,
+                ToolTip = "Rectangle Annotation" // Optional
+            };
+
+            // Add and redraw
+            chart.Annotations.Add(annotation);
+            chart.Invalidate();
+        }
+
+        public static string AnnotationGeneralMinute(StockData o, int[,] x, int StartNpts, int EndNpts)
+        {
+            var sb = new StringBuilder();
+            string stock = o.Stock;
+
+            // Handle special KODEX types with predefined tick data
+            if (stock == "KODEX 레버리지")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    sb.Append($"{(int)MajorIndex.Instance.KospiTickBuyPower[i]}/{(int)MajorIndex.Instance.KospiTickSellPower[i]}  ");
+                }
+                sb.AppendLine();
+            }
+            else if (stock == "KODEX 200선물인버스2X")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    sb.Append($"{(int)MajorIndex.Instance.KospiTickSellPower[i]}/{(int)MajorIndex.Instance.KospiTickBuyPower[i]}  ");
+                }
+                sb.AppendLine();
+            }
+            else if (stock == "KODEX 코스닥150레버리지")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    sb.Append($"{(int)MajorIndex.Instance.KosdaqTickBuyPower[i]}/{(int)MajorIndex.Instance.KosdaqTickSellPower[i]}  ");
+                }
+                sb.AppendLine();
+            }
+            else if (stock == "KODEX 코스닥150선물인버스")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    sb.Append($"{(int)MajorIndex.Instance.KosdaqTickSellPower[i]}/{(int)MajorIndex.Instance.KosdaqTickBuyPower[i]}  ");
+                }
+                sb.AppendLine();
+            }
+
+            // Add latest 5 minutes of multiplier differences
+            for (int i = EndNpts - 1; i >= EndNpts - 5; i--)
+            {
+                if (i < 1) break;
+                sb.Append($"{x[i, 8]}/{x[i, 9]}  ");
+            }
+
+            return sb.ToString();
+        }
     }
 }

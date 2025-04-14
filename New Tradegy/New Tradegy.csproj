@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -167,6 +168,7 @@
     <Compile Include="Library\Core\BatchSelector.cs" />
     <Compile Include="Library\Core\GroupManager.cs" />
     <Compile Include="Library\Core\GroupRepository.cs" />
+    <Compile Include="Library\Core\StockExchanges.cs" />
     <Compile Include="Library\Core\StockManager.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="Library\Core\TradingEngline.cs" />
@@ -185,8 +187,6 @@
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\temp.cs" />
     <Compile Include="Library\Trackers\Chart1Manager.cs" />
-    <Compile Include="Library\Trackers\ChartHandler.cs" />
-    <Compile Include="Library\Trackers\ChartManager.cs" />
     <Compile Include="Library\Trackers\ChartRenderer.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
     <Compile Include="Library\Order_processor.cs" />
