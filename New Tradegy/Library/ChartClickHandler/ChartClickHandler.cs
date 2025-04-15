@@ -28,6 +28,8 @@ namespace New_Tradegy.Library
             return -1;
         }
 
+       
+
         public static void HandleControlClick(Chart chart, string regionKey, int row, int col)
         {
             string postEvalFlags = "    ";

@@ -16,6 +16,7 @@ using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
 using System.Text;
+using static New_Tradegy.Library.Trackers.ControlPanelManager;
 
 //using NLog;
 
@@ -107,7 +108,11 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.ChartManager = new ChartManager();
             g.ChartManager.SetChart1(chart1);
-            
+
+            제어Setup.SetupAndAttachControlPanel(this);  // call from main form or container
+
+           
+
 
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;

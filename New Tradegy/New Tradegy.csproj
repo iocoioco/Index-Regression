@@ -129,12 +129,6 @@
     <Compile Include="Form_무게.Designer.cs">
       <DependentUpon>Form_무게.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form_제어.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_제어.Designer.cs">
-      <DependentUpon>Form_제어.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form_지수_조정.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,61 +153,51 @@
     <Compile Include="Form_호가.Designer.cs">
       <DependentUpon>Form_호가.cs</DependentUpon>
     </Compile>
-    <Compile Include="Library\BadNamingTest - Copy.cs" />
-    <Compile Include="Library\BadNamingTest.cs" />
+    <Compile Include="LeftOver\BadNamingTest.cs" />
     <Compile Include="Library\ChartClickHandler\ChartClickHandler.cs" />
     <Compile Include="Library\ChartClickHandler\CharterClickMapper.cs" />
-    <Compile Include="Library\clic.cs" />
-    <Compile Include="Library\cncl.cs" />
     <Compile Include="Library\Core\BatchSelector.cs" />
     <Compile Include="Library\Core\GroupManager.cs" />
     <Compile Include="Library\Core\GroupRepository.cs" />
     <Compile Include="Library\Core\StockExchanges.cs" />
     <Compile Include="Library\Core\StockManager.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
-    <Compile Include="Library\Core\TradingEngline.cs" />
-    <Compile Include="Library\DealManager.cs" />
+    <Compile Include="LeftOver\DealManager.cs" />
     <Compile Include="Library\Deals\DealMananager.cs" />
     <Compile Include="Library\eval.cs" />
     <Compile Include="Library\form.cs" />
     <Compile Include="Library\hoga.cs" />
     <Compile Include="Library\IndexRangeCheck.cs" />
     <Compile Include="Library\jpbd.cs" />
+    <Compile Include="Library\Listeners\CybosListener.cs" />
     <Compile Include="Library\mdm.cs" />
     <Compile Include="Library\Models\GroupData.cs" />
     <Compile Include="Library\Models\MajorIndex.cs" />
     <Compile Include="Library\Models\OrderItem.cs" />
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
+    <Compile Include="Library\PostProcessing\Postprocessor.cs" />
     <Compile Include="Library\temp.cs" />
     <Compile Include="Library\Trackers\Chart1Manager.cs" />
     <Compile Include="Library\Trackers\ChartRenderer.cs" />
+    <Compile Include="Library\Trackers\ControlPanelManager.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
-    <Compile Include="Library\Order_processor.cs" />
-    <Compile Include="Library\Real Intensity Calculation.cs" />
-    <Compile Include="Library\StockExchange.cs" />
-    <Compile Include="Library\temp_ModallessForm_매수_매도.cs" />
-    <Compile Include="Library\sell.cs" />
-    <Compile Include="Library\temp_breakout_largewall.cs" />
+    <Compile Include="LeftOver\Order_processor.cs" />
+    <Compile Include="LeftOver\temp_ModallessForm_매수_매도.cs" />
     <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
     <Compile Include="Library\keys.cs" />
-    <Compile Include="Library\math.cs" />
     <Compile Include="Library\misc.cs" />
     <Compile Include="Library\mnts.cs" />
-    <Compile Include="Library\opdl.cs" />
-    <Compile Include="Library\post.cs" />
     <Compile Include="Library\read.cs" />
     <Compile Include="Library\scrp.cs" />
     <Compile Include="Library\strg.cs" />
-    <Compile Include="Library\TestNamingBase.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Trackers\TradeLogger.cs" />
     <Compile Include="Library\Utils\ChartUtils.cs" />
     <Compile Include="Library\Utils\MathUtils.cs" />
     <Compile Include="Library\Utils\StringUtils.cs" />
-    <Compile Include="Library\wndw.cs" />
     <Compile Include="Library\work.cs" />
     <Compile Include="Library\writ.cs" />
     <Compile Include="Memo.cs">
@@ -243,9 +227,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_보조_차트.resx">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_제어.resx">
-      <DependentUpon>Form_제어.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_지수_조정.resx">
       <DependentUpon>Form_지수_조정.cs</DependentUpon>

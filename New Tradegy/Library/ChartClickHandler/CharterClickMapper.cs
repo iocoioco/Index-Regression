@@ -121,6 +121,94 @@ namespace New_Tradegy.Library
                 }
                 return -1;
             }
+
+        public static string CoordinateMapping(Chart chart, int nRow, int nCol, List<string> displayList, MouseEventArgs e, ref string selection, ref int cellX, ref int cellY)
+        {
+            double x_max = chart.Bounds.Width;
+            double y_max = chart.Bounds.Height;
+
+            // Normalize click position to 0-100 coordinate system
+            double norm_x = (double)e.X / x_max * 100.0;
+            double norm_y = (double)e.Y / y_max * 100.0;
+
+            // Clamp to bounds
+            norm_x = Math.Max(0, Math.Min(100, norm_x));
+            norm_y = Math.Max(0, Math.Min(100, norm_y));
+
+            // Determine cell width and height
+            double cellWidth = 100.0 / nCol;
+            double cellHeight = 100.0 / nRow;
+
+            if (chart.Name == "chart1")
+            {
+                if (cellX == 0)
+                    cellHeight = 100.0 / 2.0;
+                else
+                    cellHeight = 100.0 / nRow;
+            }
+
+            cellX = (int)(norm_x / cellWidth);
+            cellY = (int)(norm_y / cellHeight);
+
+            // Clamp grid indices
+            cellX = Math.Min(cellX, nCol - 1);
+            cellY = Math.Min(cellY, nRow - 1);
+
+            // Determine selection zone (1–9 style keypad mapping)
+            double pctX = (norm_x % cellWidth) / cellWidth * 100.0;
+            double pctY = (norm_y % cellHeight) / cellHeight * 100.0;
+
+            int[,] zoneMap = new int[3, 3] {
+                { 3, 6, 9 },
+                { 2, 5, 8 },
+                { 1, 4, 7 }
+            };
+
+            int zoneX = pctX > 66.66 ? 2 : pctX > 33.33 ? 1 : 0;
+            int zoneY = pctY < 33.33 ? 0 : pctY < 66.66 ? 1 : 2;
+
+            int finalAddress = zoneMap[zoneY, zoneX];
+            selection = (e.Button == MouseButtons.Left ? "l" : "r") + finalAddress.ToString();
+
+            // Resolve clicked stock
+            string clickedStock = null;
+
+            if (chart.Name == "chart1")
+            {
+                if (g.q == "h&s")
+                {
+                    clickedStock = g.clickedStock;
+                }
+                else
+                {
+                    if (cellX == 0)
+                    {
+                        clickedStock = cellY == 0 ? g.KODEX4[0] : g.KODEX4[2];
+                    }
+                    else if (cellX > 1)
+                    {
+                        int sequence = (cellX - 2) * nRow + cellY;
+                        if (sequence >= 0 && sequence < displayList.Count)
+                            clickedStock = displayList[sequence];
+                    }
+                }
+            }
+            else // chart2
+            {
+                if (g.q == "h&s")
+                {
+                    clickedStock = g.clickedStock;
+                }
+                else
+                {
+                    int index = nRow * cellX + cellY;
+                    if (index >= 0 && index < displayList.Count)
+                        clickedStock = displayList[index];
+                }
+            }
+
+            return clickedStock;
         }
+    }
     }
 }

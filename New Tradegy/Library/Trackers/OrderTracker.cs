@@ -70,9 +70,3 @@ namespace New_Tradegy.Library.Trackers
 
 }
 
-//OrderTracker.Update(nOrdKey, order =>
-//{
-//    order.m_nContAmt += nContAmt;
-//    order.m_nAmt -= nContAmt;
-//});
-
