@@ -111,18 +111,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form_그룹.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_그룹.Designer.cs">
-      <DependentUpon>Form_그룹.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_매매.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_매매.Designer.cs">
-      <DependentUpon>Form_매매.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form_무게.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,12 +135,6 @@
     <Compile Include="Form_보조_차트.Designer.cs">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form_호가.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_호가.Designer.cs">
-      <DependentUpon>Form_호가.cs</DependentUpon>
-    </Compile>
     <Compile Include="LeftOver\BadNamingTest.cs" />
     <Compile Include="Library\ChartClickHandler\ChartClickHandler.cs" />
     <Compile Include="Library\ChartClickHandler\CharterClickMapper.cs" />
@@ -164,7 +146,6 @@
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="LeftOver\DealManager.cs" />
     <Compile Include="Library\Deals\DealMananager.cs" />
-    <Compile Include="Library\eval.cs" />
     <Compile Include="Library\form.cs" />
     <Compile Include="Library\hoga.cs" />
     <Compile Include="Library\IndexRangeCheck.cs" />
@@ -178,9 +159,11 @@
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\PostProcessing\Postprocessor.cs" />
     <Compile Include="Library\temp.cs" />
-    <Compile Include="Library\Trackers\Chart1Manager.cs" />
+    <Compile Include="Library\Trackers\ChartGeneral.cs" />
     <Compile Include="Library\Trackers\ChartRenderer.cs" />
-    <Compile Include="Library\Trackers\ControlPanelManager.cs" />
+    <Compile Include="Library\Trackers\PanelControl.cs" />
+    <Compile Include="Library\Trackers\PanelGroup.cs" />
+    <Compile Include="Library\Trackers\ChartIndex.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
     <Compile Include="LeftOver\Order_processor.cs" />
     <Compile Include="LeftOver\temp_ModallessForm_매수_매도.cs" />
@@ -195,6 +178,7 @@
     <Compile Include="Library\strg.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Trackers\TradeLogger.cs" />
+    <Compile Include="Library\Trackers\PanelTrade.cs" />
     <Compile Include="Library\Utils\ChartUtils.cs" />
     <Compile Include="Library\Utils\MathUtils.cs" />
     <Compile Include="Library\Utils\StringUtils.cs" />
@@ -213,12 +197,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form_그룹.resx">
-      <DependentUpon>Form_그룹.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_매매.resx">
-      <DependentUpon>Form_매매.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form_매수_매도.resx">
       <DependentUpon>Form_매수_매도.cs</DependentUpon>
     </EmbeddedResource>
@@ -230,9 +208,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_지수_조정.resx">
       <DependentUpon>Form_지수_조정.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_호가.resx">
-      <DependentUpon>Form_호가.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Memo.resx">
       <DependentUpon>Memo.cs</DependentUpon>

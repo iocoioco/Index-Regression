@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog.Layouts;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -7,7 +8,17 @@ using System.Windows.Forms;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public static class 제어Setup
+    // Add new panels(like 뉴스, 공시, 뉴스분석)
+
+    // Refactor remaining UI
+
+    // Integrate into a layout grid
+
+    // Add toggle/hide/show logic
+
+    // 종목검색, 종목메모
+
+    public static class PanelControlSetup
     {
         public static void SetupAndAttachControlPanel(Form containerForm)
         {

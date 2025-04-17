@@ -11,7 +11,7 @@ using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public class Chart1Manager
+    public class ChartGeneral
     {
         private Chart _chart;
         private Control _parent;
@@ -20,15 +20,16 @@ namespace New_Tradegy.Library.Trackers
 
         private List<string> _prevWithBid = new List<string>();
         private List<string> _prevWithoutBid = new List<string>();
-        private const int MaxSpaces = 24;
+        private int MaxSpaces = 24;
 
         public void Initialize(Chart chart, Control parent)
         {
             _chart = chart;
             _parent = parent;
-            _layout = new ChartGridLayout(g.nRow, g.nCol);
+            _layout = new ChartGridLayout(g.nRow - 2, g.nCol);
             _bookBids = new BookBidManager(_layout);
         }
+
 
         public void UpdateLayoutIfChanged()
         {
