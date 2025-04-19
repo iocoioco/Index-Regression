@@ -1,21 +1,8 @@
-﻿using DSCBO1Lib;
-using New_Tradegy.Library;
+﻿using New_Tradegy.Library;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Xml.Linq;
-using static New_Tradegy.Library.g;
-using static OpenQA.Selenium.BiDi.Modules.Script.RealmInfo;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 namespace New_Tradegy
 {
@@ -35,12 +22,6 @@ namespace New_Tradegy
         public int _urgency;
         public int _amount;
         public int _price;
-
-
-
-
-
-
 
         //private System.Windows.Forms.Button Yes;
 
@@ -159,22 +140,7 @@ namespace New_Tradegy
         {
             richTextBox1.Text = _str;
         }
-        //private void PositionForm()
-        //{
-        //    DataGridView dgv = fm.FindDataGridViewByName(Application.OpenForms["Form1"], stock);
-        //    if (dgv == null) return;
-
-        //    Point stockPosition = dgv.PointToScreen(Point.Empty);
-        //    int newX = stockPosition.X + dgv.Width + 10;
-        //    int newY = stockPosition.Y;
-
-        //    Rectangle screenBounds = Screen.PrimaryScreen.Bounds;
-        //    newX = Math.Min(newX, screenBounds.Width - this.Width - 10);
-        //    newY = Math.Min(newY, screenBounds.Height - this.Height - 10);
-
-        //    this.StartPosition = FormStartPosition.Manual;
-        //    this.Location = new Point(newX, newY);
-        //}
+       
 
         public int The_urgency
         {
@@ -241,7 +207,7 @@ namespace New_Tradegy
         
         private void 시장_Click(object sender, EventArgs e)
         {
-            DealManager.deal_exec(_isSell ? "매도" : "매수", _stock, _amount, _price, "03");
+            DealManager.DealExec(_isSell ? "매도" : "매수", _stock, _amount, _price, "03");
             this.BeginInvoke(new Action(() =>
             {
                 this.Close();  // Ensures form closes properly before reopening
@@ -250,7 +216,7 @@ namespace New_Tradegy
 
         private void 지정_Click(object sender, EventArgs e)
         {
-            DealManager.deal_exec(_isSell ? "매도" : "매수", _stock, _amount, _price, "01");
+            DealManager.DealExec(_isSell ? "매도" : "매수", _stock, _amount, _price, "01");
             this.BeginInvoke(new Action(() =>
             {
                 this.Close();  // Ensures form closes properly before reopening

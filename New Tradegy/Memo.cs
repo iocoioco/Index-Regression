@@ -136,8 +136,8 @@ namespace New_Tradegy
                     string stock = item.Replace("_", " ");
                     if (wk.isStock(stock) && wk.return_index_of_ogldata(stock) >= 0)
                     {
-                        if (!g.관심종목.Contains(stock))
-                            g.관심종목.Add(stock);
+                        if (!g.StockManager.InterestedOnlyList.Contains(stock))
+                            g.StockManager.InterestedOnlyList.Add(stock);
                     }
                 }
                 //dr.draw_chart();
@@ -146,8 +146,8 @@ namespace New_Tradegy
             // 관심종목 제거
             else if (e.Control == true && e.KeyCode == Keys.W)
             {
-                g.관심종목.Clear();
-                mm.ManageChart1(); // g.관심종목.Clear()
+                g.StockManager.InterestedOnlyList.Clear();
+                mm.ManageChart1(); // g.StockManager.InterestedOnlyList.Clear()
             }
 
             // 테마 순서 리스트 네이버로부터(^t)
@@ -175,8 +175,8 @@ namespace New_Tradegy
             // 호가종목 제거
             else if (e.Control == true && e.KeyCode == Keys.M)
             {
-                g.호가종목.Clear();
-                mm.ManageChart1(); // Memo, g.호가종목.Clear();
+                g.StockManager.InterestedWithBidList.Clear();
+                mm.ManageChart1(); // Memo, g.StockManager.InterestedWithBidList.Clear();
             }
         }
 
@@ -229,16 +229,16 @@ namespace New_Tradegy
                     {
                         if (g.oGL_data[i].title.Contains(words[1]))
                         {
-                            foreach (string stockName in g.관심종목)
+                            foreach (string stockName in g.StockManager.InterestedOnlyList)
                             {
                                 wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, stockName);
                             }
-                            g.관심종목.Clear();
+                            g.StockManager.InterestedOnlyList.Clear();
                             foreach (var stock1 in g.oGL_data[i].stocks)
                             {
-                                if (!g.관심종목.Contains(stock1) && wk.return_index_of_ogldata(stock1) >= 0)
+                                if (!g.StockManager.InterestedOnlyList.Contains(stock1) && wk.return_index_of_ogldata(stock1) >= 0)
                                 {
-                                    g.관심종목.Add(stock1);
+                                    g.StockManager.InterestedOnlyList.Add(stock1);
                                 }
                             }
                             Form se = fm.FindFormByName("Form1");
@@ -275,15 +275,15 @@ namespace New_Tradegy
                     {
                         if (GL_title[i] == words[0])
                         {
-                            foreach (string stockName in g.관심종목)
+                            foreach (string stockName in g.StockManager.InterestedOnlyList)
                             {
                                 wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, stockName);
                             }
-                            g.관심종목.Clear();
+                            g.StockManager.InterestedOnlyList.Clear();
                             foreach (var stock2 in GL[i])
                             {
-                                if (!g.관심종목.Contains(stock2) && wk.return_index_of_ogldata(stock2) >= 0)
-                                    g.관심종목.Add(stock2);
+                                if (!g.StockManager.InterestedOnlyList.Contains(stock2) && wk.return_index_of_ogldata(stock2) >= 0)
+                                    g.StockManager.InterestedOnlyList.Add(stock2);
                             }
                             this.Text = GL_title[i];
                             mm.ManageChart1(); // Memo, 관심종목 제거 및 추가
@@ -301,8 +301,8 @@ namespace New_Tradegy
                     word = word.Replace("_", " ");
                     if (wk.isStock(word))
                     {
-                        if (!g.관심종목.Contains(word))
-                            g.관심종목.Add(word);
+                        if (!g.StockManager.InterestedOnlyList.Contains(word))
+                            g.StockManager.InterestedOnlyList.Add(word);
                     }
                 }
                 mm.ManageChart1(); // Memo, 관심종목 추가

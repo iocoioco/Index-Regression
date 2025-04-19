@@ -16,6 +16,7 @@ namespace New_Tradegy
         public List<string> HoldingList { get; private set; } = new List<string>();
         public List<string> LeverageList { get; private set; } = new List<string>();
         public List<string> InverseList { get; private set; } = new List<string>();
+        public List<string> IndexList { get; private set; }
 
         public List<string> InterestedWithBidList { get; private set; } = new List<string>();   // Right-click zone 5
         public List<string> InterestedOnlyList { get; private set; } = new List<string>();      // Right-click zone 4
@@ -29,6 +30,7 @@ namespace New_Tradegy
             // Set leverage indices once (can be updated if needed)
             LeverageList = new List<string> { "KODEX 레버리지", "KODEX 코스닥150레버리지" };
             InverseList = new List<string> { "KODEX 200선물인버스2X", "KODEX 코스닥150선물인버스" };
+            IndexList = LeverageList.Concat(InverseList).ToList();
         }
 
         public void UpdateTick(string stock, double[] newTickPro)

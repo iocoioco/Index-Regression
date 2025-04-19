@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using New_Tradegy.Library;
 using New_Tradegy.Library.Core;
 
-namespace New_Tradegy.Core
+namespace New_Tradegy.Library
 {
     public class Order
     {
@@ -26,6 +26,10 @@ namespace New_Tradegy.Core
 
     public class StockExchange
     {
+        public static List<Order> buyOrders = new List<Order>();
+        public static List<Order> sellOrders = new List<Order>();
+
+
         private static StockExchange _instance;
         public static StockExchange Instance
         {
@@ -39,9 +43,7 @@ namespace New_Tradegy.Core
 
         private StockExchange() { }
 
-        public static List<Order> buyOrders = new List<Order>();
-        public static List<Order> sellOrders = new List<Order>();
-
+        
         public void MonitorPrices(string stock, int sellHogaVolume, int sellHogaPrice, int buyHogaVolume, int buyHogaPrice)
         {
             foreach (var order in new List<Order>(buyOrders))

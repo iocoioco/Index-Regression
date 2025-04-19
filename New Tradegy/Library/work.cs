@@ -611,7 +611,7 @@ namespace New_Tradegy.Library
 
             foreach (var stock in gl)
             {
-                if (g.KODEX4.Contains(stock)) continue;
+                if (g.StockManager.IndexList.Contains(stock)) continue;
 
                 int index = g.ogl_data.FindIndex(x => x.stock == stock);
                 if (index < 0) continue;
@@ -634,7 +634,7 @@ namespace New_Tradegy.Library
 
             foreach (var stock in gl)
             {
-                if (g.KODEX4.Contains(stock)) continue;
+                if (g.StockManager.IndexList.Contains(stock)) continue;
 
                 int index = g.ogl_data.FindIndex(x => x.stock == stock);
                 if (index < 0) continue;
@@ -773,7 +773,7 @@ namespace New_Tradegy.Library
 
             foreach (var stock in gl)
             {
-                if (g.KODEX4.Contains(stock)) continue;
+                if (g.StockManager.IndexList.Contains(stock)) continue;
 
                 int index = g.ogl_data.FindIndex(x => x.stock == stock);
                 if (index < 0) continue;
@@ -802,7 +802,7 @@ namespace New_Tradegy.Library
 
             foreach (var stock in gl)
             {
-                if (g.KODEX4.Contains(stock)) continue;
+                if (g.StockManager.IndexList.Contains(stock)) continue;
 
                 int index = g.ogl_data.FindIndex(x => x.stock == stock);
                 if (index < 0) continue;
@@ -829,7 +829,7 @@ namespace New_Tradegy.Library
 
             foreach (var stock in gl)
             {
-                if (g.KODEX4.Contains(stock)) continue;
+                if (g.StockManager.IndexList.Contains(stock)) continue;
 
                 int index = g.ogl_data.FindIndex(x => x.stock == stock);
                 if (index < 0) continue;
@@ -855,7 +855,7 @@ namespace New_Tradegy.Library
 
             foreach (var stock in gl)
             {
-                if (g.KODEX4.Contains(stock)) continue;
+                if (g.StockManager.IndexList.Contains(stock)) continue;
 
                 int index = g.ogl_data.FindIndex(x => x.stock == stock);
                 if (index < 0) continue;

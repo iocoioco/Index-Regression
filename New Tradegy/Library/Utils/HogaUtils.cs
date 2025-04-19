@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace New_Tradegy.Library
 {
 
-    internal class hg // not updated by Sensei
+    internal class HogaUtils // not updated by Sensei
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
@@ -25,21 +25,21 @@ namespace New_Tradegy.Library
             Point formLocation = new Point();
             HogaFormSizeLocation(stock, rowId, colId, rows, ref formSize, ref formLocation);
 
-            if (stock == g.KODEX4[0])
+            if (stock == g.StockManager.IndexList[0])
             {
-                HogaRemove(g.KODEX4[1]);
+                HogaRemove(g.StockManager.IndexList[1]);
             }
-            else if (stock == g.KODEX4[1])
+            else if (stock == g.StockManager.IndexList[1])
             {
-                HogaRemove(g.KODEX4[0]);
+                HogaRemove(g.StockManager.IndexList[0]);
             }
-            else if (stock == g.KODEX4[2])
+            else if (stock == g.StockManager.IndexList[2])
             {
-                HogaRemove(g.KODEX4[3]);
+                HogaRemove(g.StockManager.IndexList[3]);
             }
-            else if (stock == g.KODEX4[3])
+            else if (stock == g.StockManager.IndexList[3])
             {
-                HogaRemove(g.KODEX4[2]);
+                HogaRemove(g.StockManager.IndexList[2]);
             }
             // if a form with stock name exists, locate a new location and return
             Form f = HogaFormNameGivenStock(stock);
@@ -64,22 +64,22 @@ namespace New_Tradegy.Library
 
             bool inserted = false;
 
-            if (stock == g.KODEX4[0])
+            if (stock == g.StockManager.IndexList[0])
             {
-                HogaRemove(g.KODEX4[1]);
+                HogaRemove(g.StockManager.IndexList[1]);
             }
-            else if (stock == g.KODEX4[1])
+            else if (stock == g.StockManager.IndexList[1])
             {
-                HogaRemove(g.KODEX4[0]);
+                HogaRemove(g.StockManager.IndexList[0]);
                
             }
-            else if (stock == g.KODEX4[2])
+            else if (stock == g.StockManager.IndexList[2])
             {
-                HogaRemove(g.KODEX4[3]);
+                HogaRemove(g.StockManager.IndexList[3]);
             }
-            else if (stock == g.KODEX4[3])
+            else if (stock == g.StockManager.IndexList[3])
             {
-                HogaRemove(g.KODEX4[2]);
+                HogaRemove(g.StockManager.IndexList[2]);
                
             }
             // if a form with stock name exists, locate a new location and return
@@ -123,7 +123,7 @@ namespace New_Tradegy.Library
                 rowId--;
             }
 
-            if (stock == g.KODEX4[2] || stock == g.KODEX4[3]) // kosdaq leverage & inverse
+            if (stock == g.StockManager.IndexList[2] || stock == g.StockManager.IndexList[3]) // kosdaq leverage & inverse
             {
                 rowId++;
             }
@@ -286,7 +286,7 @@ namespace New_Tradegy.Library
             FormCollection openForms = Application.OpenForms;
             foreach (Form form in openForms)
             {
-                if (wk.isStock(form.Name) && !g.KODEX4.Contains(form.Name))
+                if (wk.isStock(form.Name) && !g.StockManager.IndexList.Contains(form.Name))
                 {
                     FormList.Add(form);
                 }

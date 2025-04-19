@@ -266,7 +266,7 @@ namespace New_Tradegy.Library
             int count = (int)_cptd6033.GetHeaderValue(7); // 보유종목 수
             if (count > 51) return;
 
-            g.보유종목.Clear();
+            g.StockManager.HoldingList.Clear();
 
             // Reset all stocks' 보유량
             foreach (var stock in StockRepository.Instance.AllDatas)
@@ -295,13 +295,13 @@ namespace New_Tradegy.Library
                     deal.수익률 = (api.매수1호가 - deal.장부가) / api.매수1호가 * 100;
                 }
 
-                g.보유종목.Add(code);
+                g.StockManager.HoldingList.Add(code);
             }
 
             // Remove 보유종목 from 호가종목
-            foreach (string code in g.보유종목)
+            foreach (string code in g.StockManager.HoldingList)
             {
-                g.호가종목.Remove(code);
+                g.StockManager.InterestedWithBidList.Remove(code);
             }
 
             deal_hold_order();
@@ -311,7 +311,7 @@ namespace New_Tradegy.Library
         {
             var stocks = new List<Tuple<long, string>>();
 
-            foreach (var code in g.보유종목)
+            foreach (var code in g.StockManager.HoldingList)
             {
                 if (!StockRepository.Instance.Contains(code))
                     continue;
@@ -325,10 +325,10 @@ namespace New_Tradegy.Library
             // Sort descending by holding value
             var sorted = stocks.OrderByDescending(t => t.Item1).ToList();
 
-            g.보유종목.Clear();
+            g.StockManager.HoldingList.Clear();
             foreach (var item in sorted)
             {
-                g.보유종목.Add(item.Item2);
+                g.StockManager.HoldingList.Add(item.Item2);
             }
         }
 

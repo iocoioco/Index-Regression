@@ -30,9 +30,9 @@ namespace New_Tradegy
             int h = g.ChartManager.Chart1.Bounds.Height / 4;
 
             int id = 0;
-            for (int i = 0; i < g.KODEX4.Count; i++)
+            for (int i = 0; i < g.StockManager.IndexList.Count; i++)
             {
-                if (g.clickedStock == g.KODEX4[i])
+                if (g.clickedStock == g.StockManager.IndexList[i])
                 {
                     id = i;
                     break;
@@ -92,9 +92,9 @@ namespace New_Tradegy
                 string Name = c.Text;
 
                 int id = 0;
-                for (int i = 0; i < g.KODEX4.Count; i++)
+                for (int i = 0; i < g.StockManager.IndexList.Count; i++)
                 {
-                    if (g.clickedStock == g.KODEX4[i])
+                    if (g.clickedStock == g.StockManager.IndexList[i])
                     {
                         id = i;
                         break;

@@ -14,7 +14,8 @@ namespace New_Tradegy.Library
     public class g
     {
         public static StockRepository Repository;
-        public static Chart1Manager Chart1Manager;
+        public static ChartGeneral ChartGeneral;
+     
         public static StockManager StockManager;
         
 

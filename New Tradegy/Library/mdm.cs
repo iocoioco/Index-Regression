@@ -249,9 +249,9 @@ class mm
         g.stock_data o = g.ogl_data[index];
 
         int magnifier_id = -1;
-        for (int i = 0; i < g.KODEX4.Count; i++)
+        for (int i = 0; i < g.StockManager.IndexList.Count; i++)
         {
-            if (o.stock == g.KODEX4[i])
+            if (o.stock == g.StockManager.IndexList[i])
             {
                 magnifier_id = i;
                 break;
@@ -649,8 +649,8 @@ class mm
         }
 
         // Add stocks from 보유종목 and 호가종목 (with bid spaces)
-        AddStocksWithBid(g.보유종목);
-        AddStocksWithBid(g.호가종목);
+        AddStocksWithBid(g.StockManager.HoldingList);
+        AddStocksWithBid(g.StockManager.InterestedWithBidList);
 
         for (int i = 0; i < TotalSpaceCount; i++)
         {
@@ -675,9 +675,9 @@ class mm
             if (g.dl[i] != "empty")
                 continue;
 
-            if (관심Count < g.관심종목.Count)
+            if (관심Count < g.StockManager.InterestedOnlyList.Count)
             {
-                g.dl[i] = g.관심종목[관심Count++];
+                g.dl[i] = g.StockManager.InterestedOnlyList[관심Count++];
             }
             else
             {
@@ -1467,16 +1467,16 @@ class mm
 
         // 일반의 첫째 라인
 
-        if (g.보유종목.Contains(stock))
+        if (g.StockManager.HoldingList.Contains(stock))
         {
             stock_title = "$$" + stock_title;
         }
-        else if (g.호가종목.Contains(stock))
+        else if (g.StockManager.InterestedWithBidList.Contains(stock))
         {
             stock_title = "@ " + stock_title;
         }
 
-        else if (g.관심종목.Contains(stock))
+        else if (g.StockManager.InterestedOnlyList.Contains(stock))
         {
             stock_title = "@ " + stock_title;
         }
@@ -1519,7 +1519,7 @@ class mm
         stock_title += ("\n" + AnnotationGeneralMinute(o, x, StartNpts, EndNpts));
 
         // 일반 : 프돈 + 외돈 
-        if (!(g.KODEX4.Contains(stock)))
+        if (!(g.StockManager.IndexList.Contains(stock)))
         {
             stock_title += "\n";
             if (o.분외인천[0] >= 0)

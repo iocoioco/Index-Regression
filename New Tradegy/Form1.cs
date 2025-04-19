@@ -17,6 +17,7 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
 using System.Text;
 using static New_Tradegy.Library.Trackers.ControlPanelManager;
+using New_Tradegy.KeyBindings;
 
 //using NLog;
 
@@ -106,10 +107,10 @@ namespace New_Tradegy // added for test on 20241020 0300
             GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt");
 
 
-            g.ChartManager = new ChartManager();
+            g.ChartGeneral = new ChartGeneral();
             g.ChartManager.SetChart1(chart1);
 
-            제어Setup.SetupAndAttachControlPanel(this);  // call from main form or container
+            ControlSetup.SetupAndAttachControlPanel(this);  // call from main form or container
 
            
 
@@ -184,7 +185,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 cn.Init_CpConclusion();
 
                 DealManager.deal_processing();
-                DealManager.deal_hold(); // Initialize g.보유종목
+                DealManager.deal_hold(); // Initialize g.StockManager.HoldingList
                 DealManager.UpdateAvailableDeposit(); // button1 tr(1)
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
@@ -246,7 +247,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 string searchText = searchTextBox.Text;
                 if (wk.isStock(searchText) && g.ogl_data.FindIndex(x => x.stock == searchText) >= 0)
                 {
-                    g.관심종목.Add(searchText);
+                    g.StockManager.InterestedOnlyList.Add(searchText);
                     mm.ManageChart1(); // not used
                 }
                 searchTextBox.Text = "";
@@ -261,10 +262,16 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (KeyBindingManager.TryHandle(keyData, this))
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
 
 
 
-      
 
 
 
@@ -605,7 +612,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.stock_data p = g.ogl_data[index];
 
-            if (!g.KODEX4.Contains(종목)) // KODEX 종목 제외
+            if (!g.StockManager.IndexList.Contains(종목)) // KODEX 종목 제외
             {
                 p.x[p.nrow - 1, 5] = (int)외국계순매수량;
                 p.당일외인순매수량 = (int)외국계순매수량;

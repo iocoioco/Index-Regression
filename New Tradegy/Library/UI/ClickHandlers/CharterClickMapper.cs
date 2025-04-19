@@ -79,7 +79,7 @@ namespace New_Tradegy.Library
                 {
                     if (g.q == "h&s") return g.clickedStock;
                     if (cellX == 0)
-                        clickedStock = cellY == 0 ? g.KODEX4[0] : g.KODEX4[2];
+                        clickedStock = cellY == 0 ? g.StockManager.IndexList[0] : g.StockManager.IndexList[2];
                     else if (cellX >= 2)
                     {
                         int seq = (cellX - 2) * rows + cellY;
@@ -183,7 +183,7 @@ namespace New_Tradegy.Library
                 {
                     if (cellX == 0)
                     {
-                        clickedStock = cellY == 0 ? g.KODEX4[0] : g.KODEX4[2];
+                        clickedStock = cellY == 0 ? g.StockManager.IndexList[0] : g.StockManager.IndexList[2];
                     }
                     else if (cellX > 1)
                     {

@@ -224,7 +224,7 @@ namespace New_Tradegy.Library
                 // 5 & 10 hoga toggle
                 else if (e.ColumnIndex <= Rows * 2)
                 {
-                    if (g.KODEX4.Contains(Stock))
+                    if (g.StockManager.IndexList.Contains(Stock))
                     {
                         return;
                     }
@@ -355,7 +355,7 @@ namespace New_Tradegy.Library
                 }
                 else
                 {
-                    DealManager.deal_exec("매도", Stock, Amount, Price, "01");
+                    DealManager.DealExec("매도", Stock, Amount, Price, "01");
                 }
             }
         }
@@ -647,7 +647,7 @@ namespace New_Tradegy.Library
                 int valdn = (int)_stockjpbid2.GetDataValue(1, 0);
 
                 // 일반 - 프누억
-                if (g.KODEX4.Contains(Stock))
+                if (g.StockManager.IndexList.Contains(Stock))
                 {
                     Dtb.Rows[Rows - 2][2] = (MajorIndex.Instance.KospiIndex / 100.0).ToString("0.##"); ;
                     Dtb.Rows[Rows - 1][2] = (MajorIndex.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
@@ -808,7 +808,7 @@ namespace New_Tradegy.Library
             Color ColorLightRed = Color.FromArgb(255, 204, 204); // LightRed
 
             cellColors[Rows - 1, 2] = Color.LightGreen;
-            if (g.KODEX4.Contains(Stock))
+            if (g.StockManager.IndexList.Contains(Stock))
             {
                 cellColors[Rows - 2, 2] = Color.LightGreen;
             }
@@ -831,7 +831,7 @@ namespace New_Tradegy.Library
                     cellColors[i, 0] = Color.Yellow;
                 }
                 // column 2
-                int row = g.KODEX4.Contains(Stock) ? Rows - 2 : Rows - 1;
+                int row = g.StockManager.IndexList.Contains(Stock) ? Rows - 2 : Rows - 1;
                 for (int i = 0; i < row; i++)
                 {
                     cellColors[i, 2] = Color.Yellow;

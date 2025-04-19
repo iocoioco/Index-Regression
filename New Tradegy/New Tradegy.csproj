@@ -135,19 +135,19 @@
     <Compile Include="Form_보조_차트.Designer.cs">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
-    <Compile Include="LeftOver\BadNamingTest.cs" />
-    <Compile Include="Library\ChartClickHandler\ChartClickHandler.cs" />
-    <Compile Include="Library\ChartClickHandler\CharterClickMapper.cs" />
-    <Compile Include="Library\Core\BatchSelector.cs" />
+    <Compile Include="Library\UI\ClickHandlers\ChartClickHandler.cs" />
+    <Compile Include="Library\UI\ClickHandlers\CharterClickMapper.cs" />
+    <Compile Include="Library\Listeners\BatchSelector.cs" />
     <Compile Include="Library\Core\GroupManager.cs" />
     <Compile Include="Library\Core\GroupRepository.cs" />
     <Compile Include="Library\Core\StockExchanges.cs" />
     <Compile Include="Library\Core\StockManager.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
-    <Compile Include="LeftOver\DealManager.cs" />
     <Compile Include="Library\Deals\DealMananager.cs" />
-    <Compile Include="Library\form.cs" />
-    <Compile Include="Library\hoga.cs" />
+    <Compile Include="Library\UI\KeyBindings\KeyBindingManager.cs" />
+    <Compile Include="Library\UI\KeyBindings\KeyBindingRegistrar.cs" />
+    <Compile Include="Library\Utils\FormUtils.cs" />
+    <Compile Include="Library\Utils\HogaUtils.cs" />
     <Compile Include="Library\IndexRangeCheck.cs" />
     <Compile Include="Library\jpbd.cs" />
     <Compile Include="Library\Listeners\CybosListener.cs" />
@@ -165,8 +165,6 @@
     <Compile Include="Library\Trackers\PanelGroup.cs" />
     <Compile Include="Library\Trackers\ChartIndex.cs" />
     <Compile Include="Library\Trackers\OrderTracker.cs" />
-    <Compile Include="LeftOver\Order_processor.cs" />
-    <Compile Include="LeftOver\temp_ModallessForm_매수_매도.cs" />
     <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
@@ -175,7 +173,6 @@
     <Compile Include="Library\mnts.cs" />
     <Compile Include="Library\read.cs" />
     <Compile Include="Library\scrp.cs" />
-    <Compile Include="Library\strg.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Trackers\TradeLogger.cs" />
     <Compile Include="Library\Trackers\PanelTrade.cs" />
@@ -190,7 +187,7 @@
     <Compile Include="Memo.Designer.cs">
       <DependentUpon>Memo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Library\mkey.cs" />
+    <Compile Include="Library\Listeners\MarketEyeBatchDownloader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -281,6 +278,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Temp Store\" />
+    <Folder Include="Library\KeyBindingManager\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Selenium.WebDriver.ChromeDriver.131.0.6778.8500\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.ChromeDriver.131.0.6778.8500\build\Selenium.WebDriver.ChromeDriver.targets')" />

@@ -216,16 +216,16 @@ namespace New_Tradegy.Library.Core
             var api = data.Api;
 
             // ❌ Exclude ETFs and already-handled stocks
-            if ((g.KODEX4.Contains(stock) && !stock.Contains("레버리지")) ||
+            if ((g.StockManager.IndexList.Contains(stock) && !stock.Contains("레버리지")) ||
                 stock.Contains("KODEX") ||
                 stock.Contains("KOSEF") ||
                 stock.Contains("HANARO") ||
                 stock.Contains("TIGER") ||
                 stock.Contains("KBSTAR") ||
                 stock.Contains("혼합") ||
-                g.보유종목.Contains(stock) ||
-                g.호가종목.Contains(stock) ||
-                g.관심종목.Contains(stock))
+                g.StockManager.HoldingList.Contains(stock) ||
+                g.StockManager.InterestedWithBidList.Contains(stock) ||
+                g.StockManager.InterestedOnlyList.Contains(stock))
             {
                 return false;
             }

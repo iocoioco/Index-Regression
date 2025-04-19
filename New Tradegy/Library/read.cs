@@ -126,7 +126,7 @@ namespace New_Tradegy.Library
             제외종목 = read_제외();  // read_all_stocks_for_given_date
 
 
-            g.호가종목.Clear();
+            g.StockManager.InterestedWithBidList.Clear();
             foreach (var stock in sl)
             {
                 if (제외종목.Contains(stock))
@@ -262,12 +262,12 @@ namespace New_Tradegy.Library
             //    g.ogl_data.Insert(0, b);
             //}
 
-            if (g.KODEX4.Count == 0)
+            if (g.StockManager.IndexList.Count == 0)
             {
-                g.KODEX4.Add("KODEX 레버리지");
-                g.KODEX4.Add("KODEX 200선물인버스2X");
-                g.KODEX4.Add("KODEX 코스닥150레버리지");
-                g.KODEX4.Add("KODEX 코스닥150선물인버스");
+                g.StockManager.IndexList.Add("KODEX 레버리지");
+                g.StockManager.IndexList.Add("KODEX 200선물인버스2X");
+                g.StockManager.IndexList.Add("KODEX 코스닥150레버리지");
+                g.StockManager.IndexList.Add("KODEX 코스닥150선물인버스");
             }
 
             // read_or_set_stocks
@@ -296,7 +296,7 @@ namespace New_Tradegy.Library
                     File.Delete(file);
                     File.Create(file).Close();
                     string minutestr;
-                    if (g.KODEX4.Contains(o.stock))
+                    if (g.StockManager.IndexList.Contains(o.stock))
                         minutestr = "85959\t0\t100\t0\t0\t0\t0\t0\t0\t0\t0\t0"; // 12 items
                     else
                         minutestr = "85959\t0\t100\t10000\t0\t0\t0\t0\t0\t0\t0\t0"; // 12 items
@@ -381,7 +381,7 @@ namespace New_Tradegy.Library
 
                 // continuity setting as default
                 #region
-                if ((!(g.KODEX4.Contains(o.stock) || o.stock.Contains("혼합"))) && o.nrow >= 2)
+                if ((!(g.StockManager.IndexList.Contains(o.stock) || o.stock.Contains("혼합"))) && o.nrow >= 2)
                 {
                     for (int j = 1; j < o.nrow; j++)
                     {
@@ -477,7 +477,7 @@ namespace New_Tradegy.Library
                 g.sl.Add(item.stock);
             }
 
-            rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.호가종목
+            rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
             wk.gen_oGL_data(tgl_title, tgl); // generate oGL_data
 

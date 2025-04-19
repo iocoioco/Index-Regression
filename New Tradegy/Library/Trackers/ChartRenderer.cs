@@ -534,7 +534,7 @@ namespace New_Tradegy.Library.Trackers
 
             stock_title += "\n" + AnnotationGeneralMinute(o, x, StartNpts, EndNpts);
 
-            if (!g.KODEX4.Contains(stock))
+            if (!g.StockManager.IndexList.Contains(stock))
             {
                 stock_title += "\n";
                 if (o.Api.분외인천[0] >= 0)

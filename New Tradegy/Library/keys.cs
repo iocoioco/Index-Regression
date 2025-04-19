@@ -22,31 +22,6 @@ namespace New_Tradegy.Library
     internal class ky
     {
         private static TextBox searchTextBox;
-        public static void chart1_previewkeydown(object sender, PreviewKeyDownEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                 
-                    break;
-
-                case Keys.Down:
-                   
-                   
-                        
-                    break;
-
-                case Keys.Left:
-                    break;
-
-                case Keys.Right:
-                    break;
-
-                case Keys.F9:
-                    break;
-            }
-        }
-
 
         public static void chart_keypress(KeyPressEventArgs e)
         {
@@ -711,18 +686,18 @@ namespace New_Tradegy.Library
                     break;
                      
                 case 'm':
-                    for (int i = g.호가종목.Count - 1; i >= 0; i--)
+                    for (int i = g.StockManager.InterestedWithBidList.Count - 1; i >= 0; i--)
                     {
-                       // rd.read_관심제거추가(g.호가종목[i]); // this does nothing
-                        g.호가종목.Remove(g.호가종목[i]);
+                       // rd.read_관심제거추가(g.StockManager.InterestedWithBidList[i]); // this does nothing
+                        g.StockManager.InterestedWithBidList.Remove(g.StockManager.InterestedWithBidList[i]);
                     }
                     break;
 
                 case 'M':
-                    for (int i = g.관심종목.Count - 1; i >= 0; i--)
+                    for (int i = g.StockManager.InterestedOnlyList.Count - 1; i >= 0; i--)
                     {
-                        // rd.read_관심제거추가(g.관심종목[i]); // this does nothing
-                        g.관심종목.Remove(g.관심종목[i]);
+                        // rd.read_관심제거추가(g.StockManager.InterestedOnlyList[i]); // this does nothing
+                        g.StockManager.InterestedOnlyList.Remove(g.StockManager.InterestedOnlyList[i]);
                     }
                     break;
 
@@ -747,7 +722,7 @@ namespace New_Tradegy.Library
                     switch (g.q)
                     {
                         case "o&s":
-                            int count = g.보유종목.Count + g.호가종목.Count;
+                            int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count;
                             if (g.gid + ((g.nCol - 2) * g.nRow - count) < g.sl.Count)
                             {
                                 g.gid += (g.nCol - 2) * g.nRow - count;
@@ -789,7 +764,7 @@ namespace New_Tradegy.Library
                     {
                         case "o&s":
                             //case "e&s":
-                            int count = g.보유종목.Count + g.호가종목.Count; 
+                            int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count; 
                             if (g.gid - ((g.nCol - 2) * g.nRow - count) >= 0)
                             {
                                 g.gid -= (g.nCol - 2) * g.nRow - count;

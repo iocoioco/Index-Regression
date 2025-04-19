@@ -307,14 +307,14 @@ namespace New_Tradegy
                 case "지수":
                     for (int i = 0; i < 2; i++)
                     {
-                        if (!displayList.Contains(g.KODEX4[i]))
+                        if (!displayList.Contains(g.StockManager.IndexList[i]))
                         {
-                            displayList.Add(g.KODEX4[i]);
+                            displayList.Add(g.StockManager.IndexList[i]);
                         }
                     }
                     break;
                 case "보유":
-                    foreach (string s in g.보유종목)
+                    foreach (string s in g.StockManager.HoldingList)
                     {
                         if (!displayList.Contains(s))
                         {
@@ -430,14 +430,14 @@ namespace New_Tradegy
                         string stock = o.stock;
                         // if (!o.included) continue; Blocked on 20240406
                         // 레버리지 외 지수관련 모두 continue;
-                        if (g.KODEX4.Contains(stock) ||
+                        if (g.StockManager.IndexList.Contains(stock) ||
                         stock.Contains("KOSEF") ||
                         stock.Contains("HANARO") ||
                         stock.Contains("TIGER") ||
                         stock.Contains("KBSTAR") ||
                         stock.Contains("혼합") ||
-                        g.보유종목.Contains(stock) ||
-                        g.호가종목.Contains(stock))
+                        g.StockManager.HoldingList.Contains(stock) ||
+                        g.StockManager.InterestedWithBidList.Contains(stock))
                         {
                             continue;
                         }

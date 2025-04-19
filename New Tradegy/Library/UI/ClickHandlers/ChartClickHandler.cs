@@ -36,9 +36,9 @@ namespace New_Tradegy.Library
             switch (regionKey)
             {
                 case "l1":
-                    if (!g.보유종목.Contains(g.clickedStock) && !g.호가종목.Contains(g.clickedStock))
+                    if (!g.StockManager.HoldingList.Contains(g.clickedStock) && !g.StockManager.InterestedWithBidList.Contains(g.clickedStock))
                     {
-                        g.호가종목.Add(g.clickedStock);
+                        g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
                     mm.ManageChart1();
 
@@ -63,11 +63,11 @@ namespace New_Tradegy.Library
                     var confirmationDialog = new jp();
                     confirmationDialog.OpenOrUpdateConfirmationForm(false, g.clickedStock, quantity, price, 100, info);
 
-                    DealManager.deal_exec("매수", g.clickedStock, quantity, price, "03");
+                    DealManager.DealExec("매수", g.clickedStock, quantity, price, "03");
                     break;
 
                 case "l2":
-                    int magnifierIdx = g.KODEX4.FindIndex(code => code == g.clickedStock);
+                    int magnifierIdx = g.StockManager.IndexList.FindIndex(code => code == g.clickedStock);
                     if (magnifierIdx >= 0)
                     {
                         g.kodex_magnifier[magnifierIdx, 0] *= 1.333;
@@ -76,7 +76,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l8":
-                    magnifierIdx = g.KODEX4.FindIndex(code => code == g.clickedStock);
+                    magnifierIdx = g.StockManager.IndexList.FindIndex(code => code == g.clickedStock);
                     if (magnifierIdx >= 0)
                     {
                         g.kodex_magnifier[magnifierIdx, 0] *= 0.666;
@@ -145,7 +145,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l2":
-                    if (g.KODEX4.Contains(g.clickedStock))
+                    if (g.StockManager.IndexList.Contains(g.clickedStock))
                     {
                         var list = hg.FormNameContainGivenString("Form_지수_조정");
                         foreach (var form in list) form.Dispose();
@@ -187,27 +187,27 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l5":
-                    if (g.clickedStock == g.KODEX4[0] || g.clickedStock == g.KODEX4[2])
+                    if (g.clickedStock == g.StockManager.IndexList[0] || g.clickedStock == g.StockManager.IndexList[2])
                     {
                         wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, g.clickedStock);
-                        if (g.clickedStock == g.KODEX4[0]) mm.fixedStocks[0] = g.KODEX4[1];
-                        if (g.clickedStock == g.KODEX4[1]) mm.fixedStocks[0] = g.KODEX4[0];
-                        if (g.clickedStock == g.KODEX4[2]) mm.fixedStocks[1] = g.KODEX4[3];
-                        if (g.clickedStock == g.KODEX4[3]) mm.fixedStocks[1] = g.KODEX4[2];
+                        if (g.clickedStock == g.StockManager.IndexList[0]) mm.fixedStocks[0] = g.StockManager.IndexList[1];
+                        if (g.clickedStock == g.StockManager.IndexList[1]) mm.fixedStocks[0] = g.StockManager.IndexList[0];
+                        if (g.clickedStock == g.StockManager.IndexList[2]) mm.fixedStocks[1] = g.StockManager.IndexList[3];
+                        if (g.clickedStock == g.StockManager.IndexList[3]) mm.fixedStocks[1] = g.StockManager.IndexList[2];
                         action = "   B";
                     }
                     else
                     {
-                        if (!g.보유종목.Contains(g.clickedStock))
+                        if (!g.StockManager.HoldingList.Contains(g.clickedStock))
                         {
-                            if (g.호가종목.Contains(g.clickedStock))
+                            if (g.StockManager.InterestedWithBidList.Contains(g.clickedStock))
                             {
-                                g.호가종목.Remove(g.clickedStock);
+                                g.StockManager.InterestedWithBidList.Remove(g.clickedStock);
                             }
                             else
                             {
-                                g.호가종목.Add(g.clickedStock);
-                                if (g.관심종목.Contains(g.clickedStock)) g.관심종목.Remove(g.clickedStock);
+                                g.StockManager.InterestedWithBidList.Add(g.clickedStock);
+                                if (g.StockManager.InterestedOnlyList.Contains(g.clickedStock)) g.StockManager.InterestedOnlyList.Remove(g.clickedStock);
                             }
                         }
                         action = " peB";
@@ -215,17 +215,17 @@ namespace New_Tradegy.Library
                     break;
 
                 case "l6":
-                    if (!g.보유종목.Contains(g.clickedStock))
+                    if (!g.StockManager.HoldingList.Contains(g.clickedStock))
                     {
-                        if (g.호가종목.Contains(g.clickedStock))
+                        if (g.StockManager.InterestedWithBidList.Contains(g.clickedStock))
                         {
-                            g.호가종목.Remove(g.clickedStock);
-                            g.관심종목.Add(g.clickedStock);
+                            g.StockManager.InterestedWithBidList.Remove(g.clickedStock);
+                            g.StockManager.InterestedOnlyList.Add(g.clickedStock);
                         }
                         else
                         {
-                            if (g.관심종목.Contains(g.clickedStock)) g.관심종목.Remove(g.clickedStock);
-                            else g.관심종목.Add(g.clickedStock);
+                            if (g.StockManager.InterestedOnlyList.Contains(g.clickedStock)) g.StockManager.InterestedOnlyList.Remove(g.clickedStock);
+                            else g.StockManager.InterestedOnlyList.Add(g.clickedStock);
                         }
                     }
                     action = " peB";

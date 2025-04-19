@@ -78,7 +78,7 @@ namespace New_Tradegy.Library.Postprocessing
 
             foreach (var data in downloadedList)
             {
-                if (g.보유종목.Contains(data.Stock)) // Stock is the name
+                if (g.StockManager.HoldingList.Contains(data.Stock)) // Stock is the name
                 {
                     cn.dgv2_update(); // update DGV for holding stock
                     marketeye_received_보유종목_푀분의매수매도_소리내기(data); // renamed to match new structure
@@ -116,7 +116,7 @@ namespace New_Tradegy.Library.Postprocessing
 
                 for (int i = 0; i < 3; i++)
                 {
-                    if (g.보유종목[i] == data.Stock)
+                    if (g.StockManager.HoldingList[i] == data.Stock)
                     {
                         orderIndex = i;
                         sound = i == 0 ? "one " : i == 1 ? "two " : "three ";
@@ -199,10 +199,10 @@ namespace New_Tradegy.Library.Postprocessing
             int index;
 
             var repo = StockRepository.Instance;
-            var kospi_leverage = repo.GetOrThrow(g.KODEX4[0]);
-            var kospi_inverse = repo.GetOrThrow(g.KODEX4[1]);
-            var kosdaq_leverage = repo.GetOrThrow(g.KODEX4[2]);
-            var kosdaq_inverse = repo.GetOrThrow(g.KODEX4[3]);
+            var kospi_leverage = repo.GetOrThrow(g.StockManager.IndexList[0]);
+            var kospi_inverse = repo.GetOrThrow(g.StockManager.IndexList[1]);
+            var kosdaq_leverage = repo.GetOrThrow(g.StockManager.IndexList[2]);
+            var kosdaq_inverse = repo.GetOrThrow(g.StockManager.IndexList[3]);
 
             for (int i = 0; i < 382; i++)
             {
@@ -325,18 +325,18 @@ namespace New_Tradegy.Library.Postprocessing
                     pass.PreviousPriceLow = null;
                     pass.PriceStatus = 1;
 
-                    if (!g.관심종목.Contains(data.Stock) &&
+                    if (!g.StockManager.InterestedOnlyList.Contains(data.Stock) &&
                         !data.Stock.Contains("KODEX") &&
                         api.분거래천[0] > 50 &&
                         api.분배수차[0] > 100 &&
                         api.분프로천[0] >= 0 &&
                         g.add_interest)
                     {
-                        if (g.관심종목.Count > 2)
+                        if (g.StockManager.InterestedOnlyList.Count > 2)
                         {
-                            g.관심종목.RemoveAt(0);
+                            g.StockManager.InterestedOnlyList.RemoveAt(0);
                         }
-                        g.관심종목.Add(data.Stock);
+                        g.StockManager.InterestedOnlyList.Add(data.Stock);
                     }
                 }
                 else
@@ -369,7 +369,7 @@ namespace New_Tradegy.Library.Postprocessing
         // 통계 적용
         public static void post_score_급락(StockData data, int check_row)
         {
-            if (g.KODEX4.Contains(data.Stock))
+            if (g.StockManager.IndexList.Contains(data.Stock))
                 return;
 
             var api = data.Api;
@@ -391,7 +391,7 @@ namespace New_Tradegy.Library.Postprocessing
         // done by Sensei
         public static void post_score_급상(StockData data, int check_row)
         {
-            if (g.KODEX4.Contains(data.Stock))
+            if (g.StockManager.IndexList.Contains(data.Stock))
                 return;
 
             var api = data.Api;
