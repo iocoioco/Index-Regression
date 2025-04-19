@@ -4,15 +4,28 @@ using System.Windows.Forms;
 
 namespace New_Tradegy.KeyBindings
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Forms;
+
     public static class KeyBindingManager
     {
         private static readonly Dictionary<(Keys key, bool shift, bool ctrl, bool alt), Action<Form>> _bindings = new();
 
+        // Main registration method
         public static void Register(Keys key, bool shift, bool ctrl, bool alt, Action<Form> action)
         {
             _bindings[(key, shift, ctrl, alt)] = action;
         }
 
+        // Overload for char-based key registration (e.g., 'F', 'f')
+        public static void Register(char c, bool ctrl, bool alt, Action<Form> action)
+        {
+            var (key, shift) = KeyHelper.FromChar(c);
+            Register(key, shift, ctrl, alt, action);
+        }
+
+        // Try handling a key press event
         public static bool TryHandle(Keys keyData, Form context)
         {
             Keys keyOnly = keyData & ~Keys.Modifiers;
@@ -28,6 +41,46 @@ namespace New_Tradegy.KeyBindings
 
             return false;
         }
+    }
+
+
+    public static class KeyHelper
+    {
+        public static (Keys key, bool shift) FromChar(char c)
+        {
+            if (char.IsLetter(c))
+            {
+                var upper = char.ToUpper(c);
+                bool isShift = char.IsUpper(c);
+                return ((Keys)upper, isShift);
+            }
+
+            if (char.IsDigit(c))
+            {
+                return ((Keys)(Keys.D0 + (c - '0')), false);
+            }
+
+            switch (c)
+            {
+                case ' ':
+                    return (Keys.Space, false);
+                case '~':
+                    return (Keys.Oem3, true);
+                case '`':
+                    return (Keys.Oem3, false);
+                case '!':
+                    return (Keys.D1, true);
+                case '@':
+                    return (Keys.D2, true);
+                case '#':
+                    return (Keys.D3, true);
+                case '^':
+                    return (Keys.D6, true);
+                default:
+                    throw new ArgumentException($"Unsupported char '{c}' for key binding.");
+            }
+        }
+
     }
 
 }
