@@ -31,21 +31,21 @@ namespace New_Tradegy.Library
 		 CPTRADELib.CpTdUtil _CpTdUtil;
 		 */
 
-        
 
 
 
 
 
-        public static string cycleStrings(string givenString, List<string> stringList)
+        // done by Sensei
+        public static string CycleStrings(string current, List<string> options)
         {
-            string nextString;
-            int index = stringList.IndexOf(givenString);
-            if (index == stringList.Count - 1 || index < 0)
-                return stringList[0];
-            else
-                return stringList[index + 1];
+            if (options == null || options.Count == 0)
+                return current; // or throw if you prefer strictness
 
+            int index = options.IndexOf(current);
+            return (index < 0 || index == options.Count - 1)
+                ? options[0]
+                : options[index + 1];
         }
 
         // not used

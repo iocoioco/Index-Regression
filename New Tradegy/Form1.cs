@@ -82,6 +82,10 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            KeyBindingRegistrar.RegisterAll(); 
+            
+
             g.Chart1Manager = new Chart1Manager();
             g.Chart1Manager.Initialize(chart1, this);
             StockManagerEvents.ListsChanged += () => g.Chart1Manager.RefreshDisplay();

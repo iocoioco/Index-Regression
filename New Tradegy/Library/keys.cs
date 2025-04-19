@@ -302,7 +302,7 @@ namespace New_Tradegy.Library
                     if (Form_보조_차트 != null)
                     {
                         List<string> list_6= new List<string> { "그순", "관심" };
-                        g.v.SubKeyStr = mc.cycleStrings(g.v.SubKeyStr, list_6);
+                        g.v.SubKeyStr = mc.CycleStrings(g.v.SubKeyStr, list_6);
                         Form_보조_차트.Form_보조_차트_DRAW();
                     }
                     break;
@@ -452,7 +452,7 @@ namespace New_Tradegy.Library
                 #region
                 case 'a':
                     List<string> list = new List<string> {  "피올", "닥올" };
-                    g.v.KeyString = mc.cycleStrings(g.v.KeyString, list);
+                    g.v.KeyString = mc.CycleStrings(g.v.KeyString, list);
 
                     //g.v.columnsofoGl_data = 0; // number of column for group = 0
                     g.q = "o&s";
@@ -479,7 +479,7 @@ namespace New_Tradegy.Library
 
                 case 's':
                     List<string> list_2 = new List<string> { "프누", "종누" };
-                    g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_2);
+                    g.v.KeyString = mc.CycleStrings(g.v.KeyString, list_2);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["Form1"];
@@ -489,7 +489,7 @@ namespace New_Tradegy.Library
 
                 case 'S':
                     List<string> list_3 = new List<string> { "프편", "종편" };
-                    g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_3);
+                    g.v.KeyString = mc.CycleStrings(g.v.KeyString, list_3);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["Form1"];
@@ -516,7 +516,7 @@ namespace New_Tradegy.Library
 
                 case 'd':
                     List<string> list_7 = new List<string> { "푀분", "총점" };
-                    g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_7);
+                    g.v.KeyString = mc.CycleStrings(g.v.KeyString, list_7);
                     g.q = "o&s"; 
                     g.gid = 0;
                     se = (Form)Application.OpenForms["Form1"];
@@ -532,7 +532,7 @@ namespace New_Tradegy.Library
                 case 'f':
                     Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
                     list_3 = new List<string> { "코피", "코닥", "관심" };
-                    g.v.SubKeyStr = mc.cycleStrings(g.v.SubKeyStr, list_3);
+                    g.v.SubKeyStr = mc.CycleStrings(g.v.SubKeyStr, list_3);
                     action = " pes"; // no del, post, no eval, main draw
                     break;
     
@@ -551,7 +551,7 @@ namespace New_Tradegy.Library
             
                 case 'g':
                     List<string> list_4 = new List<string> { "상순", "저순" };
-                    g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_4);
+                    g.v.KeyString = mc.CycleStrings(g.v.KeyString, list_4);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["Form1"];
@@ -564,7 +564,7 @@ namespace New_Tradegy.Library
 
                 case 'h':
                     List<string> list_5 = new List<string> { "편차", "평균" };
-                    g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_5);
+                    g.v.KeyString = mc.CycleStrings(g.v.KeyString, list_5);
                     g.q = "o&s";
                     g.gid = 0;
                     se = (Form)Application.OpenForms["Form1"];
