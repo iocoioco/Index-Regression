@@ -27,36 +27,45 @@ namespace New_Tradegy.Library.Core
             }
         }
 
-        private Dictionary<string, StockData> _datas = new Dictionary<string, StockData>();
+        private Dictionary<string, StockData> _stockMap = new Dictionary<string, StockData>();
 
 
         public void Initialize(IEnumerable<string> stocks)
         {
             foreach (var stock in stocks)
             {
-                _datas[stock] = new StockData { Stock = stock };
+                _stockMap[stock] = new StockData { Stock = stock };
             }
         }
 
         public void AddOrUpdate(string stock, StockData data)
         {
-            _datas[stock] = data;
+            _stockMap[stock] = data;
+        }
+
+        public bool TryGet(string stockName, out StockData stock)
+        {
+            return _stockMap.TryGetValue(stockName, out stock);
         }
 
         public StockData GetOrThrow(string stock)
         {
-            if (_datas.TryGetValue(stock, out var data))
+            if (_stockMap.TryGetValue(stock, out var data))
                 return data;
 
             throw new KeyNotFoundException($"Stock code '{stock}' not found.");
         }
 
-        public IEnumerable<StockData> AllDatas => _datas.Values;
+        public IEnumerable<StockData> AllDatas => _stockMap.Values;
 
         public bool Contains(string stock)
         {
-            return _datas.ContainsKey(stock);
+            return _stockMap.ContainsKey(stock);
         }
 
+        public void Add(string stockName, StockData data)
+        {
+            _stockMap[stockName] = data;
+        }
     }
 }

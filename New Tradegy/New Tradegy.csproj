@@ -135,6 +135,7 @@
     <Compile Include="Form_보조_차트.Designer.cs">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\hoga.cs" />
     <Compile Include="Library\UI\ClickHandlers\ChartClickHandler.cs" />
     <Compile Include="Library\UI\ClickHandlers\CharterClickMapper.cs" />
     <Compile Include="Library\Listeners\BatchSelector.cs" />

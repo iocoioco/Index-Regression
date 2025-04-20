@@ -11,12 +11,10 @@ using System.Windows.Forms;
 namespace New_Tradegy.Library
 {
 
-    internal class HogaUtils // not updated by Sensei
+    internal class hg
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
-
-        // not used
         public static bool HogaInsert(string stock, int rows, int rowId, int colId)
         {
             bool inserted = false;
@@ -25,21 +23,21 @@ namespace New_Tradegy.Library
             Point formLocation = new Point();
             HogaFormSizeLocation(stock, rowId, colId, rows, ref formSize, ref formLocation);
 
-            if (stock == g.StockManager.IndexList[0])
+            if (stock == g.KODEX4[0])
             {
-                HogaRemove(g.StockManager.IndexList[1]);
+                HogaRemove(g.KODEX4[1]);
             }
-            else if (stock == g.StockManager.IndexList[1])
+            else if (stock == g.KODEX4[1])
             {
-                HogaRemove(g.StockManager.IndexList[0]);
+                HogaRemove(g.KODEX4[0]);
             }
-            else if (stock == g.StockManager.IndexList[2])
+            else if (stock == g.KODEX4[2])
             {
-                HogaRemove(g.StockManager.IndexList[3]);
+                HogaRemove(g.KODEX4[3]);
             }
-            else if (stock == g.StockManager.IndexList[3])
+            else if (stock == g.KODEX4[3])
             {
-                HogaRemove(g.StockManager.IndexList[2]);
+                HogaRemove(g.KODEX4[2]);
             }
             // if a form with stock name exists, locate a new location and return
             Form f = HogaFormNameGivenStock(stock);
@@ -54,9 +52,6 @@ namespace New_Tradegy.Library
 
             return inserted;
         }
-
-
-        // not used
         public static bool HogaInsert(string stock)
         {
             if (HogaFormNameGivenStock(stock) != null)
@@ -64,30 +59,30 @@ namespace New_Tradegy.Library
 
             bool inserted = false;
 
-            if (stock == g.StockManager.IndexList[0])
+            if (stock == g.KODEX4[0])
             {
-                HogaRemove(g.StockManager.IndexList[1]);
+                HogaRemove(g.KODEX4[1]);
             }
-            else if (stock == g.StockManager.IndexList[1])
+            else if (stock == g.KODEX4[1])
             {
-                HogaRemove(g.StockManager.IndexList[0]);
-               
+                HogaRemove(g.KODEX4[0]);
+
             }
-            else if (stock == g.StockManager.IndexList[2])
+            else if (stock == g.KODEX4[2])
             {
-                HogaRemove(g.StockManager.IndexList[3]);
+                HogaRemove(g.KODEX4[3]);
             }
-            else if (stock == g.StockManager.IndexList[3])
+            else if (stock == g.KODEX4[3])
             {
-                HogaRemove(g.StockManager.IndexList[2]);
-               
+                HogaRemove(g.KODEX4[2]);
+
             }
             // if a form with stock name exists, locate a new location and return
-            
+
 
             Form_호가 form_호가 = new Form_호가(stock);
-           
-            
+
+
             form_호가.Show();
 
             return inserted;
@@ -118,17 +113,17 @@ namespace New_Tradegy.Library
                 colId++;
             }
             // Row
-            if(rows == 10 && rowId == 2)
+            if (rows == 10 && rowId == 2)
             {
                 rowId--;
             }
 
-            if (stock == g.StockManager.IndexList[2] || stock == g.StockManager.IndexList[3]) // kosdaq leverage & inverse
+            if (stock == g.KODEX4[2] || stock == g.KODEX4[3]) // kosdaq leverage & inverse
             {
                 rowId++;
             }
-           
-            
+
+
             int xShift = 0;
             if (g.nCol == 10)
                 xShift += 15;
@@ -184,7 +179,7 @@ namespace New_Tradegy.Library
         {
             int return_value = -1;
 
-            Form se = fm.FindFormByName("Form1");
+        
             DataGridView dgv = fm.FindDataGridViewByName(se, stock);
             if (dgv == null)
             {
@@ -205,7 +200,7 @@ namespace New_Tradegy.Library
             }
             else
             {
-                return return_value = wk.ExtractIntFromString(dgv.Rows[a].Cells[column].Value.ToString());
+                return return_value = StringUtils.ExtractIntFromString(dgv.Rows[a].Cells[column].Value.ToString());
             }
         }
 
@@ -286,7 +281,7 @@ namespace New_Tradegy.Library
             FormCollection openForms = Application.OpenForms;
             foreach (Form form in openForms)
             {
-                if (wk.isStock(form.Name) && !g.StockManager.IndexList.Contains(form.Name))
+                if (wk.isStock(form.Name) && !g.KODEX4.Contains(form.Name))
                 {
                     FormList.Add(form);
                 }

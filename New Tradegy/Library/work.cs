@@ -227,41 +227,7 @@ namespace New_Tradegy.Library
                 return false;
         }
 
-        // Chat Gpt 20250316
-        public static int return_integer_from_mixed_string(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return 0; // Return 0 for empty or null input
-
-            long value = 0;
-            bool isNegative = false;
-
-            foreach (char c in input)
-            {
-                if (c == '-' && value == 0)
-                {
-                    isNegative = true; // Handle negative sign (only at start)
-                }
-                else if (c >= '0' && c <= '9')
-                {
-                    value = value * 10 + (c - '0');
-
-                    // Check for int overflow
-                    if (value > int.MaxValue)
-                        return isNegative ? int.MinValue : int.MaxValue;
-                }
-            }
-
-            return isNegative ? (int)-value : (int)value;
-        }
-
-        // Chat Gpt 20250316
-        public static void Swap<T>(ref T lhs, ref T rhs)
-        {
-            T temp = lhs;
-            lhs = rhs;
-            rhs = temp;
-        }
+        
 
         // not used
         public static void calculate_cyan_magenta_in_stock()

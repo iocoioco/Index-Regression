@@ -41,6 +41,9 @@ namespace New_Tradegy.Library.Models
     // public PricePassData Pass { get; set; } = new PricePassData();
     public class PricePassData
     {
+        public int upperPassingPrice = 0;
+        public int lowerPassingPrice = 0;
+
         public int PreviousPriceHigh = int.MinValue;
         public int? PreviousPriceLow = null;
         public int PriceStatus = 0;

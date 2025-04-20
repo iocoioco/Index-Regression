@@ -46,10 +46,6 @@ namespace New_Tradegy // added for test on 20241020 0300
         private System.Timers.Timer _timerConnection;
         private int _timerCount;
 
-        // static CPUTILLib.CpCodeMgr _cpcodemgr;
-
-        // static CPSYSDIBLib.CpSvrNew7043 _cpsvrnew7043; //거래소,코스닥 등락현황(상한,하한,상승,하락 등등)데이터를 요청
-
         private static TextBox searchTextBox;
 
 
@@ -85,9 +81,10 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             KeyBindingRegistrar.RegisterAll(); 
             
+            g.StockRepository
 
-            g.Chart1Manager = new Chart1Manager();
-            g.Chart1Manager.Initialize(chart1, this);
+            g.ChartGeneral = new ChartGeneral();
+            g.ChartGeneral.Initialize(chart1, this);
             StockManagerEvents.ListsChanged += () => g.Chart1Manager.RefreshDisplay();
 
 

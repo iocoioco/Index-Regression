@@ -1578,7 +1578,7 @@ namespace New_Tradegy.Library
             //    nrow = 0;
             //}
 
-            if (g.dl.Count == 4) // 코스피혼합 & 코스닥혼합 인버스로 만들기 위해 가격 X -1 & 매수배수 매도배수 Swap
+            if (g.dl.Count == 4) // 코스피혼합 & 코스닥혼합 인버스로 만들기 위해 가격 X -1 & 매수배수 매도배수 
             {
                 if ((g.dl[0] == "KODEX 200선물인버스2X" && stock == "코스피혼합") ||
                    (g.dl[2] == "KODEX 코스닥150선물인버스" && stock == "코스닥혼합"))
@@ -1586,34 +1586,12 @@ namespace New_Tradegy.Library
                     for (int i = 0; i < nrow; i++)
                     {
                         x[i, 1] *= -1;
-                        wk.Swap(ref x[i, 8], ref x[i, 9]);
+                        StringUtils.SwapValues(ref x[i, 8], ref x[i, 9]);
                     }
                 }
             }
 
-            //if(stock == "KODEX 레버리지" || 
-            //  stock == "KODEX 200선물인버스2X" ||
-            //  stock == "KODEX 코스닥150레버리지" ||
-            //  stock == "KODEX 코스닥150선물인버스")
-            //{
-            //    for (int i = 0; i < g.money_shift; i++)
-            //    {
-            //        x[nrow + i, 4] = x[nrow - 1, 4];
-            //        x[nrow + i, 5] = x[nrow - 1, 5];
-            //        x[nrow + i, 6] = x[nrow - 1, 6];
-            //        x[nrow + i, 10] = x[nrow - 1, 10];
-            //        x[nrow + i, 11] = x[nrow - 1, 11];
-            //    }
-            //    for (int i = 0; i < nrow; i++)
-            //    {
-            //        x[i, 4] = x[i + g.money_shift, 4];
-            //        x[i, 5] = x[i + g.money_shift, 5];
-            //        x[i, 6] = x[i + g.money_shift, 6];
-            //        x[i, 10] = x[i + g.money_shift, 10];
-            //        x[i, 11] = x[i + g.money_shift, 11];
-            //    }
-            //}
-
+           
 
             return nrow;
         }

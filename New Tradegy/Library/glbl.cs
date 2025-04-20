@@ -13,6 +13,12 @@ namespace New_Tradegy.Library
 {
     public class g
     {
+        public static Form1 MainForm { get; set; }
+        public static Form1 SubForm { get; set; }
+
+
+
+        public static DataGridView ActiveBookBid;
         public static StockRepository Repository;
         public static ChartGeneral ChartGeneral;
      

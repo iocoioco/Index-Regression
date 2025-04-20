@@ -7,6 +7,7 @@ using New_Tradegy.Library.UI.KeyBindings;
 using New_Tradegy.Library;
 using New_Tradegy.Library.Trackers;
 using System.Drawing;
+using New_Tradegy.Library.Core;
 
 namespace New_Tradegy.KeyBindings
 {
@@ -126,6 +127,13 @@ namespace New_Tradegy.KeyBindings
 
         public static readonly Action<Form> 매수1호가매도 = form =>
         {
+            //if (g.ActiveBookBid != null)
+            //{
+            //    var stock = g.ActiveBookBid.Tag as string; // assuming you assigned stock name to Tag
+            //    mc.SellStock(stock);
+            //    return true;
+
+            //}
             Form f = cl.GetActiveForm();
             if (f == null)
             {
@@ -141,6 +149,13 @@ namespace New_Tradegy.KeyBindings
 
         public static readonly Action<Form> 매수1호가매수 = form =>
         {
+            //if (g.ActiveBookBid != null)
+            //{
+            //    var stock = g.ActiveBookBid.Tag as string; // assuming you assigned stock name to Tag
+            //    mc.SellStock(stock);
+            //    return true;
+
+            //}
             if (!g.connected) return;
             //Form f = cl.GetActiveForm();
             //if (f == null)
@@ -545,19 +560,19 @@ namespace New_Tradegy.KeyBindings
 
         public static readonly Action<Form> 호가종목전부제거 = form =>
         {
-            for (int i = g.호가종목.Count - 1; i >= 0; i--)
+            for (int i = g.StockManager.InterestedWithBidList.Count - 1; i >= 0; i--)
             {
-                // rd.read_관심제거추가(g.호가종목[i]); // this does nothing
-                g.호가종목.Remove(g.호가종목[i]);
+                // rd.read_관심제거추가(g.StockManager.InterestedWithBidList[i]); // this does nothing
+                g.StockManager.InterestedWithBidList.Remove(g.StockManager.InterestedWithBidList[i]);
             }
         };
 
         public static readonly Action<Form> 관심종목전부제거 = form =>
         {
-            for (int i = g.관심종목.Count - 1; i >= 0; i--)
+            for (int i = g.StockManager.InterestedOnlyList.Count - 1; i >= 0; i--)
             {
-                // rd.read_관심제거추가(g.관심종목[i]); // this does nothing
-                g.관심종목.Remove(g.관심종목[i]);
+                // rd.read_관심제거추가(g.StockManager.InterestedOnlyList[i]); // this does nothing
+                g.StockManager.InterestedOnlyList.Remove(g.StockManager.InterestedOnlyList[i]);
             }
         };
 
@@ -587,7 +602,7 @@ namespace New_Tradegy.KeyBindings
             switch (g.q)
             {
                 case "o&s":
-                    int count = g.보유종목.Count + g.호가종목.Count;
+                    int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count;
                     if (g.gid + ((g.nCol - 2) * g.nRow - count) < g.sl.Count)
                     {
                         g.gid += (g.nCol - 2) * g.nRow - count;
@@ -631,7 +646,7 @@ namespace New_Tradegy.KeyBindings
             {
                 case "o&s":
                     //case "e&s":
-                    int count = g.보유종목.Count + g.호가종목.Count;
+                    int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count;
                     if (g.gid - ((g.nCol - 2) * g.nRow - count) >= 0)
                     {
                         g.gid -= (g.nCol - 2) * g.nRow - count;
