@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Postprocessing;
 
 namespace New_Tradegy.Library.Core
 {
@@ -117,7 +118,7 @@ namespace New_Tradegy.Library.Core
             {
                 foreach (var stock in repo.AllDatas)
                 {
-                    ps.post(stock); // ensure Post values are updated
+                    Posprossesor.post(stock); // ensure Post values are updated
 
                     int nrow = stock.Api.nrow;
                     if (!eval_inclusion(stock) || nrow < 2)
@@ -202,7 +203,7 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            ev.eval_group(); // re-evaluate groups after stock ranking
+            RankLogic.EvalGroup(); // re-evaluate groups after stock ranking
         }
 
 
@@ -367,36 +368,7 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            // Display top 9 groups in the DataGridView
-            int displayCount = (!g.test && rankedGroups.Count > 9) ? 9 : rankedGroups.Count;
-
-            if (hg.HogaFormNameGivenStock("Form_그룹") != null)
-            {
-                g.그룹.dgv.SuspendLayout();
-                try
-                {
-                    for (int i = 0; i < displayCount; i++)
-                    {
-                        var group = rankedGroups[i];
-
-                        bool changed =
-                            g.그룹.dtb.Rows[i][0].ToString() != group.Title ||
-                            g.그룹.dtb.Rows[i][1].ToString() != ((int)group.푀분).ToString() ||
-                            g.그룹.dtb.Rows[i][2].ToString() != ((int)group.TotalScore).ToString();
-
-                        if (changed)
-                        {
-                            g.그룹.dtb.Rows[i][0] = group.Title;
-                            g.그룹.dtb.Rows[i][1] = ((int)group.푀분).ToString();
-                            g.그룹.dtb.Rows[i][2] = ((int)group.TotalScore).ToString();
-                        }
-                    }
-                }
-                finally
-                {
-                    g.그룹.dgv.ResumeLayout();
-                }
-            }
+            g.그룹.GroupRenderer?.Update(g.GroupManager.RankingList);
         }
 
     }

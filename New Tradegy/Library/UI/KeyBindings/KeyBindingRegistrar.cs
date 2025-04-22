@@ -43,11 +43,11 @@ namespace New_Tradegy.KeyBindings
         }
         public static readonly Action<Form> 거래모두취소 = form =>
         {
-            mc.Sound("Keys", "cancel");
+            Utils.SoundUtils.Sound("Keys", "cancel");
 
-            for (int i = OrderTracker.OrderMap.Count - 1; i >= 0; i--)
+            for (int i = OrderItemTracker.OrderMap.Count - 1; i >= 0; i--)
             {
-                var data = OrderTracker.GetOrderByRowIndex(i);
+                var data = OrderItemTracker.GetOrderByRowIndex(i);
                 if (data != null)
                     DealManager.DealCancelOrder(data);
             }
@@ -61,7 +61,7 @@ namespace New_Tradegy.KeyBindings
                 g.일회거래액 = 100;
             else
                 g.일회거래액 = 0;
-            mc.Sound_돈(g.일회거래액);
+            Utils.SoundUtils.Sound_돈(g.일회거래액);
 
             if (g.제어.dtb.Rows[0][2].ToString() != g.일회거래액.ToString())
             {
@@ -77,7 +77,7 @@ namespace New_Tradegy.KeyBindings
                 g.일회거래액 = 500;
             else
                 g.일회거래액 *= 2;
-            mc.Sound_돈(g.일회거래액);
+            Utils.SoundUtils.Sound_돈(g.일회거래액);
             if (g.일회거래액 > 4000)
             {
                 string caption1 = "일회거래액";
@@ -166,7 +166,7 @@ namespace New_Tradegy.KeyBindings
             string buySell = "매수";
             if (!wk.isStock(stock))
             {
-                mc.Sound("돈", "not hoga");
+                Utils.SoundUtils.Sound("돈", "not hoga");
                 return;
             }
             //int 거래가격 = hg.HogaGetValue(stock, -1, 1); // 0 : 매도1호가 라인, 1 : 호가 column
@@ -179,9 +179,9 @@ namespace New_Tradegy.KeyBindings
             g.confirm_sell = !g.confirm_sell;
 
             if (g.confirm_sell)
-                mc.Sound("Keys", "confirm sell");
+                Utils.SoundUtils.Sound("Keys", "confirm sell");
             else
-                mc.Sound("Keys", "no confirm sell");
+                Utils.SoundUtils.Sound("Keys", "no confirm sell");
         };
 
         public static readonly Action<Form> 짧은시간앞뒤로 = form =>
@@ -343,18 +343,18 @@ namespace New_Tradegy.KeyBindings
             if (g.PeoridNews == 'd')
             {
                 g.PeoridNews = 'w';
-                mc.Sound("일반", "news week");
+                Utils.SoundUtils.Sound("일반", "news week");
             }
 
             else if (g.PeoridNews == 'w')
             {
                 g.PeoridNews = 'm';
-                mc.Sound("일반", "news month");
+                Utils.SoundUtils.Sound("일반", "news month");
             }
             else
             {
                 g.PeoridNews = 'd';
-                mc.Sound("일반", "news day");
+                Utils.SoundUtils.Sound("일반", "news day");
             }
         };
 
@@ -395,9 +395,9 @@ namespace New_Tradegy.KeyBindings
 
             g.add_interest = !g.add_interest;
             if (g.add_interest)
-                mc.Sound("일반", "add interest");
+                Utils.SoundUtils.Sound("일반", "add interest");
             else
-                mc.Sound("일반", "no add interest");
+                Utils.SoundUtils.Sound("일반", "no add interest");
         };
 
         public static readonly Action<Form> 메모열기 = form =>
@@ -448,7 +448,7 @@ namespace New_Tradegy.KeyBindings
         public static readonly Action<Form> 푀분총점토글 = form =>
         {
             List<string> list_7 = new List<string> { "푀분", "총점" };
-            g.v.KeyString = mc.cycleStrings(g.v.KeyString, list_7);
+            g.v.KeyString = mc.CycleStrings(g.v.KeyString, list_7);
             g.q = "o&s";
             g.gid = 0;
             se = (Form)Application.OpenForms["Form1"];
@@ -537,9 +537,9 @@ namespace New_Tradegy.KeyBindings
         {
             g.optimumTrading = !g.optimumTrading;
             if (g.optimumTrading)
-                mc.Sound("돈", "optimum");
+                Utils.SoundUtils.Sound("돈", "optimum");
             else
-                mc.Sound("돈", "non optimum");
+                Utils.SoundUtils.Sound("돈", "non optimum");
             break;
         };
 

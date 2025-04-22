@@ -138,7 +138,7 @@ namespace New_Tradegy.Library.Postprocessing
                     else sound += "sellest";
                 }
 
-                mc.Sound("가", sound);
+                Utils.SoundUtils.Sound("가", sound);
             }
 
             // Future: 비상매도 condition logic

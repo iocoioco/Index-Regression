@@ -14,7 +14,7 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
 namespace New_Tradegy.Library.Listeners
 {
-    internal class CybosListener
+    internal class OrderItemCybosListener
     {
         private static DSCBO1Lib.CpConclusion _CpConclusion;
         private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
@@ -56,12 +56,12 @@ namespace New_Tradegy.Library.Listeners
                 mapConclution["매도가능"] = _CpConclusion.GetHeaderValue(22);
                 mapConclution["체결기준잔고"] = _CpConclusion.GetHeaderValue(23);
 
-                lock (OrderTracker.orderLock)
+                lock (OrderItemTracker.orderLock)
                 {
                     switch (sConFlag)
                     {
                         case "1": // 체결
-                            OrderTracker.Update(nOrdKey, x =>
+                            OrderItemTracker.Update(nOrdKey, x =>
                             {
                                 if (x.m_nAmt - nContAmt > 0)
                                 {
@@ -71,7 +71,7 @@ namespace New_Tradegy.Library.Listeners
                                 }
                                 else
                                 {
-                                    OrderTracker.Remove(nOrdKey);
+                                    OrderItemTracker.Remove(nOrdKey);
                                 }
 
                                 TradeLogger.LogTrade(new OrderItem
@@ -85,14 +85,14 @@ namespace New_Tradegy.Library.Listeners
                             break;
 
                         case "2": // 확인
-                            if (!OrderTracker.Exists(nOrdOrgKey))
+                            if (!OrderItemTracker.Exists(nOrdOrgKey))
                             {
                                 if ((string)mapConclution["정정취소"] == "3")
-                                    OrderTracker.Remove(nOrdKey);
+                                    OrderItemTracker.Remove(nOrdKey);
                                 break;
                             }
 
-                            var original = OrderTracker.Get(nOrdOrgKey);
+                            var original = OrderItemTracker.Get(nOrdOrgKey);
                             if (original == null) break;
 
                             if ((string)mapConclution["정정취소"] == "2")
@@ -114,11 +114,11 @@ namespace New_Tradegy.Library.Listeners
                                         buyorSell = original.buyorSell,
                                         m_sHogaFlag = (string)mapConclution["주문호가구분"]
                                     };
-                                    OrderTracker.Add(updated);
+                                    OrderItemTracker.Add(updated);
                                 }
                                 else
                                 {
-                                    OrderTracker.Remove(nOrdOrgKey);
+                                    OrderItemTracker.Remove(nOrdOrgKey);
 
                                     var updated = new OrderItem
                                     {
@@ -132,17 +132,17 @@ namespace New_Tradegy.Library.Listeners
                                         buyorSell = original.buyorSell,
                                         m_sHogaFlag = (string)mapConclution["주문호가구분"]
                                     };
-                                    OrderTracker.Add(updated);
+                                    OrderItemTracker.Add(updated);
                                 }
                             }
                             else if ((string)mapConclution["정정취소"] == "3")
                             {
-                                OrderTracker.Remove(nOrdOrgKey);
+                                OrderItemTracker.Remove(nOrdOrgKey);
                             }
                             break;
 
                         case "3": // 거부
-                            mc.Sound("Keys", "거부됨");
+                            Utils.SoundUtils.Sound("Keys", "거부됨");
                             break;
 
                         case "4": // 접수
@@ -161,134 +161,24 @@ namespace New_Tradegy.Library.Listeners
                                 buyorSell = (string)mapConclution["매수매도"] == "1" ? "매도" : "매수",
                                 m_sHogaFlag = (string)mapConclution["주문호가구분"]
                             };
-                            OrderTracker.Add(newItem);
+                            OrderItemTracker.Add(newItem);
                             break;
                     }
                 }
 
                 if (sConFlag == "1" || sConFlag == "2" || sConFlag == "4")
                 {
-                    DealManager.deal_hold();
-                    g.Chart1Manager.UpdateLayoutIfChanged();
+                    DealManager.DealHold();
+                    g.ChartGeneral.UpdateLayoutIfChanged();
                 }
 
-                UpdateDgv2();
+                g.매매.TradeRenderer?.Update(); // ? -> if g.매매.Renderer assigned
             }
             catch (Exception ex)
             {
-                mc.Sound("Keys", "error");
+                Utils.SoundUtils.Sound("Keys", "error");
                 System.Diagnostics.Debug.WriteLine("CpConclusion_Received ERROR: " + ex.Message);
             }
-        }
-
-        public static void UpdateDgv2()
-        {
-            lock (OrderTracker.orderLock)
-            {
-                g.매매.dgv.SuspendLayout();
-
-                int rowCount = 0;
-
-                if (OrderTracker.OrderMap != null)
-                {
-                    foreach (var kvp in OrderTracker.OrderMap)
-                    {
-                        var data = kvp.Value;
-
-                        g.매매.dtb.Rows[rowCount][0] = data.stock;
-                        g.매매.dtb.Rows[rowCount][1] = data.buyorSell;
-                        g.매매.dtb.Rows[rowCount][2] = data.m_nPrice;
-                        g.매매.dtb.Rows[rowCount][3] = data.m_nContAmt + "/" + data.m_nAmt;
-                        rowCount++;
-                    }
-                }
-
-                g.매매.dtb.Rows[rowCount][0] = " ";
-                g.매매.dtb.Rows[rowCount][1] = " ";
-                g.매매.dtb.Rows[rowCount][2] = " ";
-                g.매매.dtb.Rows[rowCount][3] = " ";
-                rowCount++;
-
-                int 보유종목_순서번호 = 0;
-                foreach (var stock in g.StockManager.HoldingList.ToList())
-                {
-                    var data = StockRepository.Instance.GetOrThrow(stock);
-                    if (data == null)
-                        return;
-
-                    if (data.Api.매수1호가 > 0)
-                        data.Deal.수익률 = (double)(data.Api.매수1호가 - data.Deal.장부가) / data.Api.매수1호가 * 100;
-
-                    g.매매.dtb.Rows[rowCount][0] = data.Stock;
-                    g.매매.dtb.Rows[rowCount][1] = Math.Round((data.Api.매수1호가 / 10000.0), 4);
-                    if (data.Api.최우선매도호가잔량 >= 0)
-                        g.매매.dtb.Rows[rowCount][2] = Math.Round(((double)data.Api.최우선매수호가잔량 / data.Api.최우선매도호가잔량), 2);
-
-                    g.매매.dtb.Rows[rowCount][3] = data.Deal.보유량.ToString() + "/" + Math.Round(data.Deal.수익률, 2);
-
-                    Dgv2_Update_보유종목UpDownSoundAndColor(data, 보유종목_순서번호, rowCount);
-
-                    rowCount++;
-                    보유종목_순서번호++;
-
-                    if (rowCount == 10)
-                        break;
-                }
-
-                for (int i = rowCount; i < g.매매.dtb.Rows.Count; i++)
-                {
-                    g.매매.dtb.Rows[i][0] = " ";
-                    g.매매.dtb.Rows[i][1] = " ";
-                    g.매매.dtb.Rows[i][2] = " ";
-                    g.매매.dtb.Rows[i][3] = " ";
-                }
-
-                g.매매.dgv.ResumeLayout();
-
-                foreach (var stock in g.StockManager.HoldingList)
-                {
-                    var data = StockRepository.Instance.GetOrThrow(stock);
-                    if (data == null)
-                        return;
-
-                    // if (op.dgv2_update_보유비매(data)) return;
-                }
-            }
-        }
-
-        private static void Dgv2_Update_보유종목UpDownSoundAndColor(StockData o, int 보유종목_순서번호, int rowCount)
-        {
-            string sound = "";
-            if (보유종목_순서번호 == 0)
-                sound = "one";
-            else if (보유종목_순서번호 == 1)
-                sound = "two";
-            else if (보유종목_순서번호 == 2)
-                sound = "three";
-
-            if (o.Deal.보유량 * o.Api.현재가 > 500000)
-            {
-                string postfix = "";
-                if (o.Deal.전수익률 != o.Deal.수익률)
-                    postfix = o.Deal.전수익률 < o.Deal.수익률 ? " up" : " down";
-
-                mc.Sound("가", sound + postfix);
-            }
-
-            int red = 255, green = 255, blue = 255;
-            if (o.Deal.수익률 > 0)
-            {
-                red = (int)(255.0 - 255.0 * o.Deal.수익률 / 10.0);
-                if (red < 0) red = 0;
-            }
-            else if (o.Deal.수익률 < 0)
-            {
-                green = (int)(255.0 + 255.0 * o.Deal.수익률 / 10.0);
-                if (green < 0) green = 0;
-            }
-
-            g.매매.dgv.Rows[rowCount].DefaultCellStyle.BackColor = Color.FromArgb(red, green, blue);
-            o.Deal.전수익률 = o.Deal.수익률;
         }
     }
 }

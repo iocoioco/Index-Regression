@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace New_Tradegy.Library
 {
-    public class IndexRangeTrack
+    public class IndexRangeTracker
     {
         // usage for Kospi, Kosdaq
         // private IndexRangeTrack kospiTracker;
@@ -34,7 +34,7 @@ namespace New_Tradegy.Library
                     rangeString = indexPrice > 0 ? "+" + rangeString : rangeString;
                 }
 
-                mc.Sound("코스피 코스닥", rangeString);
+                Utils.SoundUtils.Sound("코스피 코스닥", rangeString);
             }
         }
 

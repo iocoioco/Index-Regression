@@ -13,7 +13,7 @@ using System.Globalization;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public static class OrderTracker
+    public static class OrderItemTracker
     {
         public static readonly object orderLock = new object();
         public static Dictionary<int, OrderItem> OrderMap = new Dictionary<int, OrderItem>();
@@ -55,12 +55,12 @@ namespace New_Tradegy.Library.Trackers
         {
             OrderItem data = null;
 
-            var keyList = OrderTracker.OrderMap.Keys.ToList();
+            var keyList = OrderItemTracker.OrderMap.Keys.ToList();
             if (rowIndex < 0 || rowIndex >= keyList.Count)
                 return data;
 
             int key = keyList[rowIndex];
-            data = OrderTracker.Get(key);
+            data = OrderItemTracker.Get(key);
             return data;
         }
 

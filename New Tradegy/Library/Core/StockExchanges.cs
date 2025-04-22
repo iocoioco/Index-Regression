@@ -50,17 +50,17 @@ namespace New_Tradegy.Library
             {
                 if (order.Stock == stock && order.Price == sellHogaPrice)
                 {
-                    var data = StockRepository.Instance.Get(stock);
+                    var data = StockRepository.Instance.GetOrThrow(stock);
                     if (data == null)
                         return;
 
                     string str = order.Stock + " : " + order.Price + " X " + order.Quantity +
                                  " = " + (order.Price * order.Quantity / 10000) + "만원";
-                    str += "\n" + sr.r3_display_매수_매도(data);
+                    str += "\n" + Utils.StringUtils.r3_display_매수_매도(data);
 
                     RemoveOrder(buyOrders, order);
 
-                    var a = new jp();
+                    var a = new BookBidGenerator();
                     a.OpenOrUpdateConfirmationForm(false, order.Stock, order.Quantity, order.Price, order.UrgencyLevel, str);
                 }
             }
@@ -69,17 +69,17 @@ namespace New_Tradegy.Library
             {
                 if (order.Stock == stock && order.Price == buyHogaPrice)
                 {
-                    var data = StockRepository.Instance.Get(stock);
+                    var data = StockRepository.Instance.GetOrThrow(stock);
                     if (data == null)
                         return;
 
                     string str = order.Stock + " : " + order.Price + " X " + order.Quantity +
                                  " = " + (order.Price * order.Quantity / 10000) + "만원";
-                    str += "\n" + sr.r3_display_매수_매도(data);
+                    str += "\n" + Utils.StringUtils.r3_display_매수_매도(data);
 
                     RemoveOrder(sellOrders, order);
 
-                    var a = new jp();
+                    var a = new BookBidGenerator();
                     a.OpenOrUpdateConfirmationForm(true, order.Stock, order.Quantity, order.Price, order.UrgencyLevel, str);
                 }
             }

@@ -18,6 +18,8 @@ using New_Tradegy.Library.Core;
 using System.Text;
 using static New_Tradegy.Library.Trackers.ControlPanelManager;
 using New_Tradegy.KeyBindings;
+using New_Tradegy.Library.Utils;
+using System.Windows.Forms.DataVisualization.Charting;
 
 //using NLog;
 
@@ -69,7 +71,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             //ts.지수합계점검();
             //return;
 
-            mc.Sound("일반", "by 2032");
+            Utils.SoundUtils.Sound("일반", "by 2032");
         } 
 
 
@@ -79,13 +81,15 @@ namespace New_Tradegy // added for test on 20241020 0300
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            KeyBindingRegistrar.RegisterAll(); 
-            
-            g.StockRepository
+
+
+            KeyBindingRegistrar.RegisterAll();
+
+            g.StockRepository = StockRepository.Instance;
 
             g.ChartGeneral = new ChartGeneral();
             g.ChartGeneral.Initialize(chart1, this);
-            StockManagerEvents.ListsChanged += () => g.Chart1Manager.RefreshDisplay();
+            StockManagerEvents.ListsChanged += () => g.ChartGeneral.RefreshDisplay();
 
 
 
@@ -186,7 +190,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 cn.Init_CpConclusion();
 
                 DealManager.deal_processing();
-                DealManager.deal_hold(); // Initialize g.StockManager.HoldingList
+                DealManager.DealHold(); // Initialize g.StockManager.HoldingList
                 DealManager.UpdateAvailableDeposit(); // button1 tr(1)
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
@@ -215,7 +219,7 @@ namespace New_Tradegy // added for test on 20241020 0300
           
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await task_jsb());
-            mc.Sound("일반", "to jsb");
+            Utils.SoundUtils.Sound("일반", "to jsb");
 
             return;
         }
@@ -512,15 +516,15 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 if (GetRemainRQ() == 0)
                 {
-                    mc.Sound("일반", "no request");
+                    Utils.SoundUtils.Sound("일반", "no request");
                 }
                 if (GetRemainTR() == 0)
                 {
-                    mc.Sound("일반", "no trade");
+                    Utils.SoundUtils.Sound("일반", "no trade");
                 }
                 if (GetRemainSB() == 0)
                 {
-                    mc.Sound("일반", "no subscribe");
+                    Utils.SoundUtils.Sound("일반", "no subscribe");
                 }
                 Thread.Sleep(1000);
             }

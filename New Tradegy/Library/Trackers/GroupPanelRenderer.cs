@@ -8,21 +8,18 @@ using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public static class PanelGroupSetup
-    {
-        public static void SetupAndAttachGroupPanel(Form containerForm)
-        {
-            var dgv = new DataGridView();
-            containerForm.Controls.Add(dgv);
-            GroupPanelInitializer.Initialize(dgv);
-        }
-    }
-
-    public class PanelGroup
+    public class GroupPanelRenderer
     {
         private DataGridView _view;
         private DataTable _table;
         private List<GroupData> _groups;
+
+        public void SetupGroupPanel(Form containerForm)
+        {
+            var dgv = new DataGridView();
+            containerForm.Controls.Add(dgv);
+            Initialize(dgv);
+        }
 
         public void BindGrid(DataGridView view, List<GroupData> groups)
         {
@@ -83,14 +80,49 @@ namespace New_Tradegy.Library.Trackers
                 Process.Start(url);
             }
         }
-    }
 
-    public static class GroupPanelInitializer
-    {
         public static void Initialize(DataGridView dgv)
         {
-            var manager = new GroupPanelManager();
-            manager.BindGrid(dgv, g.GroupManager.RankingList);
+            g.그룹.GroupRenderer = new GroupPanelRenderer();
+            g.그룹.GroupRenderer.BindGrid(dgv, g.GroupManager.RankingList);
         }
+
+        public void Update(List<GroupData> updatedGroups)
+        {
+            if (_view == null || _table == null) return;
+
+            _view.SuspendLayout();
+
+            try
+            {
+                for (int i = 0; i < updatedGroups.Count && i < _table.Rows.Count; i++)
+                {
+                    var group = updatedGroups[i];
+
+                    string currentTitle = _table.Rows[i][0].ToString();
+                    string current푀분 = _table.Rows[i][1].ToString();
+                    string current총점 = _table.Rows[i][2].ToString();
+
+                    string newTitle = group.Title;
+                    string new푀분 = ((int)group.푀분).ToString();
+                    string new총점 = ((int)group.TotalScore).ToString();
+
+                    bool changed = currentTitle != newTitle || current푀분 != new푀분 || current총점 != new총점;
+
+                    if (changed)
+                    {
+                        _table.Rows[i][0] = newTitle;
+                        _table.Rows[i][1] = new푀분;
+                        _table.Rows[i][2] = new총점;
+                    }
+                }
+            }
+            finally
+            {
+                _view.ResumeLayout();
+            }
+        }
+
     }
+
 }

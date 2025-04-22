@@ -23,7 +23,8 @@ namespace New_Tradegy.Library
         public static ChartGeneral ChartGeneral;
      
         public static StockManager StockManager;
-        
+        public static StockRepository StockRepository;
+
 
         public static GroupManager GroupManager;
         //public static Dictionary<string, StockData> Ogldata = new Dictionary<string, StockData>();
@@ -70,6 +71,9 @@ namespace New_Tradegy.Library
         {
             public DataTable dtb;
             public DataGridView dgv;
+            public TradePanelRenderer TradeRenderer;
+            public GroupPanelRenderer GroupRenderer;
+            public ControlPanelRenderer ControlRenderer;
         }
         public static dgvClass 매매 = new dgvClass();
         public static dgvClass 그룹 = new dgvClass();

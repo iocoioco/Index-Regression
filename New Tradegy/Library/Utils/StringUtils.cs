@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.Utils
@@ -277,7 +278,7 @@ namespace New_Tradegy.Library.Utils
                 return;
             }
 
-            StockData o = StockRepository.Instance.Get(stock); // or .GetOrThrow(stock)
+            StockData o = StockRepository.Instance.GetOrThrow(stock); // or .GetOrThrow(stock)
             if (o == null)
                 return;
 
@@ -514,5 +515,40 @@ namespace New_Tradegy.Library.Utils
             lhs = rhs;
             rhs = temp;
         }
+
+        // Sensei 20250419
+        public static string CycleStrings(string current, List<string> options)
+        {
+            if (options == null || options.Count == 0)
+                return current; // or throw if you prefer strictness
+
+            int index = options.IndexOf(current);
+            return (index < 0 || index == options.Count - 1)
+                ? options[0]
+                : options[index + 1];
+        }
+
+        public static string message(string caption, string message, string button_selection)
+        {
+            DialogResult result;
+            if (button_selection == "Yes")
+                result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            else
+                result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+
+
+            if (result == System.Windows.Forms.DialogResult.No)
+                return "No";
+            else
+                return "Yes";
+        }
+
+        public static void message(string message)
+        {
+            MessageBox.Show(message);
+        }
+
     }
 }

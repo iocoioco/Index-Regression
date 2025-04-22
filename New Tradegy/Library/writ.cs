@@ -76,7 +76,7 @@ namespace New_Tradegy.Library
                 File.WriteAllText(file, sb.ToString());
             }
 
-            mc.Sound("일반", "done");
+            Utils.SoundUtils.Sound("일반", "done");
             await Task.CompletedTask; // async compliance
         }
 

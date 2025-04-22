@@ -66,12 +66,6 @@ namespace New_Tradegy.Library.Utils
             yIntercept = meanY - ((sCo / ssX) * meanX);
             slope = sCo / ssX;
         }
-
-
-        public double CalculatePrediction(double input, double slope, double yIntercept)
-        {
-            return (input * slope) + yIntercept;
-        }
     }
 }
 

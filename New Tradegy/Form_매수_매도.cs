@@ -23,6 +23,9 @@ namespace New_Tradegy
         public int _amount;
         public int _price;
 
+        private Timer _flashTimer; // 🔶 Add this line
+        private bool _isFlashing = false;
+
         //private System.Windows.Forms.Button Yes;
 
         public Form_매수_매도(bool isSell, string ReceivedStock, int Amount, int Price, int Urgency, string ReceivedString)
@@ -119,6 +122,7 @@ namespace New_Tradegy
             // this.지정.DialogResult = DialogResult.OK;
             this.AcceptButton = 지정;
 
+            // StartFlashingButton(지정);
         }
 
         public void UpdateForm(bool isSell, string stockName, int Amount, int price, int Urgency, string str)
@@ -217,6 +221,7 @@ namespace New_Tradegy
         private void 지정_Click(object sender, EventArgs e)
         {
             DealManager.DealExec(_isSell ? "매도" : "매수", _stock, _amount, _price, "01");
+            // StopFlashingButton(지정);
             this.BeginInvoke(new Action(() =>
             {
                 this.Close();  // Ensures form closes properly before reopening
@@ -247,5 +252,25 @@ namespace New_Tradegy
                 this.Close();  // Ensures form closes properly before reopening
             }));
         }
+
+        private void StartFlashingButton(Button button)
+        {
+            _flashTimer = new Timer();
+            _flashTimer.Interval = 500; // Toggle every 0.5s
+            _flashTimer.Tick += (s, e) =>
+            {
+                button.BackColor = _isFlashing ? SystemColors.Control : Color.Yellow;
+                _isFlashing = !_isFlashing;
+            };
+            _flashTimer.Start();
+        }
+
+        private void StopFlashingButton(Button button)
+        {
+            _flashTimer?.Stop();
+            button.BackColor = SystemColors.Control;
+            _isFlashing = false;
+        }
+
     }
 }

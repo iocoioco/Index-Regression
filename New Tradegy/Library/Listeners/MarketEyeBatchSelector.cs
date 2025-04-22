@@ -6,7 +6,7 @@ using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Core
 {
-    public static class BatchSelector
+    public static class MarketEyeBatchSelector
     {
         private static int repositoryOffset = 0;
 

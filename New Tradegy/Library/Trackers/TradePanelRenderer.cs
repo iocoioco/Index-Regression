@@ -9,12 +9,12 @@ using System.Linq;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public class PanelTrade
+    public class TradePanelRenderer
     {
         private readonly DataGridView _view;
         private readonly DataTable _table;
 
-        public PanelTrade(DataGridView view, DataTable table)
+        public TradePanelRenderer(DataGridView view, DataTable table)
         {
             _view = view;
             _table = table;
@@ -25,15 +25,15 @@ namespace New_Tradegy.Library.Trackers
 
         public void Update()
         {
-            lock (OrderTracker.orderLock)
+            lock (OrderItemTracker.orderLock)
             {
                 _view.SuspendLayout();
 
                 int rowCount = 0;
 
-                if (OrderTracker.OrderMap != null)
+                if (OrderItemTracker.OrderMap != null)
                 {
-                    foreach (var data in OrderTracker.OrderMap.Values)
+                    foreach (var data in OrderItemTracker.OrderMap.Values)
                     {
                         _table.Rows[rowCount][0] = data.stock;
                         _table.Rows[rowCount][1] = data.buyorSell;
@@ -56,8 +56,9 @@ namespace New_Tradegy.Library.Trackers
 
                     _table.Rows[rowCount][0] = data.Stock;
                     _table.Rows[rowCount][1] = Math.Round((data.Api.매수1호가 / 10000.0), 4);
-                    _table.Rows[rowCount][2] = data.Api.최우선매도호가잔량 > 0
-                        ? Math.Round((double)data.Api.최우선매수호가잔량 / data.Api.최우선매도호가잔량, 2)
+                    _table.Rows[rowCount][2] =
+                        data.Api.최우선매도호가잔량 > 0
+                        ? Math.Round((double)data.Api.최우선매수호가잔량 / data.Api.최우선매도호가잔량, 2).ToString()
                         : "";
                     _table.Rows[rowCount][3] = data.Deal.보유량 + "/" + Math.Round(data.Deal.수익률, 2);
 
@@ -77,6 +78,8 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
+
+        // call TradePanelRenderer.Initialize(this); in the MainForm
         public static void Initialize(Control container)
         {
             var dgv = new DataGridView
@@ -119,8 +122,10 @@ namespace New_Tradegy.Library.Trackers
             g.매매.dgv = dgv;
             g.매매.dtb = dtb;
 
-            var manager = new TradePanelManager(dgv, dtb);
-            g.매매.Manager = manager;
+            g.매매.Renderer = new TradePanelRenderer(dgv, dtb);
+    
+
+           
 
             dgv.Columns[0].Width = (int)(dgv.Width * 0.20);
             dgv.Columns[1].Width = (int)(dgv.Width * 0.20);
@@ -133,10 +138,10 @@ namespace New_Tradegy.Library.Trackers
             if (e.Button == MouseButtons.Right) return;
 
             string stock = g.매매.dgv.Rows[e.RowIndex].Cells[0].Value.ToString();
-            if (e.ColumnIndex == 1 && g.connected && e.RowIndex < OrderTracker.OrderMap.Count)
+            if (e.ColumnIndex == 1 && g.connected && e.RowIndex < OrderItemTracker.OrderMap.Count)
             {
                 DealManager.DealCancelRowIndex(e.RowIndex);
-                mc.Sound("Keys", "cancel");
+                Utils.SoundUtils.Sound("Keys", "cancel");
             }
         }
 
@@ -159,7 +164,7 @@ namespace New_Tradegy.Library.Trackers
             if (index < names.Length && o.Deal.보유량 * o.Api.현재가 > 500000)
             {
                 string postfix = o.Deal.전수익률 == o.Deal.수익률 ? "" : (o.Deal.전수익률 < o.Deal.수익률 ? " up" : " down");
-                mc.Sound("가", names[index] + postfix);
+                Utils.SoundUtils.Sound("가", names[index] + postfix);
             }
 
             int red = 255, green = 255;

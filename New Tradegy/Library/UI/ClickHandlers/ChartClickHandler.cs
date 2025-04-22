@@ -48,7 +48,7 @@ namespace New_Tradegy.Library
                     int quantity = g.일회거래액 * 10000 / price;
                     if (quantity == 0) quantity = 1;
 
-                    mc.Sound_돈(g.일회거래액);
+                    Utils.SoundUtils.Sound_돈(g.일회거래액);
 
                     string info = g.clickedStock + " : " + price + " X " + quantity +
                                   " = " + (price * quantity / 10000) + "만원";
@@ -56,7 +56,7 @@ namespace New_Tradegy.Library
                     var stockData = StockRepository.Instance.GetOrThrow(g.clickedStock);
                     if (stockData == null) return;
 
-                    info += "\n" + sr.r3_display_매수_매도(stockData);
+                    info += "\n" + Utils.StringUtils.r3_display_매수_매도(stockData);
 
                     if (DealManager.CheckPreviousLoss(g.clickedStock)) return;
 
@@ -311,7 +311,7 @@ namespace New_Tradegy.Library
                     break;
 
                 case "r7":
-                    sr.r3_display_lines(chart, g.clickedStock, row_id, col_id);
+                    Utils.StringUtils.r3_display_lines(chart, g.clickedStock, row_id, col_id);
                     break;
 
                 case "r8":

@@ -213,7 +213,7 @@ namespace New_Tradegy.Library
                 string bsCode = (string)_cptd5339.GetDataValue(13, i);
                 item.buyorSell = bsCode == "1" ? "매도" : bsCode == "2" ? "매수" : "";
 
-                OrderTracker.Add(item);
+                OrderItemTracker.Add(item);
             }
         }
 
@@ -230,7 +230,7 @@ namespace New_Tradegy.Library
 
                 if (수익률 < -0.45 && stock.Deal.평가금액 > 4_500_000)
                 {
-                    mc.Sound("alarm", "lost already");
+                    Utils.SoundUtils.Sound("alarm", "lost already");
                     return true;
                 }
             }
@@ -269,7 +269,8 @@ namespace New_Tradegy.Library
             g.StockManager.HoldingList.Clear();
 
             // Reset all stocks' 보유량
-            foreach (var stock in StockRepository.Instance.AllDatas)
+            var r = StockRepository.Instance;
+            foreach (var stock in r.AllDatas)
             {
                 stock.Deal.보유량 = 0;
             }
@@ -278,7 +279,7 @@ namespace New_Tradegy.Library
             {
                 string code = (string)_cptd6033.GetDataValue(0, i);
 
-                if (!StockRepository.Instance.Contains(code))
+                if (!r.Contains(code))
                     continue;
 
                 var stock = StockRepository.Instance.GetOrThrow(code);
@@ -304,26 +305,27 @@ namespace New_Tradegy.Library
                 g.StockManager.InterestedWithBidList.Remove(code);
             }
 
-            deal_hold_order();
+            DealHold_order();
         }
 
-        public static void deal_hold_order()
+        public static void DealHold_order()
         {
-            var stocks = new List<Tuple<long, string>>();
+            var stocksTuple = new List<Tuple<long, string>>();
 
+            var r = StockRepository.Instance;
             foreach (var code in g.StockManager.HoldingList)
             {
-                if (!StockRepository.Instance.Contains(code))
+                if (!r.Contains(code))
                     continue;
 
-                var stock = StockRepository.Instance.GetOrThrow(code);
+                var stock = r.GetOrThrow(code);
                 long holdingValue = stock.Deal.보유량 * stock.Api.현재가;
 
-                stocks.Add(Tuple.Create(holdingValue, code));
+                stocksTuple.Add(Tuple.Create(holdingValue, code));
             }
 
             // Sort descending by holding value
-            var sorted = stocks.OrderByDescending(t => t.Item1).ToList();
+            var sorted = stocksTuple.OrderByDescending(t => t.Item1).ToList();
 
             g.StockManager.HoldingList.Clear();
             foreach (var item in sorted)
@@ -376,7 +378,7 @@ namespace New_Tradegy.Library
 
         public static void DealCancelRowIndex(int rowindex)
         {
-            var data = OrderTracker.GetOrderByRowIndex(rowindex);
+            var data = OrderItemTracker.GetOrderByRowIndex(rowindex);
             if (data == null)
                 return;
 
@@ -437,7 +439,7 @@ namespace New_Tradegy.Library
             if (string.IsNullOrEmpty(stockCode))
                 return;
 
-            var orders = OrderTracker.OrderMap.Values
+            var orders = OrderItemTracker.OrderMap.Values
                 .Where(o => o.stock == stock)
                 .ToList();
 

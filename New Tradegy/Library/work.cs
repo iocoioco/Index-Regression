@@ -95,7 +95,7 @@ namespace New_Tradegy.Library
                     g.date = return_date;
                 }
 
-                mc.Sound("time", "date backwards");
+                Utils.SoundUtils.Sound("time", "date backwards");
 
 
                 //rd.gen_ogldata_oGLdata(); // 업종 & 상관 : 전일 거래액 순서로
@@ -123,7 +123,7 @@ namespace New_Tradegy.Library
                     g.date = return_date;
                 }
 
-                mc.Sound("time", "date forwards");
+                Utils.SoundUtils.Sound("time", "date forwards");
 
 
                 //g.ogl_data.Clear();
@@ -1429,76 +1429,7 @@ namespace New_Tradegy.Library
             return title;
         }
 
-        public static int data_컬럼2(string filepath, int dcol, int[,] x, int xcol)
-        { // dcol = 원하는 컬럼위치, 
-            if (!File.Exists(filepath))
-            {
-                return -1;
-            }
-
-            string[] grlines = File.ReadAllLines(filepath, Encoding.Default);
-            int nrow = 0;
-            foreach (string line in grlines)
-            {
-
-                string[] words = line.Split(' ');
-                if (words.Length == 1)
-                {
-                    words = line.Split('\t');
-                }
-
-
-
-
-
-
-                if (dcol == 0)
-                {
-                    // values are crossed, later rearrange ZZZ
-                    string[] time = words[dcol].Split(':');
-
-
-                    if (time.Length == 1)
-                    {
-                        x[nrow, xcol] = Convert.ToInt32(words[0]);
-                    }
-                    else
-                    {
-                        x[nrow, xcol] = Convert.ToInt32(time[0]) * 100 + Convert.ToInt32(time[1]);
-                    }
-                }
-
-                else
-                {
-                    x[nrow, xcol] = Convert.ToInt32(words[dcol]);
-                }
-                nrow++;
-                /*
-                    x[nrow, 1] = Convert.ToInt32(words[1]);   // price
-                    x[nrow, 2] = Convert.ToInt32(words[2]);   // amount
-                    x[nrow, 3] = Convert.ToInt32(words[3]);   // intensity
-
-                    x[nrow, 4] = Convert.ToInt32(words[4]);   // institue from marketeye
-                    x[nrow, 5] = Convert.ToInt32(words[5]);   // foreign 
-                    x[nrow, 6] = Convert.ToInt32(words[6]);   // foreign from marketeye
-
-                    x[nrow, 7] = Convert.ToInt32(words[7]);   // total amount dealt
-                    x[nrow, 8] = Convert.ToInt32(words[8]);   // buy multiple 10 times
-                    x[nrow, 9] = Convert.ToInt32(words[9]);   // sell multiple 10 times
-
-                    nrow++;
-                    if (nrow >= 391)
-                    break;
-                }
-                x[nrow++, xcol] = Convert.ToInt32(words[dcol]);
-                */
-                if (nrow > 399)
-                    break;
-            }
-            return nrow;
-        }
-
-
+     
 
 
         public static void gen_oGL_data(List<string> oGL_title, List<List<string>> oGL)

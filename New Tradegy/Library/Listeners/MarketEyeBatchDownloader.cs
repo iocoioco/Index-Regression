@@ -22,8 +22,8 @@ namespace New_Tradegy
         private static CPSYSDIBLib.MarketEye _marketeye;
         private static CPUTILLib.CpStockCode _cpstockcode;
      
-        private static IndexRangeTrack KospiIndexRangeTrack  = new IndexRangeTrack();
-        private static IndexRangeTrack KosdaqIndexRangeTrack = new IndexRangeTrack();
+        private static IndexRangeTracker KospiIndexRangeTrack  = new IndexRangeTracker();
+        private static IndexRangeTracker KosdaqIndexRangeTrack = new IndexRangeTracker();
         
         public static async Task StartDownloaderAsync()
         {
@@ -125,7 +125,7 @@ namespace New_Tradegy
             string[] codes = new string[g.stocks_per_marketeye];
 
             // ✅ Fill the codes using your BatchSelector
-            var selected = BatchSelector.Select200Batch(
+            var selected = MarketEyeBatchSelector.Select200Batch(
                 leverage: g.StockManager.LeverageList,
                 holding: g.StockManager.HoldingList,
                 interestedWithBid: g.StockManager.InterestedWithBidList,
