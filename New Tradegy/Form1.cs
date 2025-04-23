@@ -113,9 +113,10 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
             g.ChartGeneral = new ChartGeneral();
+            g.ChartManager = new ChartManager();
             g.ChartManager.SetChart1(chart1);
 
-            ControlSetup.SetupAndAttachControlPanel(this);  // call from main form or container
+            ControlPanelRenderer.SetupAndAttachControlPanel(this);  // call from main form or container
 
            
 

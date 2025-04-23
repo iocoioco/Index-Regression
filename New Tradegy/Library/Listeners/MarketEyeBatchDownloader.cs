@@ -51,7 +51,7 @@ namespace New_Tradegy
                 if (wk.isWorkingHour())
                 {
                     // Trigger the marketeye alarm task
-                    await mc.task_marketeye_alarm(HHmm);
+                    await mc.MarketTimeAlarmsAsync(HHmm);
 
                     // Call marketeye logic
                     await DownloadBatchAsync();

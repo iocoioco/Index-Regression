@@ -136,6 +136,8 @@
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
     <Compile Include="Library\Trackers\BookBidManager.cs" />
+    <Compile Include="Library\Trackers\ChartHandler.cs" />
+    <Compile Include="Library\Trackers\ChartManager.cs" />
     <Compile Include="Library\UI\ClickHandlers\ChartClickHandler.cs" />
     <Compile Include="Library\UI\ClickHandlers\CharterClickMapper.cs" />
     <Compile Include="Library\Listeners\MarketEyeBatchSelector.cs" />

@@ -25,7 +25,7 @@ namespace New_Tradegy.Library.Trackers
                 if (data == null) continue;
 
                 // Use existing chart area if valid
-                if (ChartAreaExists(chart, stock) &&
+                if (ChartHandler.ChartAreaExists(chart, stock) &&
                     g.MarketeyeCount % g.MarketeyeDividerForEvalStock != 1 &&
                     g.connected && !g.test && !data.Misc.ShrinkDraw)
                 {
@@ -37,9 +37,10 @@ namespace New_Tradegy.Library.Trackers
                 }
 
                 // Generate bookbid if not already visible
-                if (g.connected && !fm.DoesDataGridViewExist(fm.FindFormByName("Form1"), stock))
+                if (g.connected && !FormUtils.DoesDataGridViewExist(FormUtils.FindFormByName("Form1"), stock))
                 {
-                    var bookbid = new jp().Generate(stock);
+                    var m = new BookBidGenerator();
+                    var bookbid = m.GenerateBookBidView(stock);
                     bookbid.Height = g.DgvCellHeight * 12;
 
                     int x = (g.screenWidth / g.nCol) + 10;
@@ -163,10 +164,7 @@ namespace New_Tradegy.Library.Trackers
             return area;
         }
 
-        private static bool ChartAreaExists(Chart chart, string stock) // can be moved to a utility class
-        {
-            return chart.ChartAreas.IndexOf(stock) >= 0;
-        }
+       
 
         public static void UpdateSeries(Chart chart, StockData data)
         {
@@ -283,7 +281,7 @@ namespace New_Tradegy.Library.Trackers
             int columnIndex = 0;
             int endPoint = 0;
 
-            SeriesInfomation(series, ref stockName, ref chartArea, ref columnIndex, ref endPoint);
+            ChartHandler.SeriesInfomation(series, ref stockName, ref chartArea, ref columnIndex, ref endPoint);
 
             var stockData = StockRepository.Instance.GetOrThrow(stockName);
             if (stockData == null) return;
@@ -317,7 +315,7 @@ namespace New_Tradegy.Library.Trackers
             int columnIndex = 0;
             int endPoint = 0;
 
-            SeriesInfomation(series, ref stock, ref area, ref columnIndex, ref endPoint);
+            ChartHandler.SeriesInfomation(series, ref stock, ref area, ref columnIndex, ref endPoint);
 
             var data = StockRepository.Instance.GetOrThrow(stock);
             if (data == null) return;
@@ -337,23 +335,6 @@ namespace New_Tradegy.Library.Trackers
             series.Font = new Font("Arial", g.v.font, FontStyle.Regular);
         }
 
-        public static void SeriesInfomation(Series t, ref string chartAreaName, 
-            ref string Stock, ref int ColumnIndex, ref int EndPoint)
-        {
-            // Get the last occurrence of the delimiter ' '
-            string[] parts = t.Name.Split(' ');
-            if (parts.Length < 2)
-            {
-                throw new InvalidOperationException("Invalid format in t.Name. Expected format: <StockName> <Number>");
-            }
-
-            // Extract stock name and number
-            Stock = string.Join(" ", parts.Take(parts.Length - 1)); // Join all parts except the last as stock name
-            chartAreaName = t.ChartArea;
-
-            ColumnIndex = int.Parse(parts[parts.Length - 1]); // Parse the last part as an integer
-
-            EndPoint = t.Points.Count - 1; // Extract EndPoint from the series' Points.Count
-        }
+        
     }
 }

@@ -14,7 +14,7 @@ namespace New_Tradegy.Library.Core
         {
             return stocks
                 .OrderByDescending(s => s.Score.총점)
-                .Take(50)
+                .Take(150)
                 .ToList();
         }
 
@@ -22,7 +22,7 @@ namespace New_Tradegy.Library.Core
         {
             return stocks
                 .OrderByDescending(s => s.Api.틱프로천.Sum())
-                .Take(50)
+                .Take(150)
                 .ToList();
         }
 
@@ -121,7 +121,7 @@ namespace New_Tradegy.Library.Core
                     Posprossesor.post(stock); // ensure Post values are updated
 
                     int nrow = stock.Api.nrow;
-                    if (!eval_inclusion(stock) || nrow < 2)
+                    if (!EvalInclusion(stock) || nrow < 2)
                         continue;
 
                     int checkRow = g.test
@@ -203,12 +203,12 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            RankLogic.EvalGroup(); // re-evaluate groups after stock ranking
+            EvalGroup(); // re-evaluate groups after stock ranking
         }
 
 
 
-        public static bool eval_inclusion(StockData data)
+        public static bool EvalInclusion(StockData data)
         {
             string stock = data.Stock;
             var score = data.Score;

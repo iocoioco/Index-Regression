@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.g;
 using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy
 {
@@ -138,15 +139,17 @@ namespace New_Tradegy
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-                int index = wk.return_index_of_ogldata(stock);
-                if(index < 0)
+
+                StockData o = g.StockRepository.GetOrThrow(stock);
+                if (o == null)
                 {
                     continue;
                 }
-                g.stock_data o = g.ogl_data[index];
-                if (!mm.ChartAreaExists(g.ChartManager.Chart2, stock) || o.ShrinkDraw || g.test) 
+ 
+                if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || o.Misc.ShrinkDraw || g.test) 
                 {
-                    mm.AreaStocks(g.ChartManager.Chart2, stock, nRow, nCol);
+                    ChartRenderer.CreateOrUpdateChart(g.ChartManager.Chart2, o, nRow, nCol);
+                    ChartRendler.(g.ChartManager.Chart2, stock, nRow, nCol);
                 }
                 else
                 {
@@ -482,25 +485,6 @@ namespace New_Tradegy
         }
 
 
-        // not used
-        //public void Form_보조_차트_DRAW(string stock)
-        //{
-        //    if (displayList.Count == nRow * nCol)
-        //    {
-        //        ChartClear();
-        //        displayList.Clear();
-        //    }
-
-        //    if (displayList.Contains(stock)) { return; }
-
-        //    nCol = 4;
-        //    nRow = 3;
-
-
-        //    displayList.Add(stock);
-
-        //    dr.draw_stock(chart2, nRow, nCol, displayList.Count - 1, stock);
-        //}
 
         private void UpdateFormTitle()
         {
@@ -536,11 +520,6 @@ namespace New_Tradegy
 
 
 
-        private void chart2_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            ky.chart_keypress(e);
-
-        }
 
         private void chart2_MouseClick(object sender, MouseEventArgs e)
         {

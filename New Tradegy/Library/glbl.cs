@@ -21,6 +21,7 @@ namespace New_Tradegy.Library
         public static DataGridView ActiveBookBid;
         public static StockRepository Repository;
         public static ChartGeneral ChartGeneral;
+        public static ChartManager ChartManager;
      
         public static StockManager StockManager;
         public static StockRepository StockRepository;
@@ -148,7 +149,7 @@ namespace New_Tradegy.Library
         public static int MarketeyeCount = 0; // total count of API download from start of market
         public static int MarketeyeDividerForEvalStock = 10; // evaluation of stocks after how many MarketeyeCount increases
         public static int minuteSaveAll = 0; // to block repeated saving of minute data of all stocks (every hour saved)
-        public static int alamed_hhmm = 0; // to bock alarm repeated like "Taiwan market open"
+        public static int AlarmedHHmm = 0; // to bock alarm repeated like "Taiwan market open"
 
         public static int moving_reference_date = 0; // to check history data
 

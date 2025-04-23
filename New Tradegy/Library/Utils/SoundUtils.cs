@@ -92,15 +92,15 @@ namespace New_Tradegy.Library.Utils
             }
         }
 
-        public static async Task task_marketeye_alarm(int HHmm)
+        public static async Task MarketTimeAlarmsAsync(int HHmm)
         {
-            int[] alarm_HHmm = { 1000, 1030, 1450, 1455, 1500, 1505, 1510, 1515, 1520, 1525, 1528, 1529 };
+            int[] alarm_HHmm = { 1000, 1030, 1450, 1455, 1500, 1505, 1510, 1515, 1518, 1519 };
 
             for (int i = 0; i < alarm_HHmm.Length; i++)
             {
-                if (HHmm == alarm_HHmm[i] && HHmm != g.alamed_hhmm)
+                if (HHmm == alarm_HHmm[i] && HHmm != g.AlarmedHHmm)
                 {
-                    g.alamed_hhmm = HHmm;
+                    g.AlarmedHHmm = HHmm;
                     if (HHmm == 1000)
                     {
                         Sound("time", "taiwan open");

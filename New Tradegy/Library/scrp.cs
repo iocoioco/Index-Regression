@@ -646,11 +646,11 @@ namespace New_Tradegy.Library
                 int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
 
                 // Check if the current time is at 59 or 29 minutes past the hour, and if it hasn't been alerted yet
-                if ((HHmm % 100 == 59 || HHmm % 100 == 29) && g.alamed_hhmm != HHmm)
+                if ((HHmm % 100 == 59 || HHmm % 100 == 29) && g.AlarmedHHmm != HHmm)
                 {
                     // Play sound and update the last alerted time
                     Utils.SoundUtils.Sound("일반", "to jsb");
-                    g.alamed_hhmm = HHmm;
+                    g.AlarmedHHmm = HHmm;
 
                     // Wait asynchronously for 59 seconds before checking again
                     await Task.Delay(59 * 1000);

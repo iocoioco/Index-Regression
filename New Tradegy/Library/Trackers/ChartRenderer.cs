@@ -323,7 +323,7 @@ namespace New_Tradegy.Library.Trackers
             string chartAreaName = "";
             int columnIndex = 0;
             int endPoint = 0;
-            SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
+            ChartHandler.SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
 
             var data = StockRepository.Instance.GetOrThrow(stock);
             if (data == null) return;
@@ -413,26 +413,7 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-        public static void SeriesInfomation(System.Windows.Forms.DataVisualization.Charting.Series t,
-      ref string chartAreaName, ref string Stock, ref int ColumnIndex, ref int EndPoint)
-        {
-            // Get the last occurrence of the delimiter ' '
-            string[] parts = t.Name.Split(' ');
-            if (parts.Length < 2)
-            {
-                throw new InvalidOperationException("Invalid format in t.Name. Expected format: <StockName> <Number>");
-            }
-
-            // Extract stock name and number
-            Stock = string.Join(" ", parts.Take(parts.Length - 1)); // Join all parts except the last as stock name
-            chartAreaName = t.ChartArea;
-
-            ColumnIndex = int.Parse(parts[parts.Length - 1]); // Parse the last part as an integer
-
-            EndPoint = t.Points.Count - 1; // Extract EndPoint from the series' Points.Count
-
-
-        }
+       
 
         public static void LabelGeneral(Chart chart, Series t)
         {
@@ -445,7 +426,7 @@ namespace New_Tradegy.Library.Trackers
             int columnIndex = 0;
             int markingPoint = 0;
 
-            SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
+            ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
 
             var data = StockRepository.Instance.GetOrThrow(stock);
             if (data == null) return;
