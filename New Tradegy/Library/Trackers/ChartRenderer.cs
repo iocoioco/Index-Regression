@@ -500,14 +500,11 @@ namespace New_Tradegy.Library.Trackers
             else if (g.StockManager.InterestedOnlyList.Contains(stock))
                 stock_title = "@ " + stock_title;
 
-            if (stock == "KODEX 레버리지")
-                stock_title += "코스피\n";
-            else if (stock == "KODEX 코스닥150레버리지")
-                stock_title += "코스닥\n";
-            else
-                stock_title += stock.Length >= 5 ? stock.Substring(0, 5) : stock;
+    
+            stock_title += stock.Length >= 5 ? stock.Substring(0, 5) : stock;
 
-            stock_title += o.Misc.oGL_sequence_id < 0 ? "%" : " ";
+            var groupTitle = g.GroupManager.FindGroupByStock(stock); // group title
+            stock_title += groupTitle == null ? "%" : " "; //?
             stock_title += Math.Round(o.Post.종거천 / 10.0) + "  " +
                            (o.Post.프누천 / 10.0).ToString("F1") + "  " +
                            (o.Post.외누천 / 10.0).ToString("F1") + "  " +

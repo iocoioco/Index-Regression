@@ -43,4 +43,9 @@ public class GroupManager
     {
         RankingList = _groups.OrderByDescending(selector).ToList();
     }
+
+    public GroupData FindGroupByStock(string stockCode)
+    {
+        return _groups.FirstOrDefault(g => g.Stocks.Contains(stockCode));
+    }
 }

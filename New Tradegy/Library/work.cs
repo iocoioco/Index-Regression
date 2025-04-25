@@ -1432,55 +1432,6 @@ namespace New_Tradegy.Library
      
 
 
-        public static void gen_oGL_data(List<string> oGL_title, List<List<string>> oGL)
-        {
-            // rearrange oGL and genereate oGl by market cap
-            foreach (var t in g.ogl_data) // assign -1 as default
-            {
-                t.oGL_sequence_id = -1; // needed ?
-            }
-
-            int oGL_count = 0;  // oGL_sequence_id will be assigned step by step
-
-            for (int i = 0; i < oGL.Count; i++)
-            {
-                if (oGL[i].Count < 2)
-                    continue;
-
-                var data = new g.group_data();
-
-                var items1 = new List<Tuple<double, string>> { };
-                foreach (var stock in oGL[i])
-                {
-                    int index = g.ogl_data.FindIndex(r => r.stock == stock);
-                    if (index >= 0)
-                    {
-                        g.ogl_data[index].oGL_sequence_id = oGL_count; // needed ?
-                        items1.Add(Tuple.Create(g.ogl_data[index].시총, stock)); // 시총순으로 그룹 내 종목 재배열
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                items1 = items1.OrderByDescending(t => t.Item1).ToList();
-                List<string> list = new List<string>();
-                foreach (var item in items1)
-                {
-                    list.Add(item.Item2);
-                }
-                if (list.Count < 2)
-                    continue;
-
-                data.stocks = list.ToList();
-                data.title = oGL_title[i];
-
-                g.oGL_data.Add(data);
-                oGL_count++;
-            }
-        }
-
-
 
 
 

@@ -73,14 +73,14 @@ namespace New_Tradegy.Library.Postprocessing
 
             if (g.MarketeyeCount % g.MarketeyeDividerForEvalStock == 1)
             {
-                ev.eval_stock();
+                RankLogic.EvalStock();
             }
 
             foreach (var data in downloadedList)
             {
                 if (g.StockManager.HoldingList.Contains(data.Stock)) // Stock is the name
                 {
-                    cn.dgv2_update(); // update DGV for holding stock
+                    g.매매.TradeRenderer?.Update(); // update DGV for holding stock
                     marketeye_received_보유종목_푀분의매수매도_소리내기(data); // renamed to match new structure
                 }
             }
@@ -413,7 +413,7 @@ namespace New_Tradegy.Library.Postprocessing
             score.급상 = rise_value;
         }
 
-        // checked by Sensei
+        // done by Sensei
         public static void post_score_interpolation(List<List<double>> s,
             double 성적, ref double 획득점수)
         {
@@ -523,7 +523,7 @@ namespace New_Tradegy.Library.Postprocessing
 
                 if (selected > 0)
                 {
-                    double totalSeconds = mc.total_Seconds(api.틱의시간[selected], api.틱의시간[0]);
+                    double totalSeconds = Utils.TimeUtils.total_Seconds(api.틱의시간[selected], api.틱의시간[0]);
                     if (totalSeconds == 0) return;
 
                     int amount = api.틱매수량[0] - api.틱매수량[selected] + api.틱매도량[0] - api.틱매도량[selected];
@@ -610,7 +610,7 @@ namespace New_Tradegy.Library.Postprocessing
                 yVals[i] = api.x[api.nrow - 1 - count + i, 1];
             }
 
-            ma.LinearRegression(xVals, yVals, out double rSquared, out double yIntercept, out double slope);
+            Utils.MathUtils.LinearRegression(xVals, yVals, out double rSquared, out double yIntercept, out double slope);
 
             return 1;
         }
