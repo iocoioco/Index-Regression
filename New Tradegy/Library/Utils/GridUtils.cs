@@ -7,20 +7,6 @@ namespace New_Tradegy.Library.Utils
 {
     public static class GridUtils
     {
-        //usage of SetupBasicGrid()
-        //GridUtils.SetupBasicGrid(
-        //grid,
-        //rowHeight: 28,
-        //fontName: "Segoe UI",
-        //alternateRowColor: true,
-        //onDoubleClick: (s, e) =>
-        //{
-        //    string stock = grid.Rows[e.RowIndex].Cells[0].Value.ToString();
-        //    MessageBox.Show($"Double-clicked: {stock}");
-        //},
-        //columnWidths: new[] { 60, 50, 60 });
-
-
         public static void SetupBasicGrid(
         DataGridView dgv,
         int rowHeight = 25,

@@ -9,7 +9,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-
+using New_Tradegy.Library.IO;
+using New_Tradegy.Library.Utils;
 namespace New_Tradegy
 {
     public partial class Memo : Form
@@ -97,7 +98,7 @@ namespace New_Tradegy
             else if (e.Control == true && e.KeyCode == Keys.S)
             {
                 text = richTextBox1.Text;
-                wr.overWrite(directory + lastOpendFileName, text);
+                StockFileExporter.overWrite(directory + lastOpendFileName, text);
             }
             // find(^f)
             else if (e.Control == true && e.KeyCode == Keys.F)
@@ -269,7 +270,7 @@ namespace New_Tradegy
                     List<string> tsl_그룹_상관 = new List<string>();
                     List<string> GL_title = new List<string>();
                     List<List<string>> GL = new List<List<string>>();
-                    rd.read_그룹_네이버_테마(tsl, tsl_그룹_상관, GL_title, GL);
+                    VariableLoader.read_그룹_네이버_테마(tsl, tsl_그룹_상관, GL_title, GL);
 
                     for (int i = 0; i < GL_title.Count; i++)
                     {
@@ -320,7 +321,7 @@ namespace New_Tradegy
                     string pastedText = Clipboard.GetText();
 
                     // Call method to collect words
-                    string[] words = sr.CollectWordsFromString(pastedText);
+                    string[] words = StringUtils.CollectWordsFromString(pastedText);
 
                     // Do something with the words (e.g., display or process them)
                     foreach (string word in words)
@@ -442,7 +443,7 @@ namespace New_Tradegy
 
         private void txtFilesDisplayInDirectory()
         {
-            List<string> txtFiles = rd.txtFilesInGivenDirectory(directory);
+            List<string> txtFiles = VariableLoader.txtFilesInGivenDirectory(directory);
 
             text = richTextBox1.Text;
             richTextBox1.Text = "";

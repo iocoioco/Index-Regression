@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -9,6 +9,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
+
 namespace New_Tradegy.Library
 {
     public class g
@@ -22,7 +23,7 @@ namespace New_Tradegy.Library
         public static StockRepository Repository;
         public static ChartGeneral ChartGeneral;
         public static ChartManager ChartManager;
-     
+
         public static StockManager StockManager;
         public static StockRepository StockRepository;
 
@@ -35,17 +36,17 @@ namespace New_Tradegy.Library
         public static int date; // current day for display
 
         // ScreenConfig
-       
+
         public static int screenHeight; // window height
         public static int screenWidth; // window width
 
         // TradingSettings
-        public static int DealProfit;
+
         public static bool optimumTrading = false; // fire buy or sell along with book bid/ask ratio 
         public static bool add_interest = false; // add stock or not to the 관심종목 when stocks active
         public static bool confirm_sell = false; // sell by click or modal display to confirm sell condition
         public static int 일회거래액 = 0; // amount of deal money in 10 thousands Won
-        
+
 
         public static int UpdateDealProfit = 0; // profit for the day
 
@@ -67,7 +68,7 @@ namespace New_Tradegy.Library
         public static bool draw_history_forwards = false; // move date forwards or backwards for history analysis
 
         // DgvControl
-        
+
         public class dgvClass
         {
             public DataTable dtb;
@@ -88,7 +89,7 @@ namespace New_Tradegy.Library
 
         // MiscControl
         public static char PeoridNews = 'w'; // google search 'd' past day, 'w' past month
-   
+
         // FontAndThemeAndColor
         public static Color[] Colors = new Color[] // five color set for annotation and chartarea based on activity
         {
@@ -105,7 +106,7 @@ namespace New_Tradegy.Library
 
         // BookBid(was jpjs
         public static ConcurrentDictionary<string, object> BookBidInstances = // bookbid instances dictionary
-           new ConcurrentDictionary<string, object>(); 
+           new ConcurrentDictionary<string, object>();
 
         public static readonly object lockObject = new object(); // Make sure it's initialized
 
@@ -124,12 +125,12 @@ namespace New_Tradegy.Library
 
 
 
-       
 
-        
-      
 
-       
+
+
+
+
 
         public class kospi_kosdaq_mixed // 
         {
@@ -141,8 +142,8 @@ namespace New_Tradegy.Library
 
         public static int stocks_per_marketeye = 200; // max. number of stocks to be downloaded at a time thru. API 
 
-       
-        
+
+
         public static int rqwey_nCol = 10; // number of chart area columns in main chart
         public static int rqwey_nRow = 3; // number of chart area rows in main chart
 
@@ -172,38 +173,7 @@ namespace New_Tradegy.Library
 
         public static int npts_for_magenta_cyan_mark = 4; // magenta and cyan marking on price curve repetition criterion
 
-
-        // variables : chart1 control, stock selection, font etc
-        public class variable
-        {
-            public string KeyString = "총점";
-            public string SubKeyStr = "그순";
-            public string old_key_string = "푀분";
-
-            public double 분당거래액이상_천만원; // in setting 10
-            public double 호가거래액_백만원; // in setting 10
-            public double 편차이상;  // in setting 1
-            public double 배차이상; // in setting 0, not used
-            public double 종가기준추정거래액이상_천만원; // insetting 0
-            public double 시총이상; // in setting 0
-
-            public int 푀플 = 1;
-            public int 배플 = 1;
-            public double 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
-
-            public int q_advance_lines = 15;
-            public int Q_advance_lines = 150;
-            public int r3_display_lines = 20;
-
-            public float font = 16.0F;
-        }
-        public static variable v = new variable();
-
-        // kodex (price, program buy, others buy, retail buys)
-        // for kospi leverage inverse and kosdaq leverage and inverse
-        public static double[,] kodex_magnifier = new double[4, 4];
-
-        public class score
+        public class Score
         {
             public List<List<double>> dev = new List<List<double>>();
             public List<List<double>> mkc = new List<List<double>>();
@@ -244,7 +214,42 @@ namespace New_Tradegy.Library
             public double 그룹_wgt;
             public double 피로_wgt;
             public double 기타_wgt;
-        }
-        public static score s = new score();
 
+        }
+        public static Score s = new Score();
+
+        // variables : chart1 control, stock selection, font etc
+        public class Variable
+        {
+            public string KeyString = "총점";
+            public string SubKeyStr = "그순";
+            public string old_key_string = "푀분";
+
+            public double 분당거래액이상_천만원; // in setting 10
+            public double 호가거래액_백만원; // in setting 10
+            public double 편차이상;  // in setting 1
+            public double 배차이상; // in setting 0, not used
+            public double 종가기준추정거래액이상_천만원; // insetting 0
+            public double 시총이상; // in setting 0
+
+            public int 푀플 = 1;
+            public int 배플 = 1;
+            public double 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
+
+            public int q_advance_lines = 15;
+            public int Q_advance_lines = 150;
+            public int r3_display_lines = 20;
+
+            public float font = 16.0F;
+        }
+        public static Variable v = new Variable();
+
+        // kodex (price, program buy, others buy, retail buys)
+        // for kospi leverage inverse and kosdaq leverage and inverse
+        public static double[,] kodex_magnifier = new double[4, 4];
+    }
+}
+
+   
+       
 

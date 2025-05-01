@@ -4,7 +4,7 @@ using New_Tradegy.Library.Core;
 using New_Tradegy;
 using New_Tradegy.Library.Models;
 
-namespace New_Tradegy.Library.Core
+namespace New_Tradegy.Library.Listeners
 {
     public static class MarketEyeBatchSelector
     {

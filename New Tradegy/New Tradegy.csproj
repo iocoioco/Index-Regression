@@ -135,6 +135,8 @@
     <Compile Include="Form_보조_차트.Designer.cs">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\IO\StockFileExporter.cs" />
+    <Compile Include="Library\IO\VariableLoader.cs" />
     <Compile Include="Library\Trackers\BookBidManager.cs" />
     <Compile Include="Library\Trackers\ChartHandler.cs" />
     <Compile Include="Library\Trackers\ChartManager.cs" />
@@ -147,7 +149,7 @@
     <Compile Include="Library\Core\StockManager.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="Library\Deals\DealMananager.cs" />
-    <Compile Include="Library\UI\KeyBindings\KeyBindingActionCommand.cs" />
+    <Compile Include="Library\UI\KeyBindings\ActionCode.cs" />
     <Compile Include="Library\UI\KeyBindings\KeyBindingManager.cs" />
     <Compile Include="Library\UI\KeyBindings\KeyBindingRegistrar.cs" />
     <Compile Include="Library\Utils\ChartLayoutUtils.cs" />
@@ -165,7 +167,6 @@
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\PostProcessing\Postprocessor.cs" />
-    <Compile Include="Library\temp.cs" />
     <Compile Include="Library\Trackers\ChartGeneral.cs" />
     <Compile Include="Library\Trackers\ChartRenderer.cs" />
     <Compile Include="Library\Trackers\ControlPanelRenderer.cs" />
@@ -175,7 +176,6 @@
     <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
-    <Compile Include="Library\read.cs" />
     <Compile Include="Library\scrp.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Trackers\TradeLogger.cs" />
@@ -186,7 +186,6 @@
     <Compile Include="Library\Utils\TimeUtils.cs" />
     <Compile Include="Library\Utils\WinApiUtils.cs" />
     <Compile Include="Library\work.cs" />
-    <Compile Include="Library\writ.cs" />
     <Compile Include="Memo.cs">
       <SubType>Form</SubType>
     </Compile>

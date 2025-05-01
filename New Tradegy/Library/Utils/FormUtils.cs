@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.Utils
 {
     internal class FormUtils // not update by Sensei
     {

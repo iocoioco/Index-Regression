@@ -7,7 +7,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.UI.ClickHandlers
 {
     internal class ChartClickHandler
     {

@@ -123,8 +123,8 @@ namespace New_Tradegy.Library
                     continue;
 
                 o.nrow = 0;
-                //o.nrow = rd.read_Stock_Minute(g.date, "KODEX 코스닥150레버리지", o.x);
-                o.nrow = rd.read_Stock_Minute(g.date, "KODEX 레버리지", o.x);
+                //o.nrow = VariableLoader.read_Stock_Minute(g.date, "KODEX 코스닥150레버리지", o.x);
+                o.nrow = VariableLoader.read_Stock_Minute(g.date, "KODEX 레버리지", o.x);
 
                 for (int j = 1; j < o.nrow; j++)
                 {
@@ -164,7 +164,7 @@ namespace New_Tradegy.Library
             // g.sl is in the order of dealt in money on the specified day
             foreach (string stock in g.sl)
             {
-                int 전일종가 = rd.read_전일종가(stock);
+                int 전일종가 = VariableLoader.read_전일종가(stock);
 
                 for (int i = from_date; i <= to_date; i++)
                 {
@@ -174,7 +174,7 @@ namespace New_Tradegy.Library
                     if (stock.Contains("KODEX") || stock.Contains("혼합"))
                         continue;
 
-                    int nrow = rd.read_Stock_Minute(i, stock, x); // i -> date
+                    int nrow = VariableLoader.read_Stock_Minute(i, stock, x); // i -> date
 
                     for (int j = 1; j < nrow; j++)
                     {
@@ -247,7 +247,7 @@ namespace New_Tradegy.Library
                 bool directory_delete = false;
 
                 o.nrow = 0;
-                o.nrow = rd.read_Stock_Minute(g.date, "삼성전자", o.x);
+                o.nrow = VariableLoader.read_Stock_Minute(g.date, "삼성전자", o.x);
 
                 int equal_count = 0;
                 if (o.nrow != 382)
@@ -303,14 +303,14 @@ namespace New_Tradegy.Library
             int[,] x = new int[400, 12];
 
             List<string> 제외 = new List<string>();
-            제외 = rd.read_제외(); // testing_배수_잔잔_급증
+            제외 = VariableLoader.read_제외(); // testing_배수_잔잔_급증
 
             for (int i = from_date; i <= to_date; i++)
             {
                 g.date = i;
 
                 g.sl.Clear();
-                rd.read_all_stocks_for_given_date(g.sl);
+                VariableLoader.read_all_stocks_for_given_date(g.sl);
 
                 foreach (string stock in g.sl)
                 {
@@ -323,7 +323,7 @@ namespace New_Tradegy.Library
                         continue;
                     }
 
-                    int column = rd.read_Stock_Minute(i, stock, x);
+                    int column = VariableLoader.read_Stock_Minute(i, stock, x);
 
 
                     for (int j = 4; j < 360; j++)
@@ -387,7 +387,7 @@ namespace New_Tradegy.Library
         {
             int[,] x = new int[400, 12];
 
-            rd.read_Stock_Minute(date, stock, x);
+            VariableLoader.read_Stock_Minute(date, stock, x);
 
             int start_time = -1;
             for (int i = 0; i < x.GetLength(0); i++)
@@ -465,7 +465,7 @@ namespace New_Tradegy.Library
             for (int date = from_date; date <= to_date; date++)
             {
                 int total_count = 0;
-                int nrow = rd.read_Stock_Minute(date, "KODEX 레버리지", x);
+                int nrow = VariableLoader.read_Stock_Minute(date, "KODEX 레버리지", x);
                 if (nrow < 10)
                 {
                     continue;
@@ -568,7 +568,7 @@ namespace New_Tradegy.Library
                     continue;
 
                 g.sl.Clear();
-                rd.read_all_stocks_for_given_date(g.sl);
+                VariableLoader.read_all_stocks_for_given_date(g.sl);
 
                 foreach (string stock in g.sl)
                 {
@@ -584,9 +584,9 @@ namespace New_Tradegy.Library
                         continue;
                     }
 
-                    int nrow = rd.read_Stock_Minute(i, stock, x); // i is given date
+                    int nrow = VariableLoader.read_Stock_Minute(i, stock, x); // i is given date
 
-                    int yesterday_close = rd.read_전일종가(stock);
+                    int yesterday_close = VariableLoader.read_전일종가(stock);
                     if (yesterday_close < 0)
                         continue;
 
@@ -649,7 +649,7 @@ namespace New_Tradegy.Library
 
 
                 g.sl.Clear();
-                rd.read_all_stocks_for_given_date(g.sl);
+                VariableLoader.read_all_stocks_for_given_date(g.sl);
 
                 foreach (string stock in g.sl)
                 {
@@ -658,9 +658,9 @@ namespace New_Tradegy.Library
                         continue;
                     }
 
-                    int nrow = rd.read_Stock_Minute(i, stock, x); // i is given date
+                    int nrow = VariableLoader.read_Stock_Minute(i, stock, x); // i is given date
 
-                    int 전일종가 = rd.read_전일종가(stock);
+                    int 전일종가 = VariableLoader.read_전일종가(stock);
                     for (int j = 3; j < nrow - 3; j++)
                     {
                         if (x[j, 1] - x[j - 1, 1] > 100)
@@ -727,14 +727,14 @@ namespace New_Tradegy.Library
             int[,] x = new int[400, 12];
 
             List<string> 제외 = new List<string>();
-            제외 = rd.read_제외(); // testing_시총이상_가격급상
+            제외 = VariableLoader.read_제외(); // testing_시총이상_가격급상
 
             for (int i = from_date; i <= to_date; i++)
             {
                 g.date = i;
 
                 g.sl.Clear();
-                rd.read_all_stocks_for_given_date(g.sl);
+                VariableLoader.read_all_stocks_for_given_date(g.sl);
 
                 foreach (string stock in g.sl)
                 {
@@ -747,7 +747,7 @@ namespace New_Tradegy.Library
                         continue;
                     }
 
-                    int column = rd.read_Stock_Minute(i, stock, x);
+                    int column = VariableLoader.read_Stock_Minute(i, stock, x);
                     int index = g.ogl_data.FindIndex(r => r.stock == stock);
                     if (index < 0)
                         continue;
@@ -953,7 +953,7 @@ namespace New_Tradegy.Library
 
 
             int[,] x = new int[400, 10];
-            rd.read_Stock_Minute(g.date, stock, x); // columns number is flexible
+            VariableLoader.read_Stock_Minute(g.date, stock, x); // columns number is flexible
             int index = g.ogl_data.FindIndex(r => r.stock == stock);
 
             double pufac = 0;
@@ -1566,7 +1566,7 @@ namespace New_Tradegy.Library
                 }
 
                 int[,] x = new int[1000, 4];
-                rd.read_stock_minute(g.date, stock, x);
+                VariableLoader.read_stock_minute(g.date, stock, x);
                 if (x[0, 0] != 901)
                 {
                     continue;

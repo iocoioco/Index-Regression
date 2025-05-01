@@ -87,7 +87,7 @@ namespace New_Tradegy
 
         private void ConfigureDataGridView()
         {
-            dataGridView1.DataError += (s, f) => wr.DataGridView_DataError(s, f, "보조차트 dgv");
+            dataGridView1.DataError += (s, f) => StockFileExporter.DataGridView_DataError(s, f, "보조차트 dgv");
             dataGridView1.DefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
             dataGridView1.RowTemplate.Height = dataGridView1Height;
@@ -148,8 +148,7 @@ namespace New_Tradegy
  
                 if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || o.Misc.ShrinkDraw || g.test) 
                 {
-                    ChartRenderer.CreateOrUpdateChart(g.ChartManager.Chart2, o, nRow, nCol);
-                    ChartRendler.(g.ChartManager.Chart2, stock, nRow, nCol);
+                    ChartRenderer.CreateOrUpdateChart(g.ChartManager.Chart2, o, nRow, nCol); // Form_보조_차트_DRAW()
                 }
                 else
                 {
@@ -402,7 +401,7 @@ namespace New_Tradegy
                     break;
 
                 case "관심":
-                    rd.read_파일관심종목();
+                    VariableLoader.read_파일관심종목();
                     foreach (string s in g.파일관심종목)
                     {
                         if (!displayList.Contains(s))

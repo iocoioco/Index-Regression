@@ -3,6 +3,7 @@ using New_Tradegy.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -248,23 +249,23 @@ namespace New_Tradegy.Library.Utils
             }
             else
             {
-                str = o.Stock + "   " + Math.Round(o.Score.일간변동편차, 1) + "  " + (o.Score.종거천 / 10).ToString("F0") + "\n\n";
+                str = o.Stock + "   " + Math.Round(o.Statistics.일간변동편차, 1) + "  " + (o.Post.종거천 / 10).ToString("F0") + "\n\n";
 
                 for (int i = 0; i < 5; i++)
                 {
-                    if (i >= o.Correlation.절친.Count)
+                    if (i >= o.Misc.Friends.Count)
                         break;
 
-                    var words = o.Correlation.절친[i].Split('\t');
+                    var words = o.Misc.Friends[i].Split('\t');
                     str += string.Format("{0, -20} {1, 30}", words[1], words[0]) + "\n";
                 }
                 str += "\n";
 
                 str +=
-                    "  " + o.통계.프분_avr.ToString("F1") + "\t" + o.통계.프분_dev.ToString("F1") + "\t" +
-                    o.통계.거분_avr.ToString("F1") + "\t" + o.통계.거분_dev.ToString("F1") + "\t      프분     거분 (단위 : 천만)\n" +
-                    "  " + o.통계.배차_avr.ToString("F0") + "\t" + o.통계.배차_dev.ToString("F0") + "\t" +
-                    o.통계.배합_avr.ToString("F0") + "\t" + o.통계.배합_dev.ToString("F0") + "\t      배차     배합\n\n";
+                    "  " + o.Statistics.프분_avr.ToString("F1") + "\t" + o.Statistics.프분_dev.ToString("F1") + "\t" +
+                    o.Statistics.거분_avr.ToString("F1") + "\t" + o.Statistics.거분_dev.ToString("F1") + "\t      프분     거분 (단위 : 천만)\n" +
+                    "  " + o.Statistics.배차_avr.ToString("F0") + "\t" + o.Statistics.배차_dev.ToString("F0") + "\t" +
+                    o.Statistics.배합_avr.ToString("F0") + "\t" + o.Statistics.배합_dev.ToString("F0") + "\t      배차     배합\n\n";
             }
 
             return str;
@@ -385,22 +386,22 @@ namespace New_Tradegy.Library.Utils
 
         public static string r3_display_lines_after_recalculation(StockData o)
         {
-            string str = o.Stock + "   " + Math.Round(o.Score.일간변동편차, 1) + "  " + (o.Score.종거천 / 10).ToString("F0") + "\n\n";
+            string str = o.Stock + "   " + Math.Round(o.Statistics.일간변동편차, 1) + "  " + (o.Post.종거천 / 10).ToString("F0") + "\n\n";
             int end_row = 0;
 
             for (int i = 0; i < 5; i++)
             {
-                if (i >= o.Correlation.절친.Count)
+                if (i >= o.Misc.Friends.Count)
                     break;
 
-                str += "  " + o.Correlation.절친[i] + "\n";
+                str += "  " + o.Misc.Friends[i] + "\n";
             }
             str += "\n";
 
-            str += "  " + Math.Round(o.통계.프분_avr * 10, 0) + "  " + Math.Round(o.통계.프분_dev * 10, 0) + "    " +
-                          Math.Round(o.통계.거분_avr * 10, 0) + "  " + Math.Round(o.통계.거분_dev * 10, 0) + "      프분     거분\n" +
-                   "  " + Math.Round(o.통계.배차_avr, 0) + "  " + Math.Round(o.통계.배차_dev, 0) + "    " +
-                          Math.Round(o.통계.배합_avr, 0) + "  " + Math.Round(o.통계.배합_dev, 0) + "      배차     배합\n\n";
+            str += "  " + Math.Round(o.Statistics.프분_avr * 10, 0) + "  " + Math.Round(o.Statistics.프분_dev * 10, 0) + "    " +
+                          Math.Round(o.Statistics.거분_avr * 10, 0) + "  " + Math.Round(o.Statistics.거분_dev * 10, 0) + "      프분     거분\n" +
+                   "  " + Math.Round(o.Statistics.배차_avr, 0) + "  " + Math.Round(o.Statistics.배차_dev, 0) + "    " +
+                          Math.Round(o.Statistics.배합_avr, 0) + "  " + Math.Round(o.Statistics.배합_dev, 0) + "      배차     배합\n\n";
 
             if (g.test)
             {
@@ -549,6 +550,5 @@ namespace New_Tradegy.Library.Utils
         {
             MessageBox.Show(message);
         }
-
     }
 }

@@ -16,7 +16,7 @@ using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
 using System.Text;
-using static New_Tradegy.Library.Trackers.ControlPanelManager;
+using static New_Tradegy.Library.Trackers.ControlPanelRenderer;
 using New_Tradegy.KeyBindings;
 using New_Tradegy.Library.Utils;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -71,7 +71,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             //ts.지수합계점검();
             //return;
 
-            Utils.SoundUtils.Sound("일반", "by 2032");
+            SoundUtils.Sound("일반", "by 2032");
         } 
 
 
@@ -93,7 +93,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            rd.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
+            VariableLoader.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
             g.StockManager.AddIfMissing(g.kospi_mixed.stock);
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
 
@@ -158,18 +158,18 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.gid = 0;
             g.Gid = 0;
 
-            rd.read_제어();
+            VariableLoader.read_제어();
 
             string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
-            rd.read_변수(); //
+            VariableLoader.read_변수(); //
 
-            rd.read_무게(); //
+            VariableLoader.read_무게(); //
 
-            rd.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
+            VariableLoader.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
 
-            rd.read_or_set_stocks(); // duration : 0.36 seconds
+            VariableLoader.read_or_set_stocks(); // duration : 0.36 seconds
 
             this.Text = g.v.KeyString; // 시초에는 총점 
 
@@ -190,9 +190,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 cn.Init_CpConclusion();
 
-                DealManager.deal_processing();
+                DealManager.DealProcessing();
                 DealManager.DealHold(); // Initialize g.StockManager.HoldingList
-                DealManager.UpdateAvailableDeposit(); // button1 tr(1)
+                DealManager.DealDeposit(); // button1 tr(1)
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
                 // updated on 20241020 0300
@@ -215,7 +215,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
             }
             ev.eval_stock(); // duration : 0.025 ~ 0.054 seconds
-            rd.read_파일관심종목(); // duration 0.000 seconds
+            VariableLoader.read_파일관심종목(); // duration 0.000 seconds
             mm.ManageChart1(); // all new, Form_1 start
           
             // updated on 20241020 0300

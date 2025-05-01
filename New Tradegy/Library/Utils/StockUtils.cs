@@ -17,10 +17,16 @@
             return IsLeverage(stock) || IsInverse(stock);
         }
 
-        public static bool IsKospi(string stock)
-        {
-            return g.StockManager.IndexList.Contains(stock) || stock.StartsWith("KOSPI");
-        }
+        // not correct
+        //public static bool IsKospi(string stock)
+        //{
+        //    return g.StockManager.IndexList.Contains(stock) || stock.StartsWith("KOSPI");
+        //}
+
+        //public static bool IsKosdaq(string stock)
+        //{
+        //    return g.StockManager.IndexList.Contains(stock) || stock.StartsWith("KOSDAQ");
+        //}
 
         public static string StripETFPrefix(string stock)
         {

@@ -26,11 +26,11 @@ namespace New_Tradegy.Library.Trackers
             string areaName = data.Stock;
 
             ChartArea area;
-            if (!chart.ChartAreas.IsNameUnique(areaName))
+            if (chart.ChartAreas.IndexOf(areaName) >= 0) // return -1, if not exist
             {
                 area = chart.ChartAreas[areaName];
                 UpdateSeries(chart, data);
-                RelocateArea(area, row, col);
+                RelocateChartArea(area, row, col);
                 UpdateAnnotation(chart, data, row, col);
                 return;
             }
@@ -40,7 +40,7 @@ namespace New_Tradegy.Library.Trackers
             InitializeChartArea(area);
             AddSeries(chart, area, data);
             AddAnnotation(chart, data);
-            RelocateArea(area, row, col);
+            RelocateChartArea(area, row, col);
         }
 
         public static void UpdateSeries(Chart chart, StockData data)
@@ -87,14 +87,15 @@ namespace New_Tradegy.Library.Trackers
             if (anno != null)
             {
                 anno.Text = data.Api.현재가.ToString();
-                if (chart.Series.Contains(data.Stock))
+                var series = chart.Series.FindByName(data.Stock);
+                if (series != null)
                 {
-                    anno.AnchorDataPoint = chart.Series[data.Stock].Points.LastOrDefault();
+                    anno.AnchorDataPoint = series.Points.LastOrDefault();
                 }
             }
         }
 
-        public static void RelocateArea(ChartArea area, int row, int col)
+        public static void RelocateChartArea(ChartArea area, int row, int col)
         {
             float width = 100f / g.nCol;
             float height = 100f / g.nRow;
@@ -113,7 +114,7 @@ namespace New_Tradegy.Library.Trackers
             area.AxisY.IsStartedFromZero = false;
         }
 
-        public static void ClearUnused(Chart chart, List<string> activeStocks)
+        public static void ClearUnusedChartAreasAndAnnotations(Chart chart, List<string> activeStocks)
         {
             var unusedAreas = chart.ChartAreas
                 .Cast<ChartArea>()
@@ -123,7 +124,7 @@ namespace New_Tradegy.Library.Trackers
             foreach (var area in unusedAreas)
             {
                 chart.ChartAreas.Remove(area);
-                if (!chart.Series.IsNameUnique(area.Name))
+                if (chart.Series.IndexOf(area.Name) >= 0)
                     chart.Series.Remove(chart.Series[area.Name]);
             }
 
@@ -136,7 +137,7 @@ namespace New_Tradegy.Library.Trackers
                 chart.Annotations.Remove(anno);
         }
 
-        static ChartArea GeneralArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
+        static ChartArea GenralChartArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
         {
             var data = StockRepository.Instance.GetOrThrow(stockName);
             if (data.Api.nrow < 2) return null;
@@ -261,7 +262,7 @@ namespace New_Tradegy.Library.Trackers
                         else break;
                     }
 
-                    int value = GeneralValue(o, k, typeId);
+                    int value = GeneralPointValue(o, k, typeId);
                     string xLabel = ((int)(o.Api.x[k, 0] / g.HUNDRED)).ToString();
 
                     if (chart.InvokeRequired)
@@ -284,7 +285,7 @@ namespace New_Tradegy.Library.Trackers
             return true;
         }
 
-        private static int GeneralValue(StockData o, int k, int id)
+        private static int GeneralPointValue(StockData o, int k, int id)
         {
             int value = 0;
             switch (id)
@@ -412,8 +413,6 @@ namespace New_Tradegy.Library.Trackers
                 }
             }
         }
-
-       
 
         public static void LabelGeneral(Chart chart, Series t)
         {

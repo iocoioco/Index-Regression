@@ -4,7 +4,7 @@ using System.Linq;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
 
-namespace New_Tradegy
+namespace New_Tradegy.Library.Core
 {
     public class StockManager
     {

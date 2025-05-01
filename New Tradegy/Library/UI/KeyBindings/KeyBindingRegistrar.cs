@@ -8,10 +8,11 @@ using New_Tradegy.Library;
 using New_Tradegy.Library.Trackers;
 using System.Drawing;
 using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Utils;
 
-namespace New_Tradegy.KeyBindings
+namespace New_Tradegy.Library.UI.KeyBindings
 {
-    public static class StockKeyBindings
+    public static class KeyBindingRestrar
     {
         public static void RegisterAll()
         {
@@ -43,7 +44,7 @@ namespace New_Tradegy.KeyBindings
         }
         public static readonly Action<Form> 거래모두취소 = form =>
         {
-            Utils.SoundUtils.Sound("Keys", "cancel");
+            SoundUtils.Sound("Keys", "cancel");
 
             for (int i = OrderItemTracker.OrderMap.Count - 1; i >= 0; i--)
             {
@@ -61,7 +62,7 @@ namespace New_Tradegy.KeyBindings
                 g.일회거래액 = 100;
             else
                 g.일회거래액 = 0;
-            Utils.SoundUtils.Sound_돈(g.일회거래액);
+            SoundUtils.Sound_돈(g.일회거래액);
 
             if (g.제어.dtb.Rows[0][2].ToString() != g.일회거래액.ToString())
             {
@@ -77,7 +78,7 @@ namespace New_Tradegy.KeyBindings
                 g.일회거래액 = 500;
             else
                 g.일회거래액 *= 2;
-            Utils.SoundUtils.Sound_돈(g.일회거래액);
+            SoundUtils.Sound_돈(g.일회거래액);
             if (g.일회거래액 > 4000)
             {
                 string caption1 = "일회거래액";
@@ -166,7 +167,7 @@ namespace New_Tradegy.KeyBindings
             string buySell = "매수";
             if (!wk.isStock(stock))
             {
-                Utils.SoundUtils.Sound("돈", "not hoga");
+                SoundUtils.Sound("돈", "not hoga");
                 return;
             }
             //int 거래가격 = hg.HogaGetValue(stock, -1, 1); // 0 : 매도1호가 라인, 1 : 호가 column
@@ -442,7 +443,7 @@ namespace New_Tradegy.KeyBindings
                 string result = mc.message(caption, message, default_option);
 
                 if (result == "Yes")
-                    wr.SaveAllStocks();
+                    StockFileExporter.SaveAllStocks();
             }
         };
         public static readonly Action<Form> 푀분총점토글 = form =>
@@ -562,7 +563,7 @@ namespace New_Tradegy.KeyBindings
         {
             for (int i = g.StockManager.InterestedWithBidList.Count - 1; i >= 0; i--)
             {
-                // rd.read_관심제거추가(g.StockManager.InterestedWithBidList[i]); // this does nothing
+                // VariableLoader.read_관심제거추가(g.StockManager.InterestedWithBidList[i]); // this does nothing
                 g.StockManager.InterestedWithBidList.Remove(g.StockManager.InterestedWithBidList[i]);
             }
         };
@@ -571,7 +572,7 @@ namespace New_Tradegy.KeyBindings
         {
             for (int i = g.StockManager.InterestedOnlyList.Count - 1; i >= 0; i--)
             {
-                // rd.read_관심제거추가(g.StockManager.InterestedOnlyList[i]); // this does nothing
+                // VariableLoader.read_관심제거추가(g.StockManager.InterestedOnlyList[i]); // this does nothing
                 g.StockManager.InterestedOnlyList.Remove(g.StockManager.InterestedOnlyList[i]);
             }
         };

@@ -1,39 +1,18 @@
-﻿using System;
+﻿using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Utils;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
-using System.Diagnostics;                   // 필요함.
-using New_Tradegy.Library.Utils;
-using New_Tradegy.Library.Core;
-using New_Tradegy.Library.Models;
-using System.Collections;
-using System.Collections.Concurrent;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.IO
 {
-
-
-    //var 시총Map = File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
-    //.Select(line => line.Trim().Split(' '))
-    //.Where(parts => parts.Length >= 2)
-    //.Where(parts => !parts[0].Contains("KODEX") && !parts[0].Contains("레버리지") && !parts[0].Contains("인버스"))
-    //.ToDictionary(
-    //    parts => parts[0].Replace("_", " "),
-    //    parts => double.TryParse(parts[1], out var v) ? v : -1
-    //);
-
-    //usage : double 시총 = 시총Map.TryGetValue(stock, out var value) ? value : -1;
-    //다른 것도 같은 방식으로 보낼 수 있다
-
-
-    internal class rd
+    internal class VariableLoader
     {
         static CPUTILLib.CpCodeMgr _cpcodemgr;
         static CPUTILLib.CpStockCode _cpstockcode;
@@ -395,12 +374,12 @@ namespace New_Tradegy.Library
 
             //if (!g.shortform)
             //{
-            //    g.StockManager.AddIfMissing(rd.read_그룹_네이버_업종()); // replaces total_stock_list = ...
+            //    g.StockManager.AddIfMissing(VariableLoader.read_그룹_네이버_업종()); // replaces total_stock_list = ...
             //}
 
-            //rd.read_상관(tgl_title, tgl, g.StockManager.TotalStockList); // duration 1.3 seconds
+            //VariableLoader.read_상관(tgl_title, tgl, g.StockManager.TotalStockList); // duration 1.3 seconds
 
-            
+
 
             var 시총Map = new ConcurrentDictionary<string, double>(
             File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
@@ -420,11 +399,11 @@ namespace New_Tradegy.Library
 
             // 통계 숫자 1200여 개 .ogl_data 숫자 1581 MODI
 
-            
 
-            rd.read_통계();
 
-            rd.read_절친();
+            VariableLoader.read_통계();
+
+            VariableLoader.read_절친();
 
 
             var sortedList = StockRepository.Instance
@@ -438,11 +417,11 @@ namespace New_Tradegy.Library
                 g.sl.Add(item.stock);
             }
 
-            rd.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
+            VariableLoader.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
             wk.gen_oGL_data(tgl_title, tgl); // generate oGL_data
 
-            rd.read_write_kodex_magnifier("read"); // duration 0.001 seconds
+            VariableLoader.read_write_kodex_magnifier("read"); // duration 0.001 seconds
         }
 
 
@@ -478,7 +457,7 @@ namespace New_Tradegy.Library
         }
 
 
-      
+
         public static bool read_단기과열(string stock)
         {
             _cpcodemgr = new CPUTILLib.CpCodeMgr();
@@ -1498,7 +1477,7 @@ namespace New_Tradegy.Library
                 }
             }
 
-           
+
 
             return nrow;
         }

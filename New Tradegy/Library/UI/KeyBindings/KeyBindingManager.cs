@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace New_Tradegy.KeyBindings
+namespace New_Tradegy.Library.UI.KeyBindings
 {
     using System;
     using System.Collections.Generic;

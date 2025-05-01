@@ -93,7 +93,7 @@ namespace New_Tradegy.Library.Trackers
         public void CreateChartArea(string stock, int row, int col)
         {
             var data = StockRepository.Instance.GetOrThrow(stock);
-            ChartRenderer.CreateOrUpdateChart(_chart, data, row, col);
+            ChartRenderer.CreateOrUpdateChart(_chart, data, row, col); // CreateChartArea(string stock, int row, int col)
         }
     }
 

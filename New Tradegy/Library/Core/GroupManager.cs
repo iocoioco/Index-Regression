@@ -4,48 +4,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-public class GroupManager
+namespace New_Tradegy.Library.Core
 {
-    private List<GroupData> _groups;
-    public List<GroupData> RankingList { get; private set; } = new List<GroupData>();
-
-    public GroupManager()
+    public class GroupManager
     {
-        _groups = GroupRepository.LoadGroups();
-    }
+        private List<GroupData> _groups;
+        public List<GroupData> RankingList { get; private set; } = new List<GroupData>();
 
-    public void Save()
-    {
-        GroupRepository.SaveGroups(_groups);
-    }
+        public GroupManager()
+        {
+            _groups = GroupRepository.LoadGroups();
+        }
 
-    public List<GroupData> GetAll() => _groups;
+        public void Save()
+        {
+            GroupRepository.SaveGroups(_groups);
+        }
 
-    public GroupData FindByTitle(string title)
-    {
-        return _groups.FirstOrDefault(g => g.Title == title);
-    }
+        public List<GroupData> GetAll() => _groups;
 
-    public void AddGroup(GroupData group)
-    {
-        if (!_groups.Any(g => g.Title == group.Title))
-            _groups.Add(group);
-    }
+        public GroupData FindByTitle(string title)
+        {
+            return _groups.FirstOrDefault(g => g.Title == title);
+        }
 
-    public void ReplaceGroups(List<GroupData> newGroups)
-    {
-        _groups = newGroups;
-    }
+        public void AddGroup(GroupData group)
+        {
+            if (!_groups.Any(g => g.Title == group.Title))
+                _groups.Add(group);
+        }
 
-    public int Count => _groups.Count;
+        public void ReplaceGroups(List<GroupData> newGroups)
+        {
+            _groups = newGroups;
+        }
 
-    public void SortBy(Func<GroupData, double> selector)
-    {
-        RankingList = _groups.OrderByDescending(selector).ToList();
-    }
+        public int Count => _groups.Count;
 
-    public GroupData FindGroupByStock(string stockCode)
-    {
-        return _groups.FirstOrDefault(g => g.Stocks.Contains(stockCode));
+        public void SortBy(Func<GroupData, double> selector)
+        {
+            RankingList = _groups.OrderByDescending(selector).ToList();
+        }
+
+        public GroupData FindGroupByStock(string stockCode)
+        {
+            return _groups.FirstOrDefault(g => g.Stocks.Contains(stockCode));
+        }
     }
 }

@@ -15,7 +15,7 @@ using New_Tradegy.Library.Postprocessing;
 
 
 
-namespace New_Tradegy
+namespace New_Tradegy.Library.Listeners
 {
     internal class MarketEyeBatchDownloader
     {
@@ -42,7 +42,7 @@ namespace New_Tradegy
                     if (wk.isWorkingHour())
                     {
                         // Save all stocks once at the mentioned times
-                        await wr.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
+                        await StockFileExporter.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
                         g.minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }

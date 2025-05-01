@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using static New_Tradegy.Library.g.stock_data;
+
 using System.Collections.Concurrent;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
@@ -98,15 +98,15 @@ namespace New_Tradegy.Library
                 Utils.SoundUtils.Sound("time", "date backwards");
 
 
-                //rd.gen_ogldata_oGLdata(); // 업종 & 상관 : 전일 거래액 순서로
-                //rd.read_절친();
-                //rd.read_or_set_stocks(); // Form1_Load
+                //VariableLoader.gen_ogldata_oGLdata(); // 업종 & 상관 : 전일 거래액 순서로
+                //VariableLoader.read_절친();
+                //VariableLoader.read_or_set_stocks(); // Form1_Load
 
                 //g.oGL_data.Clear();
                 // inside g.sl.Clear included and reset to the number of stocks in return_date,
-                //rd.read_all_stocks_for_given_date(g.sl);
+                //VariableLoader.read_all_stocks_for_given_date(g.sl);
 
-                //rd.gen_ogldata_oGLdata();
+                //VariableLoader.gen_ogldata_oGLdata();
 
 
             }
@@ -132,24 +132,24 @@ namespace New_Tradegy.Library
                 //{
                 //    g.oGL_data.Clear();
                 //    // inside g.sl.Clear included and reset to the number of stocks in return_date,
-                //    rd.read_all_stocks_for_given_date(g.sl);
-                //    rd.gen_ogldata_oGLdata();
+                //    VariableLoader.read_all_stocks_for_given_date(g.sl);
+                //    VariableLoader.gen_ogldata_oGLdata();
 
                 //    g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
                 //}
                 //else // g.q.Contains("&g")
                 //{
-                //    // rd.read_dl_stocks_only_for_given_date(g.dl); // inside g.sl.Clear included
+                //    // VariableLoader.read_dl_stocks_only_for_given_date(g.dl); // inside g.sl.Clear included
                 //    foreach (var stock in g.dl)
                 //    {
                 //        wk.gen_ogl_data(stock);
                 //    }
-                //    rd.read_통계();
+                //    VariableLoader.read_통계();
                 //}
 
 
             }
-            rd.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
+            VariableLoader.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
 
             // MOD info date modification
             int month_1 = g.date % 10000 / 100;
@@ -238,7 +238,7 @@ namespace New_Tradegy.Library
                 int[,] x = new int[400, 12];
                 int[,] d = new int[400, 2];
 
-                int nrow = rd.read_Stock_Minute(g.date, g.ogl_data[i].stock, x);
+                int nrow = VariableLoader.read_Stock_Minute(g.date, g.ogl_data[i].stock, x);
                 if (nrow <= 1)
                     continue;
 
@@ -345,7 +345,7 @@ namespace New_Tradegy.Library
 
         public static bool gen_ogl_data(string stock, ConcurrentDictionary<string, double> map)
         {
-            if (rd.read_단기과열(stock))
+            if (VariableLoader.read_단기과열(stock))
                 return false;
 
             int days = 20;
@@ -358,18 +358,18 @@ namespace New_Tradegy.Library
 
             var cpStockCode = new CPUTILLib.CpStockCode();
             string code = cpStockCode.NameToCode(stock);
-            long 전일종가 = rd.read_전일종가(stock);
+            long 전일종가 = VariableLoader.read_전일종가(stock);
             if (code.Length != 7 || 전일종가 < 1000)
                 return false;
 
             if (!map.TryGetValue(stock, out var 시총값))
                 return false;
 
-            double 전일거래액_천만원 = rd.read_전일종가_전일거래액_천만원(stock);
+            double 전일거래액_천만원 = VariableLoader.read_전일종가_전일거래액_천만원(stock);
             if (전일거래액_천만원 == -1)
                 return false;
 
-            char 시장구분 = rd.read_코스피코스닥시장구분(stock);
+            char 시장구분 = VariableLoader.read_코스피코스닥시장구분(stock);
             if (시장구분 != 'S' && 시장구분 != 'D')
                 return false;
 
@@ -405,7 +405,7 @@ namespace New_Tradegy.Library
 
         public static bool gen_ogl_data_old(string stock, ConcurrentDictionary<string, double> map)
         {
-            if (rd.read_단기과열(stock))
+            if (VariableLoader.read_단기과열(stock))
                 return false;
 
             int days = 20;
@@ -431,7 +431,7 @@ namespace New_Tradegy.Library
             var _cpstockcode = new CPUTILLib.CpStockCode();
             o.code = _cpstockcode.NameToCode(stock);
 
-            if (o.code.Length != 7 || (o.전일종가 = rd.read_전일종가(stock)) < 1000) // 전일종가 1,000 이상 
+            if (o.code.Length != 7 || (o.전일종가 = VariableLoader.read_전일종가(stock)) < 1000) // 전일종가 1,000 이상 
                 return false;
 
             o.시총 = (map.TryGetValue(stock, out var value) ? value : -1) / 100; // 시총 값 부정확 점검필요 
@@ -440,14 +440,14 @@ namespace New_Tradegy.Library
                 return false;
             }
 
-            o.전일거래액_천만원 = rd.read_전일종가_전일거래액_천만원(stock);
+            o.전일거래액_천만원 = VariableLoader.read_전일종가_전일거래액_천만원(stock);
             if (o.전일거래액_천만원 == -1)
             {
                 return false;
             }
                 
 
-            o.시장구분 = rd.read_코스피코스닥시장구분(stock);
+            o.시장구분 = VariableLoader.read_코스피코스닥시장구분(stock);
             if (o.시장구분 != 'S' && o.시장구분 != 'D') // 코스피, 코스닥 아니면 통과
             {
                 return false;
@@ -1288,7 +1288,7 @@ namespace New_Tradegy.Library
 
             c_id[0] = 5; // everyday amount dealed 
 
-            nrow = rd.read_데이터컬럼들(filename, c_id, x);
+            nrow = VariableLoader.read_데이터컬럼들(filename, c_id, x);
 
             if (nrow < 0)
             {

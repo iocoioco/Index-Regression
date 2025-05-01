@@ -12,9 +12,9 @@ using System.Linq;
 using System.Windows.Forms;
 using New_Tradegy.Library.Utils;
 using New_Tradegy.Library.Models;
-using New_Tradegy.Library;
+using New_Tradegy.Library.IO;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.Listeners
 {
     class BookBidGenerator
     {
@@ -70,7 +70,7 @@ namespace New_Tradegy.Library
             );
 
             // Data error handling
-            _dataGridView.DataError += (s, e) => wr.DataGridView_DataError(s, e, "jpjd _dataGridView");
+            _dataGridView.DataError += (s, e) => StockFileExporter.DataGridView_DataError(s, e, "jpjd _dataGridView");
             _dataGridView.DataError += new DataGridViewDataErrorEventHandler(OnDataError);
             _dataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(OnCellMouseClick);
 

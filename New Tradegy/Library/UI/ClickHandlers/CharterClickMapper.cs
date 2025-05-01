@@ -8,8 +8,8 @@ using System.Windows.Forms;
 
 
 
-namespace New_Tradegy.Library
-    {
+namespace New_Tradegy.Library.UI.ClickHandlers
+{
         internal class ChartClickMapper
         {
             private static CPUTILLib.CpCybos _cpcybos;
@@ -209,6 +209,5 @@ namespace New_Tradegy.Library
 
             return clickedStock;
         }
-    }
     }
 }

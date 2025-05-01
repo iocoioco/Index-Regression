@@ -1,8 +1,10 @@
-﻿using System;
+﻿using New_Tradegy.Library.UI.KeyBindings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace New_Tradegy.Library.Utils
 {
@@ -36,5 +38,23 @@ namespace New_Tradegy.Library.Utils
             return DateTime.Parse(to).Subtract(DateTime.Parse(from)).TotalSeconds;
         }
 
+        public static void MinuteAdvanceRetreat(int advance_lines)
+        {
+            if (advance_lines == 0)
+            {
+                g.Npts[1] = g.EndNptsBeforeExtend;
+                g.EndNptsBeforeExtend = 0;
+                g.EndNptsExtendedOrNot = false;
+            }
+            else
+            {
+                g.EndNptsBeforeExtend = g.Npts[1];
+                g.Npts[1] += advance_lines; // expedientH
+                if (g.Npts[1] > g.MAX_ROW)
+                    g.Npts[1] = g.MAX_ROW;
+
+                g.EndNptsExtendedOrNot = true;
+            }
+        }
     }
 }

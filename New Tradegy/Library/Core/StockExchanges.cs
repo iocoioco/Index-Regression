@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using New_Tradegy.Library;
 using New_Tradegy.Library.Core;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.Core
 {
     public class Order
     {

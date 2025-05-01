@@ -1,16 +1,15 @@
 ﻿using New_Tradegy.Library.Core;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.IO
 {
-    internal class wr
+    internal class StockFileExporter
     {
         private static async Task LogErrorAsync(Exception ex, string dataGridViewName)
         {
@@ -42,7 +41,7 @@ namespace New_Tradegy.Library
             if (g.test)
                 return; // ❌ Don't save during test mode
 
-            rd.read_write_kodex_magnifier("write");
+            VariableLoader.read_write_kodex_magnifier("write");
 
             string directory = $@"C:\병신\분\{g.date}";
             Directory.CreateDirectory(directory);
@@ -383,7 +382,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        
+
         public static void w_temp_7221_test(string t)
         {
             lock (g.lockObject)
@@ -396,7 +395,7 @@ namespace New_Tradegy.Library
             }
         }
 
-        
+
         public static void wt_temp_MarketeyeCount(string t)
         {
             lock (g.lockObject)
@@ -410,7 +409,7 @@ namespace New_Tradegy.Library
             }
         }
 
-       
+
         public static void wt_7222_count(string t0, string t1, string t2)
         {
             lock (g.lockObject)

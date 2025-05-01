@@ -5,7 +5,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.Trackers
 {
     public class IndexRangeTracker
     {

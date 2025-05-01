@@ -9,7 +9,7 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
 
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.Deals
 {
     public class DealManager
     {
@@ -77,17 +77,17 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static int UpdateDealProfit()
+        public static void DealProfit()
         {
             TradeInit();
             if (!_checkedTradeInit)
-                return 0;
+                return;
 
             _profitQuery = new CpTd5342();
             if (_profitQuery.GetDibStatus() == 1)
             {
                 Trace.TraceInformation("DibRq 요청 수신대기 중 입니다. 수신이 완료된 후 다시 호출 하십시오.");
-                return 0;
+                return;
             }
 
             _profitQuery.SetInputValue(0, g.Account);
@@ -111,26 +111,22 @@ namespace New_Tradegy.Library
             {
                 ulong gross = _profitQuery.GetHeaderValue(9);
                 ulong cost = _profitQuery.GetHeaderValue(10);
-                g.DealProfit = ((int)(gross - cost) / 10000);
+                int dealProfit = ((int)(gross - cost) / 10000);
 
                 if (g.MarketeyeCount == 0)
                 {
-                    g.DealProfit = 0;
+                    dealProfit = 0;
                 }
 
-                if (g.제어.dtb.Rows[1][0].ToString() != g.DealProfit.ToString())
+                if (g.제어.dtb.Rows[1][0].ToString() != dealProfit.ToString())
                 {
-                    g.제어.dtb.Rows[1][0] = g.DealProfit.ToString();
+                    g.제어.dtb.Rows[1][0] = dealProfit.ToString();
                 }
-
-                return g.DealProfit;
             }
-
-            return g.DealProfit;
         }
 
-
-        public static void UpdateAvailableDeposit()
+        // Sensei 20250426
+        public static void DealDeposit()
         {
             if (!g.connected)
                 return;
@@ -150,17 +146,30 @@ namespace New_Tradegy.Library
             _depositQuery.SetInputValue(0, g.Account);  // 계좌번호
             _depositQuery.SetInputValue(1, "01");       // 상품관리구분코드 : 거래소
             _depositQuery.SetInputValue(5, "Y");        // Y: Deposit 100 기준
-            _depositQuery.SetInputValue(6, '1');         // '1': 금액조회
+            _depositQuery.SetInputValue(6, "1");         // '1': 금액조회
 
             int result = _depositQuery.BlockRequest();
 
             string message = _depositQuery.GetDibMsg1();
-            long cashAvailable = Convert.ToInt64(_depositQuery.GetHeaderValue(10));
-            g.예치금 = (int)(cashAvailable / 10000); // 현금주문가능금액 단위변환
-
-            if (g.제어.dtb.Rows[0][3].ToString() != g.예치금.ToString())
+            long cashAvailable = 0;
+            try
             {
-                g.제어.dtb.Rows[0][3] = g.예치금.ToString();
+                cashAvailable = Convert.ToInt64(_depositQuery.GetHeaderValue(10));
+            }
+            catch
+            {
+                Trace.TraceWarning("GetHeaderValue(10) parsing failed.");
+                return;
+            }
+
+            int dealDeposit = (int)(cashAvailable / 10000); // 현금주문가능금액 단위변환
+
+            if (g.제어.dtb.Rows.Count > 0)  // safer check
+            {
+                if (g.제어.dtb.Rows[0][3].ToString() != dealDeposit.ToString())
+                {
+                    g.제어.dtb.Rows[0][3] = dealDeposit.ToString();
+                }
             }
         }
 
@@ -497,35 +506,6 @@ namespace New_Tradegy.Library
 
             return _cptd0303.GetDibMsg1();
         }
-
-        public static void 설정매수수량_설정매도수량(string stock, DataGridView dgv2, ref int 설정매수수량, ref int 설정매도수량)
-        {
-            설정매수수량 = 0;
-            설정매도수량 = 0;
-
-            for (int i = 0; i < dgv2.Rows.Count; i++)
-            {
-                var row = dgv2.Rows[i];
-
-                // Skip if already partially or fully executed (e.g., "20/100")
-                if (row.Cells[2].Value?.ToString().Contains("/") == true)
-                    continue;
-
-                // Check if this row corresponds to the target stock
-                if (row.Cells[0].Value?.ToString() == stock)
-                {
-                    if (!int.TryParse(row.Cells[2].Value?.ToString(), out 설정매수수량))
-                        설정매수수량 = 0;
-
-                    if (!int.TryParse(row.Cells[3].Value?.ToString(), out 설정매도수량))
-                        설정매도수량 = 0;
-
-                    break; // Found and filled — exit loop early
-                }
-            }
-        }
-
-
 
     }
 }
