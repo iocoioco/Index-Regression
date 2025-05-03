@@ -17,7 +17,7 @@ namespace New_Tradegy.Library.Trackers
             public Func<int> Get { get; set; }
             public Action<int> Set { get; set; }
         }
-        
+
 
         public DataTable _table { get; private set; } = new DataTable();
         public DataGridView _view { get; private set; }
@@ -133,7 +133,6 @@ namespace New_Tradegy.Library.Trackers
 
             return current;
         }
-
 
         public static void Initialize(DataGridView dgv)
         {

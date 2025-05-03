@@ -1,0 +1,11 @@
+To open the same file in two places:
+	Open the file (e.g., GroupPanelRenderer.cs)
+	Go to the top menu:
+	Window ¡æ New Window
+	Drag the new tab to the right
+
+Tag			Purpose
+<param>		Describes a method parameter
+<returns>	Describes what the method returns
+<remarks>	Extra detail if needed
+<example>	Shows how to use the method

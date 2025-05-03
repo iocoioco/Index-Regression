@@ -78,9 +78,8 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-
         // call TradePanelRenderer.Initialize(this); in the MainForm
-        public static void Initialize(Control container)
+        public static void SetupAndAttachTradePanel(Control container)
         {
             var dgv = new DataGridView
             {

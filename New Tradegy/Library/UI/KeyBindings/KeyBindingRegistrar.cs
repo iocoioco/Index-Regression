@@ -12,16 +12,21 @@ using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library.UI.KeyBindings
 {
-    public static class KeyBindingRestrar
+    public static class KeyBindingRegistrar
     {
+        /// <summary>
+        /// Cancels
+        /// </summary>
         public static void RegisterAll()
         {
-            KeyBindingManager.Register(Keys.Escape, false, false, false, DealCancel);   // Press 'f'
+            KeyBindingManager.Register(Keys.Escape, false, false, false, ActionDealCancel);
+            KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.DoubleDealMoney);
+            KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.HalfDealMoney);
             KeyBindingManager.Register('F', false, false, 코피_코닥_관심);   // Press Shift + F
             KeyBindingManager.Register('f', true, false, 코피_코닥_관심);    // Press Ctrl + f
             KeyBindingManager.Register(Keys.Escape, true, false, false, 상순_저순);
 
-            KeyBindingManager.Register('F', true, true, 코피_코닥_관심);    // Press Ctrl + Shift + F
+            KeyBindingManager.Register('F', true, true, 코피_코닥_관심);    // shift, cntl, alt, f
             KeyBindingManager.Register(Keys.Escape, false, false, false, 상순_저순);
             KeyBindingManager.Register(Keys.F, true, false, false, 코피_코닥_관심);
             KeyBindingManager.Register('h', true, true, 코피_코닥_관심);    // Press
@@ -42,7 +47,11 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register(':', false, false, false, 열기_상관);
             KeyBindingManager.Register('\'', false, false, false, 열기_메모);
         }
-        public static readonly Action<Form> 거래모두취소 = form =>
+
+        /// <summary>
+        /// Deal cancel order
+        /// </summary>
+        public static readonly Action<Form> DealCancelOrder = form =>
         {
             SoundUtils.Sound("Keys", "cancel");
 
@@ -386,7 +395,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             se.Text = g.v.KeyString;
             var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
-            
+
         };
 
         public static readonly Action<Form> 관심종목자동추가 = form =>
@@ -468,7 +477,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         public static readonly Action<Form> 보조차트코피코닥관심토글 = form =>
         {
             Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-            List <string> list_3 = new List<string> { "코피", "코닥", "관심" };
+            List<string> list_3 = new List<string> { "코피", "코닥", "관심" };
             g.v.SubKeyStr = mc.CycleStrings(g.v.SubKeyStr, list_3);
             var action = ActionCode.New(clear: false, post: true, eval: true, draw: 's');
             action.Run();

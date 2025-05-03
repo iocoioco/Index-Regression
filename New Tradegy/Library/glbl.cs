@@ -221,7 +221,7 @@ namespace New_Tradegy.Library
         // variables : chart1 control, stock selection, font etc
         public class Variable
         {
-            public string KeyString = "총점";
+            public string KeyString = "분푀";
             public string SubKeyStr = "그순";
             public string old_key_string = "푀분";
 

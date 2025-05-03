@@ -14,7 +14,7 @@ namespace New_Tradegy.Library.Trackers
         private DataTable _table;
         private List<GroupData> _groups;
 
-        public void SetupGroupPanel(Form containerForm)
+        public static void SetupAndAttachGroupPanel(Form containerForm)
         {
             var dgv = new DataGridView();
             containerForm.Controls.Add(dgv);

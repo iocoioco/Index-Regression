@@ -150,6 +150,7 @@
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="Library\Deals\DealMananager.cs" />
     <Compile Include="Library\UI\KeyBindings\ActionCode.cs" />
+    <Compile Include="Library\UI\KeyBindings\ActionHandlers.cs" />
     <Compile Include="Library\UI\KeyBindings\KeyBindingManager.cs" />
     <Compile Include="Library\UI\KeyBindings\KeyBindingRegistrar.cs" />
     <Compile Include="Library\Utils\ChartLayoutUtils.cs" />
