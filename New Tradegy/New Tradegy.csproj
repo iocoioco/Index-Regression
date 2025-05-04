@@ -111,6 +111,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\UI\AlertForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Library\UI\AlertForm.Designer.cs">
+      <DependentUpon>AlertForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_무게.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +141,7 @@
     <Compile Include="Form_보조_차트.Designer.cs">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\IO\Scraper.cs" />
     <Compile Include="Library\IO\StockFileExporter.cs" />
     <Compile Include="Library\IO\VariableLoader.cs" />
     <Compile Include="Library\Trackers\BookBidManager.cs" />
@@ -155,6 +162,7 @@
     <Compile Include="Library\UI\KeyBindings\KeyBindingRegistrar.cs" />
     <Compile Include="Library\Utils\ChartLayoutUtils.cs" />
     <Compile Include="Library\Utils\GridUtils.cs" />
+    <Compile Include="Library\Utils\PingAndSpeedMonitor.cs" />
     <Compile Include="Library\Utils\SoundUtils.cs" />
     <Compile Include="Library\Utils\StockUtils.cs" />
     <Compile Include="Library\Utils\ThemeUtils.cs" />
@@ -177,7 +185,6 @@
     <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
-    <Compile Include="Library\scrp.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Trackers\TradeLogger.cs" />
     <Compile Include="Library\Trackers\TradePanelRenderer.cs" />

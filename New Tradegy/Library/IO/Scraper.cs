@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Threading;
-using HtmlAgilityPack;
-using New_Tradegy.Library;
-using System.Threading.Tasks;
-using OpenQA.Selenium.Support.UI;
-
-using SeleniumExtras.WaitHelpers;   // For WaitHelpers
+﻿using HtmlAgilityPack;
 using New_Tradegy.Library.Models;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium;
+using SeleniumExtras.WaitHelpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections;
 
-
-namespace New_Tradegy.Library
+namespace New_Tradegy.Library.IO
 {
-    internal class sc
+    internal class Scraper
     {
         // krw not resolved
         public static async Task ScrapeUSDKRW()
@@ -342,7 +338,7 @@ namespace New_Tradegy.Library
                         MajorIndex.Instance.NasdaqIndex = Nasdaq_지수;
 
                     // Update the global data table
-                    if(g.제어.dtb.Rows[1][2].ToString() != MajorIndex.Instance.NasdaqIndex.ToString())
+                    if (g.제어.dtb.Rows[1][2].ToString() != MajorIndex.Instance.NasdaqIndex.ToString())
                     {
                         g.제어.dtb.Rows[1][2] = MajorIndex.Instance.NasdaqIndex.ToString();
                     }
@@ -355,7 +351,7 @@ namespace New_Tradegy.Library
                     int HHmm = Convert.ToInt32(date.ToString("HHmm"));
 
                     // Check if the task should be performed based on time and day
-                    if (HHmm >= 800 && HHmm < 1521 && date.DayOfWeek != DayOfWeek.Sunday 
+                    if (HHmm >= 800 && HHmm < 1521 && date.DayOfWeek != DayOfWeek.Sunday
                         && date.DayOfWeek != DayOfWeek.Saturday && g.connected)
                     {
                         run_us_index_append_or_replace();
@@ -387,11 +383,13 @@ namespace New_Tradegy.Library
 
             foreach (var item in four_index)
             {
-                int index = wk.return_index_of_ogldata(item);
-                if (index < 0)
-                { continue; }
-                g.stock_data o = g.ogl_data[index];
-                int time_befr_6int = o.x[o.nrow - 1, 0];
+                StockData o = g.StockRepository.TryGetStockOrNull(item);
+                if (o == null)
+                {
+                    continue;
+                }
+        
+                int time_befr_6int = o.Api.x[o.Api.nrow - 1, 0];
                 bool append;
 
                 // 초는 포함하지 않는 시간 비교
@@ -402,14 +400,14 @@ namespace New_Tradegy.Library
 
                 int append_or_replace_row;
                 if (append)
-                    append_or_replace_row = o.nrow;
+                    append_or_replace_row = o.Api.nrow;
                 else
-                    append_or_replace_row = o.nrow - 1;
+                    append_or_replace_row = o.Api.nrow - 1;
 
                 if (append_or_replace_row >= g.MAX_ROW)
                     return;
 
-                o.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
+                o.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
             }
         }
 
@@ -496,7 +494,7 @@ namespace New_Tradegy.Library
                 {
                     g.제어.dtb.Rows[2][3] = 대만가권.ToString();
                 }
-                
+
                 // Wait for 30 seconds before the next iteration
                 await Task.Delay(1000 * 30);  // Non-blocking delay
             }
@@ -547,7 +545,7 @@ namespace New_Tradegy.Library
                 float.TryParse(t, out bitcoin);
 
                 // Update global data table
-                if(g.제어.dtb.Rows[3][1].ToString() != bitcoin.ToString())
+                if (g.제어.dtb.Rows[3][1].ToString() != bitcoin.ToString())
                 {
                     g.제어.dtb.Rows[3][1] = bitcoin.ToString();
                 }

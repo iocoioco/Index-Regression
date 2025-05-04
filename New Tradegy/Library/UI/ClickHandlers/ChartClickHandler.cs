@@ -9,7 +9,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.UI.ClickHandlers
 {
-    internal class ChartClickHandler
+    internal class ClickHandler
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
@@ -131,7 +131,7 @@ namespace New_Tradegy.Library.UI.ClickHandlers
         }
 
 
-        public static void HandlerClick(Chart chart, string selection, int row_id, int col_id)
+        public static void HandleClick(Chart chart, string selection, int row_id, int col_id)
         {
             var stockData = StockRepository.Instance.TryGetStockOrNull(g.clickedStock);
             if (stockData == null) return;

@@ -11,6 +11,8 @@ using System.Windows.Forms.DataVisualization.Charting;
 using static New_Tradegy.Library.g;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.UI.ClickHandlers;
+using New_Tradegy.Library.IO;
 
 namespace New_Tradegy
 {
@@ -535,14 +537,11 @@ namespace New_Tradegy
 
             if (Control.ModifierKeys == Keys.Control)
             {
-
-                cl.LeftRightAction(chart2, "l5", row_id, col_id);
-                //Thread.Sleep(100);
-                cl.CntlLeftRightAction(chart2, selection, row_id, col_id);
+                ClickHandler.HandleControlClick(chart2, selection, row_id, col_id);
             }
             else
             {
-                cl.LeftRightAction(chart2, selection, row_id, col_id);
+                ClickHandler.HandleClick(chart2, selection, row_id, col_id);
             }
         }
 

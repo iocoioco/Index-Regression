@@ -303,7 +303,7 @@ namespace New_Tradegy.Library.Listeners
                 }
                 api.nrow = append_or_replace_row + 1;
 
-                if (!(g.StockManager.IndexList.Contains(data.Stock) && api.nrow >= 2)
+                if (!(g.StockManager.IndexList.Contains(data.Stock) && api.nrow >= 2))
                 {
                     if (api.x[api.nrow - 1, 7] == api.x[api.nrow - 2, 7])
                         api.x[api.nrow - 1, 10] = api.x[api.nrow - 2, 10];

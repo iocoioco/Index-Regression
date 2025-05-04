@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static New_Tradegy.Library.sc;
+
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
@@ -24,6 +24,8 @@ using New_Tradegy.Library.IO;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.Deals;
 using New_Tradegy.Library.UI.ClickHandler;
+using New_Tradegy.Library.UI.ClickHandlers;
+
 
 //using NLog;
 
@@ -54,9 +56,9 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private static TextBox searchTextBox;
 
+        private PingAndSpeedMonitor networkMonitor;
 
 
-   
 
 
         public Form1()
@@ -76,14 +78,31 @@ namespace New_Tradegy // added for test on 20241020 0300
             //return;
 
             SoundUtils.Sound("일반", "by 2032");
-        } 
+        }
 
 
+        private void StartNetworkMonitor()
+        {
+            
+            networkMonitor = new PingAndSpeedMonitor(
+            host: "daishin.co.kr",
+            logFilePath: "@\"C:\\병신\\ping_log.txt",
+            wavFilePath: @"Resources\alert.wav",
+            logIntervalSeconds: 600,         // log every 10 min
+            pingThresholdMs: 300,            // warn if ping > 300ms
+            speedThresholdMbps: 10.0         // warn if speed < 10 Mbps
+);
+            networkMonitor.Start();
+        }
 
+        
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.FormClosing += Form1_FormClosing;
+            StartNetworkMonitor();
+
             KeyBindingRegistrar.RegisterAll();
 
             g.StockRepository = StockRepository.Instance;
@@ -190,13 +209,13 @@ namespace New_Tradegy // added for test on 20241020 0300
                 // updated on 20241020 0300
                 Task task_us_indices_futures = Task.Run(async () =>
                 {
-                    await sc.task_us_indices_futures();
+                    await Scraper.task_us_indices_futures();
                 });
 
                 // updated on 20241020 0300
                 Task Task_major_indices = Task.Run(async () =>
                 {
-                    await sc.task_major_indices();
+                    await Scraper.task_major_indices();
                 });
 
                 // updated on 20241020 0300
@@ -208,7 +227,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.ChartGeneral.UpdateLayoutIfChanged(); // all new, Form_1 start
           
             // updated on 20241020 0300
-            Task taskJsb = Task.Run(async () => await task_jsb());
+            Task taskJsb = Task.Run(async () => await Scraper.task_jsb());
             SoundUtils.Sound("일반", "to jsb");
 
             return;
@@ -645,11 +664,11 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             if (Control.ModifierKeys == Keys.Control)
             {
-                cl.CntlLeftRightAction(chart1, selection, row_id, col_id);
+                ClickHandler.HandleControlClick(chart1, selection, row_id, col_id);
             }
             else
             {
-                cl.LeftRightAction(chart1, selection, row_id, col_id);
+                ClickHandler.HandleClick(chart1, selection, row_id, col_id);
             }
 
             //SetFocusAndReturn();
@@ -797,6 +816,11 @@ namespace New_Tradegy // added for test on 20241020 0300
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         private const int SW_RESTORE = 9;
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            networkMonitor?.Stop();
+        }
     }
 }
 

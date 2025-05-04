@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using New_Tradegy.Library.Models;
+﻿using New_Tradegy.Library.Models;
 
-using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Trackers;
-using System.Globalization;
 
 namespace New_Tradegy.Library.Trackers
 {
