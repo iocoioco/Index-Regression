@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Listeners;
 
 
 namespace New_Tradegy.Library.Trackers
@@ -21,7 +22,7 @@ namespace New_Tradegy.Library.Trackers
             for (int i = 0; i < indexStocks.Length; i++)
             {
                 string stock = indexStocks[i];
-                var data = StockRepository.Instance.TryGetStockOrNull(stock);
+                var data = g.StockRepository.TryGetStockOrNull(stock);
                 if (data == null) continue;
 
                 // Use existing chart area if valid
@@ -37,7 +38,7 @@ namespace New_Tradegy.Library.Trackers
                 }
 
                 // Generate bookbid if not already visible
-                if (g.connected && !FormUtils.DoesDataGridViewExist(FormUtils.FindFormByName("Form1"), stock))
+                if (g.connected && !Utils.FormUtils.DoesDataGridViewExist(FormUtils.FindFormByName("Form1"), stock))
                 {
                     var m = new BookBidGenerator();
                     var bookbid = m.GenerateBookBidView(stock);
@@ -283,7 +284,7 @@ namespace New_Tradegy.Library.Trackers
 
             ChartHandler.SeriesInfomation(series, ref stockName, ref chartArea, ref columnIndex, ref endPoint);
 
-            var stockData = StockRepository.Instance.TryGetStockOrNull(stockName);
+            var stockData = g.StockRepository.TryGetStockOrNull(stockName);
             if (stockData == null) return;
 
             var o = stockData.Api;
@@ -317,7 +318,7 @@ namespace New_Tradegy.Library.Trackers
 
             ChartHandler.SeriesInfomation(series, ref stock, ref area, ref columnIndex, ref endPoint);
 
-            var data = StockRepository.Instance.TryGetStockOrNull(stock);
+            var data = g.StockRepository.TryGetStockOrNull(stock);
             if (data == null) return;
 
             int totalPoints = g.test ? Math.Min(g.Npts[1], data.Api.nrow) : data.Api.nrow;

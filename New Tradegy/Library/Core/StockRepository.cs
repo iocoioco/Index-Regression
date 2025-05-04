@@ -10,7 +10,7 @@ namespace New_Tradegy.Library.Core
         private static readonly object _lock = new object();
 
         private StockRepository() { }
-        // have to use instance var r = StockRepository.Instance; // ✅ Safe and controlled
+        
 
         public static StockRepository Instance
         {

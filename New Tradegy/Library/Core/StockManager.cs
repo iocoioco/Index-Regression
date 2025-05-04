@@ -14,12 +14,14 @@ namespace New_Tradegy.Library.Core
         public List<string> TotalStockList { get; } = new List<string>();
         public List<string> RankingList { get; private set; } = new List<string>();
         public List<string> HoldingList { get; private set; } = new List<string>();
+
         public List<string> LeverageList { get; private set; } = new List<string>();
         public List<string> InverseList { get; private set; } = new List<string>();
         public List<string> IndexList { get; private set; }
 
         public List<string> InterestedWithBidList { get; private set; } = new List<string>();   // Right-click zone 5
         public List<string> InterestedOnlyList { get; private set; } = new List<string>();      // Right-click zone 4
+        public List<string> InterestedInFile { get; private set; } = new List<string>();
 
         public Dictionary<string, List<string>> Groups { get; private set; } = new Dictionary<string, List<string>>();
 
@@ -33,13 +35,7 @@ namespace New_Tradegy.Library.Core
             IndexList = LeverageList.Concat(InverseList).ToList();
         }
 
-        public void UpdateTick(string stock, double[] newTickPro)
-        {
-            var data = _repository.TryGetStockOrNull(stock);
-            if (data == null) return;
-
-            Array.Copy(newTickPro, data.Reflection.ProgramK, Math.Min(newTickPro.Length, data.Reflection.ProgramK.Length));
-        }
+       
 
         public double GetTotalScore(string stock)
         {
@@ -89,10 +85,6 @@ namespace New_Tradegy.Library.Core
             }
         }
 
-        public void ClearInterest()
-        {
-            InterestedOnlyList.Clear();
-            InterestedWithBidList.Clear();
-        }
+        
     }
 }

@@ -168,10 +168,10 @@ namespace New_Tradegy.Library.Listeners
 
             for (int k = 0; k < count; k++)
             {
-                string code = _marketeye.GetDataValue(0, k);
-                if (!StockRepository.Instance.Contains(code)) continue;
+                string stock = _marketeye.GetDataValue(0, k);
+                if (!g.StockRepository.Contains(stock)) continue;
 
-                var data = StockRepository.Instance.TryGetStockOrNull(code);
+                var data = g.StockRepository.TryGetStockOrNull(stock);
                 var api = data.Api;
                 downloadList.Add(data);
 
@@ -247,7 +247,7 @@ namespace New_Tradegy.Library.Listeners
                     전누적매도체결거래량 = 전거래량 * 100.0 / (100.0 + 전체강);
                 }
 
-                double totalSeconds = mc.total_Seconds(api.x[comparison_row, 0], HHmmss);
+                double totalSeconds = Utils.TimeUtils.total_Seconds(api.x[comparison_row, 0], HHmmss);
                 double multiple_factor = 0.0;
                 if (MathUtils.IsSafeToDivide(totalSeconds) && data.Statistics.일평균거래량 > 100)
                 {
@@ -336,17 +336,17 @@ namespace New_Tradegy.Library.Listeners
 
             Posprossesor.post_real(downloadList);
 
-            if (StockRepository.Instance.Contains("KODEX 레버리지"))
+            if (g.StockRepository.Contains("KODEX 레버리지"))
             {
-                var kospi = StockRepository.Instance.TryGetStockOrNull("KODEX 레버리지");
+                var kospi = g.StockRepository.TryGetStockOrNull("KODEX 레버리지");
                 int kospiIndex = kospi.Api.x[kospi.Api.nrow - 1, 1];
                 MajorIndex.Instance.KospiIndex = kospiIndex;
                 indexRangeTracker.CheckIndexAndSound(kospiIndex, "Kospi");
             }
 
-            if (StockRepository.Instance.Contains("KODEX 코스닥150레버리지"))
+            if (g.StockRepository.Contains("KODEX 코스닥150레버리지"))
             {
-                var kosdaq = StockRepository.Instance.TryGetStockOrNull("KODEX 코스닥150레버리지");
+                var kosdaq = g.StockRepository.TryGetStockOrNull("KODEX 코스닥150레버리지");
                 int kosdaqIndex = kosdaq.Api.x[kosdaq.Api.nrow - 1, 1];
                 MajorIndex.Instance.KosdaqIndex = kosdaqIndex;
                 indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
@@ -368,7 +368,7 @@ namespace New_Tradegy.Library.Listeners
             {
                 string[] items = line.Split('\t');
 
-                var o = StockRepository.Instance.TryGetStockOrNull(items[0]).Api;
+                var o = g.StockRepository.TryGetStockOrNull(items[0]).Api;
                 double weight = Convert.ToDouble(items[1]);
 
                 t[1] += o.가격 * weight;
@@ -391,7 +391,7 @@ namespace New_Tradegy.Library.Listeners
             int mixed_index = wk.return_index_of_ogldata(mixed_stock);
             if (mixed_index < 0) return;
 
-            var v = StockRepository.Instance.TryGetStockOrNull(mixed_stock);
+            var v = g.StockRepository.TryGetStockOrNull(mixed_stock);
 
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
             int time_bef_4int = v.Api.x[v.Api.nrow - 1, 0] / 100;

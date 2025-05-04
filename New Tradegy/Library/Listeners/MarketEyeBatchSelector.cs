@@ -45,7 +45,7 @@ namespace New_Tradegy.Library.Listeners
             }
 
             // ✅ 3. Fill the rest from repository sequentially
-            var repoList = StockRepository.Instance.AllDatas
+            var repoList = g.StockRepository.AllDatas
                 .Select(x => x.Stock)
                 .ToList();
 

@@ -13,7 +13,10 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.UI.ClickHandlers;
 using New_Tradegy.Library.IO;
+using New_Tradegy.Library.Core;
 
+using New_Tradegy.Library.Models;
+using New_Tradegy.Library.UI.ClickHandler;
 namespace New_Tradegy
 {
     public partial class Form_보조_차트 : Form
@@ -142,7 +145,10 @@ namespace New_Tradegy
                     break;
                 string stock = displayList[i];
 
-                StockData o = g.StockRepository.TryGetStockOrNull(stock);
+           
+
+           
+                var o = g.StockRepository.TryGetStockOrNull(stock);
                 if (o == null)
                 {
                     continue;
@@ -328,83 +334,41 @@ namespace New_Tradegy
                     break;
 
                 case "그순":
-                    if (g.oGL_data.Count > 0)
+                    if (g.GroupManager.RankingList.Count > 0)
                     {
-                        for (int i = 0; i < 5; i++)
-                        {
-                            int added_count = 0;
-                            foreach (string s in g.oGL_data[i].stocks)
-                            {
-                                if (!displayList.Contains(s))
-                                {
-                                    displayList.Add(s);
-                                }
-                                else
-                                {
-                                    displayList.Add("");
-                                }
-                                if (++added_count == 3)
-                                {
-                                    break;
-                                }
-                            }
-                            for (int j = added_count; j < 3; j++)
-                            {
-                                displayList.Add("");
-                            }
-                        }
+                        var topStocks = g.GroupManager.GetTopStocksFromTopGroups(existing: displayList);
+                        displayList.AddRange(topStocks);
                     }
                     break;
 
                 case "상관":
-                    int indexOfoGLdata = -1;
-                    for (int i = 0; i < g.oGL_data.Count; i++)
-                    {
-                        if (g.oGL_data[i].title == clickedTitle)
-                        {
-                            indexOfoGLdata = i;
-                            break;
-                        }
-                    }
-                    if (indexOfoGLdata >= 0)
-                    {
-                        foreach (string s in g.oGL_data[indexOfoGLdata].stocks)
-                        {
-                            if (!displayList.Contains(s))
-                                displayList.Add(s);
-                        }
-                    }
+                    displayList.AddRange(g.GroupManager.GetStocksByTitle(clickedTitle, displayList));
                     break;
 
                 case "절친":
-                    int index절친 = wk.return_index_of_ogldata(g.clickedStock);
-                    if (index절친 < 0) // KODEX 제외
+                    var stockData = g.StockManager.Repository.TryGetStockOrNull(g.clickedStock);
+                    if (stockData != null && stockData.Misc.Friends.Count > 0)
                     {
-                    }
-                    else
-                    {
-                        if (g.ogl_data[index절친].절친.Count > 0)
+                        displayList.Add(g.clickedStock);
+
+                        foreach (var line in stockData.Misc.Friends)
                         {
-                            displayList.Add(g.clickedStock);
-
-                            string stock = "";
-                            foreach (var line in g.ogl_data[index절친].절친)
+                            var words = line.Split('\t');
+                            if (words.Length == 2)
                             {
-                                string[] words = line.Split('\t');
-                                if (words.Length == 2)
-                                    stock = words[1]; // words[0] 절친정도 수치 : 0.5 이상 양호
+                                string friendStock = words[1];
 
-                                if (!displayList.Contains(stock))
-                                    displayList.Add(stock);
-
+                                if (!displayList.Contains(friendStock))
+                                    displayList.Add(friendStock);
                             }
                         }
                     }
                     break;
 
+
                 case "관심":
                     VariableLoader.read_파일관심종목();
-                    foreach (string s in g.파일관심종목)
+                    foreach (string s in g.StockManager.InterestedInFile)
                     {
                         if (!displayList.Contains(s))
                         {
@@ -427,61 +391,69 @@ namespace New_Tradegy
 
 
                 case "푀손":
-                    var a_tuple = new List<Tuple<double, string>> { };
-
-                    foreach (var o in g.ogl_data)
                     {
-                        string stock = o.stock;
-                        // if (!o.included) continue; Blocked on 20240406
-                        // 레버리지 외 지수관련 모두 continue;
-                        if (g.StockManager.IndexList.Contains(stock) ||
-                        stock.Contains("KOSEF") ||
-                        stock.Contains("HANARO") ||
-                        stock.Contains("TIGER") ||
-                        stock.Contains("KBSTAR") ||
-                        stock.Contains("혼합") ||
-                        g.StockManager.HoldingList.Contains(stock) ||
-                        g.StockManager.InterestedWithBidList.Contains(stock))
-                        {
-                            continue;
-                        }
+                        var a_tuple = new List<Tuple<double, string>>();
 
-                        int check_row = 0;
-                        if (g.connected)
+                        foreach (var o in g.StockRepository.AllDatas)
                         {
-                            check_row = o.nrow - 1;
-                        }
-                        else
-                        {
-                            check_row = g.Npts[1] - 1;
-                            if (check_row > o.nrow - 1)
-                                check_row = o.nrow - 1;
-                        }
-                            
-                        if (o.nrow < 2 || o.x[check_row, 4] < 0)
-                            continue;
+                            string stock = o.Stock;
 
+                            // Exclude index-related ETFs and already displayed/interested stocks
+                            if (g.StockManager.IndexList.Contains(stock) ||
+                                stock.Contains("KOSEF") ||
+                                stock.Contains("HANARO") ||
+                                stock.Contains("TIGER") ||
+                                stock.Contains("KBSTAR") ||
+                                stock.Contains("혼합") ||
+                                g.StockManager.HoldingList.Contains(stock) ||
+                                g.StockManager.InterestedWithBidList.Contains(stock))
+                            {
+                                continue;
+                            }
 
+                            int check_row = 0;
+                            int nrow = o.Api.nrow;
 
-                        double value = 0.0;
-                        {
+                            if (nrow < 2)
+                                continue;
+
+                            if (g.connected)
+                            {
+                                check_row = nrow - 1;
+                            }
+                            else
+                            {
+                                check_row = g.Npts[1] - 1;
+                                if (check_row > nrow - 1)
+                                    check_row = nrow - 1;
+                            }
+
+                            if (o.Api.x[check_row, 4] < 0)
+                                continue;
+
+                            double value = 0.0;
+                            var x = o.Api.x;
+
                             for (int i = check_row - 1; i >= 1; i--)
                             {
-                                //분간 프돈 매수 -> (현재가 - (후분가 + 전분가) / 2) * 분간프돈매수량 * 전일종가
-                                value += (o.x[check_row, 1] - (o.x[i, 1] + o.x[i - 1, 1]) / 2.0) *
-                                    (o.x[i, 4] - o.x[i - 1, 4]);
+                                double deltaPrice = x[check_row, 1] - (x[i, 1] + x[i - 1, 1]) / 2.0;
+                                int deltaVolume = x[i, 4] - x[i - 1, 4];
+                                value += deltaPrice * deltaVolume;
                             }
-                        }
-                        a_tuple.Add(Tuple.Create(value, stock));
-                    }
-                    a_tuple = a_tuple.OrderBy(t => t.Item1).ToList();
 
-                    foreach (var t in a_tuple)
-                    {
-                        if (!displayList.Contains(t.Item2))
-                            displayList.Add(t.Item2);
+                            a_tuple.Add(Tuple.Create(value, stock));
+                        }
+
+                        a_tuple = a_tuple.OrderBy(t => t.Item1).ToList();
+
+                        foreach (var t in a_tuple)
+                        {
+                            if (!displayList.Contains(t.Item2))
+                                displayList.Add(t.Item2);
+                        }
+                        break;
                     }
-                    break;
+
             }
         }
 
@@ -532,7 +504,7 @@ namespace New_Tradegy
 
             //chart2_info(e, ref selection, ref xval, ref yval, ref row_percentage,
             //    ref col_percentage, ref row_id, ref col_id, ref col_divider);
-            g.clickedStock = cl.CoordinateMapping(chart2, nRow, nCol, displayList, e, ref selection, ref col_id, ref row_id);
+            g.clickedStock = ChartClickMapper.CoordinateMapping(chart2, nRow, nCol, displayList, e, ref selection, ref col_id, ref row_id);
 
 
             if (Control.ModifierKeys == Keys.Control)
@@ -572,10 +544,7 @@ namespace New_Tradegy
             }
         }
 
-        private void dataGridView1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            ky.chart_keypress(e);
-        }
+        
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {

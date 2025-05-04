@@ -30,7 +30,7 @@ namespace New_Tradegy.Library.Core
 
         public static void EvalStock_등합()
         {
-            var repo = StockRepository.Instance;
+            var repo = g.StockRepository;
 
             var list_푀분 = new List<(double value, string code)>();
             var list_거분 = new List<(double value, string code)>();
@@ -80,7 +80,7 @@ namespace New_Tradegy.Library.Core
 
         public static void EvalStock()
         {
-            var repo = StockRepository.Instance;
+            var repo = g.StockRepository;
             var resultList = new List<(double value, string code)>();
             double value = 0.0;
 
@@ -232,8 +232,13 @@ namespace New_Tradegy.Library.Core
             }
 
             // ✅ Always include 누적 계열 regardless of filters
-            if (g.v.KeyString is "프누" or "종누" or "프편" or "종편")
-                return true;
+            if (g.v.KeyString == "프누" ||
+                g.v.KeyString == "종누" ||
+                g.v.KeyString == "프편" ||
+                g.v.KeyString == "종편")
+                {
+                    return true;
+                }
 
             // ❌ Exclude if 푀분 or 배차 filtering is enabled and negative
             if (g.v.푀플 == 1 && score.푀분 < 0)
@@ -288,7 +293,7 @@ namespace New_Tradegy.Library.Core
 
         public static void EvalGroup()
         {
-            var repo = StockRepository.Instance;
+            var repo = g.StockRepository;
             var groupManager = g.GroupManager;
             var allGroups = groupManager.GetAll();
 
@@ -305,7 +310,7 @@ namespace New_Tradegy.Library.Core
                 {
                     if (count == 3) break;
 
-                    var stock = StockRepository.Instance.TryGetStockOrNull(stockName);
+                    var stock = repo.TryGetStockOrNull(stockName);
 
                     if (stock == null || stock.Api.nrow < 2 || stock.Api.nrow >= 382)
                         continue;

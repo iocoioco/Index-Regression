@@ -176,7 +176,6 @@ namespace New_Tradegy.Library.Models
         public int 매도배;
 
 
-
         public void AppendTick(int[] t, int HHmmss, double currBuyVol, double currSellVol, long prevBuyVol, long prevSellVol, double multipleFactor, double moneyFactor)
         {
             for (int i = MajorIndex.TickArraySize - 1; i >= 1; i--)
@@ -258,10 +257,6 @@ namespace New_Tradegy.Library.Models
 
     }
 
-
-
-
-
     // public DealStatus Deal { get; set; } = new DealStatus();
     public class DealStatus
     {
@@ -274,7 +269,6 @@ namespace New_Tradegy.Library.Models
         public long 손익단가; // Error, if use int instead of long
 
     }
-
 
     // public PostData Post { get; set; } = new PostData();
     public class PostData
@@ -290,29 +284,12 @@ namespace New_Tradegy.Library.Models
         public double 종거천;
     }
 
-
-
-
     // public MiscData Misc { get; set; } = new MiscData();
     public class MiscData
     {
         public double 수급과장배수 = 1;
-        
-
-
-
-
+        public int oGL_sequence_id;
         public bool ShrinkDraw = false;
         public List<string> Friends { get; set; } = new List<string>();
     }
-
-
-
-
-
-
-
-
-
-
-    }
+}

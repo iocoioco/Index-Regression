@@ -13,6 +13,8 @@ using System.Windows.Forms;
 using New_Tradegy.Library.Utils;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.IO;
+using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.Core;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -516,24 +518,20 @@ namespace New_Tradegy.Library.Listeners
                 stockData.Api.틱의가격[0] = (int)((stockData.Api.매수1호가 - stockData.Api.전일종가) * 10000.0 / stockData.Api.전일종가);
             }
 
-            // [remaining logic... convert similarly]
-
-
-
 
 
 
             double factor = 0.0;
             double differ = 0.0;
-            if (o.전일종가 > 0)
-                differ = (stockData.Api.매도1호가 - stockData.Api.매수1호가) * 10000.0 / o.전일종가;
-            if (o.최우선매도호가잔량 + o.최우선매수호가잔량 > 0)
-                factor = (double)o.최우선매수호가잔량 / (o.최우선매도호가잔량 + o.최우선매수호가잔량);
-            o.틱의가격[0] += (int)(differ * factor);
-            o.가격 = o.틱의가격[0];
+            if (stockData.Api.전일종가 > 0)
+                differ = (stockData.Api.매도1호가 - stockData.Api.매수1호가) * 10000.0 / stockData.Api.전일종가;
+            if (stockData.Api.최우선매도호가잔량 + stockData.Api.최우선매수호가잔량 > 0)
+                factor = (double)stockData.Api.최우선매수호가잔량 / (stockData.Api.최우선매도호가잔량 + stockData.Api.최우선매수호가잔량);
+            stockData.Api.틱의가격[0] += (int)(differ * factor);
+            stockData.Api.가격 = stockData.Api.틱의가격[0];
 
-            o.틱매도잔[0] = o.최우선매도호가잔량;
-            o.틱매수잔[0] = o.최우선매수호가잔량;
+            stockData.Api.틱매도잔[0] = stockData.Api.최우선매도호가잔량;
+            stockData.Api.틱매수잔[0] = stockData.Api.최우선매도호가잔량;
 
             // 프누억
             if (_stockName.Contains("KODEX"))

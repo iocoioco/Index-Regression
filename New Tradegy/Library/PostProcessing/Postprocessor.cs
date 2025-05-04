@@ -92,7 +92,7 @@ namespace New_Tradegy.Library.Postprocessing
         // done by Sensei
         public static void post_test()
         {
-            foreach (var stock in StockRepository.Instance.AllDatas)
+            foreach (var stock in g.StockRepository.AllDatas)
             {
                 post(stock);
             }
@@ -198,7 +198,7 @@ namespace New_Tradegy.Library.Postprocessing
         {
             int index;
 
-            var repo = StockRepository.Instance;
+            var repo = g.StockRepository;
             var kospi_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[0]);
             var kospi_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[1]);
             var kosdaq_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[2]);
@@ -233,7 +233,7 @@ namespace New_Tradegy.Library.Postprocessing
         // done by Sensei
         public static void post_코스닥_코스피_프외_순매수_배차_합산()
         {
-            var repo = StockRepository.Instance;
+            var repo = g.StockRepository;
 
             MajorIndex.Instance.KospiSellPower = 0;
             MajorIndex.Instance.KospiBuyPower = 0;
@@ -510,7 +510,7 @@ namespace New_Tradegy.Library.Postprocessing
                         selected = i - 1;
                         break;
                     }
-                    double elapsed = mc.total_Seconds(api.틱의시간[i], api.틱의시간[0]);
+                    double elapsed = Utils.TimeUtils.total_Seconds(api.틱의시간[i], api.틱의시간[0]);
                     if (elapsed > g.postInterval)
                     {
                         selected = i;

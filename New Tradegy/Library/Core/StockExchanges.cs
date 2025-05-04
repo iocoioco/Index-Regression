@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using New_Tradegy.Library;
 using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Listeners;
+using New_Tradegy.Library.Deals;
 
 namespace New_Tradegy.Library.Core
 {
@@ -50,7 +52,7 @@ namespace New_Tradegy.Library.Core
             {
                 if (order.Stock == stock && order.Price == sellHogaPrice)
                 {
-                    var data = StockRepository.Instance.TryGetStockOrNull(stock);
+                    var data = g.StockRepository.TryGetStockOrNull(stock);
                     if (data == null)
                         return;
 
@@ -69,7 +71,7 @@ namespace New_Tradegy.Library.Core
             {
                 if (order.Stock == stock && order.Price == buyHogaPrice)
                 {
-                    var data = StockRepository.Instance.TryGetStockOrNull(stock);
+                    var data = g.StockRepository.TryGetStockOrNull(stock);
                     if (data == null)
                         return;
 

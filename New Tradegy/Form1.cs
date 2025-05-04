@@ -259,7 +259,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             if (e.KeyChar == (char)Keys.Enter)
             {
                 string searchText = searchTextBox.Text;
-                if (wk.isStock(searchText) && StockRepository.Instance.TryGetStockOrNull(searchText) != null)
+                if (wk.isStock(searchText) && g.StockRepository.TryGetStockOrNull(searchText) != null)
                 {
                     g.StockManager.InterestedOnlyList.Add(searchText);
                     mm.ManageChart1(); // not used

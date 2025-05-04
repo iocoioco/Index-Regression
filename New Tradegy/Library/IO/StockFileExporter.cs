@@ -46,7 +46,7 @@ namespace New_Tradegy.Library.IO
             string directory = $@"C:\병신\분\{g.date}";
             Directory.CreateDirectory(directory);
 
-            foreach (var t in StockRepository.Instance.AllDatas)
+            foreach (var t in g.StockRepository.AllDatas)
             {
                 string file = Path.Combine(directory, t.Stock + ".txt");
 
@@ -59,14 +59,14 @@ namespace New_Tradegy.Library.IO
 
                 for (int j = 0; j <= lastRow; j++)
                 {
-                    if (t.API.x[j, 0] == 0 || t.API.x[j, 0] > 152100)
+                    if (t.Api.x[j, 0] == 0 || t.Api.x[j, 0] > 152100)
                         break;
 
                     for (int k = 0; k <= lastColumn; k++)
                     {
                         if (k > 0)
                             sb.Append('\t');
-                        sb.Append(t.API.x[j, k]);
+                        sb.Append(t.Api.x[j, k]);
                     }
 
                     sb.AppendLine();

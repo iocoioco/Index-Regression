@@ -390,76 +390,20 @@ namespace New_Tradegy.Library
             data.Statistics.시총 = 시총값 / 100.0;
 
             // 📊 API section (전일종가 + calculated 전일거래액_천만원)
-            data.API.전일종가 = 전일종가;
-            data.API.전일거래액_천만원 = 전일거래액_천만원;
+            data.Api.전일종가 = 전일종가;
+            data.Api.전일거래액_천만원 = 전일거래액_천만원;
 
             // 📌 Set default Score
             data.Score.그순 = 1000;
 
             // 🗃️ Save to repository
-            StockRepository.Instance.AddOrUpdate(stock, data);
+            g.StockRepository.AddOrUpdate(stock, data);
 
             return true;
         }
 
 
-        public static bool gen_ogl_data_old(string stock, ConcurrentDictionary<string, double> map)
-        {
-            if (VariableLoader.read_단기과열(stock))
-                return false;
-
-            int days = 20;
-            if (!종목일중변동자료계산(stock, days, out double 일간변동평균, out double 일간변동편차,
-                out int 일평균거래액, out int 일최저거래액, out int 일최대거래액, out ulong 일평균거래량, out string 일간변동평균편차) ||
-                일최대거래액 < 30 || string.IsNullOrEmpty(일간변동평균편차))
-            {
-                return false;
-            }
-
-            var o = new g.stock_data
-            {
-                stock = stock,
-                일간변동평균 = 일간변동평균,
-                일간변동편차 = 일간변동편차,
-                일평균거래액 = 일평균거래액,
-                일최저거래액 = 일최저거래액,
-                일최대거래액 = 일최대거래액,
-                일평균거래량 = 일평균거래량,
-                일간변동평균편차 = 일간변동평균편차
-            };
-
-            var _cpstockcode = new CPUTILLib.CpStockCode();
-            o.code = _cpstockcode.NameToCode(stock);
-
-            if (o.code.Length != 7 || (o.전일종가 = VariableLoader.read_전일종가(stock)) < 1000) // 전일종가 1,000 이상 
-                return false;
-
-            o.시총 = (map.TryGetValue(stock, out var value) ? value : -1) / 100; // 시총 값 부정확 점검필요 
-            if (o.시총 == -1)
-            {
-                return false;
-            }
-
-            o.전일거래액_천만원 = VariableLoader.read_전일종가_전일거래액_천만원(stock);
-            if (o.전일거래액_천만원 == -1)
-            {
-                return false;
-            }
-                
-
-            o.시장구분 = VariableLoader.read_코스피코스닥시장구분(stock);
-            if (o.시장구분 != 'S' && o.시장구분 != 'D') // 코스피, 코스닥 아니면 통과
-            {
-                return false;
-            }
-                
-
-            o.점수.그순 = 1000; // 임의로 그룹 순서 1,000 등으로
-
-            g.ogl_data.Add(o);
-            return true;
-        }
-
+        
         public static void 일평균거래액일정액이상종목선택(List<string> tsl, int 최소거래액이상_억원)
         {
             var tuple = new List<Tuple<ulong, string>> { };

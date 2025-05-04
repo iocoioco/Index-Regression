@@ -34,5 +34,4 @@ namespace New_Tradegy.Library.Models
             Title = title;
         }
     }
-
 }

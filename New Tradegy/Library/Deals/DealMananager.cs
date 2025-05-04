@@ -229,7 +229,7 @@ namespace New_Tradegy.Library.Deals
 
         public static bool CheckPreviousLoss(string stockSymbol)
         {
-            var stock = StockRepository.Instance.TryGetStockOrNull(stockSymbol);
+            var stock = g.StockRepository.TryGetStockOrNull(stockSymbol);
             if (stock == null) return false; // Stock not found
 
             // Ensure valid purchase price exists and at least 1 share is held
@@ -278,8 +278,8 @@ namespace New_Tradegy.Library.Deals
             g.StockManager.HoldingList.Clear();
 
             // Reset all stocks' 보유량
-            var r = StockRepository.Instance;
-            foreach (var stock in r.AllDatas)
+            //var r = g.StockRepository;
+            foreach (var stock in g.StockRepository.AllDatas)
             {
                 stock.Deal.보유량 = 0;
             }
@@ -288,13 +288,13 @@ namespace New_Tradegy.Library.Deals
             {
                 string code = (string)_cptd6033.GetDataValue(0, i);
 
-                if (!r.Contains(code))
+                if (!g.StockRepository.Contains(code))
                     continue;
 
-                var stock = StockRepository.Instance.TryGetStockOrNull(code);
-                if (stock == null) continue;
-                var api = stock.Api;
-                var deal = stock.Deal;
+                var data = g.StockRepository.TryGetStockOrNull(code);
+                if (data == null) continue;
+                var api = data.Api;
+                var deal = data.Deal;
 
                 deal.보유량 = (int)_cptd6033.GetDataValue(15, i);
                 deal.장부가 = (double)_cptd6033.GetDataValue(17, i);
@@ -322,13 +322,13 @@ namespace New_Tradegy.Library.Deals
         {
             var stocksTuple = new List<Tuple<long, string>>();
 
-            var r = StockRepository.Instance;
+            var repo = g.StockRepository;
             foreach (var code in g.StockManager.HoldingList)
             {
-                if (!r.Contains(code))
+                if (!repo.Contains(code))
                     continue;
 
-                var stock = r.TryGetStockOrNull(code);
+                var stock = repo.TryGetStockOrNull(code);
                 if (stock == null) continue;
                 long holdingValue = stock.Deal.보유량 * stock.Api.현재가;
 
@@ -452,9 +452,9 @@ namespace New_Tradegy.Library.Deals
 
             var orders = OrderItemTracker.OrderMap.Values
                 .Where(o => o.stock == stock)
-                .ToList();
+                .ToList(); // ← this makes 'orders' a List<T>
 
-            if (orders.Count == 0)
+            if (orders.Count() == 0)
                 return;
 
             foreach (var data in orders)

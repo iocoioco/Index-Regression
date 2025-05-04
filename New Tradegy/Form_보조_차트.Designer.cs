@@ -52,7 +52,6 @@
             this.chart2.Size = new System.Drawing.Size(300, 300);
             this.chart2.TabIndex = 0;
             this.chart2.Text = "chart2";
-           // this.chart2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.chart2_KeyPress);
             this.chart2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart2_MouseClick);
             // 
             // dataGridView1
@@ -68,7 +67,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(240, 150);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-            this.dataGridView1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dataGridView1_KeyPress);
             // 
             // Form_보조_차트
             // 
