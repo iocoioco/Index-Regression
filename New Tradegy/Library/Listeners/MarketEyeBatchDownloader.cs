@@ -11,9 +11,9 @@ using New_Tradegy.Library.Utils;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Postprocessing;
-using New_Tradegy.Library.Postprocessing;
+using New_Tradegy.Library.Trackers;
 
-
+using New_Tradegy.Library.IO;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -21,10 +21,9 @@ namespace New_Tradegy.Library.Listeners
     {
         private static CPSYSDIBLib.MarketEye _marketeye;
         private static CPUTILLib.CpStockCode _cpstockcode;
-     
-        private static IndexRangeTracker KospiIndexRangeTrack  = new IndexRangeTracker();
-        private static IndexRangeTracker KosdaqIndexRangeTrack = new IndexRangeTracker();
-        
+
+        private static IndexRangeTracker indexRangeTracker = new IndexRangeTracker();
+
         public static async Task StartDownloaderAsync()
         {
             while (true)
@@ -51,7 +50,7 @@ namespace New_Tradegy.Library.Listeners
                 if (wk.isWorkingHour())
                 {
                     // Trigger the marketeye alarm task
-                    await mc.MarketTimeAlarmsAsync(HHmm);
+                    await SoundUtils.MarketTimeAlarmsAsync(HHmm);
 
                     // Call marketeye logic
                     await DownloadBatchAsync();
@@ -133,7 +132,12 @@ namespace New_Tradegy.Library.Listeners
             );
 
             for (int i = 0; i < codes.Length && i < selected.Count; i++)
-                codes[i] = g.StockManager.Repository.GetOrThrow(selected[i]).Code;
+            {
+                var stock = g.StockManager.Repository.TryGetStockOrNull(selected[i]);
+                if (stock == null) continue;
+                codes[i] = stock.Code;
+            }
+                
 
             _marketeye.SetInputValue(0, fields);
             _marketeye.SetInputValue(1, codes);
@@ -167,7 +171,7 @@ namespace New_Tradegy.Library.Listeners
                 string code = _marketeye.GetDataValue(0, k);
                 if (!StockRepository.Instance.Contains(code)) continue;
 
-                var data = StockRepository.Instance.GetOrThrow(code);
+                var data = StockRepository.Instance.TryGetStockOrNull(code);
                 var api = data.Api;
                 downloadList.Add(data);
 
@@ -334,18 +338,18 @@ namespace New_Tradegy.Library.Listeners
 
             if (StockRepository.Instance.Contains("KODEX 레버리지"))
             {
-                var kospi = StockRepository.Instance.GetOrThrow("KODEX 레버리지");
+                var kospi = StockRepository.Instance.TryGetStockOrNull("KODEX 레버리지");
                 int kospiIndex = kospi.Api.x[kospi.Api.nrow - 1, 1];
                 MajorIndex.Instance.KospiIndex = kospiIndex;
-                KospiIndexRangeTrack.CheckIndexAndSound(kospiIndex, "Kospi");
+                indexRangeTracker.CheckIndexAndSound(kospiIndex, "Kospi");
             }
 
             if (StockRepository.Instance.Contains("KODEX 코스닥150레버리지"))
             {
-                var kosdaq = StockRepository.Instance.GetOrThrow("KODEX 코스닥150레버리지");
+                var kosdaq = StockRepository.Instance.TryGetStockOrNull("KODEX 코스닥150레버리지");
                 int kosdaqIndex = kosdaq.Api.x[kosdaq.Api.nrow - 1, 1];
                 MajorIndex.Instance.KosdaqIndex = kosdaqIndex;
-                KosdaqIndexRangeTrack.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
+                indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
             }
 
             Posprossesor.post_코스닥_코스피_프외_순매수_배차_합산();
@@ -363,10 +367,8 @@ namespace New_Tradegy.Library.Listeners
             foreach (string line in list)
             {
                 string[] items = line.Split('\t');
-                int index = wk.return_index_of_ogldata(items[0]);
-                if (index < 0) continue;
 
-                var o = StockRepository.Instance.GetOrThrow(g.ogl_data[index].Code).Api;
+                var o = StockRepository.Instance.TryGetStockOrNull(items[0]).Api;
                 double weight = Convert.ToDouble(items[1]);
 
                 t[1] += o.가격 * weight;
@@ -389,7 +391,7 @@ namespace New_Tradegy.Library.Listeners
             int mixed_index = wk.return_index_of_ogldata(mixed_stock);
             if (mixed_index < 0) return;
 
-            var v = StockRepository.Instance.GetOrThrow(mixed_stock);
+            var v = StockRepository.Instance.TryGetStockOrNull(mixed_stock);
 
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
             int time_bef_4int = v.Api.x[v.Api.nrow - 1, 0] / 100;

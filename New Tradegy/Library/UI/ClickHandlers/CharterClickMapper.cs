@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 
 
-namespace New_Tradegy.Library.UI.ClickHandlers
+namespace New_Tradegy.Library.UI.ClickHandler
 {
         internal class ChartClickMapper
         {

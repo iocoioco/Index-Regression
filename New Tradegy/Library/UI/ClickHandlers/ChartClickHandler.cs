@@ -53,7 +53,7 @@ namespace New_Tradegy.Library.UI.ClickHandlers
                     string info = g.clickedStock + " : " + price + " X " + quantity +
                                   " = " + (price * quantity / 10000) + "만원";
 
-                    var stockData = StockRepository.Instance.GetOrThrow(g.clickedStock);
+                    var stockData = StockRepository.Instance.TryGetStockOrNull(g.clickedStock);
                     if (stockData == null) return;
 
                     info += "\n" + Utils.StringUtils.r3_display_매수_매도(stockData);
@@ -133,7 +133,7 @@ namespace New_Tradegy.Library.UI.ClickHandlers
 
         public static void HandlerClick(Chart chart, string selection, int row_id, int col_id)
         {
-            var stockData = StockRepository.Instance.GetOrThrow(g.clickedStock);
+            var stockData = StockRepository.Instance.TryGetStockOrNull(g.clickedStock);
             if (stockData == null) return;
 
             string action = "    ";

@@ -749,7 +749,7 @@ namespace New_Tradegy.Library.IO
                 if (parts.Length == 1)
                 {
                     string stockName = parts[0];
-                    currentStock = repository.GetOrThrow(stockName);  // e.g., "삼성전자"
+                    currentStock = repository.TryGetStockOrNull(stockName);  // e.g., "삼성전자"
 
                     if (currentStock == null)
                         continue;

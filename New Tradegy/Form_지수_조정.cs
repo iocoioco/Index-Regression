@@ -112,8 +112,8 @@ namespace New_Tradegy
                 }
                 g.kodex_magnifier[id, jd] *= (value / 100.0);
 
-                int index = wk.return_index_of_ogldata(g.clickedStock);
-                g.stock_data o = g.ogl_data[index];
+                //int index = wk.return_index_of_ogldata(g.clickedStock);
+                //g.stock_data o = g.ogl_data[index];
 
                 wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, g.clickedStock); // KODEX
                 wk.deleteChartAreaAnnotation(g.ChartManager.Chart2, g.clickedStock); // KODEX
@@ -123,25 +123,7 @@ namespace New_Tradegy
             }
         }
 
-        private void Form_지수_조정_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            ky.chart_keypress(e);
-        }
-
-        private void Form_지수_조정_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void Form_지수_조정_FormClosing(object sender, FormClosingEventArgs e)
-        {
-
-        }
-
-        private void Form_지수_조정_FormClosed(object sender, FormClosedEventArgs e)
-        {
-
-        }
+ 
 
 
         //SQUID size_location() 참조할 것

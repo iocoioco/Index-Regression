@@ -279,7 +279,7 @@ namespace New_Tradegy.Library.Utils
                 return;
             }
 
-            StockData o = StockRepository.Instance.GetOrThrow(stock); // or .GetOrThrow(stock)
+            StockData o = StockRepository.Instance.TryGetStockOrNull(stock); // or .TryGetStockOrNull(stock)
             if (o == null)
                 return;
 

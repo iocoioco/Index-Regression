@@ -139,7 +139,7 @@ namespace New_Tradegy.Library.Trackers
 
         static ChartArea GenralChartArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
         {
-            var data = StockRepository.Instance.GetOrThrow(stockName);
+            var data = StockRepository.Instance.TryGetStockOrNull(stockName);
             if (data.Api.nrow < 2) return null;
 
             double y_min = 100000;
@@ -326,7 +326,7 @@ namespace New_Tradegy.Library.Trackers
             int endPoint = 0;
             ChartHandler.SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
 
-            var data = StockRepository.Instance.GetOrThrow(stock);
+            var data = StockRepository.Instance.TryGetStockOrNull(stock);
             if (data == null) return;
 
             var x = data.Api.x;
@@ -427,7 +427,7 @@ namespace New_Tradegy.Library.Trackers
 
             ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
 
-            var data = StockRepository.Instance.GetOrThrow(stock);
+            var data = StockRepository.Instance.TryGetStockOrNull(stock);
             if (data == null) return;
 
             var api = data.Api;

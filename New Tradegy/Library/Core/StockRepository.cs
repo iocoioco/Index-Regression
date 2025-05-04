@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Core
@@ -48,12 +49,13 @@ namespace New_Tradegy.Library.Core
             return _stockMap.TryGetValue(stockName, out stock);
         }
 
-        public StockData GetOrThrow(string stock)
+        public StockData TryGetStockOrNull(string stock)
         {
             if (_stockMap.TryGetValue(stock, out var data))
                 return data;
 
-            throw new KeyNotFoundException($"Stock code '{stock}' not found.");
+            MessageBox.Show("Stock name not found: " + stock);
+            return null;
         }
 
         public IEnumerable<StockData> AllDatas => _stockMap.Values;

@@ -37,10 +37,7 @@
             this.ClientSize = new System.Drawing.Size(1192, 450);
             this.Name = "Form_지수_조정";
             this.Text = "Form_지수_조정";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_지수_조정_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_지수_조정_FormClosed);
             this.Load += new System.EventHandler(this.Form_지수_조정_Load);
-            this.Click += new System.EventHandler(this.Form_지수_조정_Click);
             this.ResumeLayout(false);
 
         }

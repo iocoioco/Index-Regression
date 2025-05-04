@@ -229,7 +229,7 @@ namespace New_Tradegy.Library.Deals
 
         public static bool CheckPreviousLoss(string stockSymbol)
         {
-            var stock = StockRepository.Instance.GetOrThrow(stockSymbol);
+            var stock = StockRepository.Instance.TryGetStockOrNull(stockSymbol);
             if (stock == null) return false; // Stock not found
 
             // Ensure valid purchase price exists and at least 1 share is held
@@ -291,7 +291,8 @@ namespace New_Tradegy.Library.Deals
                 if (!r.Contains(code))
                     continue;
 
-                var stock = StockRepository.Instance.GetOrThrow(code);
+                var stock = StockRepository.Instance.TryGetStockOrNull(code);
+                if (stock == null) continue;
                 var api = stock.Api;
                 var deal = stock.Deal;
 
@@ -327,7 +328,8 @@ namespace New_Tradegy.Library.Deals
                 if (!r.Contains(code))
                     continue;
 
-                var stock = r.GetOrThrow(code);
+                var stock = r.TryGetStockOrNull(code);
+                if (stock == null) continue;
                 long holdingValue = stock.Deal.보유량 * stock.Api.현재가;
 
                 stocksTuple.Add(Tuple.Create(holdingValue, code));

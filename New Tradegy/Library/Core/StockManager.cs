@@ -35,7 +35,7 @@ namespace New_Tradegy.Library.Core
 
         public void UpdateTick(string stock, double[] newTickPro)
         {
-            var data = _repository.GetOrThrow(stock);
+            var data = _repository.TryGetStockOrNull(stock);
             if (data == null) return;
 
             Array.Copy(newTickPro, data.Reflection.ProgramK, Math.Min(newTickPro.Length, data.Reflection.ProgramK.Length));
@@ -43,7 +43,7 @@ namespace New_Tradegy.Library.Core
 
         public double GetTotalScore(string stock)
         {
-            var data = _repository.GetOrThrow(stock);
+            var data = _repository.TryGetStockOrNull(stock);
             return data?.Score.총점 ?? 0.0;
         }
 

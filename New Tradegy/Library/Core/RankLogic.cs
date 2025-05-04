@@ -305,7 +305,7 @@ namespace New_Tradegy.Library.Core
                 {
                     if (count == 3) break;
 
-                    var stock = StockRepository.Instance.GetOrThrow(stockName);
+                    var stock = StockRepository.Instance.TryGetStockOrNull(stockName);
 
                     if (stock == null || stock.Api.nrow < 2 || stock.Api.nrow >= 382)
                         continue;
@@ -362,7 +362,7 @@ namespace New_Tradegy.Library.Core
             {
                 foreach (var stockName in rankedGroups[i].Stocks)
                 {
-                    var stock = repo.GetOrThrow(stockName);
+                    var stock = repo.TryGetStockOrNull(stockName);
                     if (stock != null)
                         stock.Score.그순 = i;
                 }

@@ -50,7 +50,7 @@ namespace New_Tradegy.Library.Core
             {
                 if (order.Stock == stock && order.Price == sellHogaPrice)
                 {
-                    var data = StockRepository.Instance.GetOrThrow(stock);
+                    var data = StockRepository.Instance.TryGetStockOrNull(stock);
                     if (data == null)
                         return;
 
@@ -69,7 +69,7 @@ namespace New_Tradegy.Library.Core
             {
                 if (order.Stock == stock && order.Price == buyHogaPrice)
                 {
-                    var data = StockRepository.Instance.GetOrThrow(stock);
+                    var data = StockRepository.Instance.TryGetStockOrNull(stock);
                     if (data == null)
                         return;
 

@@ -140,7 +140,7 @@ namespace New_Tradegy
                     break;
                 string stock = displayList[i];
 
-                StockData o = g.StockRepository.GetOrThrow(stock);
+                StockData o = g.StockRepository.TryGetStockOrNull(stock);
                 if (o == null)
                 {
                     continue;

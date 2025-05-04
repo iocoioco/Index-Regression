@@ -23,6 +23,7 @@ using New_Tradegy.Library.UI.KeyBindings;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.UI.ClickHandler;
 
 //using NLog;
 
@@ -83,9 +84,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-
-
             KeyBindingRegistrar.RegisterAll();
 
             g.StockRepository = StockRepository.Instance;
@@ -118,9 +116,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             ControlPanelRenderer.SetupAndAttachControlPanel(this);  // call from main form or container
 
-           
-
-
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
 
@@ -147,8 +142,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
 
             this.WindowState = FormWindowState.Maximized; // this.WindowState
-
-            
 
             g.Npts[0] = 0; //
             g.Npts[1] = g.MAX_ROW; //
@@ -192,7 +185,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
                 // updated on 20241020 0300
-                Task Task_marketeye = Task.Run(async () => await mk.task_marketeye());
+                Task Task_marketeye = Task.Run(async () => await MarketEyeBatchDownloader.StartDownloaderAsync());
 
                 // updated on 20241020 0300
                 Task task_us_indices_futures = Task.Run(async () =>
@@ -247,7 +240,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             if (e.KeyChar == (char)Keys.Enter)
             {
                 string searchText = searchTextBox.Text;
-                if (wk.isStock(searchText) && g.ogl_data.FindIndex(x => x.stock == searchText) >= 0)
+                if (wk.isStock(searchText) && StockRepository.Instance.TryGetStockOrNull(searchText) != null)
                 {
                     g.StockManager.InterestedOnlyList.Add(searchText);
                     mm.ManageChart1(); // not used
@@ -513,15 +506,15 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 if (GetRemainRQ() == 0)
                 {
-                    Utils.SoundUtils.Sound("일반", "no request");
+                    SoundUtils.Sound("일반", "no request");
                 }
                 if (GetRemainTR() == 0)
                 {
-                    Utils.SoundUtils.Sound("일반", "no trade");
+                    SoundUtils.Sound("일반", "no trade");
                 }
                 if (GetRemainSB() == 0)
                 {
-                    Utils.SoundUtils.Sound("일반", "no subscribe");
+                    SoundUtils.Sound("일반", "no subscribe");
                 }
                 Thread.Sleep(1000);
             }
@@ -595,6 +588,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             _cpsvr8091s.Subscribe();
         }
 
+        /// <summary>
+        /// not used also blocked on 20250504
+        /// </summary>
         private void _cpsvr8091s_Received()
         {
             //short 시간 = _cpsvr8091s.GetHeaderValue(0);
@@ -605,32 +601,26 @@ namespace New_Tradegy // added for test on 20241020 0300
             //long 매수매도량 = _cpsvr8091s.GetHeaderValue(5);
             //long 순매수 = _cpsvr8091s.GetHeaderValue(6);
             //char 순매수부호 = (char)_cpsvr8091s.GetHeaderValue(7);
-            string 종목 = _cpsvr8091s.GetHeaderValue(3);
-            long 외국계순매수량 = _cpsvr8091s.GetHeaderValue(8);
+            //string 종목 = _cpsvr8091s.GetHeaderValue(3);
+            //long 외국계순매수량 = _cpsvr8091s.GetHeaderValue(8);
 
-            int index = g.ogl_data.FindIndex(x => x.stock == 종목);
-            if (index < 0)
-                return;
+            //int index = g.ogl_data.FindIndex(x => x.stock == 종목);
+            //if (index < 0)
+            //    return;
 
-            g.stock_data p = g.ogl_data[index];
+            //g.stock_data p = g.ogl_data[index];
 
-            if (!g.StockManager.IndexList.Contains(종목)) // KODEX 종목 제외
-            {
-                p.x[p.nrow - 1, 5] = (int)외국계순매수량;
-                p.당일외인순매수량 = (int)외국계순매수량;
-            }
+            //if (!g.StockManager.IndexList.Contains(종목)) // KODEX 종목 제외
+            //{
+            //    p.x[p.nrow - 1, 5] = (int)외국계순매수량;
+            //    p.당일외인순매수량 = (int)외국계순매수량;
+            //}
         }
 
 
 
 
 
-        private void chart1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            ky.chart_keypress(e);
-            this.Text = g.v.KeyString;
-            //SetFocusAndReturn();
-        }
 
         private void chart1_MouseClick(object sender, MouseEventArgs e)
         {
@@ -647,7 +637,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             // g.clickedStock defined in this routine also
             // g.date set to the last date(last row and last column) in the drawn chart
 
-            g.clickedStock = cl.CoordinateMapping(chart1, g.nRow, g.nCol, g.dl, e, ref selection, ref col_id, ref row_id);
+            g.clickedStock = ChartClickMapper.CoordinateMapping(chart1, g.nRow, g.nCol, g.dl, e, ref selection, ref col_id, ref row_id);
             if (g.clickedStock == null)
             {
                 return;
@@ -763,12 +753,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
         }
 
-        private void chart1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            ky.chart1_previewkeydown(sender, e);
-            //SetFocusAndReturn();
-        }
-
+      
 
 
 

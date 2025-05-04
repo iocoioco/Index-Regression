@@ -199,10 +199,10 @@ namespace New_Tradegy.Library.Postprocessing
             int index;
 
             var repo = StockRepository.Instance;
-            var kospi_leverage = repo.GetOrThrow(g.StockManager.IndexList[0]);
-            var kospi_inverse = repo.GetOrThrow(g.StockManager.IndexList[1]);
-            var kosdaq_leverage = repo.GetOrThrow(g.StockManager.IndexList[2]);
-            var kosdaq_inverse = repo.GetOrThrow(g.StockManager.IndexList[3]);
+            var kospi_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[0]);
+            var kospi_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[1]);
+            var kosdaq_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[2]);
+            var kosdaq_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[3]);
 
             for (int i = 0; i < 382; i++)
             {
@@ -210,7 +210,7 @@ namespace New_Tradegy.Library.Postprocessing
                 foreach (var stock in g.kospi_mixed.stock)
                 {
                     if (!repo.Contains(stock)) continue;
-                    var data = repo.GetOrThrow(stock);
+                    var data = repo.TryGetStockOrNull(stock);
                     double money_factor = data.Api.전일종가 / g.억원;
                     sum += (int)((data.Api.x[i, 4] + data.Api.x[i, 5]) * money_factor);
                 }
@@ -221,7 +221,7 @@ namespace New_Tradegy.Library.Postprocessing
                 foreach (var stock in g.kosdaq_mixed.stock)
                 {
                     if (!repo.Contains(stock)) continue;
-                    var data = repo.GetOrThrow(stock);
+                    var data = repo.TryGetStockOrNull(stock);
                     double money_factor = data.Api.전일종가 / g.억원;
                     sum += (int)((data.Api.x[i, 4] + data.Api.x[i, 5]) * money_factor);
                 }
@@ -245,7 +245,7 @@ namespace New_Tradegy.Library.Postprocessing
                 string stock = g.kospi_mixed.stock[i];
                 if (!repo.Contains(stock)) continue;
 
-                var data = repo.GetOrThrow(stock);
+                var data = repo.TryGetStockOrNull(stock);
                 var api = data.Api;
                 double money_factor = api.전일종가 / g.억원;
 
@@ -266,7 +266,7 @@ namespace New_Tradegy.Library.Postprocessing
                 string stock = g.kosdaq_mixed.stock[i];
                 if (!repo.Contains(stock)) continue;
 
-                var data = repo.GetOrThrow(stock);
+                var data = repo.TryGetStockOrNull(stock);
                 var api = data.Api;
                 double money_factor = api.전일종가 / g.억원;
 
