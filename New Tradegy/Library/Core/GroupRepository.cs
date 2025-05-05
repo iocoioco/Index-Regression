@@ -115,5 +115,4 @@ namespace New_Tradegy.Library.Core
             return chunks;
         }
     }
-
 }

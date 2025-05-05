@@ -1,5 +1,7 @@
-﻿using New_Tradegy.Library.Models;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -53,10 +55,6 @@ namespace New_Tradegy.Library.Trackers
             data = OrderItemTracker.Get(key);
             return data;
         }
-
-
-
     }
-
 }
 

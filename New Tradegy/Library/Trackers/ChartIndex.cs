@@ -38,7 +38,7 @@ namespace New_Tradegy.Library.Trackers
                 }
 
                 // Generate bookbid if not already visible
-                if (g.connected && !Utils.FormUtils.DoesDataGridViewExist(FormUtils.FindFormByName("Form1"), stock))
+                if (g.connected && !Utils.FormUtils.DoesDataGridViewExist(Utils.FormUtils.FindFormByName("Form1"), stock))
                 {
                     var m = new BookBidGenerator();
                     var bookbid = m.GenerateBookBidView(stock);

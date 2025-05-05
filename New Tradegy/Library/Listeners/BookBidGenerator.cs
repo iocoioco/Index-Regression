@@ -96,8 +96,15 @@ namespace New_Tradegy.Library.Listeners
             return _dataGridView;
         }
 
-
-        // Sensei 20250420
+        /// <summary>
+        /// Open the Form_매수_매도 to confirm a deal
+        /// </summary>
+        /// <param name="isSell">True if this is a sell operation; false for buy</param>
+        /// <param name="stockName">Name of the stock</param>
+        /// <param name="Amount">Number of shares to trade</param>
+        /// <param name="price">Price per share</param>
+        /// <param name="Urgency">Urgency level (e.g., 0 = normal, 1 = urgent)</param>
+        /// <param name="str">Optional tag or label for the transaction</param>
         public void OpenOrUpdateConfirmationForm(bool isSell, string stockName, int Amount, int price, int Urgency, string str)
         {
             Form_매수_매도 f = GetOpenTradeForm(stockName);
@@ -138,7 +145,7 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         private void OnCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            g.ActiveBookBid = sender as DataGridView;
+            // g.ActiveBookBid = sender as DataGridView;
 
             if (e.Button == MouseButtons.Right)
                 return;
@@ -717,10 +724,10 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         public static int GetClickedPrice(DataGridView dgv, DataGridViewCellMouseEventArgs e)
         {
-            if (e.ColumnIndex != 0 && e.ColumnIndex != 2)
+            if (e.ColumnIndex != 0 && e.ColumnIndex != 2) // click sell or buy side
                 return 0;
 
-            if (e.RowIndex < 0 || e.RowIndex >= dgv.Rows.Count)
+            if (e.RowIndex < 0 || e.RowIndex >= dgv.Rows.Count) // in the range of bookbid row
                 return 0;
 
             var cellValue = dgv.Rows[e.RowIndex].Cells[1].Value?.ToString();
@@ -731,22 +738,7 @@ namespace New_Tradegy.Library.Listeners
             return StringUtils.ExtractIntFromString(cellValue);
         }
 
-        // Sensei 20250420
-        public static int GetTopBookPrice(bool isBuy)
-        {
-            var dgv = g.ActiveBookBid;
-            if (dgv == null || dgv.Rows.Count < 6)
-                return 0;
-
-            int rowIndex = isBuy ? 5 : 0;
-
-            var value = dgv.Rows[rowIndex].Cells[1].Value?.ToString();
-
-            if (int.TryParse(value?.Replace(",", ""), out int price))
-                return price;
-
-            return StringUtils.ExtractIntFromString(value);
-        }
+       
 
         #endregion
     }

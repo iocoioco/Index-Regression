@@ -12,6 +12,7 @@ using System.Linq;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Deals;
 namespace New_Tradegy.Library.Listeners
 {
     internal class OrderItemCybosListener

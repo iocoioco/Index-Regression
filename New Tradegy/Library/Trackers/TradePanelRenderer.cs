@@ -6,6 +6,7 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
 using System.Linq;
+using New_Tradegy.Library.Deals;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -121,7 +122,7 @@ namespace New_Tradegy.Library.Trackers
             g.매매.dgv = dgv;
             g.매매.dtb = dtb;
 
-            g.매매.Renderer = new TradePanelRenderer(dgv, dtb);
+            g.매매.TradeRenderer = new TradePanelRenderer(dgv, dtb);
     
 
            
@@ -137,7 +138,7 @@ namespace New_Tradegy.Library.Trackers
             if (e.Button == MouseButtons.Right) return;
 
             string stock = g.매매.dgv.Rows[e.RowIndex].Cells[0].Value.ToString();
-            if (e.ColumnIndex == 1 && g.connected && e.RowIndex < OrderItemTracker.OrderMap.Count)
+            if (e.ColumnIndex == 1 && g.connected && e.RowIndex < OrderItemTracker.OrderMap.Count())
             {
                 DealManager.DealCancelRowIndex(e.RowIndex);
                 Utils.SoundUtils.Sound("Keys", "cancel");

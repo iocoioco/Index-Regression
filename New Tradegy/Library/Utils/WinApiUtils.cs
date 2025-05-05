@@ -40,8 +40,5 @@ namespace New_Tradegy.Library.Utils
         {
             return form.ContainsFocus || Form.ActiveForm == form;
         }
-
-       
-
     }
 }

@@ -19,7 +19,7 @@ namespace New_Tradegy.Library
 
 
 
-        public static DataGridView ActiveBookBid;
+        //public static DataGridView ActiveBookBid;
        
         public static ChartGeneral ChartGeneral;
         public static ChartManager ChartManager;

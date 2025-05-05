@@ -34,9 +34,9 @@ using New_Tradegy.Library.Core;
  * 
  * 양쪽 지수 프돈 지속 증가 또는 큰 양전
 */
-namespace New_Tradegy.Library.Postprocessing
+namespace New_Tradegy.Library.PostProcessing
 {
-    public class Posprossesor
+    public class PostProcessor
     {
         public static void ManageChart1Invoke()
         {

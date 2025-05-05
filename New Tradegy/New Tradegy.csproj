@@ -175,7 +175,7 @@
     <Compile Include="Library\Models\OrderItem.cs" />
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
-    <Compile Include="Library\PostProcessing\Postprocessor.cs" />
+    <Compile Include="Library\PostProcessing\PostProcessing.cs" />
     <Compile Include="Library\Trackers\ChartGeneral.cs" />
     <Compile Include="Library\Trackers\ChartRenderer.cs" />
     <Compile Include="Library\Trackers\ControlPanelRenderer.cs" />

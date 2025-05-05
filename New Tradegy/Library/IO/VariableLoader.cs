@@ -1,6 +1,6 @@
 ﻿using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Postprocessing;
+
 using New_Tradegy.Library.Utils;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using New_Tradegy.Library.PostProcessing;
 using System.Windows.Forms;
 
 
@@ -267,13 +267,13 @@ namespace New_Tradegy.Library.IO
                 }
 
                 for (int j = 0; j < o.Api.nrow; j++)
-                    Posprossesor.PostPassing(o, j, false);
+                    PostProcessor.PostPassing(o, j, false);
             }
 
             var leverage = g.StockManager.Repository.TryGetStockOrNull("KODEX 레버리지");
             if (leverage != null && leverage.Api.x[0, 3] > 1000)
             {
-                Posprossesor.post_코스닥_코스피_프외_순매수_배차_합산_382();
+                PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
             }
         }
 

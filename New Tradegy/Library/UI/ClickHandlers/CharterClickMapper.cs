@@ -8,40 +8,40 @@ using System.Windows.Forms;
 
 
 
-namespace New_Tradegy.Library.UI.ClickHandler
+namespace New_Tradegy.Library.UI.ChartClickHandlers
 {
-        internal class ChartClickMapper
+    internal class ChartClickMapper
+    {
+        private static CPUTILLib.CpCybos _cpcybos;
+
+        public static string GetClickedStockFromChart(Chart chart, int rows, int columns, List<string> displayList, MouseEventArgs e, ref string selection, ref int cellX, ref int cellY)
         {
-            private static CPUTILLib.CpCybos _cpcybos;
+            double width = chart.Bounds.Width;
+            double height = chart.Bounds.Height;
 
-            public static string GetClickedStockFromChart(Chart chart, int rows, int columns, List<string> displayList, MouseEventArgs e, ref string selection, ref int cellX, ref int cellY)
-            {
-                double width = chart.Bounds.Width;
-                double height = chart.Bounds.Height;
-
-                double normX = (e.X / width) * 100.0;
-                double normY = (e.Y / height) * 100.0;
+            double normX = (e.X / width) * 100.0;
+            double normY = (e.Y / height) * 100.0;
 
             normX = Math.Max(0, Math.Min(100, normX));
             normY = Math.Max(0, Math.Min(100, normY));
 
 
             double cellWidth = 100.0 / columns;
-                cellX = (int)(normX / cellWidth);
+            cellX = (int)(normX / cellWidth);
 
-                double cellHeight = 100.0 / rows;
-                if (chart.Name == "chart1" && cellX == 0)
-                    cellHeight = 100.0 / 2.0;
+            double cellHeight = 100.0 / rows;
+            if (chart.Name == "chart1" && cellX == 0)
+                cellHeight = 100.0 / 2.0;
 
-                cellY = (int)(normY / cellHeight);
+            cellY = (int)(normY / cellHeight);
 
-                cellX = Math.Min(cellX, columns - 1);
-                cellY = Math.Min(cellY, rows - 1);
+            cellX = Math.Min(cellX, columns - 1);
+            cellY = Math.Min(cellY, rows - 1);
 
-                double percentX = (normX % cellWidth) / cellWidth * 100.0;
-                double percentY = (normY % cellHeight) / cellHeight * 100.0;
+            double percentX = (normX % cellWidth) / cellWidth * 100.0;
+            double percentY = (normY % cellHeight) / cellHeight * 100.0;
 
-                selection = e.Button == MouseButtons.Left ? "l" : "r";
+            selection = e.Button == MouseButtons.Left ? "l" : "r";
 
             int section = 9;
 
@@ -74,53 +74,31 @@ namespace New_Tradegy.Library.UI.ClickHandler
 
             selection += section.ToString();
 
-                string clickedStock = null;
-                if (chart.Name == "chart1")
+            string clickedStock = null;
+            if (chart.Name == "chart1")
+            {
+                if (g.q == "h&s") return g.clickedStock;
+                if (cellX == 0)
+                    clickedStock = cellY == 0 ? g.StockManager.IndexList[0] : g.StockManager.IndexList[2];
+                else if (cellX >= 2)
                 {
-                    if (g.q == "h&s") return g.clickedStock;
-                    if (cellX == 0)
-                        clickedStock = cellY == 0 ? g.StockManager.IndexList[0] : g.StockManager.IndexList[2];
-                    else if (cellX >= 2)
-                    {
-                        int seq = (cellX - 2) * rows + cellY;
-                        if (seq < displayList.Count)
-                            clickedStock = displayList[seq];
-                    }
-                }
-                else
-                {
-                    if (g.q == "h&s") return g.clickedStock;
-                    int seq = rows * cellX + cellY;
+                    int seq = (cellX - 2) * rows + cellY;
                     if (seq < displayList.Count)
                         clickedStock = displayList[seq];
                 }
-
-                return clickedStock;
             }
-
-            public static Form GetActiveForm()
+            else
             {
-                var active = Form.ActiveForm;
-                if (active != null) return active;
-
-                foreach (Form f in Application.OpenForms)
-                {
-                    if (f.IsMdiContainer && f.ActiveMdiChild != null)
-                        return f.ActiveMdiChild;
-                }
-                return null;
+                if (g.q == "h&s") return g.clickedStock;
+                int seq = rows * cellX + cellY;
+                if (seq < displayList.Count)
+                    clickedStock = displayList[seq];
             }
 
-            private static int RetryGetPrice(string stock, int maxTries, int delayMs)
-            {
-                for (int i = 0; i < maxTries; i++)
-                {
-                    int price = hg.HogaGetValue(stock, -1, 1);
-                    if (price > 0) return price;
-                    System.Threading.Thread.Sleep(delayMs);
-                }
-                return -1;
-            }
+            return clickedStock;
+        }
+
+       
 
         public static string CoordinateMapping(Chart chart, int nRow, int nCol, List<string> displayList, MouseEventArgs e, ref string selection, ref int cellX, ref int cellY)
         {

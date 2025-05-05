@@ -23,8 +23,7 @@ using New_Tradegy.Library.UI.KeyBindings;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.Deals;
-using New_Tradegy.Library.UI.ClickHandler;
-using New_Tradegy.Library.UI.ClickHandlers;
+using New_Tradegy.Library.UI.ChartClickHandlers;
 
 
 //using NLog;
@@ -34,36 +33,24 @@ using New_Tradegy.Library.UI.ClickHandlers;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
+    
     public partial class Form1 : Form
     {
-    
-    
-        // private Point mousePosition;
-
-        // private static CPUTILLib.CpStockCode _cpstockcode;
-
         private static CPUTILLib.CpCybos _cpcybos;
-
-        //static DSCBO1Lib.StockMst2 _stockmst2;
         private static CPSYSDIBLib.CpSvrNew7222 _cpsvrnew7222;
-        // private static CPSYSDIBLib.CpSvrNew7221S _cpsvrnew7221s;
-        // private static DSCBO1Lib.CpFore8311 _cpfore8311;
         private DSCBO1Lib.CpSvr8091S _cpsvr8091s;
-        private DataTable dt = new DataTable();
-
+     
         private System.Timers.Timer _timerConnection;
         private int _timerCount;
 
         private static TextBox searchTextBox;
 
         private PingAndSpeedMonitor networkMonitor;
-
-
-
-
+        public static Form1 Instance { get; private set; }
         public Form1()
         {
             InitializeComponent();
+            Instance = this;
 
             string path = @"C:\병신\temp.txt";
 
@@ -664,11 +651,11 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             if (Control.ModifierKeys == Keys.Control)
             {
-                ClickHandler.HandleControlClick(chart1, selection, row_id, col_id);
+                ChartClickHandler.HandleControlClick(chart1, selection, row_id, col_id);
             }
             else
             {
-                ClickHandler.HandleClick(chart1, selection, row_id, col_id);
+                ChartClickHandler.HandleClick(chart1, selection, row_id, col_id);
             }
 
             //SetFocusAndReturn();

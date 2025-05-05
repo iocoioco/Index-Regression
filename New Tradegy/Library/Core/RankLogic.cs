@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Postprocessing;
+using New_Tradegy.Library.PostProcessing;
 
 namespace New_Tradegy.Library.Core
 {
@@ -118,7 +116,7 @@ namespace New_Tradegy.Library.Core
             {
                 foreach (var stock in repo.AllDatas)
                 {
-                    Posprossesor.post(stock); // ensure Post values are updated
+                    PostProcessor.post(stock); // ensure Post values are updated
 
                     int nrow = stock.Api.nrow;
                     if (!EvalInclusion(stock) || nrow < 2)

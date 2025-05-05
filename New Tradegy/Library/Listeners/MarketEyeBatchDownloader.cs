@@ -1,19 +1,12 @@
-﻿using CPSYSDIBLib;
-using New_Tradegy.Library;
+﻿
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using New_Tradegy.Library.Utils;
 using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Core;
-using New_Tradegy.Library.Postprocessing;
 using New_Tradegy.Library.Trackers;
-
 using New_Tradegy.Library.IO;
+using New_Tradegy.Library.PostProcessing;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -334,7 +327,8 @@ namespace New_Tradegy.Library.Listeners
                 api.AppendMinuteIfNeeded(append);
             }
 
-            Posprossesor.post_real(downloadList);
+  
+            PostProcessor.post_real(downloadList);
 
             if (g.StockRepository.Contains("KODEX 레버리지"))
             {
@@ -352,7 +346,7 @@ namespace New_Tradegy.Library.Listeners
                 indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
             }
 
-            Posprossesor.post_코스닥_코스피_프외_순매수_배차_합산();
+            PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산();
             g.MarketeyeCount++;
         }
 

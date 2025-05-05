@@ -5,45 +5,43 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.Listeners;
+using New_Tradegy.Library.PostProcessing;
 
 
-namespace New_Tradegy.Library.UI.ClickHandlers
+namespace New_Tradegy.Library.UI.ChartClickHandlers
 {
-    internal class ClickHandler
+    internal class ChartClickHandler
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
-        private static int TryGetPrice(string stockCode, int maxAttempts, int delayMs)
+        private static int GetPriceFromGivenStock(string stockName)
         {
-            int price = 0;
-            int attempts = 0;
+            var dgv = Utils.FormUtils.FindDataGridViewByName(Form1.Instance, stockName);
 
-            while (attempts < maxAttempts)
-            {
-                price = hg.HogaGetValue(stockCode, -1, 1); // -1: 매도1호가, 1: column
-                if (price > 0) return price;
-                attempts++;
-                System.Threading.Thread.Sleep(delayMs);
-            }
-            return -1;
+            var cellValue = dgv.Rows[5].Cells[1].Value?.ToString();
+
+            if (int.TryParse(cellValue?.Replace(",", ""), out int price))
+                return price;
+            else
+                return 1;
         }
-
-       
 
         public static void HandleControlClick(Chart chart, string regionKey, int row, int col)
         {
             string postEvalFlags = "    ";
             switch (regionKey)
             {
-                case "l1":
+                case "l1": // buy at market price
                     if (!g.StockManager.HoldingList.Contains(g.clickedStock) && !g.StockManager.InterestedWithBidList.Contains(g.clickedStock))
                     {
                         g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
                     mm.ManageChart1();
 
-                    int price = TryGetPrice(g.clickedStock, 5, 100);
+                    int price = GetPriceFromGivenStock(g.clickedStock);
                     if (price < 0) return;
 
                     int quantity = g.일회거래액 * 10000 / price;
@@ -61,8 +59,9 @@ namespace New_Tradegy.Library.UI.ClickHandlers
 
                     if (DealManager.CheckPreviousLoss(g.clickedStock)) return;
 
-                    var confirmationDialog = new jp();
-                    confirmationDialog.OpenOrUpdateConfirmationForm(false, g.clickedStock, quantity, price, 100, info);
+                    var confirmationDialog = new BookBidGenerator();
+                    bool isSell = false;
+                    confirmationDialog.OpenOrUpdateConfirmationForm(isSell, g.clickedStock, quantity, price, 100, info);
 
                     DealManager.DealExec("매수", g.clickedStock, quantity, price, "03");
                     break;
@@ -119,9 +118,9 @@ namespace New_Tradegy.Library.UI.ClickHandlers
                     mm.ManageChart2();
             }
             if (postEvalFlags[1] != ' ')
-                ps.post_test();
+                PostProcessor.post_test();
             if (postEvalFlags[2] != ' ')
-                ev.eval_stock();
+                RankLogic.EvalStock();
             if (postEvalFlags[3] != ' ')
             {
                 if (postEvalFlags[3] == 'm' || postEvalFlags[3] == 'B')
@@ -141,7 +140,7 @@ namespace New_Tradegy.Library.UI.ClickHandlers
             switch (selection)
             {
                 case "l1":
-                    stockData.ShrinkDraw = !stockData.ShrinkDraw;
+                    stockData.Misc.ShrinkDraw = !stockData.Misc.ShrinkDraw;
                     action = "B  B";
                     break;
 
