@@ -313,14 +313,9 @@ namespace New_Tradegy.Library.IO
                 wk.gen_ogl_data(stock, 시총Map);
             }
 
-            // 통계 숫자 1200여 개 .ogl_data 숫자 1581 MODI
-
-
-
             VariableLoader.read_통계();
 
             VariableLoader.read_절친();
-
 
             var sortedList = g.StockRepository
                 .AllDatas
@@ -333,7 +328,6 @@ namespace New_Tradegy.Library.IO
             {
                 g.sl.Add(stock.Stock); // `Stock` is the name or code property
             }
-
 
             VariableLoader.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 

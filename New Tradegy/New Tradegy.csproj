@@ -183,7 +183,6 @@
     <Compile Include="Library\Trackers\ChartIndex.cs" />
     <Compile Include="Library\Trackers\OrderItemTracker.cs" />
     <Compile Include="Library\temp_program_loss.cs" />
-    <Compile Include="Library\test.cs" />
     <Compile Include="Library\glbl.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Trackers\TradeLogger.cs" />

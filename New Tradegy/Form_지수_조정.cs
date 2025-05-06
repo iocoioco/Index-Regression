@@ -60,27 +60,9 @@ namespace New_Tradegy
                 hScrollBar.Scroll += HScrollBar_Scroll;
                 //int a = hScrollBar.InnerScrollBar.Width;
                 this.Controls.Add(hScrollBar);
-                //this.KeyDown += new KeyEventHandler(Form_지수_조정_Keydown);
-                this.KeyPress += new KeyPressEventHandler(지수_조정_KeyPress);
             }
             this.TopMost = true;
         }
-
-        private void Form_지수_조정_Keydown(object sender, KeyEventArgs e)
-        {
-
-        }
-
-        private void 지수_조정_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Escape)
-            {
-                this.Close();
-                return;
-            }
-            ky.chart_keypress(e);
-        }
-
 
         private void HScrollBar_Scroll(object sender, ScrollEventArgs e)
         {

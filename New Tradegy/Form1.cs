@@ -1,29 +1,24 @@
 ﻿using CPSYSDIBLib;
 using New_Tradegy.Library;
+using New_Tradegy.Library.Core;
+using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.IO;
+using New_Tradegy.Library.Listeners;
+using New_Tradegy.Library.Models;
+using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.UI.ChartClickHandlers;
+using New_Tradegy.Library.UI.KeyBindings;
+using New_Tradegy.Library.Utils;
 //using New_Tradegy.Librarygit;
 using System;
-
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Trackers;
-using New_Tradegy.Library.Core;
-using System.Text;
-
-using New_Tradegy.Library.Utils;
-using System.Windows.Forms.DataVisualization.Charting;
-using New_Tradegy.Library.UI.KeyBindings;
-using New_Tradegy.Library.IO;
-using New_Tradegy.Library.Listeners;
-using New_Tradegy.Library.Deals;
-using New_Tradegy.Library.UI.ChartClickHandlers;
 
 
 //using NLog;
@@ -33,13 +28,13 @@ using New_Tradegy.Library.UI.ChartClickHandlers;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
-    
+
     public partial class Form1 : Form
     {
         private static CPUTILLib.CpCybos _cpcybos;
         private static CPSYSDIBLib.CpSvrNew7222 _cpsvrnew7222;
         private DSCBO1Lib.CpSvr8091S _cpsvr8091s;
-     
+
         private System.Timers.Timer _timerConnection;
         private int _timerCount;
 
@@ -70,7 +65,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void StartNetworkMonitor()
         {
-            
+
             networkMonitor = new PingAndSpeedMonitor(
             host: "daishin.co.kr",
             logFilePath: "@\"C:\\병신\\ping_log.txt",
@@ -82,7 +77,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             networkMonitor.Start();
         }
 
-        
+
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -170,7 +165,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             VariableLoader.read_or_set_stocks(); // duration : 0.36 seconds
 
-            
+
             ControlPanelRenderer.SetupAndAttachControlPanel(this);
             TradePanelRenderer.SetupAndAttachTradePanel(this);
             GroupPanelRenderer.SetupAndAttachGroupPanel(this);
@@ -178,7 +173,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             this.Text = g.v.KeyString; // 시초에는 총점 
 
             Form Form_보조_차트 = new Form_보조_차트();
-            
+
             Form_보조_차트.Show(); // second chart
 
             if (!g.test) // for market trading
@@ -212,7 +207,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
             VariableLoader.read_파일관심종목(); // duration 0.000 seconds
             g.ChartGeneral.UpdateLayoutIfChanged(); // all new, Form_1 start
-          
+
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());
             SoundUtils.Sound("일반", "to jsb");
@@ -221,48 +216,9 @@ namespace New_Tradegy // added for test on 20241020 0300
         }
 
 
-        //private void AddSearchTextBox()
-        //{
-        //    // Create a new TextBox instance
-        //    searchTextBox = new TextBox(); // Assign to the class-level field
+       
 
-        //    // Set properties of the TextBox
-        //    searchTextBox.Location = new Point(0, 0); // Set the location on the form
-        //    searchTextBox.Size = new Size(150, 20); // Set the size of the TextBox
-        //    searchTextBox.Name = "searchTextBox"; // Set the name of the TextBox
-
-        //    // Optionally, add event handlers for the TextBox
-        //    searchTextBox.KeyPress += new KeyPressEventHandler(SearchTextBox_KeyPress);
-
-        //    // Add the TextBox to the form's Controls collection
-        //    g.ChartManager.Chart1.Controls.Add(searchTextBox);
-        //    searchTextBox.Text = "";
-        //}
-
-
-        // not used
-        private static void SearchTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                string searchText = searchTextBox.Text;
-                if (wk.isStock(searchText) && g.StockRepository.TryGetStockOrNull(searchText) != null)
-                {
-                    g.StockManager.InterestedOnlyList.Add(searchText);
-                    mm.ManageChart1(); // not used
-                }
-                searchTextBox.Text = "";
-                //MessageBox.Show($"Entered text: {searchText}");
-                //Form activeForm = Form.ActiveForm;
-                //if (activeForm != null)
-                //{
-                //    activeForm.Controls.Remove(searchTextBox);
-                //}
-                //searchTextBox.Dispose();
-                //searchTextBox = null;
-            }
-        }
-
+       
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (KeyBindingManager.TryHandle(keyData, this))
@@ -584,7 +540,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void subscribe_8091S()
         {
-            
+
             _cpsvr8091s = new DSCBO1Lib.CpSvr8091S();
             _cpsvr8091s.Received += new DSCBO1Lib._IDibEvents_ReceivedEventHandler(_cpsvr8091s_Received);
 
@@ -631,8 +587,8 @@ namespace New_Tradegy // added for test on 20241020 0300
         private void chart1_MouseClick(object sender, MouseEventArgs e)
         {
             string selection = "";
-     
-        
+
+
 
             int row_id = 0, col_id = 0;
             //double row_percentage_below_xlabel_line = 0.0;
@@ -759,7 +715,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
         }
 
-      
+
 
 
 

@@ -2,27 +2,24 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-
 using System.Collections.Concurrent;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.IO;
 
 namespace New_Tradegy.Library
 {
     internal class wk
     {
         static CPUTILLib.CpStockCode _cpstockcode;
-        
 
         public static void deleteChartAreaAnnotation(Chart chartName, string stockName)
         {
@@ -61,26 +58,6 @@ namespace New_Tradegy.Library
 
         }
 
-        // not used
-        public static bool Form_exist(string form_name)
-        {
-            bool form_exist = false;
-
-            FormCollection fc = Application.OpenForms;
-
-            foreach (Form frm in fc)
-            {
-                //iterate through
-                if (frm.Name == form_name)
-                {
-                    form_exist = true;
-                }
-            }
-            return form_exist;
-        }
-
-
-
         public static void date_backwards_forwards(string backwards_or_forwards)
         {
             if (backwards_or_forwards == "backwards")
@@ -96,19 +73,6 @@ namespace New_Tradegy.Library
                 }
 
                 Utils.SoundUtils.Sound("time", "date backwards");
-
-
-                //VariableLoader.gen_ogldata_oGLdata(); // 업종 & 상관 : 전일 거래액 순서로
-                //VariableLoader.read_절친();
-                //VariableLoader.read_or_set_stocks(); // Form1_Load
-
-                //g.oGL_data.Clear();
-                // inside g.sl.Clear included and reset to the number of stocks in return_date,
-                //VariableLoader.read_all_stocks_for_given_date(g.sl);
-
-                //VariableLoader.gen_ogldata_oGLdata();
-
-
             }
 
             else
@@ -124,72 +88,17 @@ namespace New_Tradegy.Library
                 }
 
                 Utils.SoundUtils.Sound("time", "date forwards");
-
-
-                //g.ogl_data.Clear();
-
-                //if (g.q.Contains("&s"))
-                //{
-                //    g.oGL_data.Clear();
-                //    // inside g.sl.Clear included and reset to the number of stocks in return_date,
-                //    VariableLoader.read_all_stocks_for_given_date(g.sl);
-                //    VariableLoader.gen_ogldata_oGLdata();
-
-                //    g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
-                //}
-                //else // g.q.Contains("&g")
-                //{
-                //    // VariableLoader.read_dl_stocks_only_for_given_date(g.dl); // inside g.sl.Clear included
-                //    foreach (var stock in g.dl)
-                //    {
-                //        wk.gen_ogl_data(stock);
-                //    }
-                //    VariableLoader.read_통계();
-                //}
-
-
             }
             VariableLoader.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
-
+            
             // MOD info date modification
             int month_1 = g.date % 10000 / 100;
             int day_1 = g.date % 10000 % 100;
             g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
-            ev.eval_stock(); // date backwards forwards
+            RankLogic.EvalStock(); // date backwards forwards
             mm.ManageChart1(); // date_backwards_forwards
             mm.ManageChart2(); // date_backwards_forwards
         }
-
-
-
-        //    public bool IsWorkingDay() by ChatGpt
-        //    {
-        //        DateTime now = DateTime.Now;
-
-        //        if (g.date != datenow)
-        //            return false;
-
-        //        // Check if it's a weekday (Monday to Friday)
-        //        if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
-        //        {
-        //            return false;
-        //        }
-
-        //        // Define working hours
-        //        TimeSpan startWorkingHour = new TimeSpan(9, 0, 0);  // 09:00
-        //        TimeSpan endWorkingHour = new TimeSpan(15, 30, 0);  // 15:30
-
-        //        // Check if current time is within working hours
-        //        if (now.TimeOfDay >= startWorkingHour && now.TimeOfDay <= endWorkingHour)
-        //        {
-        //            return true;
-        //        }
-
-        //        return false;
-        //    }
-        //}
-
-
 
         public static bool isWorkingHour()
         {
@@ -227,93 +136,6 @@ namespace New_Tradegy.Library
                 return false;
         }
 
-        
-
-        // not used
-        public static void calculate_cyan_magenta_in_stock()
-        {
-            for (int i = 0; i < g.ogl_data.Count; i++)
-            //for (int i = 0; i < 30; i++)
-            {
-                int[,] x = new int[400, 12];
-                int[,] d = new int[400, 2];
-
-                int nrow = VariableLoader.read_Stock_Minute(g.date, g.ogl_data[i].stock, x);
-                if (nrow <= 1)
-                    continue;
-
-                int[,] a = new int[400, 2];
-                a[1, 0] = 1;
-                a[1, 1] = 1;
-
-                for (int k = 0; k < 2; k++)
-                {
-                    for (int j = 2; j < nrow; j++)
-                    {
-                        int diff_price = x[j, 1] - x[j - 1, 1];
-                        int diff_amount_or_intensity = x[j, k + 2] - x[j - 1, k + 2];
-                        if (j == 1) // intensity multiplied by g.HUNDRED to make integer with accuracy
-                        {
-                            diff_amount_or_intensity = (int)(diff_amount_or_intensity / g.HUNDRED);
-                        }
-                        if (diff_amount_or_intensity > 0)
-                        {
-                            d[j, k] = 1;
-                            a[j, k] = a[j - 1, k] + 1;
-                        }
-                        else
-                        {
-                            a[j, k] = 0;
-                        }
-                    }
-                }
-            }
-        }
-
-
-        // not used
-        public static double convert_time_to_6_digit_integer(string t)
-        {
-            double value;
-            string[] time = t.Split(':');
-
-            value = Convert.ToInt32(time[0]) * 10000.0 +
-                        Convert.ToInt32(time[1]) * 100.0 * 100.0 / 60.0 +
-                        Convert.ToInt32(time[2]) * 100.0 / 60.0;
-
-            return value;
-        }
-
-        //public static string return_Group_ranking(string stock)
-        //{
-        //    foreach (var t in g.Group_ranking)
-        //    {
-        //        if (t == null || t.종목들 == null)
-        //            return "X";
-
-        //        if (t.종목들.Contains(stock))
-        //        {
-        //            return t.랭킹.ToString();
-        //        }
-        //    }
-        //    return "X";
-        //}
-
-        //public static string return_Group_ranking_통과종목수(string stock)
-        //{
-        //    foreach (var t in g.Group_ranking)
-        //    {
-        //        if (t == null || t.종목들 == null)
-        //            return "X";
-
-        //        if (t.종목들.Contains(stock))
-        //        {
-        //            return t.통과종목수.ToString();
-        //        }
-        //    }
-        //    return "X";
-        //}
-
         public static int return_index_of_ogldata(string stock)
         {
             int index = -1;
@@ -327,20 +149,6 @@ namespace New_Tradegy.Library
 
 
             return index;
-        }
-
-
-        // not used
-        public static string return_dgv_stock(DataGridView dgv)
-        {
-            string dgv_stock = "";
-            if (dgv.Rows[11].Cells[0].Value != null)
-            {
-                string a = dgv.Rows[11].Cells[0].Value.ToString(); // dgv에 표시된 주식
-                string b = a.Replace("(", "");
-                dgv_stock = b.Replace(")", "");
-            }
-            return dgv_stock;
         }
 
         public static bool gen_ogl_data(string stock, ConcurrentDictionary<string, double> map)
@@ -401,7 +209,6 @@ namespace New_Tradegy.Library
 
             return true;
         }
-
 
         
         public static void 일평균거래액일정액이상종목선택(List<string> tsl, int 최소거래액이상_억원)
@@ -536,8 +343,6 @@ namespace New_Tradegy.Library
                 gl.Add(item.Item2);
         }
 
-
-
         public static void 시총순서(List<string> gl)
         {
             var 종목 = new List<Tuple<double, string>> { };
@@ -557,55 +362,6 @@ namespace New_Tradegy.Library
 
             foreach (var item in 종목)
                 gl.Add(item.Item2);
-        }
-
-        public static List<string> 코피순서(List<string> gl)
-        {
-            List<string> list = new List<string>();
-
-            var 종목 = new List<Tuple<double, string>> { };
-
-            foreach (var stock in gl)
-            {
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-                if (g.ogl_data[index].시장구분 != 'S')
-                    continue;
-
-                종목.Add(Tuple.Create(g.ogl_data[index].시총, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            foreach (var item in 종목)
-                list.Add(item.Item2);
-
-            return list;
-        }
-
-        // not used
-        public static List<string> 코닥순서(List<string> gl)
-        {
-            List<string> list = new List<string>();
-
-            var 종목 = new List<Tuple<double, string>> { };
-
-            foreach (var stock in gl)
-            {
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-                if (g.ogl_data[index].시장구분 != 'D')
-                    continue;
-
-                종목.Add(Tuple.Create(g.ogl_data[index].시총, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            foreach (var item in 종목)
-                list.Add(item.Item2);
-
-            return list;
         }
 
         public static void 거분순서(List<string> gl)
@@ -673,9 +429,6 @@ namespace New_Tradegy.Library
             foreach (var item in 종목)
                 gl.Add(item.Item2);
         }
-
-
-
 
         public static void 종가기준추정누적거래액_천만원순서(List<string> gl)
         {
@@ -755,6 +508,7 @@ namespace New_Tradegy.Library
             }
             return list;
         }
+
         public static List<string> 분거래천_순서(List<string> gl)
         {
             var a_tuple = new List<Tuple<double, string>> { };
@@ -780,8 +534,6 @@ namespace New_Tradegy.Library
             }
             return list;
         }
-
-
 
         public static double ComputeCoeff(string stockname, double[] values1, double[] values2)
         {
@@ -972,7 +724,6 @@ namespace New_Tradegy.Library
             일간변동평균편차 = $"{avr:0.#}/{dev:0.#}";
             return true;
         }
-
 
         //public static bool 종목일중변동자료계산_old(string stock, int days, out double avr, out double dev,
         //                    out int avr_dealt, out int min_dealt, out int max_dealt, out ulong 일평균거래량, out string 일간변동평균편차)
@@ -1219,54 +970,7 @@ namespace New_Tradegy.Library
         /* 24일 거래량 중 상, 하 2개씩 극단을 제외하고 일평균거래량 환산 
     *  public static int calculate_종목20일기준일평균거래량(string stock)
     */
-        // not used
-        public static ulong calculate_종목20일기준일평균거래량(string stock)
-        {
-            // Extract column 5 from stock filename
-            string filename = @"C:\병신\data\일\" + stock + ".txt";
-            int[] c_id = new int[1]; // number of columns needed
-            string[,] x = new string[1000, 1]; // array declaration
-            List<double> alist = new List<double>();
-            int nrow = 0;
-            double average;
 
-            c_id[0] = 5; // everyday amount dealed 
-
-            nrow = VariableLoader.read_데이터컬럼들(filename, c_id, x);
-
-            if (nrow < 0)
-            {
-                average = 0.0;
-                return (ulong)average;
-            }
-            else if (nrow < 24)
-            {
-                double sum = 0.0;
-                for (int k = 0; k < 24; k++)
-                    sum += Convert.ToDouble(x[k, 0]);
-
-                average = sum / nrow;
-            }
-            else
-            {
-                // The last 24 Rows Extraction
-
-
-                for (int k = nrow - 1; k > nrow - 25; k--)
-                    alist.Add(Convert.ToDouble(x[k, 0]));
-
-                alist.Sort();
-
-                // Use 20 data and Calcurate Average
-                double sum = 0.0;
-                for (int k = 2; k < alist.Count - 2; k++)
-                    sum += alist[k];
-
-                average = sum / (alist.Count - 4.0);
-            }
-
-            return (ulong)average;
-        }
 
         /* 주어진 date, 두 개의 시간 구간 time[0]에서 time[1]로 1분 씩 증가시키면서 주어진 x[time[0], col]의 x[,col]의 값
         * 의 최대 차이, 최소 차이를 구하여 반환한다. 예를 들면 가격이 일정량 점프하였는 데 그 후 30분 내 점프한 값으로부터 
@@ -1276,7 +980,11 @@ namespace New_Tradegy.Library
 
 
 
-
+        /// <summary>
+        /// used only in test
+        /// </summary>
+        /// <param name="hhmmss"></param>
+        /// <returns></returns>
         public static double 시분초_일중환산율(int hhmmss)
         {
             int hh = hhmmss / 10000;
@@ -1321,7 +1029,13 @@ namespace New_Tradegy.Library
             return return_value;
         }
 
-
+        /// <summary>
+        /// given current directory date, -1, +1 forward 
+        /// and backward directory date search
+        /// </summary>
+        /// <param name="date_int"></param>
+        /// <param name="updn"></param>
+        /// <returns></returns>
         public static int directory_분전후(int date_int, int updn)
         {
             var subdirs = Directory.GetDirectories(@"C:\병신\분")

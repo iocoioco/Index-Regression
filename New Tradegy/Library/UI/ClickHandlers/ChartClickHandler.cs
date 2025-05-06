@@ -145,29 +145,10 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     break;
 
                 case "l2":
-                    if (g.StockManager.IndexList.Contains(g.clickedStock))
-                    {
-                        var list = hg.FormNameContainGivenString("Form_지수_조정");
-                        foreach (var form in list) form.Dispose();
-
-                        int w = g.ChartManager.Chart1.Bounds.Width;
-                        int h = g.ChartManager.Chart1.Bounds.Height;
-
-                        var formAdjust = new Form_지수_조정(g.clickedStock)
-                        {
-                            WindowState = FormWindowState.Normal,
-                            StartPosition = FormStartPosition.Manual,
-                            Location = new Point((int)(w / 6), h / 2 - h / 4 / 2),
-                            Size = new Size(w / 4, h / 4)
-                        };
-                        formAdjust.Show();
-                        return;
-                    }
-                    else
-                    {
-                        stockData.수급과장배수 *= 1.5;
+                    
+                        stockData.Misc.수급과장배수 *= 1.5;
                         action = "B  B";
-                    }
+                    
                     break;
 
                 case "l3":
@@ -236,7 +217,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     break;
 
                 case "l8":
-                    stockData.수급과장배수 *= 0.66;
+                    stockData.Misc.수급과장배수 *= 0.66;
                     action = "B  B";
                     break;
 
@@ -321,26 +302,29 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                 case "r9":
                     if (g.clickedStock == "KODEX 레버리지" || g.clickedStock == "KODEX 코스닥150레버리지")
                     {
-                        // Placeholder for future logic
+                        return;
                     }
                     else
                     {
-                        foreach (var group in g.oGL_data)
+                        var group = g.GroupManager.FindGroupByStock(g.clickedStock);
+                        if (group != null)
                         {
-                            if (group.stocks.Contains(g.clickedStock))
-                            {
-                                g.clickedTitle = group.title;
-                                break;
-                            }
+                            g.clickedTitle = group.Title;
                         }
 
-                        var form = Application.OpenForms["Form_보조_차트"] as Form_보조_차트;
-                        string key = g.v.SubKeyStr == "상관" || g.v.SubKeyStr == "절친" ? g.v.SubKeyStr : "상관";
+                        //If g.v.SubKeyStr is "상관" or "절친", then:
+                        //Assign g.v.SubKeyStr to key.
+                        //❌ Otherwise:
+                        //Assign "상관" to key(as a fallback default).
+                        string key = (g.v.SubKeyStr == "상관" || g.v.SubKeyStr == "절친") ? g.v.SubKeyStr : "상관";
                         mm.ManageChart2(key);
                     }
                     break;
             }
-
+            // action[0] m main, s sub, B both Delete ?
+            // action[1] p post_test
+            // action[2] e evalstock()
+            // action[3] m main, s sub, B both Redraw ?
             if (action[0] != ' ')
             {
                 if (action[0] == 'm' || action[0] == 'B')
@@ -349,16 +333,13 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     mm.ManageChart2();
             }
 
-            if (action[1] != ' ') ps.post_test();
-            if (action[2] != ' ') ev.eval_stock();
+            if (action[1] != ' ') PostProcessor.post_test();
+            if (action[2] != ' ') RankLogic.EvalStock();
             if (action[3] != ' ')
             {
                 if (action[3] == 'm' || action[3] == 'B') mm.ManageChart1();
                 if (action[3] == 's' || action[3] == 'B') mm.ManageChart2();
             }
         }
-
-
-
     }
 }
