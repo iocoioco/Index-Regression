@@ -113,7 +113,6 @@
     </Compile>
     <Compile Include="Library\Trackers\Charting\ChartBaseRenderer.cs" />
     <Compile Include="Library\Trackers\Charting\ChartGeneralRenderer.cs" />
-    <Compile Include="Library\Trackers\Charting\ChartIndexRenderer.cs" />
     <Compile Include="Library\UI\AlertForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,7 +179,6 @@
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\PostProcessing\PostProcessing.cs" />
     <Compile Include="Library\Trackers\Charting\ChartGeneral.cs" />
-    <Compile Include="Library\Trackers\Charting\ChartRenderer.cs" />
     <Compile Include="Library\Trackers\Panel\ControlPanelRenderer.cs" />
     <Compile Include="Library\Trackers\Panel\GroupPanelRenderer.cs" />
     <Compile Include="Library\Trackers\Charting\ChartIndex.cs" />
