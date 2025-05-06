@@ -9,7 +9,7 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.UI.ChartClickHandlers;
 using New_Tradegy.Library.UI.KeyBindings;
 using New_Tradegy.Library.Utils;
-//using New_Tradegy.Librarygit;
+
 using System;
 using System.Drawing;
 using System.IO;
@@ -19,12 +19,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-
-//using NLog;
-
-
-
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
@@ -62,7 +57,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             SoundUtils.Sound("일반", "by 2032");
         }
 
-
         private void StartNetworkMonitor()
         {
 
@@ -77,11 +71,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             networkMonitor.Start();
         }
 
-
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             this.FormClosing += Form1_FormClosing;
             StartNetworkMonitor();
 
@@ -214,10 +206,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             return;
         }
-
-
-       
-
        
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -226,13 +214,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
-
-
-
-
-
-
-
 
         static async Task runKOSPIUpdater()
         {

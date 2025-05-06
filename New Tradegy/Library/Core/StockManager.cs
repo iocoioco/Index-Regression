@@ -12,7 +12,7 @@ namespace New_Tradegy.Library.Core
         public StockRepository Repository => _repository;
 
         public List<string> TotalStockList { get; } = new List<string>();
-        public List<string> RankingList { get; private set; } = new List<string>();
+        public List<string> StockRankingList { get; private set; } = new List<string>();
         public List<string> HoldingList { get; private set; } = new List<string>();
 
         public List<string> LeverageList { get; private set; } = new List<string>();
@@ -35,8 +35,6 @@ namespace New_Tradegy.Library.Core
             IndexList = LeverageList.Concat(InverseList).ToList();
         }
 
-       
-
         public double GetTotalScore(string stock)
         {
             var data = _repository.TryGetStockOrNull(stock);
@@ -55,7 +53,7 @@ namespace New_Tradegy.Library.Core
         public void UpdateRankingByTotalScore()
         {
             var all = _repository.AllDatas;
-            RankingList = RankLogic
+            StockRankingList = RankLogic
                 .RankByTotalScore(all)
                 .Select(s => s.Stock)
                 .ToList();
@@ -84,7 +82,5 @@ namespace New_Tradegy.Library.Core
                 InterestedOnlyList.Remove(stock); // mutually exclusive
             }
         }
-
-        
     }
 }

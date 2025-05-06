@@ -8,7 +8,7 @@ using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.Deals;
 
-namespace New_Tradegy.Library.Core
+namespace New_Tradegy.Library.Deals
 {
     public class Order
     {

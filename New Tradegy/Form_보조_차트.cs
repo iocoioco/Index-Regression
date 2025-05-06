@@ -1,22 +1,15 @@
 ﻿using New_Tradegy.Library;
-using System;
-using System.Collections;
+using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.IO;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using static New_Tradegy.Library.g;
-using New_Tradegy.Library.Trackers;
-using New_Tradegy.Library.Models;
-using New_Tradegy.Library.UI.ClickHandlers;
-using New_Tradegy.Library.IO;
-using New_Tradegy.Library.Core;
+using New_Tradegy.Library.UI.ChartClickHandlers;
 
-using New_Tradegy.Library.Models;
-using New_Tradegy.Library.UI.ClickHandler;
 namespace New_Tradegy
 {
     public partial class Form_보조_차트 : Form
@@ -138,15 +131,11 @@ namespace New_Tradegy
                 g.ChartManager.Chart2Handler.Clear();
             }
 
-
             for (int i = 0; i < nRow * nCol; i++)
             {
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-
-           
-
            
                 var o = g.StockRepository.TryGetStockOrNull(stock);
                 if (o == null)
@@ -241,8 +230,6 @@ namespace New_Tradegy
                         rectangleAnnotation.Height = 5.155 + 2; // Annotation height (adjust as needed)
                     }
                 }
-
-
             }
             chart2.Invalidate(); // Redraw the chart
         }
@@ -303,8 +290,6 @@ namespace New_Tradegy
 
                     chartArea.InnerPlotPosition = new ElementPosition(5, 3, 55, 87);
                 }
-
-
             }
             chart2.Invalidate(); // Redraw the chart
         }
@@ -334,7 +319,7 @@ namespace New_Tradegy
                     break;
 
                 case "그순":
-                    if (g.GroupManager.RankingList.Count > 0)
+                    if (g.GroupManager.GroupRankingList.Count > 0)
                     {
                         var topStocks = g.GroupManager.GetTopStocksFromTopGroups(existing: displayList);
                         displayList.AddRange(topStocks);
@@ -457,8 +442,6 @@ namespace New_Tradegy
             }
         }
 
-
-
         private void UpdateFormTitle()
         {
             switch (g.v.SubKeyStr)
@@ -489,11 +472,6 @@ namespace New_Tradegy
             else { nCol = 5; nRow = 3; }
         }
 
-
-
-
-
-
         private void chart2_MouseClick(object sender, MouseEventArgs e)
         {
             string selection = "";
@@ -509,11 +487,11 @@ namespace New_Tradegy
 
             if (Control.ModifierKeys == Keys.Control)
             {
-                ClickHandler.HandleControlClick(chart2, selection, row_id, col_id);
+                ChartClickHandler.HandleControlClick(chart2, selection, row_id, col_id);
             }
             else
             {
-                ClickHandler.HandleClick(chart2, selection, row_id, col_id);
+                ChartClickHandler.HandleClick(chart2, selection, row_id, col_id);
             }
         }
 
@@ -521,9 +499,6 @@ namespace New_Tradegy
         {
             chart2.Size = new Size((int)(this.Width), (int)(this.Height - dataGridView1Height));
             chart2.Location = new Point(0, dataGridView1Height);
-
-
-
 
             dataGridView1.Size = new Size(this.Width, dataGridView1Height);
             dataGridView1.Location = new Point(0, 0);
@@ -543,8 +518,6 @@ namespace New_Tradegy
                 dataGridView1.Columns[i].Width = this.Width / 8;
             }
         }
-
-        
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {

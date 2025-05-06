@@ -8,8 +8,13 @@ namespace New_Tradegy.Library.Core
 {
     public class GroupManager
     {
+// Naming Convention
+// Class/Struct/Enum/Property/Public PascalCase
+// Method PascalCase
+// Field(private)	_camelCase
+// Local variable/Parameter camelCase
         private List<GroupData> _groups;
-        public List<GroupData> RankingList { get; private set; } = new List<GroupData>();
+        public List<GroupData> GroupRankingList { get; private set; } = new List<GroupData>();
 
         public List<string> GetTopStocksFromTopGroups(int groupLimit = 5, int stockPerGroup = 3, List<string> existing = null)
         {
@@ -17,11 +22,11 @@ namespace New_Tradegy.Library.Core
             if (existing == null)
                 existing = new List<string>();
 
-            int count = Math.Min(groupLimit, RankingList.Count);
+            int count = Math.Min(groupLimit, GroupRankingList.Count);
 
             for (int i = 0; i < count; i++)
             {
-                var group = RankingList[i];
+                var group = GroupRankingList[i];
                 int added = 0;
 
                 foreach (var stock in group.Stocks)
@@ -97,7 +102,7 @@ namespace New_Tradegy.Library.Core
 
         public void SortBy(Func<GroupData, double> selector)
         {
-            RankingList = _groups.OrderByDescending(selector).ToList();
+            GroupRankingList = _groups.OrderByDescending(selector).ToList();
         }
 
         public GroupData FindGroupByStock(string stockCode)

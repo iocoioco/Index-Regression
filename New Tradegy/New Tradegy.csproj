@@ -111,6 +111,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\Trackers\Charting\ChartBaseRenderer.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartGeneralRenderer.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartIndexRenderer.cs" />
     <Compile Include="Library\UI\AlertForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,14 +148,14 @@
     <Compile Include="Library\IO\StockFileExporter.cs" />
     <Compile Include="Library\IO\VariableLoader.cs" />
     <Compile Include="Library\Trackers\BookBidManager.cs" />
-    <Compile Include="Library\Trackers\ChartHandler.cs" />
-    <Compile Include="Library\Trackers\ChartManager.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartHandler.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartManager.cs" />
     <Compile Include="Library\UI\ClickHandlers\ChartClickHandler.cs" />
     <Compile Include="Library\UI\ClickHandlers\CharterClickMapper.cs" />
     <Compile Include="Library\Listeners\MarketEyeBatchSelector.cs" />
     <Compile Include="Library\Core\GroupManager.cs" />
     <Compile Include="Library\Core\GroupRepository.cs" />
-    <Compile Include="Library\Core\StockExchanges.cs" />
+    <Compile Include="Library\Deals\StockExchanges.cs" />
     <Compile Include="Library\Core\StockManager.cs" />
     <Compile Include="Library\Core\StockRepository.cs" />
     <Compile Include="Library\Deals\DealMananager.cs" />
@@ -176,17 +179,17 @@
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\PostProcessing\PostProcessing.cs" />
-    <Compile Include="Library\Trackers\ChartGeneral.cs" />
-    <Compile Include="Library\Trackers\ChartRenderer.cs" />
-    <Compile Include="Library\Trackers\ControlPanelRenderer.cs" />
-    <Compile Include="Library\Trackers\GroupPanelRenderer.cs" />
-    <Compile Include="Library\Trackers\ChartIndex.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartGeneral.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartRenderer.cs" />
+    <Compile Include="Library\Trackers\Panel\ControlPanelRenderer.cs" />
+    <Compile Include="Library\Trackers\Panel\GroupPanelRenderer.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartIndex.cs" />
     <Compile Include="Library\Trackers\OrderItemTracker.cs" />
     <Compile Include="Library\temp_program_loss.cs" />
     <Compile Include="Library\glbl.cs" />
     <Compile Include="Library\TimerHelper.cs" />
-    <Compile Include="Library\Trackers\TradeLogger.cs" />
-    <Compile Include="Library\Trackers\TradePanelRenderer.cs" />
+    <Compile Include="Library\Deals\TradeLogger.cs" />
+    <Compile Include="Library\Trackers\Panel\TradePanelRenderer.cs" />
     <Compile Include="Library\Utils\ChartUtils.cs" />
     <Compile Include="Library\Utils\MathUtils.cs" />
     <Compile Include="Library\Utils\StringUtils.cs" />

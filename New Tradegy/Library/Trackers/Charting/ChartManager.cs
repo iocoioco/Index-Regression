@@ -5,9 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Forms;
+using OpenQA.Selenium.BiDi.Modules.Log;
 
 namespace New_Tradegy.Library.Trackers
 {
+    //High-level chart reference management, e.g.:
+    //SetChart1(), SetChart2()
+    //ClearAll()
+    //Switching themes or highlight behaviors.
     public class ChartManager
     {
         // Chart references
@@ -16,8 +22,6 @@ namespace New_Tradegy.Library.Trackers
 
         public ChartHandler Chart1Handler { get; private set; }
         public ChartHandler Chart2Handler { get; private set; }
-
-
 
         public ChartManager() { }
 
@@ -40,9 +44,7 @@ namespace New_Tradegy.Library.Trackers
             Chart2Handler.Clear();
         }
 
-
-        // the follwing method are not use
-
+        // not used
         private void SetupChart(Chart chart)
         {
             chart.Series.Clear();
@@ -54,6 +56,8 @@ namespace New_Tradegy.Library.Trackers
         // ================================
         // 2. Drawing / Updating
         // ================================
+
+        // not used
         public void DrawStockLine(Chart chart, string stockCode, List<double> prices)
         {
             var series = new Series(stockCode)
@@ -70,6 +74,7 @@ namespace New_Tradegy.Library.Trackers
             chart.Series.Add(series);
         }
 
+        // not used
         public void UpdatePriceLine(Chart chart, string stockCode, double newPrice)
         {
             var series = chart.Series
@@ -84,6 +89,7 @@ namespace New_Tradegy.Library.Trackers
         // ================================
         // 3. Styling
         // ================================
+        // not used
         public void SetDarkTheme(Chart chart)
         {
             chart.BackColor = System.Drawing.Color.Black;
@@ -98,6 +104,7 @@ namespace New_Tradegy.Library.Trackers
         // ================================
         // 4. Interaction
         // ================================
+        // not used
         public void HighlightStock(Chart chart, string stockCode)
         {
             //if (chart.Series.Contains(stockCode))
@@ -110,7 +117,5 @@ namespace New_Tradegy.Library.Trackers
         // ================================
         // 5. Clearing / Resetting
         // ================================
-
-
     }
 }

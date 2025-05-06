@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium.BiDi.Modules.Log;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,17 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace New_Tradegy.Library.Trackers
 {
 
+    //Low-level chart utility methods, e.g.:
+    //ClearSeriesAndAnnotations()
+    //ChartAreaExists()
+    //AddSeries()
+    //GetChartAreaByName()
 
     public class ChartHandler
     {
         private Chart _chart;
 
-        public ChartHandler(Chart chart)
+        public ChartHandler(Chart chart) // chart1 and chart2 defined
         {
             _chart = chart;
         }

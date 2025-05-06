@@ -1,15 +1,18 @@
-﻿using System;
+﻿using New_Tradegy.Library.Core;
+using NLog.Layouts;
+using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Drawing;
+using System.IO.Pipelines;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using New_Tradegy.Library.Core;
-using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Trackers;
-using New_Tradegy.Library.Utils;
-using New_Tradegy.Library;
-using New_Tradegy.Library.Trackers.New_Tradegy.Library.Trackers;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Resources.ResXFileRef;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -32,26 +35,37 @@ namespace New_Tradegy.Library.Trackers
             _bookBidManager = new BookBidManager(_layout);
         }
 
+
+        //Categorizes stocks into:
+        //withBookBid: holding + interested with bid
+        //withoutBookBid: interested only + ranking(excluding duplicates)
+        //Enforces layout constraints:
+        //Ensures withBookBid.Count * 2 + withoutBookBid.Count <= MaxSpaces
+        //Triggers layout refresh only when there’s a meaningful change (via SequenceEqual checks).
         public void UpdateLayoutIfChanged()
         {
             var holdings = g.StockManager.HoldingList;
             var interestedWithBid = g.StockManager.InterestedWithBidList;
             var interestedOnly = interestedWithBid.Except(holdings).ToList();
-            var ranking = g.StockManager.RankingList;
+            var rankedStocks = g.StockManager.StockRankingList;
 
-            var withBookBid = holdings.Concat(interestedWithBid.Except(holdings)).Distinct().ToList();
-            var withoutBookBid = interestedOnly.Concat(ranking).Where(s => !withBookBid.Contains(s)).Distinct().ToList();
+            var withBookBid = holdings
+                .Concat(interestedOnly)
+                .Distinct()
+                .Take(MaxSpaces / 2)
+                .ToList();
 
-            // Enforce max space constraint: withBookBid.Count * 2 + withoutBookBid.Count <= 24
-            int availableSpaces = MaxSpaces;
-            int maxWithBookBid = Math.Min(withBookBid.Count, MaxSpaces / 2);
-            withBookBid = withBookBid.Take(maxWithBookBid).ToList();
-            availableSpaces -= withBookBid.Count * 2;
-            withoutBookBid = withoutBookBid.Take(availableSpaces).ToList();
+            int usedSpaces = withBookBid.Count * 2;
+            int remainingSpaces = MaxSpaces - usedSpaces;
 
-            bool changed =
-                !_prevWithBid.SequenceEqual(withBookBid) ||
-                !_prevWithoutBid.SequenceEqual(withoutBookBid);
+            var withoutBookBid = rankedStocks
+                .Where(s => !withBookBid.Contains(s))
+                .Distinct()
+                .Take(remainingSpaces)
+                .ToList();
+
+            bool changed = !_prevWithBid.SequenceEqual(withBookBid)
+                        || !_prevWithoutBid.SequenceEqual(withoutBookBid);
 
             if (changed)
             {
@@ -61,6 +75,11 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
+        //Fully clears and resets the chart(Series, ChartAreas, Annotations) and bookbid grid.
+        //Uses ChartGridLayout to determine where to place:
+        //stocks with bookbid: takes 2 columns(chart + bookbid)
+        //stocks without bookbid: takes 1 column
+        //Invokes CreateChartArea() and BookBidManager.GetOrCreate() to place charts and bookbids.
         public void RefreshGeneralLayout(List<string> withBookBid, List<string> withoutBookBid)
         {
             _layout.Reset();
@@ -90,6 +109,9 @@ namespace New_Tradegy.Library.Trackers
             // Optionally store or log gridMap for debugging or UI interaction mapping
         }
 
+
+        //Retrieves the StockData object via TryGetStockOrNull() from StockRepository.
+        //Delegates the rendering logic to ChartRenderer.CreateOrUpdateChart(...).
         public void CreateChartArea(string stock, int row, int col)
         {
             var data = g.StockRepository.TryGetStockOrNull(stock);
@@ -103,18 +125,25 @@ namespace New_Tradegy.Library.Trackers
         private int _currentRow = 0;
         private int _currentCol = 2;
 
+        //itialize _rows and _cols based on the layout settings(usually g.nRow - 2 and g.nCol).
         public ChartGridLayout(int rows, int cols)
         {
             _rows = rows;
             _cols = cols;
         }
 
+        //resets placement.Always starts from (0, 2) — reserving col 0, 1 
+        //for index chartareas — consistent with your layout rule
         public void Reset()
         {
             _currentRow = 0;
             _currentCol = 2;
         }
 
+
+        //Bookbid entries take 2 columns.
+        //Non-bookbid take 1 column.
+        //When row exceeds limit, wrap to next column.
         public (int row, int col) GetNext(bool hasBookBid)
         {
             int row = _currentRow;
@@ -130,6 +159,10 @@ namespace New_Tradegy.Library.Trackers
             return (row, col);
         }
 
+        //Converts grid cell to pixel coordinates using:
+        //screen width / grid columns
+        //screen height / grid rows
+        //Adds a margin(+ chartWidth + 10) to move the bookbid next to its chart.All good.
         public Point GetBookBidLocation(int row, int col)
         {
             int chartWidth = g.screenWidth / g.nCol;

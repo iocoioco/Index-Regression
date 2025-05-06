@@ -84,7 +84,7 @@ namespace New_Tradegy.Library.Trackers
         public static void Initialize(DataGridView dgv)
         {
             g.그룹.GroupRenderer = new GroupPanelRenderer();
-            g.그룹.GroupRenderer.BindGrid(dgv, g.GroupManager.RankingList);
+            g.그룹.GroupRenderer.BindGrid(dgv, g.GroupManager.GroupRankingList);
         }
 
         public void Update(List<GroupData> updatedGroups)

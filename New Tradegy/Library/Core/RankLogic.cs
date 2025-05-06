@@ -341,7 +341,6 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            // Sort and store into RankingList based on selection
             switch (g.oGl_data_selection)
             {
                 case "총점":
@@ -358,7 +357,7 @@ namespace New_Tradegy.Library.Core
                     break;
             }
 
-            var rankedGroups = groupManager.RankingList;
+            var rankedGroups = groupManager.GroupRankingList;
 
             // Store group rank index into each stock
             for (int i = rankedGroups.Count - 1; i >= 0; i--)
@@ -371,7 +370,7 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            g.그룹.GroupRenderer?.Update(g.GroupManager.RankingList);
+            g.그룹.GroupRenderer?.Update(g.GroupManager.GroupRankingList);
         }
 
     }
