@@ -145,7 +145,7 @@ namespace New_Tradegy
  
                 if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || o.Misc.ShrinkDraw || g.test) 
                 {
-                    ChartRenderer.CreateOrUpdateChart(g.ChartManager.Chart2, o, nRow, nCol); // Form_보조_차트_DRAW()
+                    ChartRenderer.CreateOrUpdateChartarea(g.ChartManager.Chart2, o, nRow, nCol); // Form_보조_차트_DRAW()
                 }
                 else
                 {
