@@ -37,6 +37,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private PingAndSpeedMonitor networkMonitor;
         public static Form1 Instance { get; private set; }
+
         public Form1()
         {
             InitializeComponent();
@@ -83,7 +84,20 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.ChartGeneral = new ChartGeneral();
             g.ChartGeneral.Initialize(chart1, this);
-            StockManagerEvents.ListsChanged += () => g.ChartGeneral.UpdateLayoutIfChanged();
+
+            StockManagerEvents.ListsChanged += () =>
+            {
+                if (Form1.Instance.InvokeRequired)
+                {
+                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral.UpdateLayoutIfChanged()));
+                }
+                else
+                {
+                    g.ChartGeneral.UpdateLayoutIfChanged();
+                }
+            };
+
+
 
             VariableLoader.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
 

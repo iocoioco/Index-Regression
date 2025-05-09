@@ -1,18 +1,9 @@
-﻿using New_Tradegy.Library.Core;
-using NLog.Layouts;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Drawing;
-using System.IO.Pipelines;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Resources.ResXFileRef;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -72,7 +63,11 @@ namespace New_Tradegy.Library.Trackers
                 RefreshGeneralLayout(withBookBid, withoutBookBid);
                 _prevWithBid = withBookBid.ToList();
                 _prevWithoutBid = withoutBookBid.ToList();
+
+                // 🔔 Notify listeners
+                StockManagerEvents.NotifyChanged();
             }
+
         }
 
         //Fully clears and resets the chart(Series, ChartAreas, Annotations) and bookbid grid.
@@ -92,7 +87,7 @@ namespace New_Tradegy.Library.Trackers
 
             foreach (var stock in withBookBid)
             {
-                var (row, col) = _layout.GetNext(true);
+                (int row, int col) = _layout.GetNext(true);
                 CreateChartArea(stock, row, col);
                 _bookBidManager.GetOrCreate(stock, row, col);
                 gridMap[row, col] = stock;
@@ -101,7 +96,7 @@ namespace New_Tradegy.Library.Trackers
 
             foreach (var stock in withoutBookBid)
             {
-                var (row, col) = _layout.GetNext(false);
+                (int row, int col) = _layout.GetNext(true);
                 CreateChartArea(stock, row, col);
                 gridMap[row, col] = stock;
             }
@@ -118,57 +113,56 @@ namespace New_Tradegy.Library.Trackers
         }
     }
 
-    public class ChartGridLayout
+    public class ChartLayout
     {
-        private int _rows, _cols;
-        private int _currentRow = 0;
-        private int _currentCol = 2;
+        private readonly int _rows = 3;
+        private readonly int _cols = 8;
+        private readonly int _colOffset = 2;  // Reserve first 2 columns
+        private bool[,] _occupied;
 
-        //itialize _rows and _cols based on the layout settings(usually g.nRow - 2 and g.nCol).
-        public ChartGridLayout(int rows, int cols)
+        public ChartLayout()
         {
-            _rows = rows;
-            _cols = cols;
+            _occupied = new bool[_rows, _cols];
         }
 
-        //resets placement.Always starts from (0, 2) — reserving col 0, 1 
-        //for index chartareas — consistent with your layout rule
         public void Reset()
         {
-            _currentRow = 0;
-            _currentCol = 2;
+            _occupied = new bool[_rows, _cols];
         }
 
-
-        //Bookbid entries take 2 columns.
-        //Non-bookbid take 1 column.
-        //When row exceeds limit, wrap to next column.
         public (int row, int col) GetNext(bool hasBookBid)
         {
-            int row = _currentRow;
-            int col = _currentCol;
-
-            _currentRow++;
-            if (_currentRow >= _rows)
+            for (int col = _colOffset; col < _cols; col++)
             {
-                _currentRow = 0;
-                _currentCol += hasBookBid ? 2 : 1;
+                for (int row = 0; row < _rows; row++)
+                {
+                    if (hasBookBid)
+                    {
+                        // Make sure we have room for two columns and both are free
+                        if (col + 1 < _cols &&
+                            !_occupied[row, col] &&
+                            !_occupied[row, col + 1])
+                        {
+                            _occupied[row, col] = true;
+                            _occupied[row, col + 1] = true;
+                            return (row, col);
+                        }
+                    }
+                    else
+                    {
+                        if (!_occupied[row, col])
+                        {
+                            _occupied[row, col] = true;
+                            return (row, col);
+                        }
+                    }
+                }
             }
 
-            return (row, col);
-        }
-
-        //Converts grid cell to pixel coordinates using:
-        //screen width / grid columns
-        //screen height / grid rows
-        //Adds a margin(+ chartWidth + 10) to move the bookbid next to its chart.All good.
-        public Point GetBookBidLocation(int row, int col)
-        {
-            int chartWidth = g.screenWidth / g.nCol;
-            int chartHeight = g.screenHeight / g.nRow;
-            return new Point(chartWidth * col + chartWidth + 10, chartHeight * row);
+            throw new InvalidOperationException("No space available for chart layout.");
         }
     }
+
 
     public static class StockManagerEvents
     {

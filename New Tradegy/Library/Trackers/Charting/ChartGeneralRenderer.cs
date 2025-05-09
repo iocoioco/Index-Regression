@@ -15,8 +15,8 @@ namespace New_Tradegy.Library.Trackers
     {
         // 0, 1(가격), 2(수급), 3(체강), 4(프로그램), 5(외인), 6(기관)
         private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
-
         Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
+
         public static void CreateOrUpdateChartArea(Chart chart, StockData data, int row, int col)
         {
             string areaName = data.Stock;
@@ -92,22 +92,43 @@ namespace New_Tradegy.Library.Trackers
 
         public static void RedrawAnnotation(Chart chart, StockData data, int row, int col)
         {
-            string annotationName = data.Stock + "_anno";
+            if (chart == null || data == null)
+                return;
 
             // Remove old annotation
-            var old = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
-            if (old != null)
-                chart.Annotations.Remove(old);
+            string annotationName = data.Stock;
+            var old_annotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
+            if (old_annotation != null)
+                chart.Annotations.Remove(old_annotation);
 
-            // Re-add with latest values
-            string text = $"{data.Score.총점:F1}";
-            RectangleF rect = new RectangleF(0, 3, 100f / 10f, 6); // or dynamic height
-            Color backColor = Color.White;
+            // Determine range for annotation based on shrink setting
+            int StartNpts = g.Npts[0];
+            int EndNpts = (!g.test) ? data.Api.nrow : Math.Min(g.Npts[1], data.Api.nrow);
 
-            if (data.Score.총점 > 90) backColor = g.Colors[0];
-            else if (data.Score.총점 > 70) backColor = g.Colors[1];
+            if (data.Misc.ShrinkDraw)
+            {
+                StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
+            }
 
-            AnnotationAddRectangleWithText(chart, text, rect, data.Stock, Color.Black, backColor);
+            string annotation = AnnotationGeneral(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
+
+            AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
+
+            Color BackColor = Color.White;
+            int[] thresholds = { 90, 70, 50, 30, 10 };
+            for (int i = 0; i < thresholds.Length; i++)
+            {
+                if (data.Score.총점 > thresholds[i])
+                {
+                    BackColor = g.Colors[i];
+                    break;
+                }
+            }
+            // Adjust vertical offset depending on chart
+            float yOffset = chart.Name == "chart1" ? 0f : 3f;
+            string areaName = data.Stock;
+            AnnotationAddRectangleWithText(chart, annotation, 
+                new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), areaName, Color.Black, BackColor);
         }
 
 
@@ -116,14 +137,14 @@ namespace New_Tradegy.Library.Trackers
             string stock = o.Stock;
 
             var lineTypes = new List<(int id, string label, Color color, int width)>
-    {
-        (1, "price", colorGeneral[1], g.LineWidth),
-        (2, "amount", colorGeneral[2], 1),
-        (3, "intensity", colorGeneral[3], 1),
-        (4, "program", colorGeneral[4], g.LineWidth),
-        (5, "foreign", colorGeneral[5], g.LineWidth),
-        (6, "institute", colorGeneral[6], g.LineWidth)
-    };
+            {
+                (1, "price", colorGeneral[1], g.LineWidth),
+                (2, "amount", colorGeneral[2], 1),
+                (3, "intensity", colorGeneral[3], 1),
+                (4, "program", colorGeneral[4], g.LineWidth),
+                (5, "foreign", colorGeneral[5], g.LineWidth),
+                (6, "institute", colorGeneral[6], g.LineWidth)
+            };
 
             int last = o.Api.nrow - 1;
             if (last < 0 || o.Api.x[last, 0] == 0)
@@ -141,12 +162,6 @@ namespace New_Tradegy.Library.Trackers
                 var series = chart.Series[sid];
                 int value = GeneralPointValue(o, last, typeId);
 
-                if (series.Points.Count == 0)
-                {
-                    series.Points.AddXY(xLabel, value);
-                    continue;
-                }
-
                 var lastPoint = series.Points.Last();
                 if (lastPoint.XValue.ToString() == xLabel)
                 {
@@ -155,39 +170,19 @@ namespace New_Tradegy.Library.Trackers
                 else
                 {
                     series.Points.AddXY(xLabel, value); // new minute → append
-
-                    if (series.Points.Count > g.MaxPoints)
-                        series.Points.RemoveAt(0); // optional trimming
                 }
             }
         }
 
 
-        public static void UpdateAnnotation(Chart chart, StockData data, int row, int col)
-        {
-            string stock = data.Stock;
-            string annotationName = $"{stock}_anno";
-
-            var annotation = chart.Annotations[annotationName];
-            var series = chart.Series[stock];
-
-            if (series.Points.Count == 0)
-                return;
-
-            // Re-anchor to latest point
-            annotation.AnchorDataPoint = series.Points.Last();
-
-            // Optional: update text or background
-            annotation.Text = $"{data.Score.총점:F1}";
-            annotation.BackColor = (data.Score.총점 > 90) ? g.Colors[0] : Color.LightGray;
-        }
+        
 
 
 
 
 
 
-
+        // no use : keep it temporaryly
         static ChartArea GenralChartArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
         {
             var data = g.StockRepository.TryGetStockOrNull(stockName);
@@ -219,6 +214,10 @@ namespace New_Tradegy.Library.Trackers
             bool drawSuccess = DrawSeriesLines(chart, data, stockName, area, StartNpts, EndNpts, ref y_min, ref y_max);
             if (!drawSuccess) return null;
 
+
+
+
+
             string annotation = AnnotationGeneral(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
 
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
@@ -236,6 +235,10 @@ namespace New_Tradegy.Library.Trackers
 
             float yOffset = isMainChart ? 0 : 3;
             AnnotationAddRectangleWithText(chart, annotation, new RectangleF(0, yOffset, 100 / nCol, (int)annotationHeight + 2), area, Color.Black, BackColor);
+
+
+
+
 
             var chartArea = chart.ChartAreas[area];
             chartArea.AxisY.LabelStyle.Enabled = false;
