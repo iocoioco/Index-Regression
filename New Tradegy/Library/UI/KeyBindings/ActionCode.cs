@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace New_Tradegy.Library.UI.KeyBindings
 {
+    // usage 
+    // var action = ActionCode.New(clear: true, post: true, eval: true, draw: 'm');
+    // action.Run();
     public class ActionCode
     {
         public bool Clear { get; }
@@ -43,6 +46,3 @@ namespace New_Tradegy.Library.UI.KeyBindings
 }
 
 
-// usage 
-// var action = ActionCode.New(clear: true, post: true, eval: true, draw: 'm');
-// action.Run();

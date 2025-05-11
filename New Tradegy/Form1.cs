@@ -220,12 +220,16 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             return;
         }
-       
+
+        // it runs automatically, when keys in
+        // msg: Windows message (low-level OS event info).
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (KeyBindingManager.TryHandle(keyData, this))
+            // KeyBindingManager.TryHandle encapsulates logics for what to do with certain keys.
+            if (KeyBindingManager.TryHandle(keyData))
                 return true;
 
+            // custom logic doesn't handle
             return base.ProcessCmdKey(ref msg, keyData);
         }
 

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms.DataVisualization.Charting;
-using New_Tradegy.Library.Core;
+﻿using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Listeners;
+using System;
+using System.Drawing;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -17,7 +15,7 @@ namespace New_Tradegy.Library.Trackers
         //How to call
         //ChartIndex.UpdateIndexChart(g.chart1);
         //ChartIndex.UpdateIndexChart(g.chart2, isChart1: false);
-        public static void UpdateIndexChart(Chart chart, bool isChart1 = true, bool includeIndex = true)
+        public static void UpdataChart(Chart chart, bool isChart1 = true, bool includeIndex = true)
         {
             if (!includeIndex) return; // e.g., chart2 might not have index
 
@@ -38,7 +36,7 @@ namespace New_Tradegy.Library.Trackers
                 if (shouldUpdateSeries)
                     UpdateSeries(chart, data);
                 else
-                    UpdateChart(chart, data, nRow, nCol);
+                    UpdateChartArea(chart, data, nRow, nCol);
 
                 if (isChart1 && g.connected && !Utils.FormUtils.DoesDataGridViewExist(Utils.FormUtils.FindFormByName("Form1"), stock))
                 {
@@ -55,8 +53,7 @@ namespace New_Tradegy.Library.Trackers
             chart.Invalidate();
         }
 
-
-        public static ChartArea UpdateIndexChartArea(Chart chart, StockData data, int nRow, int nCol)
+        public static ChartArea UpdateChartArea(Chart chart, StockData data, int nRow, int nCol)
         {
             string stock = data.Stock;
             if (data.Api.nrow <= 1)
@@ -80,7 +77,7 @@ namespace New_Tradegy.Library.Trackers
             {
                 string seriesName = stock + " " + id;
                 double mag = 1.0;
-                KodexMagnifier(data.Stock, id, ref mag);
+                Magnifier(data.Stock, id, ref mag);
 
                 Series series = new Series(seriesName)
                 {
@@ -97,7 +94,7 @@ namespace New_Tradegy.Library.Trackers
                 {
                     if (data.Api.x[i, 0] == 0) break;
                     int val = id == 10
-                        ? (int)(HandleUSIndex(data, i, end, start, id) * mag)
+                        ? (int)(HandleUSFuture(data, i, end, start, id) * mag)
                         : (int)(data.Api.x[i, id] * mag);
                     series.Points.AddXY((data.Api.x[i, 0] / g.HUNDRED).ToString(), val);
 
@@ -111,8 +108,8 @@ namespace New_Tradegy.Library.Trackers
                     continue;
                 }
 
-                MarkIndex(chart, start + 1, series);
-                LabelIndex(chart, series);
+                Mark(chart, start + 1, series);
+                Label(chart, series);
             }
 
             area.AxisY.LabelStyle.Enabled = false;
@@ -169,7 +166,7 @@ namespace New_Tradegy.Library.Trackers
             return area;
         }
 
-        public static void UpdateIndexSeries(Chart chart, StockData data)
+        public static void UpdateSeries(Chart chart, StockData data)
         {
             int totalPoints = data.Api.nrow;
             if (data.Misc.ShrinkDraw)
@@ -186,7 +183,7 @@ namespace New_Tradegy.Library.Trackers
 
                 var series = chart.Series[seriesName];
                 double magnifier = 1.0;
-                KodexMagnifier(data.Stock, int.Parse(idStr), ref magnifier);
+                Magnifier(data.Stock, int.Parse(idStr), ref magnifier);
 
                 int seriesCount = series.Points.Count;
 
@@ -196,8 +193,8 @@ namespace New_Tradegy.Library.Trackers
                         (data.Api.x[totalPoints - 1, 0] / g.HUNDRED).ToString(),
                         data.Api.x[totalPoints - 1, int.Parse(idStr)] * magnifier);
 
-                    LabelIndex(chart, series);
-                    MarkIndex(chart, totalPoints - 1, series);
+                    Label(chart, series);
+                    Mark(chart, totalPoints - 1, series);
                 }
                 else
                 {
@@ -210,8 +207,8 @@ namespace New_Tradegy.Library.Trackers
                             (data.Api.x[i, 0] / g.HUNDRED).ToString(),
                             data.Api.x[i, int.Parse(idStr)] * magnifier);
 
-                        LabelIndex(chart, series);
-                        MarkIndex(chart, i, series);
+                        Label(chart, series);
+                        Mark(chart, i, series);
                     }
                 }
             }
@@ -225,36 +222,13 @@ namespace New_Tradegy.Library.Trackers
             area.AxisX.IntervalOffset = 1;
         }
 
-        private static double HandleUSIndex(StockData data, int k, int end, int start, int id)
+        private static double HandleUSFuture(StockData data, int k, int end, int start, int id)
         {
             // Placeholder: you can move your US index interpolation logic here
             return data.Api.x[k, id];
         }
-
-        public static void Update(Chart chart, StockData data)
-        {
-            int totalPoints = data.Api.nrow;
-            if (data.Misc.ShrinkDraw)
-                totalPoints -= g.NptsForShrinkDraw;
-
-            string[] suffixes = { "1", "3", "4", "5", "6", "10", "11" };
-            foreach (string suffix in suffixes)
-            {
-                if (!TryUpdateSeries(chart, data, suffix, totalPoints))
-                    continue;
-            }
-
-            if (!chart.ChartAreas.IsUniqueName(data.Stock))
-            {
-                var area = chart.ChartAreas[data.Stock];
-                area.AxisX.LabelStyle.Enabled = true;
-                area.AxisX.MajorGrid.Enabled = false;
-                area.AxisX.Interval = totalPoints - 1;
-                area.AxisX.IntervalOffset = 1;
-            }
-        }
-
-        private static void KodexMagnifier(string stock, int id, ref double magnifier)
+        
+        private static void Magnifier(string stock, int id, ref double magnifier)
         {
             int i = -1;
             switch (stock)
@@ -281,7 +255,7 @@ namespace New_Tradegy.Library.Trackers
                 magnifier = g.kodex_magnifier[i, j];
         }
 
-        public static void MarkIndex(Chart chart, int markStartPoint, Series series)
+        public static void Mark(Chart chart, int markStartPoint, Series series)
         {
             string stockName = "";
             string chartArea = "";
@@ -315,7 +289,7 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-        public static void LabelIndex(Chart chart, Series series)
+        public static void Label(Chart chart, Series series)
         {
             string stock = "";
             string area = "";

@@ -22,10 +22,9 @@ namespace New_Tradegy.Library.Trackers
         {
             _chart = chart;
             _parent = parent;
-            _layout = new ChartGridLayout(g.nRow - 2, g.nCol);
+            _layout = new ChartGridLayout();
             _bookBidManager = new BookBidManager(_layout);
         }
-
 
         //Categorizes stocks into:
         //withBookBid: holding + interested with bid
@@ -60,7 +59,7 @@ namespace New_Tradegy.Library.Trackers
 
             if (changed)
             {
-                RefreshGeneralLayout(withBookBid, withoutBookBid);
+                RefreshLayout(withBookBid, withoutBookBid);
                 _prevWithBid = withBookBid.ToList();
                 _prevWithoutBid = withoutBookBid.ToList();
 
@@ -75,7 +74,7 @@ namespace New_Tradegy.Library.Trackers
         //stocks with bookbid: takes 2 columns(chart + bookbid)
         //stocks without bookbid: takes 1 column
         //Invokes CreateChartArea() and BookBidManager.GetOrCreate() to place charts and bookbids.
-        public void RefreshGeneralLayout(List<string> withBookBid, List<string> withoutBookBid)
+        public void RefreshLayout(List<string> withBookBid, List<string> withoutBookBid)
         {
             _layout.Reset();
             _chart.Series.Clear();
@@ -109,18 +108,18 @@ namespace New_Tradegy.Library.Trackers
         public void CreateChartArea(string stock, int row, int col)
         {
             var data = g.StockRepository.TryGetStockOrNull(stock);
-            ChartGeneralRenderer.CreateOrUpdateChartarea(_chart, data, row, col); // Create Chart Area(string stock, int row, int col)
+            ChartGeneralRenderer.UpdateChartArea(_chart, data, row, col); // Create Chart Area(string stock, int row, int col)
         }
     }
 
-    public class ChartLayout
+    public class ChartGridLayout
     {
         private readonly int _rows = 3;
         private readonly int _cols = 8;
         private readonly int _colOffset = 2;  // Reserve first 2 columns
         private bool[,] _occupied;
 
-        public ChartLayout()
+        public ChartGridLayout()
         {
             _occupied = new bool[_rows, _cols];
         }

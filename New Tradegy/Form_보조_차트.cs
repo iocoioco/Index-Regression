@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.UI.ChartClickHandlers;
+using New_Tradegy.Library.UI.KeyBindings;
 
 namespace New_Tradegy
 {
@@ -551,6 +552,7 @@ namespace New_Tradegy
             Form_보조_차트_DRAW();
         }
 
+        // no use
         private void UpdateAnnotation(string stock, StockPoint stockData)
         {
             var annotationName = $"Annotation_{stock}";
@@ -578,8 +580,22 @@ namespace New_Tradegy
                 g.ChartManager.Chart2.Annotations.Add(newAnnotation);
             }
         }
+
+        // it runs automatically, when keys in
+        // msg: Windows message (low-level OS event info).
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // KeyBindingManager.TryHandle encapsulates logics for what to do with certain keys.
+            if (KeyBindingManager.TryHandle(keyData))
+                return true;
+
+            // custom logic doesn't handle
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
     }
 
+    // no use ... used at UpdateAnnotation but not referenced
     public class StockPoint
     {
         public string Stock { get; set; } // Stock name

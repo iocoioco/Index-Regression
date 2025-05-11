@@ -5,6 +5,7 @@ namespace New_Tradegy.Library.UI
 {
     public partial class AlertForm : Form
     {
+        // Alert when wifi trouble 
         public AlertForm()
         {
             // InitializeComponent(); ❌ REMOVE THIS LINE

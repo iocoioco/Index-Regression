@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time e
 	ProjectSection(SolutionItems) = preProject
 		keys keyword - eval and draw(test and real).txt = keys keyword - eval and draw(test and real).txt
 		VS usage manual.txt = VS usage manual.txt
+		할일.txt = 할일.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program Reform", "{15289ED6-E810-4931-BC7A-AECA7E419E21}"

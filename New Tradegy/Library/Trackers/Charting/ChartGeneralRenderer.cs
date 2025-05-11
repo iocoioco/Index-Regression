@@ -17,7 +17,7 @@ namespace New_Tradegy.Library.Trackers
         private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
         Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
 
-        public static void CreateOrUpdateChartArea(Chart chart, StockData data, int row, int col)
+        public static void UpdateChartArea(Chart chart, StockData data, int row, int col)
         {
             string areaName = data.Stock;
             ChartArea area;
@@ -55,7 +55,7 @@ namespace New_Tradegy.Library.Trackers
             if (data.Api.x[EndNpts - 1, 3] == 0)
                 return;
 
-            bool success = DrawSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts, ref y_min, ref y_max);
+            bool success = AddSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts, ref y_min, ref y_max);
             if (!success) return;
 
             area.AxisY.LabelStyle.Enabled = false;
@@ -89,49 +89,6 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-
-        public static void RedrawAnnotation(Chart chart, StockData data, int row, int col)
-        {
-            if (chart == null || data == null)
-                return;
-
-            // Remove old annotation
-            string annotationName = data.Stock;
-            var old_annotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
-            if (old_annotation != null)
-                chart.Annotations.Remove(old_annotation);
-
-            // Determine range for annotation based on shrink setting
-            int StartNpts = g.Npts[0];
-            int EndNpts = (!g.test) ? data.Api.nrow : Math.Min(g.Npts[1], data.Api.nrow);
-
-            if (data.Misc.ShrinkDraw)
-            {
-                StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
-            }
-
-            string annotation = AnnotationGeneral(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
-
-            AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
-
-            Color BackColor = Color.White;
-            int[] thresholds = { 90, 70, 50, 30, 10 };
-            for (int i = 0; i < thresholds.Length; i++)
-            {
-                if (data.Score.총점 > thresholds[i])
-                {
-                    BackColor = g.Colors[i];
-                    break;
-                }
-            }
-            // Adjust vertical offset depending on chart
-            float yOffset = chart.Name == "chart1" ? 0f : 3f;
-            string areaName = data.Stock;
-            AnnotationAddRectangleWithText(chart, annotation, 
-                new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), areaName, Color.Black, BackColor);
-        }
-
-
         public static void UpdateSeries(Chart chart, StockData o)
         {
             string stock = o.Stock;
@@ -160,7 +117,7 @@ namespace New_Tradegy.Library.Trackers
                     continue;
 
                 var series = chart.Series[sid];
-                int value = GeneralPointValue(o, last, typeId);
+                int value = PointValue(o, last, typeId);
 
                 var lastPoint = series.Points.Last();
                 if (lastPoint.XValue.ToString() == xLabel)
@@ -174,23 +131,285 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-
-        
-
-
-
-
-
-
-        // no use : keep it temporaryly
-        static ChartArea GenralChartArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
+        private static bool AddSeriesLines(Chart chart, StockData o, string stockName, string area,
+                                 int StartNpts, int EndNpts, ref double y_min, ref double y_max)
         {
-            var data = g.StockRepository.TryGetStockOrNull(stockName);
-            if (data.Api.nrow < 2) return null;
+            var lineTypes = new List<(int id, string label, Color color, int width)>
+    {
+        (1, "price", colorGeneral[1], g.LineWidth),
+        (2, "amount", colorGeneral[2], 1),
+        (3, "intensity", colorGeneral[3], 1),
+        (4, "program", colorGeneral[4], g.LineWidth),
+        (5, "foreign", colorGeneral[5], g.LineWidth),
+        (6, "institute", colorGeneral[6], g.LineWidth)
+    };
 
-            double y_min = 100000;
-            double y_max = -100000;
+            for (int i = 0; i < lineTypes.Count; i++)
+            {
+                var (typeId, label, color, width) = lineTypes[i];
+                string sid = $"{stockName} {typeId}";
 
+                var series = new Series(sid)
+                {
+                    ChartArea = area,
+                    ChartType = SeriesChartType.Line,
+                    XValueType = ChartValueType.Date,
+                    IsVisibleInLegend = false,
+                    Color = color,
+                    BorderWidth = width
+                };
+
+                if (chart.InvokeRequired)
+                    chart.Invoke(new Action(() => chart.Series.Add(series)));
+                else
+                    chart.Series.Add(series);
+
+                int pointsCount = 0;
+
+                for (int k = StartNpts; k < EndNpts; k++)
+                {
+                    if (o.Api.x[k, 0] == 0)
+                    {
+                        if (pointsCount < 2) return false;
+                        else break;
+                    }
+
+                    int value = PointValue(o, k, typeId);
+                    string xLabel = ((int)(o.Api.x[k, 0] / g.HUNDRED)).ToString();
+
+                    if (chart.InvokeRequired)
+                        chart.Invoke(new Action(() => series.Points.AddXY(xLabel, value)));
+                    else
+                        series.Points.AddXY(xLabel, value);
+
+                    pointsCount++;
+                    y_min = Math.Min(y_min, value);
+                    y_max = Math.Max(y_max, value);
+                }
+
+                if (pointsCount < 2) return false;
+
+                int markStart = StartNpts + 1;
+                Mark(chart, markStart, series);
+                Label(chart, series);
+            }
+
+            return true;
+        }
+
+        private static int PointValue(StockData o, int k, int id)
+        {
+            int value = 0;
+            switch (id)
+            {
+                case 1:
+                    value = o.Api.x[k, 1];
+                    break;
+                case 2:
+                    value = (int)(Math.Sqrt(o.Api.x[k, 2]) * 10);
+                    if (value > 500)
+                        value = 500;
+                    break;
+                case 3:
+                    value = (int)(Math.Sqrt(o.Api.x[k, 3] / (double)g.HUNDRED) * 10);
+                    if (value > 500)
+                        value = 500;
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    double multiplier = 1;
+                    if (MathUtils.IsSafeToDivide(o.Api.x[o.Api.nrow - 1, 7]))
+                    {
+                        multiplier = 100.0 / o.Api.x[o.Api.nrow - 1, 7] * g.v.수급과장배수 * o.Misc.수급과장배수;
+                    }
+                    value = (int)(o.Api.x[k, id] * multiplier);
+                    break;
+            }
+            return value;
+        }
+
+        public static void Mark(Chart chart, int MarkStartPoint, Series series)
+        {
+            // Extract series information
+            string stock = "";
+            string chartAreaName = "";
+            int columnIndex = 0;
+            int endPoint = 0;
+            ChartHandler.SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
+
+            var data = g.StockRepository.TryGetStockOrNull(stock);
+            if (data == null) return;
+
+            var x = data.Api.x;
+
+            // Mark only for price, amount, intensity
+            if (columnIndex > 3) return;
+
+            for (int m = MarkStartPoint; m <= endPoint; m++)
+            {
+                if (columnIndex == 1) // price
+                {
+                    int priceChange = x[m, 1] - x[m - 1, 1];
+
+                    if (priceChange >= 100)
+                    {
+                        if (priceChange > 300)
+                            series.Points[m].MarkerColor = Color.Black;
+                        else if (priceChange > 200)
+                            series.Points[m].MarkerColor = Color.Blue;
+                        else if (priceChange > 150)
+                            series.Points[m].MarkerColor = Color.Green;
+                        else
+                            series.Points[m].MarkerColor = Color.Red;
+
+                        series.Points[m].MarkerSize = 6;
+                        series.Points[m].MarkerStyle = MarkerStyle.Cross;
+                    }
+
+                    if (x[m, 0] >= 90200)
+                    {
+                        int diff = x[m, 8] - x[m, 9];
+                        if (diff > 100)
+                        {
+                            series.Points[m].MarkerSize = 9;
+                            series.Points[m].MarkerStyle = MarkerStyle.Circle;
+
+                            if (diff > 500)
+                                series.Points[m].MarkerColor = Color.Black;
+                            else if (diff > 300)
+                                series.Points[m].MarkerColor = Color.Blue;
+                            else if (diff > 200)
+                                series.Points[m].MarkerColor = Color.Green;
+                            else
+                                series.Points[m].MarkerColor = Color.Red;
+                        }
+                    }
+
+                    if (data.Api.분거래천[0] > 10)
+                    {
+                        int markSize = 0;
+                        Color color = Color.White;
+                        double val = data.Api.분거래천[0];
+
+                        if (val < 50) { color = Color.Red; markSize = 10; }
+                        else if (val < 100) { color = Color.Red; markSize = 15; }
+                        else if (val < 200) { color = Color.Green; markSize = 15; }
+                        else if (val < 300) { color = Color.Green; markSize = 20; }
+                        else if (val < 500) { color = Color.Blue; markSize = 20; }
+                        else if (val < 800) { color = Color.Blue; markSize = 30; }
+                        else if (val < 1200) { color = Color.Black; markSize = 30; }
+                        else if (val < 1700) { color = Color.Black; markSize = 40; }
+                        else { color = Color.Black; markSize = 50; }
+
+                        series.Points[0].MarkerColor = color;
+                        series.Points[0].MarkerSize = markSize;
+
+                        if (priceChange >= 0)
+                            series.Points[0].MarkerStyle = MarkerStyle.Circle;
+                        else
+                            series.Points[0].MarkerStyle = MarkerStyle.Cross;
+                    }
+                }
+
+                // amount or intensity mark
+                if (columnIndex == 2 || columnIndex == 3)
+                {
+                    int threshold = g.npts_for_magenta_cyan_mark;
+                    if (x[m, columnIndex + 8] >= threshold)
+                    {
+                        series.Points[m].MarkerColor = columnIndex == 2 ? Color.Magenta : Color.Cyan;
+                        series.Points[m].MarkerStyle = MarkerStyle.Cross;
+                        series.Points[m].MarkerSize = 7;
+                    }
+                }
+            }
+        }
+
+        public static void Label(Chart chart, Series t)
+        {
+            // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
+            // 1, 4, 5 extened label
+            // 2, 3 only 1 label
+            // 6 no label
+            string stock = "";
+            string chartAreaName = "";
+            int columnIndex = 0;
+            int markingPoint = 0;
+
+            ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
+
+            var data = g.StockRepository.TryGetStockOrNull(stock);
+            if (data == null) return;
+
+            var api = data.Api;
+            var post = data.Post;
+            int totalPoints = g.test ? Math.Min(g.Npts[1], api.nrow) : api.nrow;
+
+            string s = "";
+
+            switch (columnIndex)
+            {
+                case 1: // price
+                    s = "      " + api.x[totalPoints - 1, columnIndex].ToString();
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (totalPoints - 2 - k < 0) break;
+                        int d = api.x[totalPoints - 1 - k, columnIndex] - api.x[totalPoints - 2 - k, columnIndex];
+                        s += (d >= 0 ? "+" : "") + d.ToString("F0");
+                    }
+                    break;
+
+                case 2: // amount
+                    s = api.x[totalPoints - 1, columnIndex].ToString();
+                    break;
+
+                case 3: // intensity
+                    s = (api.x[totalPoints - 1, columnIndex] / 100).ToString();
+                    break;
+
+                case 4: // program
+                    s = (post.프누천 / 10.0).ToString("F1");
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (totalPoints - 2 - k < 0) break;
+                        double d = api.분프로천[k] / 10.0;
+                        s += (d >= 0 ? "+" : "") + d.ToString("F1");
+                    }
+                    break;
+
+                case 5: // foreign
+                    s = (post.외누천 / 10.0).ToString("F1");
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (totalPoints - 2 - k < 0) break;
+                        double d = api.분외인천[k] / 10.0;
+                        s += (d >= 0 ? "+" : "") + d.ToString("F1");
+                    }
+                    break;
+
+                case 6:
+                    return;
+            }
+
+            t.Points[markingPoint].Label = s;
+            t.LabelForeColor = colorGeneral[columnIndex];
+
+            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+        }
+
+        public static void RedrawAnnotation(Chart chart, StockData data, int row, int col)
+        {
+            if (chart == null || data == null)
+                return;
+
+            // Remove old annotation
+            string annotationName = data.Stock;
+            var old_annotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
+            if (old_annotation != null)
+                chart.Annotations.Remove(old_annotation);
+
+            // Determine range for annotation based on shrink setting
             int StartNpts = g.Npts[0];
             int EndNpts = (!g.test) ? data.Api.nrow : Math.Min(g.Npts[1], data.Api.nrow);
 
@@ -199,26 +418,7 @@ namespace New_Tradegy.Library.Trackers
                 StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
             }
 
-            if (data.Api.x[EndNpts - 1, 3] == 0) return null;
-
-            string area = stockName;
-            if (chart.InvokeRequired)
-            {
-                chart.Invoke(new Action(() => chart.ChartAreas.Add(area)));
-            }
-            else
-            {
-                chart.ChartAreas.Add(area);
-            }
-
-            bool drawSuccess = DrawSeriesLines(chart, data, stockName, area, StartNpts, EndNpts, ref y_min, ref y_max);
-            if (!drawSuccess) return null;
-
-
-
-
-
-            string annotation = AnnotationGeneral(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
+            string annotation = AnnotationText(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
 
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 
@@ -232,50 +432,14 @@ namespace New_Tradegy.Library.Trackers
                     break;
                 }
             }
-
-            float yOffset = isMainChart ? 0 : 3;
-            AnnotationAddRectangleWithText(chart, annotation, new RectangleF(0, yOffset, 100 / nCol, (int)annotationHeight + 2), area, Color.Black, BackColor);
-
-
-
-
-
-            var chartArea = chart.ChartAreas[area];
-            chartArea.AxisY.LabelStyle.Enabled = false;
-            chartArea.AxisY.MajorTickMark.Enabled = false;
-            chartArea.AxisY.MinorTickMark.Enabled = false;
-            chartArea.AxisY.MajorGrid.Enabled = false;
-            chartArea.AxisY.MinorGrid.Enabled = false;
-
-            chartArea.InnerPlotPosition = new ElementPosition(20, 5, 55, 100);
-            double padding = (y_max - y_min) * 0.05;
-            chartArea.AxisY.Minimum = y_min - padding;
-            chartArea.AxisY.Maximum = y_max + padding * 1.5;
-
-            int TotalNumberPoint = EndNpts - StartNpts;
-            chartArea.AxisX.LabelStyle.Enabled = true;
-            chartArea.AxisX.MajorGrid.Enabled = false;
-            chartArea.AxisX.Interval = TotalNumberPoint - 1;
-            chartArea.AxisX.IntervalOffset = 1;
-
-            chartArea.AxisX.LabelStyle.Font = new Font("Arial", 7);
-            chartArea.AxisY.LabelStyle.Font = new Font("Arial", 7);
-
-            if (g.q == "o&s" && data.Score.그순 < 5)
-            {
-                chartArea.BackColor = g.Colors[data.Score.그순];
-            }
-
-            if (data.Api.분프로천[0] > 5 && data.Api.분외인천[0] > 5 && data.Api.분배수차[0] > 0)
-            {
-                chartArea.BackColor = g.Colors[5];
-            }
-
-            return chartArea;
+            // Adjust vertical offset depending on chart
+            float yOffset = chart.Name == "chart1" ? 0f : 3f;
+            string areaName = data.Stock;
+            AnnotationAddRectangleWithText(chart, annotation,
+                new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), areaName, Color.Black, BackColor);
         }
 
-
-        public static string AnnotationGeneral(Chart chart, StockData o, int[,] x, int StartNpts, int EndNpts, int total_nrow)
+        public static string AnnotationText(Chart chart, StockData o, int[,] x, int StartNpts, int EndNpts, int total_nrow)
         {
             string stock = o.Stock;
             string stock_title = "";
@@ -301,7 +465,7 @@ namespace New_Tradegy.Library.Trackers
                            (o.Post.외누천 / 10.0).ToString("F1") + "  " +
                            (o.Post.기누천 / 10.0).ToString("F1");
 
-            stock_title += "\n" + AnnotationGeneralMinute(o, x, StartNpts, EndNpts);
+            stock_title += "\n" + AnnotationMinute(o, x, StartNpts, EndNpts);
 
             if (!g.StockManager.IndexList.Contains(stock))
             {
@@ -402,7 +566,7 @@ namespace New_Tradegy.Library.Trackers
             chart.Annotations.Add(annotation);
         }
 
-        public static string AnnotationGeneralMinute(StockData o, int[,] x, int StartNpts, int EndNpts)
+        public static string AnnotationMinute(StockData o, int[,] x, int StartNpts, int EndNpts)
         {
             var sb = new StringBuilder();
             string stock = o.Stock;
@@ -451,290 +615,107 @@ namespace New_Tradegy.Library.Trackers
             return sb.ToString();
         }
 
+        
+        // no use : modified by Sensei
+        //public static void ClearUnusedChartAreasAndAnnotations(Chart chart, List<string> activeStocks)
+        //{
+        //    var unusedAreas = chart.ChartAreas
+        //        .Cast<ChartArea>()
+        //        .Where(a => !activeStocks.Contains(a.Name))
+        //        .ToList();
 
-        private static bool DrawSeriesLines(Chart chart, StockData o, string stockName, string area,
-                                 int StartNpts, int EndNpts, ref double y_min, ref double y_max)
-        {
-            var lineTypes = new List<(int id, string label, Color color, int width)>
-    {
-        (1, "price", colorGeneral[1], g.LineWidth),
-        (2, "amount", colorGeneral[2], 1),
-        (3, "intensity", colorGeneral[3], 1),
-        (4, "program", colorGeneral[4], g.LineWidth),
-        (5, "foreign", colorGeneral[5], g.LineWidth),
-        (6, "institute", colorGeneral[6], g.LineWidth)
-    };
+        //    foreach (var area in unusedAreas)
+        //    {
+        //        chart.ChartAreas.Remove(area);
+        //        if (chart.Series.IndexOf(area.Name) >= 0)
+        //            chart.Series.Remove(chart.Series[area.Name]);
+        //    }
 
-            for (int i = 0; i < lineTypes.Count; i++)
-            {
-                var (typeId, label, color, width) = lineTypes[i];
-                string sid = $"{stockName} {typeId}";
+        //    // Annotation cleanup removed intentionally
+        //}
 
-                var series = new Series(sid)
-                {
-                    ChartArea = area,
-                    ChartType = SeriesChartType.Line,
-                    XValueType = ChartValueType.Date,
-                    IsVisibleInLegend = false,
-                    Color = color,
-                    BorderWidth = width
-                };
+        // no use : keep it temporaryly
+        //static ChartArea GenralChartArea(Chart chart, string stockName, int nRow, int nCol, bool isMainChart)
+        //{
+        //    var data = g.StockRepository.TryGetStockOrNull(stockName);
+        //    if (data.Api.nrow < 2) return null;
 
-                if (chart.InvokeRequired)
-                    chart.Invoke(new Action(() => chart.Series.Add(series)));
-                else
-                    chart.Series.Add(series);
+        //    double y_min = 100000;
+        //    double y_max = -100000;
 
-                int pointsCount = 0;
+        //    int StartNpts = g.Npts[0];
+        //    int EndNpts = (!g.test) ? data.Api.nrow : Math.Min(g.Npts[1], data.Api.nrow);
 
-                for (int k = StartNpts; k < EndNpts; k++)
-                {
-                    if (o.Api.x[k, 0] == 0)
-                    {
-                        if (pointsCount < 2) return false;
-                        else break;
-                    }
+        //    if (data.Misc.ShrinkDraw)
+        //    {
+        //        StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
+        //    }
 
-                    int value = GeneralPointValue(o, k, typeId);
-                    string xLabel = ((int)(o.Api.x[k, 0] / g.HUNDRED)).ToString();
+        //    if (data.Api.x[EndNpts - 1, 3] == 0) return null;
 
-                    if (chart.InvokeRequired)
-                        chart.Invoke(new Action(() => series.Points.AddXY(xLabel, value)));
-                    else
-                        series.Points.AddXY(xLabel, value);
+        //    string area = stockName;
+        //    if (chart.InvokeRequired)
+        //    {
+        //        chart.Invoke(new Action(() => chart.ChartAreas.Add(area)));
+        //    }
+        //    else
+        //    {
+        //        chart.ChartAreas.Add(area);
+        //    }
 
-                    pointsCount++;
-                    y_min = Math.Min(y_min, value);
-                    y_max = Math.Max(y_max, value);
-                }
+        //    bool drawSuccess = DrawSeriesLines(chart, data, stockName, area, StartNpts, EndNpts, ref y_min, ref y_max);
+        //    if (!drawSuccess) return null;
 
-                if (pointsCount < 2) return false;
+        //    string annotation = Annotation(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
 
-                int markStart = StartNpts + 1;
-                MarkGeneral(chart, markStart, series);
-                LabelGeneral(chart, series);
-            }
+        //    AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 
-            return true;
-        }
+        //    Color BackColor = Color.White;
+        //    int[] thresholds = { 90, 70, 50, 30, 10 };
+        //    for (int i = 0; i < thresholds.Length; i++)
+        //    {
+        //        if (data.Score.총점 > thresholds[i])
+        //        {
+        //            BackColor = g.Colors[i];
+        //            break;
+        //        }
+        //    }
 
-        private static int GeneralPointValue(StockData o, int k, int id)
-        {
-            int value = 0;
-            switch (id)
-            {
-                case 1:
-                    value = o.Api.x[k, 1];
-                    break;
-                case 2:
-                    value = (int)(Math.Sqrt(o.Api.x[k, 2]) * 10);
-                    if (value > 500)
-                        value = 500;
-                    break;
-                case 3:
-                    value = (int)(Math.Sqrt(o.Api.x[k, 3] / (double)g.HUNDRED) * 10);
-                    if (value > 500)
-                        value = 500;
-                    break;
-                case 4:
-                case 5:
-                case 6:
-                    double multiplier = 1;
-                    if (MathUtils.IsSafeToDivide(o.Api.x[o.Api.nrow - 1, 7]))
-                    {
-                        multiplier = 100.0 / o.Api.x[o.Api.nrow - 1, 7] * g.v.수급과장배수 * o.Misc.수급과장배수;
-                    }
-                    value = (int)(o.Api.x[k, id] * multiplier);
-                    break;
-            }
-            return value;
-        }
+        //    float yOffset = isMainChart ? 0 : 3;
+        //    AnnotationAddRectangleWithText(chart, annotation, new RectangleF(0, yOffset, 100 / nCol, (int)annotationHeight + 2), area, Color.Black, BackColor);
 
-        public static void MarkGeneral(Chart chart, int MarkStartPoint, Series series)
-        {
-            // Extract series information
-            string stock = "";
-            string chartAreaName = "";
-            int columnIndex = 0;
-            int endPoint = 0;
-            ChartHandler.SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
+        //    var chartArea = chart.ChartAreas[area];
+        //    chartArea.AxisY.LabelStyle.Enabled = false;
+        //    chartArea.AxisY.MajorTickMark.Enabled = false;
+        //    chartArea.AxisY.MinorTickMark.Enabled = false;
+        //    chartArea.AxisY.MajorGrid.Enabled = false;
+        //    chartArea.AxisY.MinorGrid.Enabled = false;
 
-            var data = g.StockRepository.TryGetStockOrNull(stock);
-            if (data == null) return;
+        //    chartArea.InnerPlotPosition = new ElementPosition(20, 5, 55, 100);
+        //    double padding = (y_max - y_min) * 0.05;
+        //    chartArea.AxisY.Minimum = y_min - padding;
+        //    chartArea.AxisY.Maximum = y_max + padding * 1.5;
 
-            var x = data.Api.x;
+        //    int TotalNumberPoint = EndNpts - StartNpts;
+        //    chartArea.AxisX.LabelStyle.Enabled = true;
+        //    chartArea.AxisX.MajorGrid.Enabled = false;
+        //    chartArea.AxisX.Interval = TotalNumberPoint - 1;
+        //    chartArea.AxisX.IntervalOffset = 1;
 
-            // Mark only for price, amount, intensity
-            if (columnIndex > 3) return;
+        //    chartArea.AxisX.LabelStyle.Font = new Font("Arial", 7);
+        //    chartArea.AxisY.LabelStyle.Font = new Font("Arial", 7);
 
-            for (int m = MarkStartPoint; m <= endPoint; m++)
-            {
-                if (columnIndex == 1) // price
-                {
-                    int priceChange = x[m, 1] - x[m - 1, 1];
+        //    if (g.q == "o&s" && data.Score.그순 < 5)
+        //    {
+        //        chartArea.BackColor = g.Colors[data.Score.그순];
+        //    }
 
-                    if (priceChange >= 100)
-                    {
-                        if (priceChange > 300)
-                            series.Points[m].MarkerColor = Color.Black;
-                        else if (priceChange > 200)
-                            series.Points[m].MarkerColor = Color.Blue;
-                        else if (priceChange > 150)
-                            series.Points[m].MarkerColor = Color.Green;
-                        else
-                            series.Points[m].MarkerColor = Color.Red;
+        //    if (data.Api.분프로천[0] > 5 && data.Api.분외인천[0] > 5 && data.Api.분배수차[0] > 0)
+        //    {
+        //        chartArea.BackColor = g.Colors[5];
+        //    }
 
-                        series.Points[m].MarkerSize = 6;
-                        series.Points[m].MarkerStyle = MarkerStyle.Cross;
-                    }
-
-                    if (x[m, 0] >= 90200)
-                    {
-                        int diff = x[m, 8] - x[m, 9];
-                        if (diff > 100)
-                        {
-                            series.Points[m].MarkerSize = 9;
-                            series.Points[m].MarkerStyle = MarkerStyle.Circle;
-
-                            if (diff > 500)
-                                series.Points[m].MarkerColor = Color.Black;
-                            else if (diff > 300)
-                                series.Points[m].MarkerColor = Color.Blue;
-                            else if (diff > 200)
-                                series.Points[m].MarkerColor = Color.Green;
-                            else
-                                series.Points[m].MarkerColor = Color.Red;
-                        }
-                    }
-
-                    if (data.Api.분거래천[0] > 10)
-                    {
-                        int markSize = 0;
-                        Color color = Color.White;
-                        double val = data.Api.분거래천[0];
-
-                        if (val < 50) { color = Color.Red; markSize = 10; }
-                        else if (val < 100) { color = Color.Red; markSize = 15; }
-                        else if (val < 200) { color = Color.Green; markSize = 15; }
-                        else if (val < 300) { color = Color.Green; markSize = 20; }
-                        else if (val < 500) { color = Color.Blue; markSize = 20; }
-                        else if (val < 800) { color = Color.Blue; markSize = 30; }
-                        else if (val < 1200) { color = Color.Black; markSize = 30; }
-                        else if (val < 1700) { color = Color.Black; markSize = 40; }
-                        else { color = Color.Black; markSize = 50; }
-
-                        series.Points[0].MarkerColor = color;
-                        series.Points[0].MarkerSize = markSize;
-
-                        if (priceChange >= 0)
-                            series.Points[0].MarkerStyle = MarkerStyle.Circle;
-                        else
-                            series.Points[0].MarkerStyle = MarkerStyle.Cross;
-                    }
-                }
-
-                // amount or intensity mark
-                if (columnIndex == 2 || columnIndex == 3)
-                {
-                    int threshold = g.npts_for_magenta_cyan_mark;
-                    if (x[m, columnIndex + 8] >= threshold)
-                    {
-                        series.Points[m].MarkerColor = columnIndex == 2 ? Color.Magenta : Color.Cyan;
-                        series.Points[m].MarkerStyle = MarkerStyle.Cross;
-                        series.Points[m].MarkerSize = 7;
-                    }
-                }
-            }
-        }
-
-        public static void LabelGeneral(Chart chart, Series t)
-        {
-            // { 1, 2, 3, 4, 5, 6 }; price, amount, intensity, program, foreign, institute
-            // 1, 4, 5 extened label
-            // 2, 3 only 1 label
-            // 6 no label
-            string stock = "";
-            string chartAreaName = "";
-            int columnIndex = 0;
-            int markingPoint = 0;
-
-            ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
-
-            var data = g.StockRepository.TryGetStockOrNull(stock);
-            if (data == null) return;
-
-            var api = data.Api;
-            var post = data.Post;
-            int totalPoints = g.test ? Math.Min(g.Npts[1], api.nrow) : api.nrow;
-
-            string s = "";
-
-            switch (columnIndex)
-            {
-                case 1: // price
-                    s = "      " + api.x[totalPoints - 1, columnIndex].ToString();
-                    for (int k = 0; k < 4; k++)
-                    {
-                        if (totalPoints - 2 - k < 0) break;
-                        int d = api.x[totalPoints - 1 - k, columnIndex] - api.x[totalPoints - 2 - k, columnIndex];
-                        s += (d >= 0 ? "+" : "") + d.ToString("F0");
-                    }
-                    break;
-
-                case 2: // amount
-                    s = api.x[totalPoints - 1, columnIndex].ToString();
-                    break;
-
-                case 3: // intensity
-                    s = (api.x[totalPoints - 1, columnIndex] / 100).ToString();
-                    break;
-
-                case 4: // program
-                    s = (post.프누천 / 10.0).ToString("F1");
-                    for (int k = 0; k < 4; k++)
-                    {
-                        if (totalPoints - 2 - k < 0) break;
-                        double d = api.분프로천[k] / 10.0;
-                        s += (d >= 0 ? "+" : "") + d.ToString("F1");
-                    }
-                    break;
-
-                case 5: // foreign
-                    s = (post.외누천 / 10.0).ToString("F1");
-                    for (int k = 0; k < 4; k++)
-                    {
-                        if (totalPoints - 2 - k < 0) break;
-                        double d = api.분외인천[k] / 10.0;
-                        s += (d >= 0 ? "+" : "") + d.ToString("F1");
-                    }
-                    break;
-
-                case 6:
-                    return;
-            }
-
-            t.Points[markingPoint].Label = s;
-            t.LabelForeColor = colorGeneral[columnIndex];
-
-            t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-        }
-
-        // modified by Sensei
-        public static void ClearUnusedChartAreasAndAnnotations(Chart chart, List<string> activeStocks)
-        {
-            var unusedAreas = chart.ChartAreas
-                .Cast<ChartArea>()
-                .Where(a => !activeStocks.Contains(a.Name))
-                .ToList();
-
-            foreach (var area in unusedAreas)
-            {
-                chart.ChartAreas.Remove(area);
-                if (chart.Series.IndexOf(area.Name) >= 0)
-                    chart.Series.Remove(chart.Series[area.Name]);
-            }
-
-            // Annotation cleanup removed intentionally
-        }
+        //    return chartArea;
+        //}
     }
 }
