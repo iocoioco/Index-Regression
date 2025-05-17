@@ -13,6 +13,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
 {
     public static class ActionHandlers
     {
+        // Function
+        // Escape
+        #region
         public static readonly Action DealCancelOrder = () =>
         {
             SoundUtils.Sound("Keys", "cancel");
@@ -24,13 +27,14 @@ namespace New_Tradegy.Library.UI.KeyBindings
             }
         };
 
+        // F1
         public static readonly Action HalfDealMoney = () =>
         {
             if (g.일회거래액 > 500)
                 g.일회거래액 /= 2;
             else if (g.일회거래액 > 100)
                 g.일회거래액 = 100;
-            else
+            else 
                 g.일회거래액 = 0;
 
             SoundUtils.Sound_돈(g.일회거래액);
@@ -38,6 +42,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 g.제어.dtb.Rows[0][2] = g.일회거래액.ToString();
         };
 
+        // F2
         public static readonly Action DoubleDealMoney = () =>
         {
             if (g.일회거래액 < 100)
@@ -62,6 +67,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             if (g.제어.dtb.Rows[0][2].ToString() != g.일회거래액.ToString())
                 g.제어.dtb.Rows[0][2] = g.일회거래액.ToString();
         };
+        #endregion
 
         public static readonly Action 코피_코닥_관심 = () =>
         {
