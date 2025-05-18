@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		Fake Wall Detector.txt = Fake Wall Detector.txt
 		git.txt = git.txt
+		Keys.txt = Keys.txt
 		temp.txt = temp.txt
 		VS usage manual.txt = VS usage manual.txt
 		급락.txt = 급락.txt
@@ -27,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time etc.", "Program Variable and Time etc.", "{3DF9494C-3D57-4742-9E8E-5D67ABF1093F}"
 	ProjectSection(SolutionItems) = preProject
 		keys keyword - eval and draw(test and real).txt = keys keyword - eval and draw(test and real).txt
+		Keys.txt = Keys.txt
 		VS usage manual.txt = VS usage manual.txt
 		할일.txt = 할일.txt
 	EndProjectSection
@@ -41,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program R
 		Scroll and Curve Height Adjuster.txt = Scroll and Curve Height Adjuster.txt
 		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
 		StockData Class and StockManager Class.txt = StockData Class and StockManager Class.txt
+		할일.txt = 할일.txt
 	EndProjectSection
 EndProject
 Global
