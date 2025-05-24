@@ -466,7 +466,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         public static readonly Action ListForwads = () =>
         {
-            if (g.test)
+            if (g.test) 
             {
                 wk.date_backwards_forwards("forwards");
             }
