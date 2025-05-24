@@ -15,6 +15,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
     {
         // Function
         #region
+        // Escape
         public static readonly Action DealCancel = () =>
         {
             if (!g.test)
@@ -75,7 +76,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.제어.dtb.Rows[0][2] = g.일회거래액.ToString();
             }
         };
+        
 
+        // F3
         public static readonly Action ConfirmSell = () =>
         {
             if (!g.test)

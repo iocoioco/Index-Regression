@@ -16,10 +16,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             // private static readonly Dictionary<(Keys key, bool shift, bool ctrl, bool alt), Action<Form>>
             
             // Function
-            KeyBindingManager.Register(Keys.Escape, false, false, false, ActionHandlers.매매취소);
-            KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.거액두배);
-            KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.거액절반);
-            KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.비상매도);
+            KeyBindingManager.Register(Keys.Escape, false, false, false, ActionHandlers.DealCancel);
+            KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.DealHalf);
+            KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.DealDouble);
+            KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.ConfirmSell);
 
             // Number
             KeyBindingManager.Register('1', false, false, ActionHandlers.시간단동);
