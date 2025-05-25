@@ -82,6 +82,9 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.StockRepository = StockRepository.Instance;
 
+        
+            ChartIndex.UpdateChart(g.chart1);
+            ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
             g.ChartGeneral = new ChartGeneral();
             g.ChartGeneral.Initialize(chart1, this);
 

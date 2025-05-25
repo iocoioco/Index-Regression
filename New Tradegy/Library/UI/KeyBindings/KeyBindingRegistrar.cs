@@ -16,38 +16,58 @@ namespace New_Tradegy.Library.UI.KeyBindings
             // private static readonly Dictionary<(Keys key, bool shift, bool ctrl, bool alt), Action<Form>>
             
             // Function
-            KeyBindingManager.Register(Keys.Escape, false, false, false, ActionHandlers.DealCancel);
-            KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.DealHalf);
-            KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.DealDouble);
-            KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.ConfirmSell);
+            KeyBindingManager.Register(Keys.Escape, false, false, false, ActionHandlers.DealCancelKey);
+            KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.DealHalfKey);
+            KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.DealDoubleKey);
+            KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.DealConfirmSellKey);
+            KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.DealEmergencySellKey);
 
             // Number
-            KeyBindingManager.Register('1', false, false, ActionHandlers.시간단동);
-            KeyBindingManager.Register('2', false, false, ActionHandlers.시간장동);
-            KeyBindingManager.Register('q', false, false, ActionHandlers.시간일진);
-            KeyBindingManager.Register('Q', false, false, ActionHandlers.시간일후);
-            KeyBindingManager.Register('w', false, false, ActionHandlers.시간십진);
-            KeyBindingManager.Register('W', false, false, ActionHandlers.시간십후);
-            KeyBindingManager.Register('e', false, false, ActionHandlers.시간삼진);
-            KeyBindingManager.Register('E', false, false, ActionHandlers.시간삼후);
+            KeyBindingManager.Register('`', false, false, ActionHandlers.TimeInitializeKey);
+            KeyBindingManager.Register('~', false, false, ActionHandlers.TimeEndKey);
+            KeyBindingManager.Register('1', false, false, ActionHandlers.TimeShortMoveKey);
+            KeyBindingManager.Register('2', false, false, ActionHandlers.TimeLongMoveKey);
 
+            // Top
+            KeyBindingManager.Register('q', false, false, ActionHandlers.TimeOneForwardsKey);
+            KeyBindingManager.Register('Q', false, false, ActionHandlers.TimeOneBackwardsKey);
+            KeyBindingManager.Register('w', true, false, ActionHandlers.WeightControlKey);
+            KeyBindingManager.Register('w', false, false, ActionHandlers.TimeTenForwardsKey);
+            KeyBindingManager.Register('W', false, false, ActionHandlers.TimeTenBackwardsKey);
+            KeyBindingManager.Register('e', false, false, ActionHandlers.TimeThirtyForwardsKey);
+            KeyBindingManager.Register('E', false, false, ActionHandlers.TimeThirtyBackwardsKey);
+            KeyBindingManager.Register('E', false, false, ActionHandlers.TimeThirtyBackwardsKey);
+            KeyBindingManager.Register('r', false, false, ActionHandlers.ShrinkOrNotTenMinusKey);
+            KeyBindingManager.Register('R', false, false, ActionHandlers.ShrinkOrNotTenPlusKey);
+            KeyBindingManager.Register('o', false, false, false, ActionHandlers.OpenFilesKey);
+            KeyBindingManager.Register('p', false, false, ActionHandlers.NewsPeoridDWMKey);
+            KeyBindingManager.Register('E', false, false, ActionHandlers.DrawBollingerKey);
+            KeyBindingManager.Register('E', false, false, ActionHandlers.DrawForeignAndInstituteKey);
+            KeyBindingManager.Register('E', false, false, ActionHandlers.DrawNormaStockKey);
 
-            KeyBindingManager.Register('a', false, false, ActionHandlers.코피코닥);
-            KeyBindingManager.Register('s', false, false, ActionHandlers.프누종누);
-            KeyBindingManager.Register('d', false, false, ActionHandlers.푀분총점);
-            KeyBindingManager.Register('g', false, false, ActionHandlers.상순하순);
+            // Home
+            KeyBindingManager.Register('a', false, false, ActionHandlers.AllKospiOrKosdaqKey);
+            KeyBindingManager.Register('s', false, false, ActionHandlers.AccumulationKey);
+            KeyBindingManager.Register('s', true, false, ActionHandlers.AccumulationKey);
+            KeyBindingManager.Register('d', false, false, ActionHandlers.ProgramAndForeignOrTotalKey);\
+            KeyBindingManager.Register('f', false, false, ActionHandlers.SubChartKospiOrKosdaqKey);
+            KeyBindingManager.Register('F', false, false, ActionHandlers.SubChartRankOrInsterestKey);
+            KeyBindingManager.Register('f', false, false, ActionHandlers.SubChartKospiOrKosdaqKey);
+            KeyBindingManager.Register('g', false, false, ActionHandlers.HighestOrLowestPriceKey);
 
-            KeyBindingManager.Register(Keys.Escape, true, false, false, ActionHandlers.상순_저순);
-            KeyBindingManager.Register('j', false, false, ActionHandlers.편차_평균);
-            
-            
-            KeyBindingManager.Register('S', false, false, false, ActionHandlers.프편_종편);
-            KeyBindingManager.Register('D', false, false, false, ActionHandlers.배차);
-            KeyBindingManager.Register('F', false, false, false, ActionHandlers.분거);
-            KeyBindingManager.Register('z', false, false, false, ActionHandlers.토글_옵티멈);
-            KeyBindingManager.Register(' ', false, false, false, ActionHandlers.화면_다음);
-            KeyBindingManager.Register('n', false, false, false, ActionHandlers.화면_이전);
-            KeyBindingManager.Register(';', false, false, false, ActionHandlers.열기_제어);
+            KeyBindingManager.Register('h', false, false, ActionHandlers.DeviationOrAverageKey);
+            KeyBindingManager.Register('j', false, false, ActionHandlers.MultipleOrAmountKey);
+            KeyBindingManager.Register('k', false, false, ActionHandlers.PriceIncreaseKey);
+
+       
+            KeyBindingManager.Register('z', false, false, ActionHandlers.OptimalTradingKey);
+            KeyBindingManager.Register('x', false, false, ActionHandlers.RemoveBookAndInterest);
+            KeyBindingManager.Register('c', false, false, ActionHandlers.KillWebTxtKey);
+            KeyBindingManager.Register(' ', false, false, ActionHandlers.ListingForwadsKey);
+            KeyBindingManager.Register('n', false, false, ActionHandlers.ListingBackwardKey);
+            KeyBindingManager.Register('c', false, false, ActionHandlers.MemoOpenKey);
+            KeyBindingManager.Register('.', false, false, ActionHandlers.DateBackwardsKey);
+            KeyBindingManager.Register(',', false, false, ActionHandlers.DateForwardsKey);
             KeyBindingManager.Register(':', false, false, false, ActionHandlers.열기_상관);
             KeyBindingManager.Register('\'', false, false, false, ActionHandlers.열기_메모);
         }

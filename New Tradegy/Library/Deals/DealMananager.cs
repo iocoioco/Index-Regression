@@ -315,10 +315,10 @@ namespace New_Tradegy.Library.Deals
                 g.StockManager.InterestedWithBidList.Remove(code);
             }
 
-            DealHold_order();
+            DealHoldReorder();
         }
 
-        public static void DealHold_order()
+        public static void DealHoldReorder()
         {
             var stocksTuple = new List<Tuple<long, string>>();
 

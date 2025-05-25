@@ -15,7 +15,7 @@ namespace New_Tradegy.Library.Trackers
         //How to call
         //ChartIndex.UpdateIndexChart(g.chart1);
         //ChartIndex.UpdateIndexChart(g.chart2, isChart1: false);
-        public static void UpdataChart(Chart chart, bool isChart1 = true, bool includeIndex = true)
+        public static void UpdateChart(Chart chart, bool isChart1 = true, bool includeIndex = true)
         {
             if (!includeIndex) return; // e.g., chart2 might not have index
 
