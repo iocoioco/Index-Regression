@@ -16,7 +16,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         // Function
         #region
         // Escape
-        public static readonly Action DealCancelKey = () =>
+        public static readonly Action DealCancel_TimeInitalKey = () =>
         {
             if (!g.test)
             {
@@ -31,7 +31,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         };
 
         // F1
-        public static readonly Action DealHalfKey = () =>
+        public static readonly Action DealHalf_TimeFinalKey = () =>
         {
             if (!g.test)
             {
@@ -110,10 +110,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         // Number
         #region
-        public static readonly Action AllKospiOrKosdaqKey = () =>
+        public static readonly Action 피올_닥올 = () =>
         {
-            List<string> list = new List<string> { "닥올", "피올" };
-            g.v.key_string = ms.cycleStrings(g.v.key_string, list);
+            var list = new[] { "피올", "닥올" };
+            g.v.key_string = StringUtils.CycleStrings(g.v.key_string, list);
             g.q = "o&s";
             g.gid = 0;
             Form se = (Form)Application.OpenForms["Form1"];
@@ -123,10 +123,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action AccumulationKey = () =>
+        public static readonly Action 푀누_종누 = () =>
         {
             var list = new[] { "프누", "종누" };
-            g.v.KeyString = mc.CycleStrings(g.v.KeyString, list);
+            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
@@ -136,10 +136,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action ProgramAndForeignOrTotalKey = () =>
+        public static readonly Action 푀분_총점 = () =>
         {
             var list = new[] { "푀분", "총점" };
-            g.v.KeyString = mc.CycleStrings(g.v.KeyString, list);
+            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
@@ -149,10 +149,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action HighestOrLowestPriceKey = () =>
+        public static readonly Action 상순_저순 = () =>
         {
             var list = new[] { "상순", "저순" };
-            g.v.KeyString = mc.CycleStrings(g.v.KeyString, list);
+            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
@@ -162,10 +162,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action DeviationOrAverageKey = () =>
+        public static readonly Action 편차_평균 = () =>
         {
             var list = new[] { "편차", "평균" };
-            g.v.KeyString = mc.CycleStrings(g.v.KeyString, list);
+            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
@@ -175,10 +175,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action MultipleOrAmountKey = () =>
+        public static readonly Action 배차_분거 = () =>
         {
             var list = new[] { "배차", "분거" };
-            g.v.KeyString = mc.CycleStrings(g.v.KeyString, list);
+            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
@@ -188,7 +188,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action PriceIncreaseKey = () =>
+        public static readonly Action 가격증순 = () =>
         {
             g.v.KeyString = "가증";
             var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
@@ -265,7 +265,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             }
         };
 
-        public static readonly Action TimeEndKey = () =>
+        public static readonly Action TimeFinalKey = () =>
         {
             if (g.test) // 긴 시간 앞으로 in draw
             {
@@ -333,21 +333,36 @@ namespace New_Tradegy.Library.UI.KeyBindings
             }
         };
 
-        public static readonly Action TimeThirtyBackwards = () =>
+        public static readonly Action ShrinkOrNotTenPlusKey = () =>
         {
-            if (g.test)
-            {
-                g.time[1] -= 30;
+            g.draw_shrink_time += 10;
+        };
 
-                if (g.time[1] < 2)
-                {
-                    g.time[0] = 0;
-                    g.time[1] = 2;
-                }
+        public static readonly Action ShrinkOrNotTenMinusKey = () =>
+        {
+            g.draw_shrink_time -= 10;
+            if (g.draw_shrink_time <= 10)
+            {
+                g.draw_shrink_time = 10;
             }
         };
 
-        public static readonly Action NewsPeoridDWMKey = () =>
+        public static readonly Action OpenFilesKey = () => // 제어, 상관, 관심 등
+        {
+            if (g.test)
+            {
+                wk.date_backwards_forwards("forwards");
+            }
+        };
+        public static readonly Action OpenMemoKey = () => // 제어, 상관, 관심 등
+        {
+            if (g.test)
+            {
+                wk.date_backwards_forwards("forwards");
+            }
+        };
+
+        public static readonly Action NewsPeoridKey = () =>
         {
             if (g.PeoridNews == 'd')
             {
@@ -387,11 +402,11 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         // Home
         #region
-        public static readonly Action SubChartKospiOrKosdaqKey = () =>
+        public static readonly Action 보조차트_피올_닥올 = () =>
         {
             Form_보조_차트 fa = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
             list_3 = new List<string> { "코피", "코닥" };
-            g.v.SpfKeyString = ms.cycleStrings(g.v.SpfKeyString, list_3);
+            g.v.SpfKeyString = StringUtils.CycleStrings(g.v.SpfKeyString, list_3);
             dr.draw_보조_차트(g.v.SpfKeyString);
         };
 
@@ -407,13 +422,13 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 SoundUtils.Sound("일반", "no add interest");
         };
 
-        public static readonly Action SubChartRankOrInsterestKey = () =>
+        public static readonly Action 보조차트_순위_관심 = () =>
         {
             Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
             if (Form_보조_차트 != null)
             {
                 List<string> list_6 = new List<string> { "그순", "관심" };
-                Form_보조_차트.keyString = ms.cycleStrings(Form_보조_차트.keyString, list_6);
+                Form_보조_차트.keyString = StringUtils.CycleStrings(Form_보조_차트.keyString, list_6);
                 Form_보조_차트.Form_보조_차트_DRAW();
                 //Form_보조_차트.TopMost = true;
                 //Form_보조_차트.TopMost = false;
@@ -434,19 +449,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             }
         };
 
-        public static readonly Action ShrinkOrNotTenPlusKey = () =>
-        {
-            g.draw_shrink_time += 10;
-        };
-
-        public static readonly Action ShrinkOrNotTenMinusKey = () =>
-        {
-            g.draw_shrink_time -= 10;
-            if (g.draw_shrink_time <= 10)
-            {
-                g.draw_shrink_time = 10;
-            }
-        };
+        
         #endregion
 
         // Bottom
@@ -558,12 +561,6 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 wk.date_backwards_forwards("forwards");
             }
         };
-        public static readonly Action OpenFilesKey = () => // 제어, 상관, 관심 등
-        {
-            if (g.test)
-            {
-                wk.date_backwards_forwards("forwards");
-            }
-        };
+        
     }
 }
