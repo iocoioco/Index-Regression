@@ -277,7 +277,7 @@ namespace New_Tradegy.Library.Models
         public int 매도호가거래액_백만원; // ok
         public int 분당가격차; // ok
 
-        public double 프누천;
+        public double 푀누천;
         public double 외누천;
         public double 기누천;
         public double 거누천;

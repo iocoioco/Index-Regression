@@ -466,7 +466,7 @@ namespace New_Tradegy.Library.Listeners
             }
             else
             {
-                _dataTable.Rows[Rows - 1][2] = (stockData.Post.프누천 / 10.0).ToString("0.##");
+                _dataTable.Rows[Rows - 1][2] = (stockData.Post.푀누천 / 10.0).ToString("0.##");
             }
 
             if (MathUtils.IsSafeToDivide(valDn))
@@ -540,7 +540,7 @@ namespace New_Tradegy.Library.Listeners
             stockData.Api.틱매도잔[0] = stockData.Api.최우선매도호가잔량;
             stockData.Api.틱매수잔[0] = stockData.Api.최우선매도호가잔량;
 
-            // 프누억
+            // 푀누억
             if (_stockName.Contains("KODEX"))
             {
                 _dataTable.Rows[Rows - 2][2] = (MajorIndex.Instance.KospiIndex / 100.0).ToString("0.##"); ;
@@ -548,7 +548,7 @@ namespace New_Tradegy.Library.Listeners
             }
             else
             {
-                _dataTable.Rows[Rows - 1][2] = (stockData.Post.프누천 / 10.0).ToString("0.##");
+                _dataTable.Rows[Rows - 1][2] = (stockData.Post.푀누천 / 10.0).ToString("0.##");
             }
 
             // 한 호가 차이 슬리피지 % 계산

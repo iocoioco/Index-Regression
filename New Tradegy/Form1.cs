@@ -766,6 +766,22 @@ namespace New_Tradegy // added for test on 20241020 0300
         {
             networkMonitor?.Stop();
         }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // ProcessCmdKey is first and then
+            // passed to Form1_KeyPress, e.Handled = true : no meaning in the current program
+            if ((short)e.KeyChar > 127)
+            {
+                SoundUtils.Sound("Keys", "Korean");
+
+                // Change input language to US English
+                InputLanguage.CurrentInputLanguage = InputLanguage.FromCulture(
+                    new System.Globalization.CultureInfo("en-US"));
+
+                return;
+            }
+        }
     }
 }
 

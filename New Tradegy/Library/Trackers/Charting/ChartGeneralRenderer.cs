@@ -369,7 +369,7 @@ namespace New_Tradegy.Library.Trackers
                     break;
 
                 case 4: // program
-                    s = (post.프누천 / 10.0).ToString("F1");
+                    s = (post.푀누천 / 10.0).ToString("F1");
                     for (int k = 0; k < 4; k++)
                     {
                         if (totalPoints - 2 - k < 0) break;
@@ -461,7 +461,7 @@ namespace New_Tradegy.Library.Trackers
             var groupTitle = g.GroupManager.FindGroupByStock(stock); // group title
             stock_title += groupTitle == null ? "%" : " "; //?
             stock_title += Math.Round(o.Post.종거천 / 10.0) + "  " +
-                           (o.Post.프누천 / 10.0).ToString("F1") + "  " +
+                           (o.Post.푀누천 / 10.0).ToString("F1") + "  " +
                            (o.Post.외누천 / 10.0).ToString("F1") + "  " +
                            (o.Post.기누천 / 10.0).ToString("F1");
 

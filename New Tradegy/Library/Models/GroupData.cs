@@ -17,7 +17,7 @@ namespace New_Tradegy.Library.Models
         public double 강평 { get; set; }  // e.g., 강도 평점 (strength rating)
 
         // Sector metrics (Korean for now, you can rename if needed)
-        public double 프누 { get; set; }
+        public double 푀누 { get; set; }
         public double 종누 { get; set; }
         public double 거분 { get; set; }
         public double 배합 { get; set; }

@@ -312,11 +312,11 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                             g.clickedTitle = group.Title;
                         }
 
-                        //If g.v.SubKeyStr is "상관" or "절친", then:
-                        //Assign g.v.SubKeyStr to key.
+                        //If g.v.SubChartKeyString is "상관" or "절친", then:
+                        //Assign g.v.SubChartKeyString to key.
                         //❌ Otherwise:
                         //Assign "상관" to key(as a fallback default).
-                        string key = (g.v.SubKeyStr == "상관" || g.v.SubKeyStr == "절친") ? g.v.SubKeyStr : "상관";
+                        string key = (g.v.SubChartKeyString == "상관" || g.v.SubChartKeyString == "절친") ? g.v.SubChartKeyString : "상관";
                         mm.ManageChart2(key);
                     }
                     break;

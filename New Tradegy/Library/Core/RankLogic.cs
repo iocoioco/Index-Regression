@@ -137,8 +137,8 @@ namespace New_Tradegy.Library.Core
                             value = score.총점;
                             break;
 
-                        case "프누":
-                            value = post.프누천 + post.외누천;
+                        case "푀누":
+                            value = post.푀누천 + post.외누천;
                             break;
 
                         case "종누":
@@ -146,7 +146,7 @@ namespace New_Tradegy.Library.Core
                             break;
 
                         case "프편":
-                            value = (post.프누천 + post.외누천) / stat.프분_dev;
+                            value = (post.푀누천 + post.외누천) / stat.프분_dev;
                             break;
 
                         case "종편":
@@ -230,7 +230,7 @@ namespace New_Tradegy.Library.Core
             }
 
             // ✅ Always include 누적 계열 regardless of filters
-            if (g.v.KeyString == "프누" ||
+            if (g.v.KeyString == "푀누" ||
                 g.v.KeyString == "종누" ||
                 g.v.KeyString == "프편" ||
                 g.v.KeyString == "종편")

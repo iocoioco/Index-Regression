@@ -149,7 +149,7 @@ namespace New_Tradegy.Library.Core
                 var group = new GroupData(oGL_title[i])
                 {
                     Stocks = sorted
-                    // Other metrics (프누, 종누, etc.) will remain default (0.0) unless assigned later
+                    // Other metrics (푀누, 종누, etc.) will remain default (0.0) unless assigned later
                 };
 
                 groupList.Add(group);

@@ -197,7 +197,7 @@ namespace New_Tradegy.Library
             public List<List<double>> 프틱 = new List<List<double>>();
             public List<List<double>> 프지 = new List<List<double>>();
             public List<List<double>> 프퍼 = new List<List<double>>();
-            public List<List<double>> 프누 = new List<List<double>>();
+            public List<List<double>> 푀누 = new List<List<double>>();
             public List<List<double>> 거분 = new List<List<double>>();
             public List<List<double>> 거틱 = new List<List<double>>();
             public List<List<double>> 거일 = new List<List<double>>();
@@ -223,8 +223,8 @@ namespace New_Tradegy.Library
         public class Variable
         {
             public string KeyString = "분푀";
-            public string SubKeyStr = "그순";
-            public string old_key_string = "푀분";
+            public string SubChartKeyString = "그순";
+            public string old_KeyString = "푀분";
 
             public double 분당거래액이상_천만원; // in setting 10
             public double 호가거래액_백만원; // in setting 10

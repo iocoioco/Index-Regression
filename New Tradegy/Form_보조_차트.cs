@@ -22,7 +22,7 @@ namespace New_Tradegy
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
-        private string PreSubKeyStr = "";
+        private string PreSubChartKeyString = "";
 
         public Form_보조_차트()
         {
@@ -118,7 +118,7 @@ namespace New_Tradegy
         public void Form_보조_차트_DRAW()
         {
             displayList.Clear();
-            StocksGivenKeyStr(g.v.SubKeyStr, displayList, g.clickedStock, g.clickedTitle);
+            StocksGivenKeyStr(g.v.SubChartKeyString, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title
             UpdateFormTitle();
@@ -126,9 +126,9 @@ namespace New_Tradegy
             // Determine grid layout
             SetGridDimensions();
 
-            if (g.v.SubKeyStr != PreSubKeyStr) // if g.v.SubKeyStr changes, Clear Chart
+            if (g.v.SubChartKeyString != PreSubChartKeyString) // if g.v.SubChartKeyString changes, Clear Chart
             {
-                PreSubKeyStr = g.v.SubKeyStr;
+                PreSubChartKeyString = g.v.SubChartKeyString;
                 g.ChartManager.Chart2Handler.Clear();
             }
 
@@ -445,19 +445,19 @@ namespace New_Tradegy
 
         private void UpdateFormTitle()
         {
-            switch (g.v.SubKeyStr)
+            switch (g.v.SubChartKeyString)
             {
                 case "상관":
-                    this.Text = $"{g.v.SubKeyStr} ({g.clickedTitle})";
+                    this.Text = $"{g.v.SubChartKeyString} ({g.clickedTitle})";
                     break;
                 case "절친":
-                    this.Text = $"{g.v.SubKeyStr} ({g.clickedStock})";
+                    this.Text = $"{g.v.SubChartKeyString} ({g.clickedStock})";
                     break;
                 case "그순":
-                    this.Text = $"{g.v.SubKeyStr} ({g.oGl_data_selection})";
+                    this.Text = $"{g.v.SubChartKeyString} ({g.oGl_data_selection})";
                     break;
                 default:
-                    this.Text = g.v.SubKeyStr;
+                    this.Text = g.v.SubChartKeyString;
                     break;
             }
         }
@@ -525,28 +525,28 @@ namespace New_Tradegy
             switch (e.ColumnIndex)
             {
                 case 0:
-                    g.v.SubKeyStr = "상관";
+                    g.v.SubChartKeyString = "상관";
                     return;
                 case 1:
-                    g.v.SubKeyStr = "보유";
+                    g.v.SubChartKeyString = "보유";
                     break;
                 case 2:
-                    g.v.SubKeyStr = "그순";
+                    g.v.SubChartKeyString = "그순";
                     break;
                 case 3:
-                    g.v.SubKeyStr = "관심";
+                    g.v.SubChartKeyString = "관심";
                     break;
                 case 4:
-                    g.v.SubKeyStr = "코닥";
+                    g.v.SubChartKeyString = "코닥";
                     break;
                 case 5:
-                    g.v.SubKeyStr = "코피";
+                    g.v.SubChartKeyString = "코피";
                     break;
                 case 6:
-                    g.v.SubKeyStr = "절친";
+                    g.v.SubChartKeyString = "절친";
                     break;
                 case 7:
-                    g.v.SubKeyStr = "푀손";
+                    g.v.SubChartKeyString = "푀손";
                     break;
             }
             Form_보조_차트_DRAW();

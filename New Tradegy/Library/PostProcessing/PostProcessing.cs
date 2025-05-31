@@ -469,7 +469,7 @@ namespace New_Tradegy.Library.PostProcessing
 
             double money_factor = api.전일종가 / g.천만원;
 
-            post.프누천 = api.x[check_row, 4] * money_factor;
+            post.푀누천 = api.x[check_row, 4] * money_factor;
             post.외누천 = api.x[check_row, 5] * money_factor;
             post.기누천 = api.x[check_row, 6] * money_factor;
             post.거누천 = api.x[check_row, 7] * money_factor;

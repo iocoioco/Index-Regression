@@ -580,8 +580,8 @@ namespace New_Tradegy.Library.IO
                     case "프퍼":
                         라인분리(line, ref g.s.프퍼);
                         break;
-                    case "프누":
-                        라인분리(line, ref g.s.프누);
+                    case "푀누":
+                        라인분리(line, ref g.s.푀누);
                         break;
 
 
