@@ -9,6 +9,7 @@ using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Deals;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.PostProcessing;
+using New_Tradegy.Library.UI.KeyBindings;
 
 
 namespace New_Tradegy.Library.UI.ChartClickHandlers
@@ -31,7 +32,6 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
         public static void HandleControlClick(Chart chart, string regionKey, int row, int col)
         {
-            string postEvalFlags = "    ";
             switch (regionKey)
             {
                 case "l1": // buy at market price
@@ -39,7 +39,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
-                    mm.ManageChart1();
+                    g.ChartGeneral1.UpdateLayoutIfChanged(); // index already has bookbid
 
                     int price = GetPriceFromGivenStock(g.clickedStock);
                     if (price < 0) return;
@@ -66,68 +66,30 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     DealManager.DealExec("매수", g.clickedStock, quantity, price, "03");
                     break;
 
-                case "l2":
+                case "l2": // price magnifier * 1.333
                     int magnifierIdx = g.StockManager.IndexList.FindIndex(code => code == g.clickedStock);
                     if (magnifierIdx >= 0)
                     {
                         g.kodex_magnifier[magnifierIdx, 0] *= 1.333;
-                        postEvalFlags = "d  B";
+                        var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+                        action.Run();
                     }
                     break;
 
-                case "l8":
+                case "l8": // price magnifier * 0.666
                     magnifierIdx = g.StockManager.IndexList.FindIndex(code => code == g.clickedStock);
                     if (magnifierIdx >= 0)
                     {
                         g.kodex_magnifier[magnifierIdx, 0] *= 0.666;
-                        postEvalFlags = "d  B";
+                        var action = ActionCode.New(clear: true, post: false, eval: true, draw: 'B');
+                        action.Run();
                     }
                     break;
 
-                case "l4":
-                    if (g.test)
-                    {
-                        mm.MinuteAdvanceRetreat(g.EndNptsBeforeExtend == 0 ? g.v.Q_advance_lines : 0);
-                        postEvalFlags = " p B";
-                    }
-                    break;
-
-                case "r4":
-                    if (g.test)
-                    {
-                        g.Npts[1]--;
-                        if (g.Npts[1] < 2)
-                        {
-                            g.Npts[0] = 0;
-                            g.Npts[1] = 2;
-                        }
-                        postEvalFlags = " peB";
-                    }
-                    break;
-
-                case "r9":
-                    // Placeholder for additional logic if needed
-                    break;
+                
             }
 
-            if (postEvalFlags[0] != ' ')
-            {
-                if (postEvalFlags[0] == 'm' || postEvalFlags[0] == 'B')
-                    mm.ClearChartAreaAndAnnotations(g.ChartManager.Chart1, g.clickedStock);
-                if (postEvalFlags[0] == 's' || postEvalFlags[0] == 'B')
-                    mm.ManageChart2();
-            }
-            if (postEvalFlags[1] != ' ')
-                PostProcessor.post_test();
-            if (postEvalFlags[2] != ' ')
-                RankLogic.EvalStock();
-            if (postEvalFlags[3] != ' ')
-            {
-                if (postEvalFlags[3] == 'm' || postEvalFlags[3] == 'B')
-                    mm.ManageChart1();
-                if (postEvalFlags[3] == 's' || postEvalFlags[3] == 'B')
-                    mm.ManageChart2();
-            }
+           
         }
 
 
@@ -136,36 +98,43 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
             var stockData = g.StockRepository.TryGetStockOrNull(g.clickedStock);
             if (stockData == null) return;
 
-            string action = "    ";
             switch (selection)
             {
                 case "l1":
+                {
                     stockData.Misc.ShrinkDraw = !stockData.Misc.ShrinkDraw;
-                    action = "B  B";
-                    break;
+                    var action = ActionCode.New(clear: true, post: false, eval: true, draw: 'B');
+                    action.Run();
+                }
+                break;
 
                 case "l2":
-                    
-                        stockData.Misc.수급과장배수 *= 1.5;
-                        action = "B  B";
-                    
-                    break;
+                {
+                    stockData.Misc.수급과장배수 *= 1.5;
+                    var action = ActionCode.New(clear: true, post: false, eval: true, draw: 'B');
+                    action.Run();
+                }
+               break;
 
                 case "l3":
+                {
                     string dirPath = @"C:\병신\data\Stock Memo";
                     string filePath = Path.Combine(dirPath, g.clickedStock + ".txt");
                     if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
                     if (!File.Exists(filePath)) File.Create(filePath).Dispose();
                     Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
-                    break;
+                }
+                break;
 
                 case "l4":
-                    if (g.test)
-                    {
-                        mm.MinuteAdvanceRetreat(g.EndNptsBeforeExtend == 0 ? g.v.q_advance_lines : 0);
-                        action = " p B";
-                    }
-                    break;
+                if (g.test)
+                {
+                    ActionHandlers.TimeShortMoveKey?.Invoke();
+                    var action = ActionCode.New(clear: true, post: false, eval: true, draw: 'B');
+                    action.Run();
+
+                }
+                break;
 
                 case "l5":
                     if (g.clickedStock == g.StockManager.IndexList[0] || g.clickedStock == g.StockManager.IndexList[2])
@@ -312,11 +281,11 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                             g.clickedTitle = group.Title;
                         }
 
-                        //If g.v.SubChartKeyString is "상관" or "절친", then:
-                        //Assign g.v.SubChartKeyString to key.
+                        //If g.v.SubChartDisplayMode is "상관" or "절친", then:
+                        //Assign g.v.SubChartDisplayMode to key.
                         //❌ Otherwise:
                         //Assign "상관" to key(as a fallback default).
-                        string key = (g.v.SubChartKeyString == "상관" || g.v.SubChartKeyString == "절친") ? g.v.SubChartKeyString : "상관";
+                        string key = (g.v.SubChartDisplayMode == "상관" || g.v.SubChartDisplayMode == "절친") ? g.v.SubChartDisplayMode : "상관";
                         mm.ManageChart2(key);
                     }
                     break;

@@ -85,22 +85,25 @@ namespace New_Tradegy // added for test on 20241020 0300
         
             ChartIndex.UpdateChart(g.chart1);
             ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
-            g.ChartGeneral = new ChartGeneral();
-            g.ChartGeneral.Initialize(chart1, this);
+            g.ChartGeneral1 = new ChartGeneral();
+            g.ChartGeneral1.Initialize(chart1, this, g.nRow, g.nCol);
+
+            g.ChartGeneral2 = new ChartGeneral();
+            g.ChartGeneral2.Initialize(chart1, this, g.nRow / 2, g.nCol);
+            Form Form_보조_차트 = new Form_보조_차트();
+            Form_보조_차트.Show(); // second chart
 
             StockManagerEvents.ListsChanged += () =>
             {
                 if (Form1.Instance.InvokeRequired)
                 {
-                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral.UpdateLayoutIfChanged()));
+                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral1.UpdateLayoutIfChanged()));
                 }
                 else
                 {
-                    g.ChartGeneral.UpdateLayoutIfChanged();
+                    g.ChartGeneral1.UpdateLayoutIfChanged();
                 }
             };
-
-
 
             VariableLoader.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
 
@@ -120,7 +123,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt");
 
 
-            g.ChartGeneral = new ChartGeneral();
+            // g.ChartGeneral1 = new ChartGeneral();
             g.ChartManager = new ChartManager();
             g.ChartManager.SetChart1(chart1);
 
@@ -179,11 +182,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             TradePanelRenderer.SetupAndAttachTradePanel(this);
             GroupPanelRenderer.SetupAndAttachGroupPanel(this);
 
-            this.Text = g.v.KeyString; // 시초에는 총점 
+            this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
 
-            Form Form_보조_차트 = new Form_보조_차트();
-
-            Form_보조_차트.Show(); // second chart
+            
 
             if (!g.test) // for market trading
             {
@@ -215,7 +216,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
             RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
             VariableLoader.read_파일관심종목(); // duration 0.000 seconds
-            g.ChartGeneral.UpdateLayoutIfChanged(); // all new, Form_1 start
+            g.ChartGeneral1.UpdateLayoutIfChanged(); // all new, Form_1 start
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());

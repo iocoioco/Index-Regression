@@ -36,12 +36,12 @@ namespace New_Tradegy.Library.Trackers
                 if (shouldUpdateSeries)
                     UpdateSeries(chart, data);
                 else
-                    UpdateChartArea(chart, data, nRow, nCol);
+                    UpdateChartArea(chart, data);
 
                 if (isChart1 && g.connected && !Utils.FormUtils.DoesDataGridViewExist(Utils.FormUtils.FindFormByName("Form1"), stock))
                 {
-                    var m = new BookBidGenerator();
-                    var bookbid = m.GenerateBookBidView(stock);
+                    var b = new BookBidGenerator();
+                    var bookbid = b.GenerateBookBidView(stock);
                     bookbid.Height = g.DgvCellHeight * 12;
 
                     int x = (g.screenWidth / nCol) + 10;
@@ -53,7 +53,7 @@ namespace New_Tradegy.Library.Trackers
             chart.Invalidate();
         }
 
-        public static ChartArea UpdateChartArea(Chart chart, StockData data, int nRow, int nCol)
+        public static ChartArea UpdateChartArea(Chart chart, StockData data)
         {
             string stock = data.Stock;
             if (data.Api.nrow <= 1)
@@ -150,7 +150,7 @@ namespace New_Tradegy.Library.Trackers
             // Positioning
             if (chart == g.ChartManager.Chart1)
             {
-                float width = 100 / nCol;
+                float width = 100 / 10f;
                 area.Position = stock == "KODEX 레버리지"
                     ? new ElementPosition(0, 0, width, 50)
                     : new ElementPosition(0, 50, width, 50);

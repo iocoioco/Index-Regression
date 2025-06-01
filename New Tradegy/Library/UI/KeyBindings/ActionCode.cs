@@ -1,4 +1,6 @@
 ﻿
+using New_Tradegy.Library.Core;
+using New_Tradegy.Library.PostProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,14 +34,27 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         public void Run()
         {
-            if (Clear) mm.ClearChartAreaAndAnnotations(g.ChartManager.Chart1, g.clickedStock);
-            if (Post) ps.post_test();
-            if (Eval) ev.eval_stock();
+            if (Clear)
+            { 
+            }
+
+            if (Post)
+            {
+                if(g.test)
+                    PostProcessor.post_test();
+            }
+                
+
+            if (Eval)
+                RankLogic.EvalStock(); 
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
-                mm.ManageChart1();
+                g.ChartGeneral1.UpdateLayoutIfChanged();
+
+
             if (DrawTarget == 's' || DrawTarget == 'B')
-                mm.ManageChart2();
+                g.ChartGeneral2.UpdateLayoutIfChanged();
+
         }
     }
 

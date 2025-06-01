@@ -75,7 +75,7 @@ namespace New_Tradegy.Library.Core
         }
 
 
-
+        // called by post_real, click, keys, history
         public static void EvalStock()
         {
             var repo = g.StockRepository;
@@ -84,13 +84,14 @@ namespace New_Tradegy.Library.Core
 
             var specialGroupKeys = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
-            if (specialGroupKeys.Contains(g.v.KeyString))
+            foreach (var stock in repo.AllDatas)
             {
-                foreach (var stock in repo.AllDatas)
-                {
-                    var stat = stock.Statistics;
+                var stat = stock.Statistics;
+                string mode = g.v.MainChartDisplayMode;
 
-                    switch (g.v.KeyString)
+                if (specialGroupKeys.Contains(mode))
+                {
+                    switch (mode)
                     {
                         case "피올":
                             if (stat.시장구분 == 'S')
@@ -111,10 +112,7 @@ namespace New_Tradegy.Library.Core
                             break;
                     }
                 }
-            }
-            else
-            {
-                foreach (var stock in repo.AllDatas)
+                else
                 {
                     PostProcessor.post(stock); // ensure Post values are updated
 
@@ -127,16 +125,11 @@ namespace New_Tradegy.Library.Core
                         : nrow - 1;
 
                     var score = stock.Score;
-                    var stat = stock.Statistics;
                     var post = stock.Post;
                     var api = stock.Api;
 
-                    switch (g.v.KeyString)
+                    switch (mode)
                     {
-                        case "총점":
-                            value = score.총점;
-                            break;
-
                         case "푀누":
                             value = post.푀누천 + post.외누천;
                             break;
@@ -145,28 +138,12 @@ namespace New_Tradegy.Library.Core
                             value = post.종거천;
                             break;
 
-                        case "프편":
-                            value = (post.푀누천 + post.외누천) / stat.프분_dev;
-                            break;
-
-                        case "종편":
-                            value = post.종거천 / stat.프분_dev;
-                            break;
-
                         case "푀분":
                             value = api.분프로천[0] + api.분외인천[0];
                             break;
 
-                        case "배차":
-                            value = api.분배수차[0];
-                            break;
-
-                        case "가증":
-                            value = api.x[checkRow, 1] - api.x[checkRow - 1, 1];
-                            break;
-
-                        case "분거":
-                            value = api.분거래천[0];
+                        case "총점":
+                            value = score.총점;
                             break;
 
                         case "상순":
@@ -176,6 +153,21 @@ namespace New_Tradegy.Library.Core
                         case "저순":
                             value = -api.x[checkRow, 1];
                             break;
+
+                        case "배차":
+                            value = api.분배수차[0];
+                            break;
+
+                        case "분거":
+                            value = api.분거래천[0];
+                            break;
+
+                        case "가증":
+                            value = api.x[checkRow, 1] - api.x[checkRow - 1, 1];
+                            break;
+
+                        default:
+                            continue;
                     }
 
                     resultList.Add((value, stock.Stock));
@@ -186,15 +178,15 @@ namespace New_Tradegy.Library.Core
 
             lock (g.lockObject)
             {
-                g.sl.Clear();
+                g.StockManager.StockRankingList.Clear();
 
                 foreach (var (val, code) in resultList)
                 {
-                    if (!g.sl.Contains(code))
-                        g.sl.Add(code);
+                    if (!g.StockManager.StockRankingList.Contains(code))
+                        g.StockManager.StockRankingList.Add(code);
                 }
 
-                string newValue = $"{g.sl.Count}/{repo.AllDatas.Count()}";
+                string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllDatas.Count()}";
                 if (g.제어.dtb.Rows[1][1].ToString() != newValue)
                 {
                     g.제어.dtb.Rows[1][1] = newValue;
@@ -230,10 +222,10 @@ namespace New_Tradegy.Library.Core
             }
 
             // ✅ Always include 누적 계열 regardless of filters
-            if (g.v.KeyString == "푀누" ||
-                g.v.KeyString == "종누" ||
-                g.v.KeyString == "프편" ||
-                g.v.KeyString == "종편")
+            if (g.v.MainChartDisplayMode == "푀누" ||
+                g.v.MainChartDisplayMode == "종누" ||
+                g.v.MainChartDisplayMode == "프편" ||
+                g.v.MainChartDisplayMode == "종편")
                 {
                     return true;
                 }

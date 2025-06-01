@@ -18,10 +18,14 @@ namespace New_Tradegy.Library.Trackers
         private List<string> _prevWithoutBid = new List<string>();
         private int MaxSpaces = 24;
 
-        public void Initialize(Chart chart, Control parent)
+        private int _nrow, _ncol;
+
+        public void Initialize(Chart chart, Control parent, int nrow, int ncol)
         {
             _chart = chart;
             _parent = parent;
+            _nrow = nrow;
+            _ncol = ncol;
             _layout = new ChartGridLayout();
             _bookBidManager = new BookBidManager(_layout);
         }

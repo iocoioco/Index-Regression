@@ -1,4 +1,5 @@
 ﻿using New_Tradegy.Library;
+using New_Tradegy.Library.Trackers;
 using System;
 using System.Windows.Forms;
 
@@ -94,14 +95,10 @@ namespace New_Tradegy
                 }
                 g.kodex_magnifier[id, jd] *= (value / 100.0);
 
-                //int index = wk.return_index_of_ogldata(g.clickedStock);
-                //g.stock_data o = g.ogl_data[index];
+                var data = g.StockRepository.TryGetStockOrNull(g.clickedStock);
 
-                wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, g.clickedStock); // KODEX
-                wk.deleteChartAreaAnnotation(g.ChartManager.Chart2, g.clickedStock); // KODEX
-                mm.ManageChart1(); // single KODEX, HScrollBar_Scroll
-                mm.ManageChart2(); // signle KODEX, HScrollBar_Scroll
-
+                ChartIndex.UpdateSeries(g.ChartManager.Chart1, data);
+                ChartIndex.UpdateSeries(g.ChartManager.Chart2, data);
             }
         }
 

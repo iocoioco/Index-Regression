@@ -1,6 +1,6 @@
 ﻿shrink
 update cycle button
-코피, 코닥 overapping
+피올, 닥올 overapping
 selling record 
 auto cut
 
@@ -226,7 +226,7 @@ Standardized Intensity= Buy Intensity * square (DAMM+ϵ) ?
 
 
 
-	코피, 코닥, 푀누, 종누, 가증, 상순, 저순, 편차, 평균 : 
+	피올, 닥올, 푀누, 종누, 가증, 상순, 저순, 편차, 평균 : 
 			종거, 분거, 호가, 편차 all set to zeroes
 
 	영풍제지 : 프돈 따라 왜 매도하지 않았는가 ? 프돈+외돈 따라 왜 매수하지 않았는가 

@@ -22,7 +22,8 @@ namespace New_Tradegy.Library
         //public static DataGridView ActiveBookBid;
 
         //public static ChartIndex ChartIndex;
-        public static ChartGeneral ChartGeneral;
+        public static ChartGeneral ChartGeneral1;
+        public static ChartGeneral ChartGeneral2;
         public static ChartManager ChartManager;
 
         public static StockManager StockManager;
@@ -222,9 +223,9 @@ namespace New_Tradegy.Library
         // variables : chart1 control, stock selection, font etc
         public class Variable
         {
-            public string KeyString = "분푀";
-            public string SubChartKeyString = "그순";
-            public string old_KeyString = "푀분";
+            public string MainChartDisplayMode = "분푀";
+            public string SubChartDisplayMode = "그순";
+            public string old_MainChartDisplayMode = "푀분";
 
             public double 분당거래액이상_천만원; // in setting 10
             public double 호가거래액_백만원; // in setting 10

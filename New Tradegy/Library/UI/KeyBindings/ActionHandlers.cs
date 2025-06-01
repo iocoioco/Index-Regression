@@ -125,39 +125,39 @@ namespace New_Tradegy.Library.UI.KeyBindings
         public static readonly Action 피올_닥올 = () =>
         {
             var list = new List<string> { "피올", "닥올" };
-            g.v.KeyString = .cycleStrings(g.v.KeyString, list);
+            g.v.MainChartDisplayMode = .cycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             Form se = (Form)Application.OpenForms["Form1"];
-            se.Text = g.v.KeyString;
+            se.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
 
         public static readonly Action 푀누_종누 = () =>
         {
             var list = new List<string> { "푀누", "종누" };
-            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
+            g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
-            form.Text = g.v.KeyString;
+            form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
 
         public static readonly Action 푀분_총점 = () =>
         {
             var list = new List<string> { "푀분", "총점" };
-            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
+            g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
-            form.Text = g.v.KeyString;
+            form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -166,8 +166,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
             Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
             if (Form_보조_차트 != null)
             {
-                var list = new List<string> { "코피", "코닥" };
-                g.v.SubChartKeyString = StringUtils.CycleStrings(g.v.SubChartKeyString, list);
+                var list = new List<string> { "피올", "닥올" };
+                g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
                 Form_보조_차트.Form_보조_차트_DRAW();
             }
                 
@@ -179,55 +179,59 @@ namespace New_Tradegy.Library.UI.KeyBindings
             if (Form_보조_차트 != null)
             {
                 List<string> list = new List<string> { "그순", "관심" };
-                g.v.SubChartKeyString = StringUtils.CycleStrings(g.v.SubChartKeyString, list);
+                g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
                 Form_보조_차트.Form_보조_차트_DRAW();
             }
         };
 
-
         public static readonly Action 상순_저순 = () =>
         {
             List<string> list = new List<string> { "상순", "저순" };
-            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
+            g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
-            form.Text = g.v.KeyString;
+            form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
 
         public static readonly Action 편차_평균 = () =>
         {
             var list = new List<string> { "편차", "평균" };
-            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
+            g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
-            form.Text = g.v.KeyString;
+            form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
 
         public static readonly Action 배차_분거 = () =>
         {
             var list = new List<string> { "배차", "분거" };
-            g.v.KeyString = StringUtils.CycleStrings(g.v.KeyString, list);
+            g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             var form = (Form)Application.OpenForms["Form1"];
-            form.Text = g.v.KeyString;
+            form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
 
         public static readonly Action 가격증순 = () =>
         {
-            g.v.KeyString = "가증";
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
+            g.v.MainChartDisplayMode = "가증";
+            g.q = "o&s";
+            g.gid = 0;
+            var form = (Form)Application.OpenForms["Form1"];
+            form.Text = g.v.MainChartDisplayMode;
+
+            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
             action.Run();
         };
         #endregion

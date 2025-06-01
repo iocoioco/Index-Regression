@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using New_Tradegy.Library.Listeners;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -33,7 +34,7 @@ namespace New_Tradegy.Library.Trackers
             var grid = generator.GenerateBookBidView(stock);
             _gridMap[stock] = grid;
 
-            grid.Location = _layout.GetBookBidLocation(row, col);
+            grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);
             grid.Visible = true;
 
             g.MainForm.Invoke((MethodInvoker)(() => g.MainForm.Controls.Add(grid)));

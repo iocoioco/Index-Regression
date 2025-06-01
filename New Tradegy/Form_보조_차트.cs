@@ -1,16 +1,15 @@
 ﻿using New_Tradegy.Library;
-using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.IO;
-using System.Windows.Forms;
+using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.UI.ChartClickHandlers;
+using New_Tradegy.Library.UI.KeyBindings;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using New_Tradegy.Library.UI.ChartClickHandlers;
-using New_Tradegy.Library.UI.KeyBindings;
-
 namespace New_Tradegy
 {
     public partial class Form_보조_차트 : Form
@@ -22,7 +21,7 @@ namespace New_Tradegy
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
-        private string PreSubChartKeyString = "";
+        private string PreSubChartDisplayMode = "";
 
         public Form_보조_차트()
         {
@@ -75,7 +74,7 @@ namespace New_Tradegy
             else
             {
                 this.Location = new Point(g.screenWidth, 0);
-                if(Screen.AllScreens.Count() == 1) this.Location = new Point(g.screenWidth / 2, 0); // one screen
+                if (Screen.AllScreens.Count() == 1) this.Location = new Point(g.screenWidth / 2, 0); // one screen
             }
             this.Size = new Size(g.screenWidth / 2, g.screenHeight);
             chart2.Size = new Size(this.Width, this.Height);
@@ -104,7 +103,7 @@ namespace New_Tradegy
                 new DataColumn("6"), new DataColumn("7")
             });
 
-            dtb.Rows.Add("상관", "보유", "그순", "관심", "코닥", "코피", "절친", "푀손");
+            dtb.Rows.Add("상관", "보유", "그순", "관심", "닥올", "피올", "절친", "푀손");
             dataGridView1.DataSource = dtb;
 
             for (int i = 0; i < 8; i++)
@@ -117,18 +116,18 @@ namespace New_Tradegy
 
         public void Form_보조_차트_DRAW()
         {
-            displayList.Clear();
-            StocksGivenKeyStr(g.v.SubChartKeyString, displayList, g.clickedStock, g.clickedTitle);
+
+            DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title
             UpdateFormTitle();
 
-            // Determine grid layout
+            // Determine grid layout based on the number of displayList
             SetGridDimensions();
 
-            if (g.v.SubChartKeyString != PreSubChartKeyString) // if g.v.SubChartKeyString changes, Clear Chart
+            if (g.v.SubChartDisplayMode != PreSubChartDisplayMode) // if g.v.SubChartDisplayMode changes, Clear Chart
             {
-                PreSubChartKeyString = g.v.SubChartKeyString;
+                PreSubChartDisplayMode = g.v.SubChartDisplayMode;
                 g.ChartManager.Chart2Handler.Clear();
             }
 
@@ -137,38 +136,49 @@ namespace New_Tradegy
                 if (i >= displayList.Count)
                     break;
                 string stock = displayList[i];
-           
-                var o = g.StockRepository.TryGetStockOrNull(stock);
-                if (o == null)
+
+                var data = g.StockRepository.TryGetStockOrNull(stock);
+                if (data == null)
                 {
                     continue;
                 }
- 
-                if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || o.Misc.ShrinkDraw || g.test) 
+
+                if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || data.Misc.ShrinkDraw || g.test)
                 {
-                    ChartRenderer.CreateOrUpdateChartarea(g.ChartManager.Chart2, o, nRow, nCol); // Form_보조_차트_DRAW()
+                    if (g.StockManager.IndexList.Contains(data.Stock))
+                    {
+                        ChartIndex.UpdateChartArea(g.ChartManager.Chart1, data);
+                    }
+                    else
+                    {
+                        g.ChartGeneral2.CreateChartArea(data.Stock, i % 3, i / 3);
+                    }
+
                 }
                 else
                 {
-                    mm.UpdateSeries(g.ChartManager.Chart2, stock, nRow, nCol); // includes annotation update too
+                    if (g.StockManager.IndexList.Contains(data.Stock))
+                    {
+                        ChartIndex.UpdateSeries(g.ChartManager.Chart1, data);
+                    }
+                    else
+                    {
+                        ChartGeneralRenderer.UpdateSeries(g.ChartManager.Chart2, data);
+                    }
                 }
-        
+
             }
+
+            RelocateChart2AreasAndAnnotations();
+
+            dataGridView1.Refresh();
+
+            g.ChartManager.Chart2.Invalidate();
 
             int areasCount = g.ChartManager.Chart2.ChartAreas.Count;
             int annotationsCount = g.ChartManager.Chart2.Annotations.Count;
             int seriesCount = g.ChartManager.Chart2.Series.Count;
 
-            RelocateChart2AreasAndAnnotations();
-            mm.ClearUnusedChartAreasAndAnnotations(chart2, displayList);
-
-            areasCount = g.ChartManager.Chart2.ChartAreas.Count;
-            areasCount = g.ChartManager.Chart2.Annotations.Count;
-            areasCount = g.ChartManager.Chart2.Series.Count;
-
-            dataGridView1.Refresh();
-
-            g.ChartManager.Chart2.Invalidate();
         }
 
         public void RelocateChart2AreasAndAnnotations()
@@ -190,7 +200,6 @@ namespace New_Tradegy
                 float x = col * cellWidth;
                 float y = row * cellHeight;
 
-
                 // Relocate the ChartArea
                 if (chart2.ChartAreas.IndexOf(areaName) >= 0)
                 {
@@ -202,7 +211,6 @@ namespace New_Tradegy
                         y,   // Y position
                         cellWidth,          // Width
                         cellHeight); //cellHeight       // Height
-
                     }
                     else
                     {
@@ -212,7 +220,7 @@ namespace New_Tradegy
                         cellWidth,          // Width
                         cellHeight - 5.155F); //cellHeight       // Height
                     }
-                    
+
                     // Set InnerPlotPosition for plot area
                     chartArea.InnerPlotPosition = new ElementPosition(
                         5, // Leave a 10% margin on the left
@@ -234,6 +242,7 @@ namespace New_Tradegy
             }
             chart2.Invalidate(); // Redraw the chart
         }
+
         public void RelocateChart2AreasAndAnnotations_old()
         {
             int totalAreas = Math.Min(displayList.Count, nRow * nCol);
@@ -295,10 +304,11 @@ namespace New_Tradegy
             chart2.Invalidate(); // Redraw the chart
         }
 
-        // 상관, 보유, 그순, 관심, 코닥, 코피, 절친, 푀손
-        public static void StocksGivenKeyStr(string keyString, List<string> displayList, string clickedStock, string clickedTitle)
+        // 상관, 보유, 그순, 관심, 닥올, 피올, 절친, 푀손
+        public static void DisplayListGivenDisplayMode(string MainChartDisplayMode, List<string> displayList, string clickedStock, string clickedTitle)
         {
-            switch (keyString)
+            displayList.Clear();
+            switch (MainChartDisplayMode)
             {
                 case "지수":
                     for (int i = 0; i < 2; i++)
@@ -363,13 +373,13 @@ namespace New_Tradegy
                     }
                     break;
 
-                case "코피":
+                case "피올":
                     displayList.Add("KODEX 레버리지");
                     displayList.Add("KODEX 코스닥150레버리지");
                     foreach (string s in g.kospi_mixed.stock) { displayList.Add(s); }
                     break;
 
-                case "코닥":
+                case "닥올":
                     displayList.Add("KODEX 레버리지");
                     displayList.Add("KODEX 코스닥150레버리지");
                     foreach (string s in g.kosdaq_mixed.stock) { displayList.Add(s); }
@@ -445,19 +455,19 @@ namespace New_Tradegy
 
         private void UpdateFormTitle()
         {
-            switch (g.v.SubChartKeyString)
+            switch (g.v.SubChartDisplayMode)
             {
                 case "상관":
-                    this.Text = $"{g.v.SubChartKeyString} ({g.clickedTitle})";
+                    this.Text = $"{g.v.SubChartDisplayMode} ({g.clickedTitle})";
                     break;
                 case "절친":
-                    this.Text = $"{g.v.SubChartKeyString} ({g.clickedStock})";
+                    this.Text = $"{g.v.SubChartDisplayMode} ({g.clickedStock})";
                     break;
                 case "그순":
-                    this.Text = $"{g.v.SubChartKeyString} ({g.oGl_data_selection})";
+                    this.Text = $"{g.v.SubChartDisplayMode} ({g.oGl_data_selection})";
                     break;
                 default:
-                    this.Text = g.v.SubChartKeyString;
+                    this.Text = g.v.SubChartDisplayMode;
                     break;
             }
         }
@@ -507,8 +517,8 @@ namespace New_Tradegy
             dtb.Rows[0][1] = "보유";
             dtb.Rows[0][2] = "그순";
             dtb.Rows[0][3] = "관심";
-            dtb.Rows[0][4] = "코닥";
-            dtb.Rows[0][5] = "코피";
+            dtb.Rows[0][4] = "닥올";
+            dtb.Rows[0][5] = "피올";
             dtb.Rows[0][6] = "절친";
             dtb.Rows[0][7] = "푀손";
 
@@ -525,28 +535,28 @@ namespace New_Tradegy
             switch (e.ColumnIndex)
             {
                 case 0:
-                    g.v.SubChartKeyString = "상관";
+                    g.v.SubChartDisplayMode = "상관";
                     return;
                 case 1:
-                    g.v.SubChartKeyString = "보유";
+                    g.v.SubChartDisplayMode = "보유";
                     break;
                 case 2:
-                    g.v.SubChartKeyString = "그순";
+                    g.v.SubChartDisplayMode = "그순";
                     break;
                 case 3:
-                    g.v.SubChartKeyString = "관심";
+                    g.v.SubChartDisplayMode = "관심";
                     break;
                 case 4:
-                    g.v.SubChartKeyString = "코닥";
+                    g.v.SubChartDisplayMode = "닥올";
                     break;
                 case 5:
-                    g.v.SubChartKeyString = "코피";
+                    g.v.SubChartDisplayMode = "피올";
                     break;
                 case 6:
-                    g.v.SubChartKeyString = "절친";
+                    g.v.SubChartDisplayMode = "절친";
                     break;
                 case 7:
-                    g.v.SubChartKeyString = "푀손";
+                    g.v.SubChartDisplayMode = "푀손";
                     break;
             }
             Form_보조_차트_DRAW();

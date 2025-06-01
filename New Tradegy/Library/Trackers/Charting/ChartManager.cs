@@ -26,18 +26,19 @@ namespace New_Tradegy.Library.Trackers
         public ChartManager() { }
 
         // Constructor
-        public void SetChart1(Chart chart)
+        public void SetChart1(Chart chart) // called by Form1
         {
             Chart1 = chart;
             Chart1Handler = new ChartHandler(chart); // ✅ initialize handler here
         }
 
-        public void SetChart2(Chart chart)
+        public void SetChart2(Chart chart) // called by Form_보조_차트
         {
             Chart2 = chart;
             Chart2Handler = new ChartHandler(chart); // ✅ initialize handler here
         }
 
+        // not used
         public void ClearAll()
         {
             Chart1Handler.Clear();
