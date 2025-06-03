@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using New_Tradegy.Library.Models;
+using New_Tradegy.Library.UI.KeyBindings;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -72,7 +73,7 @@ namespace New_Tradegy.Library.Trackers
 
             if (e.Button == MouseButtons.Left)
             {
-                mm.ManageChart2("상관");
+                ActionCode.New(true, false, eval: true, draw: 'B').Run(); // 상관 SubChart
             }
             else if (e.Button == MouseButtons.Right)
             {

@@ -84,9 +84,9 @@ namespace New_Tradegy.Library.Core
 
             var specialGroupKeys = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
-            foreach (var stock in repo.AllDatas)
+            foreach (var data in repo.AllDatas)
             {
-                var stat = stock.Statistics;
+                var stat = data.Statistics;
                 string mode = g.v.MainChartDisplayMode;
 
                 if (specialGroupKeys.Contains(mode))
@@ -95,38 +95,38 @@ namespace New_Tradegy.Library.Core
                     {
                         case "피올":
                             if (stat.시장구분 == 'S')
-                                resultList.Add((stat.시총, stock.Stock));
+                                resultList.Add((stat.시총, data.Stock));
                             break;
 
                         case "닥올":
                             if (stat.시장구분 == 'D')
-                                resultList.Add((stat.시총, stock.Stock));
+                                resultList.Add((stat.시총, data.Stock));
                             break;
 
                         case "편차":
-                            resultList.Add((stat.일간변동편차, stock.Stock));
+                            resultList.Add((stat.일간변동편차, data.Stock));
                             break;
 
                         case "평균":
-                            resultList.Add((stat.일간변동평균, stock.Stock));
+                            resultList.Add((stat.일간변동평균, data.Stock));
                             break;
                     }
                 }
                 else
                 {
-                    PostProcessor.post(stock); // ensure Post values are updated
+                    PostProcessor.post(data); // ensure Post values are updated
 
-                    int nrow = stock.Api.nrow;
-                    if (!EvalInclusion(stock) || nrow < 2)
+                    int nrow = data.Api.nrow;
+                    if (!EvalInclusion(data) || nrow < 2)
                         continue;
 
                     int checkRow = g.test
                         ? Math.Min(g.Npts[1] - 1, nrow - 1)
                         : nrow - 1;
 
-                    var score = stock.Score;
-                    var post = stock.Post;
-                    var api = stock.Api;
+                    var score = data.Score;
+                    var post = data.Post;
+                    var api = data.Api;
 
                     switch (mode)
                     {
@@ -170,7 +170,7 @@ namespace New_Tradegy.Library.Core
                             continue;
                     }
 
-                    resultList.Add((value, stock.Stock));
+                    resultList.Add((value, data.Stock));
                 }
             }
 
@@ -284,6 +284,7 @@ namespace New_Tradegy.Library.Core
         public static void EvalGroup()
         {
             var repo = g.StockRepository;
+
             var groupManager = g.GroupManager;
             var allGroups = groupManager.GetAll();
 
@@ -296,28 +297,28 @@ namespace New_Tradegy.Library.Core
                 wk.거분순서(group.Stocks);
 
                 int count = 0;
-                foreach (var stockName in group.Stocks)
+                foreach (var stock in group.Stocks)
                 {
                     if (count == 3) break;
 
-                    var stock = repo.TryGetStockOrNull(stockName);
+                    var data = repo.TryGetStockOrNull(stock);
 
-                    if (stock == null || stock.Api.nrow < 2 || stock.Api.nrow >= 382)
+                    if (data == null || data.Api.nrow < 2 || data.Api.nrow >= 382)
                         continue;
 
                     int row = g.test
-                        ? Math.Min(g.Npts[1] - 1, stock.Api.nrow - 1)
-                        : stock.Api.nrow - 1;
+                        ? Math.Min(g.Npts[1] - 1, data.Api.nrow - 1)
+                        : data.Api.nrow - 1;
 
-                    if (stock.Api.x[row, 1] < -3000 || stock.Api.x[row, 1] > 3000)
+                    if (data.Api.x[row, 1] < -3000 || data.Api.x[row, 1] > 3000)
                         continue;
 
-                    group.TotalScore += stock.Score.총점;
-                    group.거분 += stock.Score.거분;
-                    group.푀분 += stock.Score.푀분;
-                    group.수평 += stock.Api.x[row, 2];
-                    group.강평 += stock.Api.x[row, 3] / 100.0;
-                    group.가증 += stock.Api.x[row, 1] - stock.Api.x[row - 1, 1];
+                    group.TotalScore += data.Score.총점;
+                    group.거분 += data.Score.거분;
+                    group.푀분 += data.Score.푀분;
+                    group.수평 += data.Api.x[row, 2];
+                    group.강평 += data.Api.x[row, 3] / 100.0;
+                    group.가증 += data.Api.x[row, 1] - data.Api.x[row - 1, 1];
 
                     count++;
                 }
@@ -354,11 +355,11 @@ namespace New_Tradegy.Library.Core
             // Store group rank index into each stock
             for (int i = rankedGroups.Count - 1; i >= 0; i--)
             {
-                foreach (var stockName in rankedGroups[i].Stocks)
+                foreach (var stock in rankedGroups[i].Stocks)
                 {
-                    var stock = repo.TryGetStockOrNull(stockName);
-                    if (stock != null)
-                        stock.Score.그순 = i;
+                    var data = repo.TryGetStockOrNull(stock);
+                    if (data != null)
+                        data.Score.그순 = i;
                 }
             }
 

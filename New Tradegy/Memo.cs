@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.Utils;
+using New_Tradegy.Library.UI.KeyBindings;
+using New_Tradegy.Library.PostProcessing;
 namespace New_Tradegy
 {
     public partial class Memo : Form
@@ -98,7 +100,7 @@ namespace New_Tradegy
             else if (e.Control == true && e.KeyCode == Keys.S)
             {
                 text = richTextBox1.Text;
-                StockFileExporter.overWrite(directory + lastOpendFileName, text);
+                FileOut.overWrite(directory + lastOpendFileName, text);
             }
             // find(^f)
             else if (e.Control == true && e.KeyCode == Keys.F)
@@ -135,7 +137,7 @@ namespace New_Tradegy
                 foreach (var item in words)
                 {
                     string stock = item.Replace("_", " ");
-                    if (wk.isStock(stock) && wk.return_index_of_ogldata(stock) >= 0)
+                    if (wk.isStock(stock) && g.StockManager.TotalStockList.Contains(stock))
                     {
                         if (!g.StockManager.InterestedOnlyList.Contains(stock))
                             g.StockManager.InterestedOnlyList.Add(stock);
@@ -148,7 +150,7 @@ namespace New_Tradegy
             else if (e.Control == true && e.KeyCode == Keys.W)
             {
                 g.StockManager.InterestedOnlyList.Clear();
-                mm.ManageChart1(); // g.StockManager.InterestedOnlyList.Clear()
+                
             }
 
             // 테마 순서 리스트 네이버로부터(^t)
@@ -166,9 +168,12 @@ namespace New_Tradegy
             {
                 richTextBox1.Text = "";
                 text = "";
-                foreach (var item in g.oGL_data)
+
+   
+                var allGroups = g.GroupManager.GetAll();
+                foreach (var item in allGroups)
                 {
-                    text += "// " + item.title + "\n";
+                    text += "// " + item.Title + "\n";
                 }
                 richTextBox1.Text = text;
                 richTextBox1.Select(0, 0);
@@ -177,7 +182,7 @@ namespace New_Tradegy
             else if (e.Control == true && e.KeyCode == Keys.M)
             {
                 g.StockManager.InterestedWithBidList.Clear();
-                mm.ManageChart1(); // Memo, g.StockManager.InterestedWithBidList.Clear();
+                ActionCode.New(true, false, eval: true, draw: 'B').Run();
             }
         }
 
@@ -226,26 +231,27 @@ namespace New_Tradegy
                 //string[] words = sr.CollectWordsFromString(wordsInLine);
                 if (words[0] == "//")
                 {
-                    for (int i = 0; i < g.oGL_data.Count; i++)
+                    var groupManager = g.GroupManager;
+                    var allGroups = groupManager.GetAll();
+                    for (int i = 0; i < allGroups.Count; i++)
                     {
-                        if (g.oGL_data[i].title.Contains(words[1]))
+                        if (allGroups[i].Title.Contains(words[1]))
                         {
                             foreach (string stockName in g.StockManager.InterestedOnlyList)
                             {
                                 wk.deleteChartAreaAnnotation(g.ChartManager.Chart1, stockName);
                             }
                             g.StockManager.InterestedOnlyList.Clear();
-                            foreach (var stock1 in g.oGL_data[i].stocks)
+                            foreach (var stock1 in allGroups[i].Stocks)
                             {
-                                if (!g.StockManager.InterestedOnlyList.Contains(stock1) && wk.return_index_of_ogldata(stock1) >= 0)
+                                if (!g.StockManager.InterestedOnlyList.Contains(stock1) && g.StockManager.TotalStockList.Contains(stock1))
                                 {
                                     g.StockManager.InterestedOnlyList.Add(stock1);
                                 }
                             }
-                            Form se = fm.FindFormByName("Form1");
+                            Form se = FormUtils.FindFormByName("Form1");
                             se.Text = words[1];
-                            mm.ManageChart1(); // Memo, 선택된 상관 전체 관심종목 
-                            return;
+                            ActionCode.New(true, false, eval: true, draw: 'B').Run();
                         }
                        
                     }
@@ -270,7 +276,7 @@ namespace New_Tradegy
                     List<string> tsl_그룹_상관 = new List<string>();
                     List<string> GL_title = new List<string>();
                     List<List<string>> GL = new List<List<string>>();
-                    VariableLoader.read_그룹_네이버_테마(tsl, tsl_그룹_상관, GL_title, GL);
+                    FileIn.read_그룹_네이버_테마(tsl, tsl_그룹_상관, GL_title, GL);
 
                     for (int i = 0; i < GL_title.Count; i++)
                     {
@@ -283,11 +289,11 @@ namespace New_Tradegy
                             g.StockManager.InterestedOnlyList.Clear();
                             foreach (var stock2 in GL[i])
                             {
-                                if (!g.StockManager.InterestedOnlyList.Contains(stock2) && wk.return_index_of_ogldata(stock2) >= 0)
+                                if (!g.StockManager.InterestedOnlyList.Contains(stock2) &&       g.StockManager.TotalStockList.Contains(stock2))
                                     g.StockManager.InterestedOnlyList.Add(stock2);
                             }
                             this.Text = GL_title[i];
-                            mm.ManageChart1(); // Memo, 관심종목 제거 및 추가
+                            PostProcessor.ManageChart1Invoke(); // Memo, 관심종목 제거 및 추가
                             return;
                         }
                     }
@@ -306,7 +312,7 @@ namespace New_Tradegy
                             g.StockManager.InterestedOnlyList.Add(word);
                     }
                 }
-                mm.ManageChart1(); // Memo, 관심종목 추가
+                ActionCode.New(true, false, eval: true, draw: 'B').Run();
             }
         }
 
@@ -443,7 +449,7 @@ namespace New_Tradegy
 
         private void txtFilesDisplayInDirectory()
         {
-            List<string> txtFiles = VariableLoader.txtFilesInGivenDirectory(directory);
+            List<string> txtFiles = FileIn.txtFilesInGivenDirectory(directory);
 
             text = richTextBox1.Text;
             richTextBox1.Text = "";

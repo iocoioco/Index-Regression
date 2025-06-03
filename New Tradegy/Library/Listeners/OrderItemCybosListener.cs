@@ -13,6 +13,7 @@ using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.UI.KeyBindings;
 namespace New_Tradegy.Library.Listeners
 {
     internal class OrderItemCybosListener
@@ -170,7 +171,7 @@ namespace New_Tradegy.Library.Listeners
                 if (sConFlag == "1" || sConFlag == "2" || sConFlag == "4")
                 {
                     DealManager.DealHold();
-                    g.ChartGeneral.UpdateLayoutIfChanged();
+                    ActionCode.New(true, false, eval: true, draw: 'B').Run();
                 }
 
                 g.매매.TradeRenderer?.Update(); // ? -> if g.매매.Renderer assigned

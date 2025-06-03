@@ -6,6 +6,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     public static class KeyBindingManager
@@ -24,6 +25,14 @@ namespace New_Tradegy.Library.UI.KeyBindings
         {
             var (key, shift) = KeyHelper.FromChar(c);
             Register(key, shift, ctrl, alt, action);
+        }
+
+        public static void Register(char c, bool ctrl, bool alt, Func<Task> asyncAction)
+        {
+            // () => Task.Run(asyncAction) : internally wrap as Action Type
+            // calling itself recursively, Register(c, ctrl, alt, () => Task.Run(asyncAction)); 
+            Action wrapped = () => Task.Run(asyncAction);
+            Register(c, ctrl, alt, wrapped);  // ✅ now calls the correct overload
         }
 
         // Try handling a key press event
@@ -52,33 +61,33 @@ namespace New_Tradegy.Library.UI.KeyBindings
             {
                 var upper = char.ToUpper(c);
                 bool isShift = char.IsUpper(c);
-                return ((Keys)upper, isShift);
+                return ((Keys)((int)upper), isShift);
             }
-
-            if (char.IsDigit(c))
+            else if (char.IsDigit(c))
             {
                 return ((Keys)(Keys.D0 + (c - '0')), false);
             }
-
-            switch (c)
+            else
             {
-                case ' ':
-                    return (Keys.Space, false);
-                case '~':
-                    return (Keys.Oem3, true);
-                case '`':
-                    return (Keys.Oem3, false);
-                case '!':
-                    return (Keys.D1, true);
-                case '@':
-                    return (Keys.D2, true);
-                case '#':
-                    return (Keys.D3, true);
-                case '^':
-                    return (Keys.D6, true);
-                default:
-                    throw new ArgumentException($"Unsupported char '{c}' for key binding.");
+                switch (c)
+                {
+                    case ' ': return (Keys.Space, false);
+                    case '~': return (Keys.Oem3, true);
+                    case '`': return (Keys.Oem3, false);
+                    case '!': return (Keys.D1, true);
+                    case '@': return (Keys.D2, true);
+                    case '#': return (Keys.D3, true);
+                    case '^': return (Keys.D6, true);
+                    case '[': return (Keys.OemOpenBrackets, false);
+                    case ']': return (Keys.OemCloseBrackets, false);
+                    case '\\':
+                        return (Keys.Oem5, false);
+                    // Add more here if needed
+                    default:
+                        throw new ArgumentException($"Unsupported char '{c}' for key binding.");
+                }
             }
+
         }
 
     }

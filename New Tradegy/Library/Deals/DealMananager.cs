@@ -227,17 +227,17 @@ namespace New_Tradegy.Library.Deals
         }
 
 
-        public static bool CheckPreviousLoss(string stockSymbol)
+        public static bool CheckPreviousLoss(string stock)
         {
-            var stock = g.StockRepository.TryGetStockOrNull(stockSymbol);
-            if (stock == null) return false; // Stock not found
+            var data = g.StockRepository.TryGetStockOrNull(stock);
+            if (data == null) return false; // Stock not found
 
             // Ensure valid purchase price exists and at least 1 share is held
-            if (stock.Api.매수1호가 > 0 && stock.Deal.보유량 >= 1)
+            if (data.Api.매수1호가 > 0 && data.Deal.보유량 >= 1)
             {
-                double 수익률 = (double)(stock.Api.매수1호가 - stock.Deal.장부가) / stock.Api.매수1호가 * 100;
+                double 수익률 = (double)(data.Api.매수1호가 - data.Deal.장부가) / data.Api.매수1호가 * 100;
 
-                if (수익률 < -0.45 && stock.Deal.평가금액 > 4_500_000)
+                if (수익률 < -0.45 && data.Deal.평가금액 > 4_500_000)
                 {
                     Utils.SoundUtils.Sound("alarm", "lost already");
                     return true;
@@ -278,20 +278,19 @@ namespace New_Tradegy.Library.Deals
             g.StockManager.HoldingList.Clear();
 
             // Reset all stocks' 보유량
-            //var r = g.StockRepository;
-            foreach (var stock in g.StockRepository.AllDatas)
+            foreach (var data in g.StockRepository.AllDatas)
             {
-                stock.Deal.보유량 = 0;
+                data.Deal.보유량 = 0;
             }
 
             for (int i = count - 1; i >= 0; i--)
             {
-                string code = (string)_cptd6033.GetDataValue(0, i);
+                string stock = (string)_cptd6033.GetDataValue(0, i);
 
-                if (!g.StockRepository.Contains(code))
+                if (!g.StockRepository.Contains(stock))
                     continue;
 
-                var data = g.StockRepository.TryGetStockOrNull(code);
+                var data = g.StockRepository.TryGetStockOrNull(stock);
                 if (data == null) continue;
                 var api = data.Api;
                 var deal = data.Deal;
@@ -306,7 +305,7 @@ namespace New_Tradegy.Library.Deals
                     deal.수익률 = (api.매수1호가 - deal.장부가) / api.매수1호가 * 100;
                 }
 
-                g.StockManager.HoldingList.Add(code);
+                g.StockManager.HoldingList.Add(stock);
             }
 
             // Remove 보유종목 from 호가종목
@@ -323,16 +322,16 @@ namespace New_Tradegy.Library.Deals
             var stocksTuple = new List<Tuple<long, string>>();
 
             var repo = g.StockRepository;
-            foreach (var code in g.StockManager.HoldingList)
+            foreach (var stock in g.StockManager.HoldingList)
             {
-                if (!repo.Contains(code))
+                if (!repo.Contains(stock))
                     continue;
 
-                var stock = repo.TryGetStockOrNull(code);
-                if (stock == null) continue;
-                long holdingValue = stock.Deal.보유량 * stock.Api.현재가;
+                var data = repo.TryGetStockOrNull(stock);
+                if (data == null) continue;
+                long holdingValue = data.Deal.보유량 * data.Api.현재가;
 
-                stocksTuple.Add(Tuple.Create(holdingValue, code));
+                stocksTuple.Add(Tuple.Create(holdingValue, stock));
             }
 
             // Sort descending by holding value
@@ -353,8 +352,8 @@ namespace New_Tradegy.Library.Deals
             if (!_checkedTradeInit || quantity == 0)
                 return;
 
-            string stockCode = _cpstockcode.NameToCode(stockName); // 종목 이름 → 코드 변환
-            if (string.IsNullOrEmpty(stockCode))
+            string code = _cpstockcode.NameToCode(stockName); // 종목 이름 → 코드 변환
+            if (string.IsNullOrEmpty(code))
                 return;
 
             _cptd0311 = new CPTRADELib.CpTd0311();
@@ -371,7 +370,7 @@ namespace New_Tradegy.Library.Deals
             _cptd0311.SetInputValue(0, buyOrSellCode);    // 주문유형
             _cptd0311.SetInputValue(1, g.Account);        // 계좌번호
             _cptd0311.SetInputValue(2, "01");             // 상품구분코드
-            _cptd0311.SetInputValue(3, stockCode);        // 종목코드
+            _cptd0311.SetInputValue(3, code);        // 종목코드
             _cptd0311.SetInputValue(4, quantity);         // 주문수량
             _cptd0311.SetInputValue(5, price);            // 주문단가
             _cptd0311.SetInputValue(7, orderCondition);   // 주문조건

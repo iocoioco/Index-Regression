@@ -144,8 +144,8 @@
       <DependentUpon>Form_보조_차트.cs</DependentUpon>
     </Compile>
     <Compile Include="Library\IO\Scraper.cs" />
-    <Compile Include="Library\IO\StockFileExporter.cs" />
-    <Compile Include="Library\IO\VariableLoader.cs" />
+    <Compile Include="Library\IO\FileOut.cs" />
+    <Compile Include="Library\IO\FileIn.cs" />
     <Compile Include="Library\Trackers\BookBidManager.cs" />
     <Compile Include="Library\Trackers\Charting\ChartHandler.cs" />
     <Compile Include="Library\Trackers\Charting\ChartManager.cs" />

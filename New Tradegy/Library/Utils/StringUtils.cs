@@ -273,20 +273,17 @@ namespace New_Tradegy.Library.Utils
 
         public static void r3_display_lines(Chart chart, string stock, int row_id, int col_id)
         {
-            int index_1 = wk.return_index_of_ogldata(stock);
-            if (index_1 < 0) // 혼합과 ogl_data 등록된 종목만 draw
-            {
+            if (!g.StockRepository.Contains(stock))
                 return;
-            }
 
-            StockData o = g.StockRepository.TryGetStockOrNull(stock); // or .TryGetStockOrNull(stock)
-            if (o == null)
+            StockData data = g.StockRepository.TryGetStockOrNull(stock); // or .TryGetStockOrNull(stock)
+            if (data == null)
                 return;
 
             string str = "";
 
-            str = r3_display_lines_header(o);
-            str += r3_display_lines_body(o);
+            str = r3_display_lines_header(data);
+            str += r3_display_lines_body(data);
 
             string temp_file = @"C:\병신\temp.txt";
 

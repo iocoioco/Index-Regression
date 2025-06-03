@@ -9,6 +9,8 @@ using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Deals;
 using System.Collections.Generic;
+using New_Tradegy.Library.IO;
+using System.Threading.Tasks;
 
 namespace New_Tradegy.Library.UI.KeyBindings
 {
@@ -441,17 +443,17 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 SoundUtils.Sound("일반", "no add interest");
         };
 
-        public static readonly Action SaveAllStocks = () =>
+        public static readonly Func<Task> SaveAllStocks = async () =>
         {
             if (!g.test)
             {
                 string caption = "Save all stocks ?";
                 string message = "모든 파일 현재 시간 기준 저장";
                 string default_option = "No";
-                string result = ms.message(caption, message, default_option);
+                string result = StringUtils.message(caption, message, default_option);
 
                 if (result == "Yes")
-                    wr.SaveAllStocks();
+                     await FileOut.SaveAllStocks();
             }
         };
         #endregion

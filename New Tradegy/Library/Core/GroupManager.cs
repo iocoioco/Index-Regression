@@ -114,9 +114,9 @@ namespace New_Tradegy.Library.Core
         {
             var groupList = new List<GroupData>();
 
-            foreach (var stock in g.StockRepository.AllDatas)
+            foreach (var data in g.StockRepository.AllDatas)
             {
-                stock.Misc.oGL_sequence_id = -1; // Optional tagging
+                data.Misc.oGL_sequence_id = -1; // Optional tagging
             }
 
             int groupIndex = 0;

@@ -28,15 +28,15 @@ namespace New_Tradegy.Library.Listeners
         private DataTable _dataTable;
         private DataGridView _dataGridView;
         private int Rows = 5;
-        private string _stockName;
+        private string _stock;
 
         // Sensei 20250420
-        public DataGridView GenerateBookBidView(string stockName)
+        public DataGridView GenerateBookBidView(string stock)
         {
             if (g.test)
                 return null;
 
-            _stockName = stockName;
+            _stock = stock;
 
             int w0 = 61, w1 = 50, w2 = 61;
             int cellHeight = 27;
@@ -52,7 +52,7 @@ namespace New_Tradegy.Library.Listeners
             _dataGridView = new DataGridView
             {
                 DataSource = new BindingSource { DataSource = _dataTable },
-                Name = _stockName,
+                Name = _stock,
                 Location = new Point(120, 0), // temporary location
                 Size = new Size(w0 + w1 + w2, cellHeight * 13),
                 Dock = DockStyle.None,
@@ -72,21 +72,21 @@ namespace New_Tradegy.Library.Listeners
             );
 
             // Data error handling
-            _dataGridView.DataError += (s, e) => StockFileExporter.DataGridView_DataError(s, e, "jpjd _dataGridView");
+            _dataGridView.DataError += (s, e) => FileOut.DataGridView_DataError(s, e, "jpjd _dataGridView");
             _dataGridView.DataError += new DataGridViewDataErrorEventHandler(OnDataError);
             _dataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(OnCellMouseClick);
 
             // Subscription
-            string stockcode = _stockCodeService.NameToCode(_stockName);
+            string stockcode = _stockCodeService.NameToCode(_stock);
             _jpbidPrimary = new DSCBO1Lib.StockJpbid();
             _jpbidPrimary.SetInputValue(0, stockcode);
             _jpbidPrimary.Received += new DSCBO1Lib._IDibEvents_ReceivedEventHandler(OnBookBidReceived);
             _jpbidPrimary.Subscribe();
 
-            if (g.BookBidInstances.ContainsKey(_stockName))
+            if (g.BookBidInstances.ContainsKey(_stock))
                 return null;
 
-            g.BookBidInstances.TryAdd(_stockName, _jpbidPrimary);
+            g.BookBidInstances.TryAdd(_stock, _jpbidPrimary);
 
             g.MainForm.Controls.Add(_dataGridView);
             _dataGridView.BringToFront();
@@ -154,7 +154,7 @@ namespace New_Tradegy.Library.Listeners
             if (price == 0)
                 return; // Skip if no valid price
 
-            if (!g.StockManager.Repository.TryGet(_stockName, out var stockData))
+            if (!g.StockManager.Repository.TryGet(_stock, out var data))
                 return;
 
             // Column 1: Toggle passing price or toggle hoga depth
@@ -162,13 +162,13 @@ namespace New_Tradegy.Library.Listeners
             {
                 if (e.RowIndex < Rows)
                 {
-                    stockData.Pass.upperPassingPrice = (price == stockData.Pass.upperPassingPrice) ? 0 : price;
+                    data.Pass.upperPassingPrice = (price == data.Pass.upperPassingPrice) ? 0 : price;
                 }
                 else if (e.RowIndex <= Rows)
                 {
-                    stockData.Pass.lowerPassingPrice = (price == stockData.Pass.lowerPassingPrice) ? 0 : price;
+                    data.Pass.lowerPassingPrice = (price == data.Pass.lowerPassingPrice) ? 0 : price;
                 }
-                else if (e.ColumnIndex <= Rows * 2 && !g.StockManager.IndexList.Contains(_stockName))
+                else if (e.ColumnIndex <= Rows * 2 && !g.StockManager.IndexList.Contains(_stock))
                 {
                     Rows = (Rows == 5) ? 10 : 5;
                 }
@@ -185,7 +185,7 @@ namespace New_Tradegy.Library.Listeners
             if (isBuy)
             {
                 var existingOrder = StockExchange.buyOrders
-                    .Find(order => order.Stock == _stockName && order.Price == price);
+                    .Find(order => order.Stock == _stock && order.Price == price);
                 if (existingOrder != null)
                     StockExchange.buyOrders.Remove(existingOrder);
 
@@ -199,18 +199,18 @@ namespace New_Tradegy.Library.Listeners
                     ? (int)(e.X / (double)_dataGridView.Columns[2].Width * 100)
                     : 100;
 
-                string msg = $"{_stockName} : {price} X {amount} = {(price * amount / 10000)}만원\n";
-                msg += StringUtils.r3_display_매수_매도(stockData);
+                string msg = $"{_stock} : {price} X {amount} = {(price * amount / 10000)}만원\n";
+                msg += StringUtils.r3_display_매수_매도(data);
 
-                if (DealManager.CheckPreviousLoss(_stockName))
+                if (DealManager.CheckPreviousLoss(_stock))
                     return;
 
-                OpenOrUpdateConfirmationForm(isSell, _stockName, amount, price, urgency, msg);
+                OpenOrUpdateConfirmationForm(isSell, _stock, amount, price, urgency, msg);
             }
             else if (isSell)
             {
                 var existingOrder = StockExchange.sellOrders
-                    .Find(order => order.Stock == _stockName && order.Price == price);
+                    .Find(order => order.Stock == _stock && order.Price == price);
                 if (existingOrder != null)
                     StockExchange.sellOrders.Remove(existingOrder);
 
@@ -218,16 +218,16 @@ namespace New_Tradegy.Library.Listeners
                 if (amount == 0)
                     amount = 1;
 
-                if (stockData.Deal.보유량 < amount)
+                if (data.Deal.보유량 < amount)
                 {
-                    DealManager.DealCancelStock(_stockName);
+                    DealManager.DealCancelStock(_stock);
                     DealManager.DealHold();
-                    if (stockData.Deal.보유량 == 0)
+                    if (data.Deal.보유량 == 0)
                         return;
                 }
 
-                if (stockData.Deal.보유량 < amount)
-                    amount = stockData.Deal.보유량;
+                if (data.Deal.보유량 < amount)
+                    amount = data.Deal.보유량;
 
                 if (amount == 0)
                     amount = 1;
@@ -240,13 +240,13 @@ namespace New_Tradegy.Library.Listeners
 
                 if (g.confirm_sell)
                 {
-                    string msg = $"{_stockName} : {price} X {amount} = {(price * amount / 10000)}만원\n";
-                    msg += StringUtils.r3_display_매수_매도(stockData);
-                    OpenOrUpdateConfirmationForm(isSell, _stockName, amount, price, urgency, msg);
+                    string msg = $"{_stock} : {price} X {amount} = {(price * amount / 10000)}만원\n";
+                    msg += StringUtils.r3_display_매수_매도(data);
+                    OpenOrUpdateConfirmationForm(isSell, _stock, amount, price, urgency, msg);
                 }
                 else
                 {
-                    DealManager.DealExec("매도", _stockName, amount, price, "01");
+                    DealManager.DealExec("매도", _stock, amount, price, "01");
                 }
             }
         }
@@ -262,7 +262,7 @@ namespace New_Tradegy.Library.Listeners
             }
 
             // Step 2: Remove stock from dictionary safely
-            if (g.BookBidInstances.TryRemove(_stockName, out object removedValue))
+            if (g.BookBidInstances.TryRemove(_stock, out object removedValue))
             {
                 // If the removed object implements IDisposable, dispose it
                 if (removedValue is IDisposable disposable)
@@ -401,7 +401,7 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         private void RequestQuote()
         {
-            if (!g.StockRepository.TryGet(_stockName, out var stockData))
+            if (!g.StockRepository.TryGet(_stock, out var data))
                 return;
 
             _jpbidSecondary = new DSCBO1Lib.StockJpbid2();
@@ -412,7 +412,7 @@ namespace New_Tradegy.Library.Listeners
                 return;
             }
 
-            string stockcode = _stockCodeService.NameToCode(_stockName);
+            string stockcode = _stockCodeService.NameToCode(_stock);
             _jpbidSecondary.SetInputValue(0, stockcode);
 
             int result = _jpbidSecondary.BlockRequest();
@@ -459,14 +459,14 @@ namespace New_Tradegy.Library.Listeners
             int valUp = (int)_jpbidSecondary.GetDataValue(0, 0);
             int valDn = (int)_jpbidSecondary.GetDataValue(1, 0);
 
-            if (g.StockManager.IndexList.Contains(_stockName))
+            if (g.StockManager.IndexList.Contains(_stock))
             {
                 _dataTable.Rows[Rows - 2][2] = (MajorIndex.Instance.KospiIndex / 100.0).ToString("0.##");
                 _dataTable.Rows[Rows - 1][2] = (MajorIndex.Instance.KosdaqIndex / 100.0).ToString("0.##");
             }
             else
             {
-                _dataTable.Rows[Rows - 1][2] = (stockData.Post.푀누천 / 10.0).ToString("0.##");
+                _dataTable.Rows[Rows - 1][2] = (data.Post.푀누천 / 10.0).ToString("0.##");
             }
 
             if (MathUtils.IsSafeToDivide(valDn))
@@ -478,14 +478,14 @@ namespace New_Tradegy.Library.Listeners
                 _dataTable.Rows[2 * Rows]["호가"] = "No Data";
             }
 
-            if (stockData.Deal.보유량 > 0 && stockData.Api.매수1호가 > 0)
+            if (data.Deal.보유량 > 0 && data.Api.매수1호가 > 0)
             {
-                stockData.Deal.수익률 = (stockData.Api.매수1호가 - stockData.Deal.장부가) / (double)stockData.Api.매수1호가 * 100;
+                data.Deal.수익률 = (data.Api.매수1호가 - data.Deal.장부가) / (double)data.Api.매수1호가 * 100;
             }
 
-            _dataTable.Rows[2 * Rows + 1][0] = stockData.Stock;
-            _dataTable.Rows[2 * Rows + 1][1] = stockData.Statistics.일간변동평균편차;
-            _dataTable.Rows[2 * Rows + 1][2] = stockData.Deal.보유량 + "/" + stockData.Deal.수익률.ToString("F2");
+            _dataTable.Rows[2 * Rows + 1][0] = data.Stock;
+            _dataTable.Rows[2 * Rows + 1][1] = data.Statistics.일간변동평균편차;
+            _dataTable.Rows[2 * Rows + 1][2] = data.Deal.보유량 + "/" + data.Deal.수익률.ToString("F2");
 
             RequestQuoteExtra();
         }
@@ -493,36 +493,36 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         private void RequestQuoteExtra()
         {
-            if (!g.StockRepository.TryGet(_stockName, out var stockData))
+            if (!g.StockRepository.TryGet(_stock, out var data))
                 return;
 
             int divider = 10;
 
             for (int i = 0; i < Rows; i++)
             {
-                _dataTable.Rows[i + Rows][0] = ((stockData.Api.틱매수량[i] - stockData.Api.틱매수량[i + 1]) / divider).ToString()
+                _dataTable.Rows[i + Rows][0] = ((data.Api.틱매수량[i] - data.Api.틱매수량[i + 1]) / divider).ToString()
                                               + "/" +
-                                              ((stockData.Api.틱매도량[i] - stockData.Api.틱매도량[i + 1]) / divider).ToString();
+                                              ((data.Api.틱매도량[i] - data.Api.틱매도량[i + 1]) / divider).ToString();
             }
 
             for (int i = 0; i < Rows; i++)
             {
-                _dataTable.Rows[i][2] = stockData.Api.틱프로천[i].ToString("F0") + "+" +
-                                        stockData.Api.틱외인천[i].ToString("F0") + "/" +
-                                        stockData.Api.틱거래천[i].ToString("F0");
+                _dataTable.Rows[i][2] = data.Api.틱프로천[i].ToString("F0") + "+" +
+                                        data.Api.틱외인천[i].ToString("F0") + "/" +
+                                        data.Api.틱거래천[i].ToString("F0");
             }
 
-            stockData.Api.틱의시간[0] = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
+            data.Api.틱의시간[0] = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
 
-            stockData.Api.매도1호가 = Convert.ToInt32(_dataTable.Rows[Rows - 1][1]);
-            stockData.Api.매수1호가 = Convert.ToInt32(_dataTable.Rows[Rows][1]);
+            data.Api.매도1호가 = Convert.ToInt32(_dataTable.Rows[Rows - 1][1]);
+            data.Api.매수1호가 = Convert.ToInt32(_dataTable.Rows[Rows][1]);
 
-            int.TryParse(_dataTable.Rows[Rows - 1][0]?.ToString(), out stockData.Api.최우선매도호가잔량);
-            int.TryParse(_dataTable.Rows[Rows][2]?.ToString(), out stockData.Api.최우선매수호가잔량);
+            int.TryParse(_dataTable.Rows[Rows - 1][0]?.ToString(), out data.Api.최우선매도호가잔량);
+            int.TryParse(_dataTable.Rows[Rows][2]?.ToString(), out data.Api.최우선매수호가잔량);
 
-            if (stockData.Api.전일종가 > 0)
+            if (data.Api.전일종가 > 0)
             {
-                stockData.Api.틱의가격[0] = (int)((stockData.Api.매수1호가 - stockData.Api.전일종가) * 10000.0 / stockData.Api.전일종가);
+                data.Api.틱의가격[0] = (int)((data.Api.매수1호가 - data.Api.전일종가) * 10000.0 / data.Api.전일종가);
             }
 
 
@@ -530,31 +530,31 @@ namespace New_Tradegy.Library.Listeners
 
             double factor = 0.0;
             double differ = 0.0;
-            if (stockData.Api.전일종가 > 0)
-                differ = (stockData.Api.매도1호가 - stockData.Api.매수1호가) * 10000.0 / stockData.Api.전일종가;
-            if (stockData.Api.최우선매도호가잔량 + stockData.Api.최우선매수호가잔량 > 0)
-                factor = (double)stockData.Api.최우선매수호가잔량 / (stockData.Api.최우선매도호가잔량 + stockData.Api.최우선매수호가잔량);
-            stockData.Api.틱의가격[0] += (int)(differ * factor);
-            stockData.Api.가격 = stockData.Api.틱의가격[0];
+            if (data.Api.전일종가 > 0)
+                differ = (data.Api.매도1호가 - data.Api.매수1호가) * 10000.0 / data.Api.전일종가;
+            if (data.Api.최우선매도호가잔량 + data.Api.최우선매수호가잔량 > 0)
+                factor = (double)data.Api.최우선매수호가잔량 / (data.Api.최우선매도호가잔량 + data.Api.최우선매수호가잔량);
+            data.Api.틱의가격[0] += (int)(differ * factor);
+            data.Api.가격 = data.Api.틱의가격[0];
 
-            stockData.Api.틱매도잔[0] = stockData.Api.최우선매도호가잔량;
-            stockData.Api.틱매수잔[0] = stockData.Api.최우선매도호가잔량;
+            data.Api.틱매도잔[0] = data.Api.최우선매도호가잔량;
+            data.Api.틱매수잔[0] = data.Api.최우선매도호가잔량;
 
             // 푀누억
-            if (_stockName.Contains("KODEX"))
+            if (_stock.Contains("KODEX"))
             {
                 _dataTable.Rows[Rows - 2][2] = (MajorIndex.Instance.KospiIndex / 100.0).ToString("0.##"); ;
                 _dataTable.Rows[Rows - 1][2] = (MajorIndex.Instance.KosdaqIndex / 100.0).ToString("0.##"); ;
             }
             else
             {
-                _dataTable.Rows[Rows - 1][2] = (stockData.Post.푀누천 / 10.0).ToString("0.##");
+                _dataTable.Rows[Rows - 1][2] = (data.Post.푀누천 / 10.0).ToString("0.##");
             }
 
             // 한 호가 차이 슬리피지 % 계산
-            if (stockData.Api.매수1호가 > 0)
+            if (data.Api.매수1호가 > 0)
             {
-                _dataTable.Rows[2 * Rows][1] = ((stockData.Api.매도1호가 - stockData.Api.매수1호가) / (double)stockData.Api.매수1호가 * 100.0).ToString("0.##");
+                _dataTable.Rows[2 * Rows][1] = ((data.Api.매도1호가 - data.Api.매수1호가) / (double)data.Api.매수1호가 * 100.0).ToString("0.##");
             }
             else
             {
@@ -563,16 +563,16 @@ namespace New_Tradegy.Library.Listeners
 
 
 
-            if (stockData.Deal.보유량 > 0)
+            if (data.Deal.보유량 > 0)
             {
-                if (stockData.Api.매수1호가 > 0)
+                if (data.Api.매수1호가 > 0)
                 {
-                    stockData.Deal.수익률 = (stockData.Api.매수1호가 - stockData.Deal.장부가) / (double)stockData.Api.매수1호가 * 100;
+                    data.Deal.수익률 = (data.Api.매수1호가 - data.Deal.장부가) / (double)data.Api.매수1호가 * 100;
                 }
             }
-            _dataTable.Rows[2 * Rows + 1][0] = stockData.Stock;
-            _dataTable.Rows[2 * Rows + 1][1] = stockData.Statistics.일간변동평균편차;
-            _dataTable.Rows[2 * Rows + 1][2] = stockData.Deal.보유량.ToString() + "/" + stockData.Deal.수익률.ToString("F2");
+            _dataTable.Rows[2 * Rows + 1][0] = data.Stock;
+            _dataTable.Rows[2 * Rows + 1][1] = data.Statistics.일간변동평균편차;
+            _dataTable.Rows[2 * Rows + 1][2] = data.Deal.보유량.ToString() + "/" + data.Deal.수익률.ToString("F2");
 
 
             for (int i = 0; i < 2 * Rows - 2; i++)
@@ -582,22 +582,22 @@ namespace New_Tradegy.Library.Listeners
 
 
             // upperPassingPrice
-            if (stockData.Pass.upperPassingPrice > 0)
+            if (data.Pass.upperPassingPrice > 0)
             {
-                if (stockData.Api.매도1호가 >= stockData.Pass.upperPassingPrice)
+                if (data.Api.매도1호가 >= data.Pass.upperPassingPrice)
                 {
                     Utils.SoundUtils.Sound("일반", "passing upper"); // StopLoss[1]
-                    stockData.Pass.upperPassingPrice = 0;
+                    data.Pass.upperPassingPrice = 0;
                 }
             }
 
             // lowerPassingPrice
-            if (stockData.Pass.lowerPassingPrice > 0)
+            if (data.Pass.lowerPassingPrice > 0)
             {
-                if (stockData.Api.매수1호가 <= stockData.Pass.lowerPassingPrice)
+                if (data.Api.매수1호가 <= data.Pass.lowerPassingPrice)
                 {
                     Utils.SoundUtils.Sound("일반", "passing lower"); // Stop Loss[0]
-                    stockData.Pass.lowerPassingPrice = 0;
+                    data.Pass.lowerPassingPrice = 0;
                 }
             }
 
@@ -615,7 +615,7 @@ namespace New_Tradegy.Library.Listeners
             Color ColorLightRed = Color.FromArgb(255, 204, 204); // LightRed
 
             cellColors[Rows - 1, 2] = Color.LightGreen;
-            if (g.StockManager.IndexList.Contains(_stockName))
+            if (g.StockManager.IndexList.Contains(_stock))
             {
                 cellColors[Rows - 2, 2] = Color.LightGreen;
             }
@@ -638,7 +638,7 @@ namespace New_Tradegy.Library.Listeners
                     cellColors[i, 0] = Color.Yellow;
                 }
                 // column 2
-                int row = g.StockManager.IndexList.Contains(_stockName) ? Rows - 2 : Rows - 1;
+                int row = g.StockManager.IndexList.Contains(_stock) ? Rows - 2 : Rows - 1;
                 for (int i = 0; i < row; i++)
                 {
                     cellColors[i, 2] = Color.Yellow;
@@ -647,13 +647,13 @@ namespace New_Tradegy.Library.Listeners
 
 
             //  Coloring upperPassingPrice in column 1
-            if (stockData.Pass.upperPassingPrice > 0 || stockData.Pass.lowerPassingPrice > 0)
+            if (data.Pass.upperPassingPrice > 0 || data.Pass.lowerPassingPrice > 0)
             {
                 for (int i = 0; i < 2 * Rows; i++)
                 {
                     if (int.TryParse(_dataTable.Rows[i][1].ToString(), out int price))
                     {
-                        if (price == stockData.Pass.upperPassingPrice || price == stockData.Pass.lowerPassingPrice)
+                        if (price == data.Pass.upperPassingPrice || price == data.Pass.lowerPassingPrice)
                         {
                             cellColors[i, 1] = Color.Yellow;
                         }
@@ -663,8 +663,8 @@ namespace New_Tradegy.Library.Listeners
 
             // Coloring buyOrder and sellOrder with Quantity
             var ordersWithStock = StockExchange.buyOrders
-                .Where(order => order.Stock == _stockName)
-                .Concat(StockExchange.sellOrders.Where(order => order.Stock == _stockName))
+                .Where(order => order.Stock == _stock)
+                .Concat(StockExchange.sellOrders.Where(order => order.Stock == _stock))
                 .ToList();
 
             foreach (var order in ordersWithStock)

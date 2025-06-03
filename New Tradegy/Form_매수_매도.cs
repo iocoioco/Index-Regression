@@ -2,7 +2,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
+using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy
 {
@@ -59,7 +60,7 @@ namespace New_Tradegy
             richTextBox1.SelectionBackColor = Color.FromArgb(235, 255, 255);
 
             Form se = (Form)System.Windows.Forms.Application.OpenForms["Form1"];
-            DataGridView dgv = fm.FindDataGridViewByName(se, _stock);
+            DataGridView dgv = FormUtils.FindDataGridViewByName(se, _stock);
             this.Size = new Size(g.screenWidth / 6 + 40, g.screenHeight / 3 - 8);
             this.Location = new Point(dgv.Location.X + g.screenWidth / g.nCol - 25, dgv.Location.Y + 22);
 
@@ -211,6 +212,7 @@ namespace New_Tradegy
         
         private void 시장_Click(object sender, EventArgs e)
         {
+    
             DealManager.DealExec(_isSell ? "매도" : "매수", _stock, _amount, _price, "03");
             this.BeginInvoke(new Action(() =>
             {

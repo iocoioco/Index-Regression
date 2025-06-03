@@ -72,7 +72,7 @@ namespace New_Tradegy.Library.PostProcessing
                 post(data);
             }
 
-            if (g.MarketeyeCount % g.MarketeyeDividerForEvalStock == 1)
+            if (g.MarketeyeCount % g.MarketeyeCountDividerForEvalStock == 1)
             {
                 RankLogic.EvalStock();
             }

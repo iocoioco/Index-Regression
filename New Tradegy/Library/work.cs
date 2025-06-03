@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.IO;
+using New_Tradegy.Library.UI.KeyBindings;
 
 namespace New_Tradegy.Library
 {
@@ -89,15 +90,14 @@ namespace New_Tradegy.Library
 
                 Utils.SoundUtils.Sound("time", "date forwards");
             }
-            VariableLoader.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
+            FileIn.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
             
             // MOD info date modification
             int month_1 = g.date % 10000 / 100;
             int day_1 = g.date % 10000 % 100;
             g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
             RankLogic.EvalStock(); // date backwards forwards
-            mm.ManageChart1(); // date_backwards_forwards
-            mm.ManageChart2(); // date_backwards_forwards
+            ActionCode.New(true, false, eval: true, draw: 'B').Run();
         }
 
         public static bool isWorkingHour()
@@ -136,24 +136,11 @@ namespace New_Tradegy.Library
                 return false;
         }
 
-        public static int return_index_of_ogldata(string stock)
-        {
-            int index = -1;
-            // index = g.ogl_data.FindIndex(x => x.stock == stock);
-
-
-            lock (g.ogl_data)
-            {
-                index = g.ogl_data.FindIndex(x => x.stock == stock);
-            }
-
-
-            return index;
-        }
+       
 
         public static bool gen_ogl_data(string stock, ConcurrentDictionary<string, double> map)
         {
-            if (VariableLoader.read_단기과열(stock))
+            if (FileIn.read_단기과열(stock))
                 return false;
 
             int days = 20;
@@ -166,18 +153,18 @@ namespace New_Tradegy.Library
 
             var cpStockCode = new CPUTILLib.CpStockCode();
             string code = cpStockCode.NameToCode(stock);
-            long 전일종가 = VariableLoader.read_전일종가(stock);
+            long 전일종가 = FileIn.read_전일종가(stock);
             if (code.Length != 7 || 전일종가 < 1000)
                 return false;
 
             if (!map.TryGetValue(stock, out var 시총값))
                 return false;
 
-            double 전일거래액_천만원 = VariableLoader.read_전일종가_전일거래액_천만원(stock);
+            double 전일거래액_천만원 = FileIn.read_전일종가_전일거래액_천만원(stock);
             if (전일거래액_천만원 == -1)
                 return false;
 
-            char 시장구분 = VariableLoader.read_코스피코스닥시장구분(stock);
+            char 시장구분 = FileIn.read_코스피코스닥시장구분(stock);
             if (시장구분 != 'S' && 시장구분 != 'D')
                 return false;
 
@@ -321,219 +308,33 @@ namespace New_Tradegy.Library
             }
         }
 
-        public static void 전일거래액_천만원_순서(List<string> gl)
+
+
+
+
+        public static void 거분순서(List<string> stocks)
         {
-
-            var 종목 = new List<Tuple<double, string>> { };
-
-            foreach (var stock in gl)
+            stocks.Sort((a, b) =>
             {
-                if (g.StockManager.IndexList.Contains(stock)) continue;
+                var sa = g.StockRepository.TryGetStockOrNull(a);
+                var sb = g.StockRepository.TryGetStockOrNull(b);
 
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
+                if (sa == null && sb == null) return 0;
+                if (sa == null) return 1;
+                if (sb == null) return -1;
 
-                종목.Add(Tuple.Create(g.ogl_data[index].전일거래액_천만원, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
+                double va = sa.Api.분거래천?[0] ?? double.MinValue;
+                double vb = sb.Api.분거래천?[0] ?? double.MinValue;
 
-            gl.Clear();
-
-            foreach (var item in 종목)
-                gl.Add(item.Item2);
+                return vb.CompareTo(va); // descending order
+            });
         }
 
-        public static void 시총순서(List<string> gl)
-        {
-            var 종목 = new List<Tuple<double, string>> { };
-
-            foreach (var stock in gl)
-            {
-                if (g.StockManager.IndexList.Contains(stock)) continue;
-
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-                종목.Add(Tuple.Create(g.ogl_data[index].시총, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            gl.Clear();
-
-            foreach (var item in 종목)
-                gl.Add(item.Item2);
-        }
-
-        public static void 거분순서(List<string> gl)
-        {
-            var 종목 = new List<Tuple<double, string>> { };
-            var uniqueItemsList = gl.Distinct().ToList();
 
 
-            foreach (var stock in uniqueItemsList)
-            {
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0)
-                    continue;
-
-                종목.Add(Tuple.Create(g.ogl_data[index].분거래천[0], stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            gl.Clear();
-
-            foreach (var item in 종목)
-                gl.Add(item.Item2);
-        }
-
-        public static void 편차순서(List<string> gl)
-        {
-            var 종목 = new List<Tuple<double, string>> { };
-            var uniqueItemsList = gl.Distinct().ToList();
 
 
-            foreach (var stock in uniqueItemsList)
-            {
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0)
-                    continue;
 
-                종목.Add(Tuple.Create(g.ogl_data[index].일간변동편차, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            gl.Clear();
-
-            foreach (var item in 종목)
-                gl.Add(item.Item2);
-        }
-
-        public static void 평균순서(List<string> gl)
-        {
-            var 종목 = new List<Tuple<double, string>> { };
-            var uniqueItemsList = gl.Distinct().ToList();
-
-
-            foreach (var stock in uniqueItemsList)
-            {
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0)
-                    continue;
-
-                종목.Add(Tuple.Create(g.ogl_data[index].일간변동평균, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            gl.Clear();
-
-            foreach (var item in 종목)
-                gl.Add(item.Item2);
-        }
-
-        public static void 종가기준추정누적거래액_천만원순서(List<string> gl)
-        {
-            var 종목 = new List<Tuple<double, string>> { };
-
-            foreach (var stock in gl)
-            {
-                if (g.StockManager.IndexList.Contains(stock)) continue;
-
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-                종목.Add(Tuple.Create(g.ogl_data[index].종거천, stock));
-            }
-            종목 = 종목.OrderByDescending(t => t.Item1).ToList();
-
-            gl.Clear();
-            gl.Add("KODEX 레버리지");
-            gl.Add("KODEX 코스닥150레버리지");
-
-            foreach (var item in 종목)
-            {
-                gl.Add(item.Item2);
-            }
-        }
-
-        public static List<string> 총점_푀분(List<string> gl)
-        {
-            var a_tuple = new List<Tuple<double, string>> { };
-            List<string> list = new List<string>();
-
-            if (gl == null) // 날짜변경 후 'f' 입력의 경우 발생
-                return null;
-
-            foreach (var stock in gl)
-            {
-                if (g.StockManager.IndexList.Contains(stock)) continue;
-
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-
-                a_tuple.Add(Tuple.Create(g.ogl_data[index].점수.푀분, stock));
-            }
-            a_tuple = a_tuple.OrderByDescending(t => t.Item1).ToList();
-
-            foreach (var t in a_tuple)
-            {
-                list.Add(t.Item2);
-            }
-            return list;
-        }
-
-        public static List<string> 총점_순서(List<string> gl)
-        {
-            var a_tuple = new List<Tuple<double, string>> { };
-            List<string> list = new List<string>();
-
-            if (gl == null) // 날짜변경 후 'f' 입력의 경우 발생
-                return null;
-
-            foreach (var stock in gl)
-            {
-                if (g.StockManager.IndexList.Contains(stock)) continue;
-
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-
-                a_tuple.Add(Tuple.Create(g.ogl_data[index].점수.총점, stock));
-            }
-            a_tuple = a_tuple.OrderByDescending(t => t.Item1).ToList();
-
-            foreach (var t in a_tuple)
-            {
-                list.Add(t.Item2);
-            }
-            return list;
-        }
-
-        public static List<string> 분거래천_순서(List<string> gl)
-        {
-            var a_tuple = new List<Tuple<double, string>> { };
-            List<string> list = new List<string>();
-
-            if (gl == null) // 날짜변경 후 'f' 입력의 경우 발생
-                return null;
-
-            foreach (var stock in gl)
-            {
-                if (g.StockManager.IndexList.Contains(stock)) continue;
-
-                int index = g.ogl_data.FindIndex(x => x.stock == stock);
-                if (index < 0) continue;
-
-                a_tuple.Add(Tuple.Create(g.ogl_data[index].분거래천[0], stock));
-            }
-            a_tuple = a_tuple.OrderByDescending(t => t.Item1).ToList();
-
-            foreach (var t in a_tuple)
-            {
-                list.Add(t.Item2);
-            }
-            return list;
-        }
 
         public static double ComputeCoeff(string stockname, double[] values1, double[] values2)
         {
@@ -1070,22 +871,6 @@ namespace New_Tradegy.Library
 
 
 
-
-        public static string 종목포함_최고가그룹리스트_title(string finding_stock)
-        {
-            string title = "";
-            double 상순 = -3100;
-
-            foreach (var sublist in g.oGL_data)
-            {
-                if (sublist.stocks.Contains(finding_stock) && 상순 < sublist.상순)
-                {
-                    상순 = sublist.상순;
-                    title = sublist.title;
-                }
-            }
-            return title;
-        }
 
      
 

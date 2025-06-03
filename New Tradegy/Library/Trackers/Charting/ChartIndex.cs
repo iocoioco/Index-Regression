@@ -30,7 +30,7 @@ namespace New_Tradegy.Library.Trackers
                 if (data == null) continue;
 
                 bool shouldUpdateSeries = ChartHandler.ChartAreaExists(chart, stock) &&
-                    g.MarketeyeCount % g.MarketeyeDividerForEvalStock != 1 &&
+                    g.MarketeyeCount % g.MarketeyeCountDividerForEvalStock != 1 &&
                     g.connected && !g.test && !data.Misc.ShrinkDraw;
 
                 if (shouldUpdateSeries)

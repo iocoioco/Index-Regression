@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Media;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace New_Tradegy.Library.Utils
                 long pingMs = -1;
                 try
                 {
-                    PingReply reply = new Ping().Send(_host);
+                    PingReply reply = await new Ping().SendPingAsync(_host); 
                     if (reply.Status == IPStatus.Success)
                     {
                         pingMs = reply.RoundtripTime;
@@ -91,17 +92,19 @@ namespace New_Tradegy.Library.Utils
                 double mbps = -1;
                 try
                 {
-                    using WebClient client = new WebClient();
-                    Stopwatch sw = Stopwatch.StartNew();
-                    byte[] data = client.DownloadData(_testDownloadUrl);
-                    sw.Stop();
+                    using (var client = new HttpClient())
+                    {
+                        Stopwatch sw = Stopwatch.StartNew();
+                        byte[] data = await client.GetByteArrayAsync(_testDownloadUrl);
+                        sw.Stop();
 
-                    double sec = sw.Elapsed.TotalSeconds;
-                    double bits = data.Length * 8;
-                    mbps = bits / 1_000_000.0 / sec;
+                        double sec = sw.Elapsed.TotalSeconds;
+                        double bits = data.Length * 8;
+                        mbps = bits / 1_000_000.0 / sec;
 
-                    if (mbps < _speedThresholdMbps)
-                        isBad = true;
+                        if (mbps < _speedThresholdMbps)
+                            isBad = true;
+                    }
                 }
                 catch
                 {

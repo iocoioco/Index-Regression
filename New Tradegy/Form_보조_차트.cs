@@ -85,7 +85,7 @@ namespace New_Tradegy
 
         private void ConfigureDataGridView()
         {
-            dataGridView1.DataError += (s, f) => StockFileExporter.DataGridView_DataError(s, f, "보조차트 dgv");
+            dataGridView1.DataError += (s, f) => FileOut.DataGridView_DataError(s, f, "보조차트 dgv");
             dataGridView1.DefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
             dataGridView1.RowTemplate.Height = dataGridView1Height;
@@ -186,7 +186,7 @@ namespace New_Tradegy
             int totalAreas = Math.Min(displayList.Count, nRow * nCol);
             float cellWidth = 100.0F / nCol; // Width percentage per column
             float cellHeight = 100.0F / nRow; // Height percentage per row
-            float annotationHeight = 5.155F;
+      
             for (int i = 0; i < totalAreas; i++)
             {
                 string stock = displayList[i];
@@ -363,7 +363,7 @@ namespace New_Tradegy
 
 
                 case "관심":
-                    VariableLoader.read_파일관심종목();
+                    FileIn.read_파일관심종목();
                     foreach (string s in g.StockManager.InterestedInFile)
                     {
                         if (!displayList.Contains(s))
@@ -390,9 +390,9 @@ namespace New_Tradegy
                     {
                         var a_tuple = new List<Tuple<double, string>>();
 
-                        foreach (var o in g.StockRepository.AllDatas)
+                        foreach (var data in g.StockRepository.AllDatas)
                         {
-                            string stock = o.Stock;
+                            string stock = data.Stock;
 
                             // Exclude index-related ETFs and already displayed/interested stocks
                             if (g.StockManager.IndexList.Contains(stock) ||
@@ -408,7 +408,7 @@ namespace New_Tradegy
                             }
 
                             int check_row = 0;
-                            int nrow = o.Api.nrow;
+                            int nrow = data.Api.nrow;
 
                             if (nrow < 2)
                                 continue;
@@ -424,11 +424,11 @@ namespace New_Tradegy
                                     check_row = nrow - 1;
                             }
 
-                            if (o.Api.x[check_row, 4] < 0)
+                            if (data.Api.x[check_row, 4] < 0)
                                 continue;
 
                             double value = 0.0;
-                            var x = o.Api.x;
+                            var x = data.Api.x;
 
                             for (int i = check_row - 1; i >= 1; i--)
                             {
@@ -486,9 +486,8 @@ namespace New_Tradegy
         private void chart2_MouseClick(object sender, MouseEventArgs e)
         {
             string selection = "";
-            double xval = 0.0, yval = 0.0;
-            double row_percentage = 0.0, col_percentage = 0.0;
-            double col_divider = 0.0;
+            
+       
             int row_id = 0, col_id = 0;
 
             //chart2_info(e, ref selection, ref xval, ref yval, ref row_percentage,

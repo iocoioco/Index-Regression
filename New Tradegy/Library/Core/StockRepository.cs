@@ -10,7 +10,6 @@ namespace New_Tradegy.Library.Core
         private static readonly object _lock = new object();
 
         private StockRepository() { }
-        
 
         public static StockRepository Instance
         {
@@ -44,9 +43,10 @@ namespace New_Tradegy.Library.Core
             _stockMap[stock] = data;
         }
 
-        public bool TryGet(string stockName, out StockData stock)
+        
+        public bool TryGet(string stock, out StockData data)
         {
-            return _stockMap.TryGetValue(stockName, out stock);
+            return _stockMap.TryGetValue(stock, out data);
         }
 
         public StockData TryGetStockOrNull(string stock)
@@ -55,19 +55,17 @@ namespace New_Tradegy.Library.Core
                 return data;
 
             MessageBox.Show("Stock name not found: " + stock);
+
             return null;
         }
 
-        public IEnumerable<StockData> AllDatas => _stockMap.Values;
+        // public IEnumerable<string> AllStockNames => _stockMap.Keys;
+        // public IEnumerable<(string Name, StockData Data)> AllPairs => stockMap.Select(kvp => (kvp.Key, kvp.Value));
+        public IEnumerable<StockData> AllDatas => _stockMap.Values; // datas in sequence
 
         public bool Contains(string stock)
         {
             return _stockMap.ContainsKey(stock);
-        }
-
-        public void Add(string stockName, StockData data)
-        {
-            _stockMap[stockName] = data;
         }
     }
 }

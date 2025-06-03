@@ -383,13 +383,13 @@ namespace New_Tradegy.Library.IO
 
             foreach (var item in four_index)
             {
-                StockData o = g.StockRepository.TryGetStockOrNull(item);
-                if (o == null)
+                var data = g.StockRepository.TryGetStockOrNull(item);
+                if (data == null)
                 {
                     continue;
                 }
         
-                int time_befr_6int = o.Api.x[o.Api.nrow - 1, 0];
+                int time_befr_6int = data.Api.x[data.Api.nrow - 1, 0];
                 bool append;
 
                 // 초는 포함하지 않는 시간 비교
@@ -400,14 +400,14 @@ namespace New_Tradegy.Library.IO
 
                 int append_or_replace_row;
                 if (append)
-                    append_or_replace_row = o.Api.nrow;
+                    append_or_replace_row = data.Api.nrow;
                 else
-                    append_or_replace_row = o.Api.nrow - 1;
+                    append_or_replace_row = data.Api.nrow - 1;
 
                 if (append_or_replace_row >= g.MAX_ROW)
                     return;
 
-                o.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
+                data.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
             }
         }
 

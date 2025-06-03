@@ -33,8 +33,6 @@ namespace New_Tradegy // added for test on 20241020 0300
         private System.Timers.Timer _timerConnection;
         private int _timerCount;
 
-        private static TextBox searchTextBox;
-
         private PingAndSpeedMonitor networkMonitor;
         public static Form1 Instance { get; private set; }
 
@@ -74,7 +72,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
             this.FormClosing += Form1_FormClosing;
             StartNetworkMonitor();
 
@@ -82,7 +80,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.StockRepository = StockRepository.Instance;
 
-        
+
             ChartIndex.UpdateChart(g.chart1);
             ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
             g.ChartGeneral1 = new ChartGeneral();
@@ -105,7 +103,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 }
             };
 
-            VariableLoader.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
+            FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
 
             g.StockManager.AddIfMissing(g.kospi_mixed.stock);
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
@@ -164,18 +162,18 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.gid = 0;
             g.Gid = 0;
 
-            VariableLoader.read_제어();
+            FileIn.read_제어();
 
             string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
-            VariableLoader.read_변수(); //
+            FileIn.read_변수(); //
 
-            VariableLoader.read_무게(); //
+            FileIn.read_무게(); //
 
-            VariableLoader.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
+            FileIn.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
 
-            VariableLoader.read_or_set_stocks(); // duration : 0.36 seconds
+            FileIn.read_or_set_stocks(); // duration : 0.36 seconds
 
 
             ControlPanelRenderer.SetupAndAttachControlPanel(this);
@@ -184,7 +182,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
 
-            
+
 
             if (!g.test) // for market trading
             {
@@ -215,7 +213,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
             }
             RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
-            VariableLoader.read_파일관심종목(); // duration 0.000 seconds
+            FileIn.read_파일관심종목(); // duration 0.000 seconds
             g.ChartGeneral1.UpdateLayoutIfChanged(); // all new, Form_1 start
 
             // updated on 20241020 0300
@@ -280,62 +278,51 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    try
+                    int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
+
+                    if (HHmm >= 0700 && HHmm <= 1530)
                     {
-                        int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
+                        //Logger.Info("Attempting to fetch KOSPI data...");
 
-                        if (HHmm >= 0700 && HHmm <= 1530)
+                        _cpsvrnew7222.SetInputValue(0, 'B');
+                        _cpsvrnew7222.SetInputValue(1, 0);
+                        _cpsvrnew7222.SetInputValue(2, '1');
+                        _cpsvrnew7222.SetInputValue(4, '2');
+
+                        if (_cpsvrnew7222.GetDibStatus() == 1)
                         {
-                            //Logger.Info("Attempting to fetch KOSPI data...");
+                            //Logger.Error("GetDibStatus returned an error");
+                            continue;
+                        }
 
-                            _cpsvrnew7222.SetInputValue(0, 'B');
-                            _cpsvrnew7222.SetInputValue(1, 0);
-                            _cpsvrnew7222.SetInputValue(2, '1');
-                            _cpsvrnew7222.SetInputValue(4, '2');
+                        int retryCount = 0;
+                        bool success = false;
 
-                            if (_cpsvrnew7222.GetDibStatus() == 1)
+                        while (retryCount < 3 && !success)
+                        {
+                            if (_cpsvrnew7222.BlockRequest() == 0)
                             {
-                                //Logger.Error("GetDibStatus returned an error");
-                                continue;
+                                //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
+                                MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+                                MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
+                                MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
+                                MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
+                                //int KOSPI = (int)_cpsvrnew7222.GetDataValue(1, 0);
+                                //Logger.Info($"KOSPI: {KOSPI}");
+                                success = true;
                             }
-
-                            int retryCount = 0;
-                            bool success = false;
-
-                            while (retryCount < 3 && !success)
+                            else
                             {
-                                if (_cpsvrnew7222.BlockRequest() == 0)
-                                {
-                                    //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
-                                    MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                                    MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
-                                    MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
-                                    MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
-                                    //int KOSPI = (int)_cpsvrnew7222.GetDataValue(1, 0);
-                                    //Logger.Info($"KOSPI: {KOSPI}");
-                                    success = true;
-                                }
-                                else
-                                {
-                                    retryCount++;
-                                    //Logger.Warn($"BlockRequest failed. Retrying {retryCount}/3...");
-                                    await Task.Delay(5000, cancellationToken); // Wait 5 seconds before retrying
-                                }
-                            }
-
-                            if (!success)
-                            {
-                                //Logger.Error("Failed to fetch KOSPI data after 3 retries.");
+                                retryCount++;
+                                //Logger.Warn($"BlockRequest failed. Retrying {retryCount}/3...");
+                                await Task.Delay(5000, cancellationToken); // Wait 5 seconds before retrying
                             }
                         }
-                    }
-                    catch (COMException comEx)
-                    {
-                        //Logger.Error(comEx, "COM error occurred while fetching KOSPI data.");
-                    }
-                    catch (Exception ex)
-                    {
-                        //Logger.Error(ex, "An error occurred while fetching KOSPI data.");
+
+                        if (!success)
+                        {
+                            //Logger.Error("Failed to fetch KOSPI data after 3 retries.");
+                        }
                     }
 
                     // Wait for 15 seconds before the next iteration
@@ -485,45 +472,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
         }
 
-        // updated on 20241020
-        private bool _isRunning = false;
-
-        /* not used : Task task_eval_draw
-        public async Task task_eval_draw()
-        {
-            // Ensure that this task is not running multiple times
-            if (_isRunning)
-                return;
-
-            _isRunning = true;
-
-            while (true)
-            {
-                if (IsMarketOpen())
-                {
-                    if (g.MarketeyeCount > g.MarketeyeCount_draw_tick)
-                    {
-                        if (g.MarketeyeCount % g.v.eval_per_marketeyes == 1)
-                        {
-                            ev.eval_stock();  // Evaluate stock conditionally
-                        }
-
-                        mm.ManageChart1(); // not used, Task task_eval_draw
-                        mm.ManageChart2(); // not used, Task task_eval_draw
-
-                        // Update the last draw tick
-                        g.MarketeyeCount_draw_tick = g.MarketeyeCount;
-                    }
-                }
-
-                // Wait for 750 milliseconds before the next iteration
-                await Task.Delay(750);
-            }
-        }
-        */
-
-        // Helper method to check if the market is open
-
         private bool IsMarketOpen()
         {
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
@@ -531,8 +479,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             return (HHmm >= 800 && HHmm <= 1530) && (day != "Sunday" && day != "Saturday");
         }
-
-
 
         //        안녕하세요.Plus 담당자입니다.
         //1초 마다 다운로드하게 한다는 말이 1초마다 BlockRequest() 를 요청한다는 의미인지요?

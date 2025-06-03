@@ -150,7 +150,7 @@ namespace New_Tradegy.Library
         public static int rqwey_nRow = 3; // number of chart area rows in main chart
 
         public static int MarketeyeCount = 0; // total count of API download from start of market
-        public static int MarketeyeDividerForEvalStock = 10; // evaluation of stocks after how many MarketeyeCount increases
+        public static int MarketeyeCountDividerForEvalStock = 10; // evaluation of stocks after how many MarketeyeCount increases
         public static int minuteSaveAll = 0; // to block repeated saving of minute data of all stocks (every hour saved)
         public static int AlarmedHHmm = 0; // to bock alarm repeated like "Taiwan market open"
 

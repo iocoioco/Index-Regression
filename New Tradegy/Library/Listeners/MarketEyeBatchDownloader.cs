@@ -7,6 +7,8 @@ using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.PostProcessing;
+using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -34,7 +36,7 @@ namespace New_Tradegy.Library.Listeners
                     if (wk.isWorkingHour())
                     {
                         // Save all stocks once at the mentioned times
-                        await StockFileExporter.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
+                        await FileOut.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
                         g.minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }
@@ -162,7 +164,8 @@ namespace New_Tradegy.Library.Listeners
             for (int k = 0; k < count; k++)
             {
                 string stock = _marketeye.GetDataValue(0, k);
-                if (!g.StockRepository.Contains(stock)) continue;
+                if (!g.StockRepository.Contains(stock)) 
+                    continue;
 
                 var data = g.StockRepository.TryGetStockOrNull(stock);
                 var api = data.Api;
@@ -382,8 +385,8 @@ namespace New_Tradegy.Library.Listeners
             t[10] = (int)(MajorIndex.Instance.Snp500Index * g.HUNDRED);
             t[11] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED);
 
-            int mixed_index = wk.return_index_of_ogldata(mixed_stock);
-            if (mixed_index < 0) return;
+            if (!!g.StockRepository.Contains(mixed_stock))
+                return;
 
             var v = g.StockRepository.TryGetStockOrNull(mixed_stock);
 

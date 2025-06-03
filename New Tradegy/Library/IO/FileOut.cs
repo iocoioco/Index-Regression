@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace New_Tradegy.Library.IO
 {
-    internal class StockFileExporter
+    internal class FileOut
     {
         private static async Task LogErrorAsync(Exception ex, string dataGridViewName)
         {
@@ -41,14 +41,14 @@ namespace New_Tradegy.Library.IO
             if (g.test)
                 return; // ❌ Don't save during test mode
 
-            VariableLoader.read_write_kodex_magnifier("write");
+            FileIn.read_write_kodex_magnifier("write");
 
             string directory = $@"C:\병신\분\{g.date}";
             Directory.CreateDirectory(directory);
 
-            foreach (var t in g.StockRepository.AllDatas)
+            foreach (var data in g.StockRepository.AllDatas)
             {
-                string file = Path.Combine(directory, t.Stock + ".txt");
+                string file = Path.Combine(directory, data.Stock + ".txt");
 
                 if (File.Exists(file))
                     File.Delete(file); // clean slate
@@ -59,14 +59,14 @@ namespace New_Tradegy.Library.IO
 
                 for (int j = 0; j <= lastRow; j++)
                 {
-                    if (t.Api.x[j, 0] == 0 || t.Api.x[j, 0] > 152100)
+                    if (data.Api.x[j, 0] == 0 || data.Api.x[j, 0] > 152100)
                         break;
 
                     for (int k = 0; k <= lastColumn; k++)
                     {
                         if (k > 0)
                             sb.Append('\t');
-                        sb.Append(t.Api.x[j, k]);
+                        sb.Append(data.Api.x[j, k]);
                     }
 
                     sb.AppendLine();
