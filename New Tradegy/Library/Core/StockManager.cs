@@ -45,7 +45,7 @@ namespace New_Tradegy.Library.Core
         {
             foreach (string stock in stocks)
             {
-                if (!_repository.Contains(stock))
+                if (!TotalStockList.Contains(stock))
                     TotalStockList.Add(stock);
             }
         }

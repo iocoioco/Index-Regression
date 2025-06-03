@@ -14,6 +14,7 @@ namespace New_Tradegy.Library.Core
 // Field(private)	_camelCase
 // Local variable/Parameter camelCase
         private List<GroupData> _groups;
+        public List<GroupData> RawGroups => _groups;
         public List<GroupData> GroupRankingList { get; private set; } = new List<GroupData>();
 
         public List<string> GetTopStocksFromTopGroups(int groupLimit = 5, int stockPerGroup = 3, List<string> existing = null)
@@ -110,30 +111,31 @@ namespace New_Tradegy.Library.Core
             return _groups.FirstOrDefault(g => g.Stocks.Contains(stockCode));
         }
 
-        public static void gen_oGL_data(List<string> oGL_title, List<List<string>> oGL)
+        public static void gen_oGL_data()
         {
             var groupList = new List<GroupData>();
 
+            // Reset all oGL_sequence_id tags
             foreach (var data in g.StockRepository.AllDatas)
             {
-                data.Misc.oGL_sequence_id = -1; // Optional tagging
+                data.Misc.oGL_sequence_id = -1;
             }
 
             int groupIndex = 0;
 
-            for (int i = 0; i < oGL.Count; i++)
+            foreach (var groupData in g.GroupManager.RawGroups)
             {
-                if (oGL[i].Count < 2)
+                if (groupData.Stocks.Count < 2)
                     continue;
 
                 var items = new List<Tuple<double, string>>();
 
-                foreach (var stockName in oGL[i])
+                foreach (var stockName in groupData.Stocks)
                 {
                     var stock = g.StockRepository.TryGetStockOrNull(stockName);
                     if (stock != null)
                     {
-                        stock.Misc.oGL_sequence_id = groupIndex; // Optional
+                        stock.Misc.oGL_sequence_id = groupIndex;
                         items.Add(Tuple.Create(stock.Statistics.시총, stock.Stock));
                     }
                 }
@@ -146,17 +148,17 @@ namespace New_Tradegy.Library.Core
                 if (sorted.Count < 2)
                     continue;
 
-                var group = new GroupData(oGL_title[i])
+                var group = new GroupData(groupData.Title)
                 {
                     Stocks = sorted
-                    // Other metrics (푀누, 종누, etc.) will remain default (0.0) unless assigned later
                 };
 
                 groupList.Add(group);
                 groupIndex++;
             }
 
-            g.GroupManager.ReplaceGroups(groupList); // Store into GroupManager
+            g.GroupManager.ReplaceGroups(groupList); // Replace existing groups
         }
+
     }
 }

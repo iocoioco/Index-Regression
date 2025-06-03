@@ -168,6 +168,7 @@ namespace New_Tradegy.Library.Listeners
                     continue;
 
                 var data = g.StockRepository.TryGetStockOrNull(stock);
+                if(data == null) continue;
                 var api = data.Api;
                 downloadList.Add(data);
 
@@ -365,18 +366,19 @@ namespace New_Tradegy.Library.Listeners
             {
                 string[] items = line.Split('\t');
 
-                var o = g.StockRepository.TryGetStockOrNull(items[0]).Api;
+                var data = g.StockRepository.TryGetStockOrNull(items[0]).Api;
+
                 double weight = Convert.ToDouble(items[1]);
 
-                t[1] += o.가격 * weight;
-                t[2] += o.수급 * weight;
-                t[3] += o.체강 * g.HUNDRED * weight;
-                t[7] += o.거래량 * weight;
-                t[8] += o.매수배 * weight;
-                t[9] += o.매도배 * weight;
+                t[1] += data.가격 * weight;
+                t[2] += data.수급 * weight;
+                t[3] += data.체강 * g.HUNDRED * weight;
+                t[7] += data.거래량 * weight;
+                t[8] += data.매수배 * weight;
+                t[9] += data.매도배 * weight;
 
-                tick_매수배 += o.틱매수배[0] * weight;
-                tick_매도배 += o.틱매도배[0] * weight;
+                tick_매수배 += data.틱매수배[0] * weight;
+                tick_매도배 += data.틱매도배[0] * weight;
             }
 
             t[4] = MajorIndex.Instance.ShanghaiIndex * g.HUNDRED;

@@ -201,8 +201,8 @@ namespace New_Tradegy.Library.PostProcessing
 
             var repo = g.StockRepository;
             var kospi_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[0]);
-            var kospi_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[1]);
-            var kosdaq_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[2]);
+            var kosdaq_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[1]);
+            var kospi_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[2]);
             var kosdaq_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[3]);
 
             for (int i = 0; i < 382; i++)
@@ -212,6 +212,7 @@ namespace New_Tradegy.Library.PostProcessing
                 {
                     if (!repo.Contains(stock)) continue;
                     var data = repo.TryGetStockOrNull(stock);
+                    if (data != null) continue;
                     double money_factor = data.Api.전일종가 / g.억원;
                     sum += (int)((data.Api.x[i, 4] + data.Api.x[i, 5]) * money_factor);
                 }

@@ -96,6 +96,7 @@ namespace New_Tradegy
                 g.kodex_magnifier[id, jd] *= (value / 100.0);
 
                 var data = g.StockRepository.TryGetStockOrNull(g.clickedStock);
+                if (data != null) { return; }
 
                 ChartIndex.UpdateSeries(g.ChartManager.Chart1, data);
                 ChartIndex.UpdateSeries(g.ChartManager.Chart2, data);

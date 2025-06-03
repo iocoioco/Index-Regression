@@ -53,6 +53,8 @@ namespace New_Tradegy
         private void Form_보조_차트_Load(object sender, EventArgs e)
         {
             g.ChartManager.SetChart2(chart2);
+            g.ChartGeneral2 = new ChartGeneral();
+            g.ChartGeneral2.Initialize(chart2, this, g.nRow / 2, g.nCol);
 
             // Configure DataGridView appearance
             ConfigureDataGridView();

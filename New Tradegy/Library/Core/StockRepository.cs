@@ -54,7 +54,7 @@ namespace New_Tradegy.Library.Core
             if (_stockMap.TryGetValue(stock, out var data))
                 return data;
 
-            MessageBox.Show("Stock name not found: " + stock);
+           // MessageBox.Show("Stock name not found: " + stock);
 
             return null;
         }

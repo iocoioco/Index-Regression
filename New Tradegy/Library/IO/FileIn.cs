@@ -165,9 +165,9 @@ namespace New_Tradegy.Library.IO
                 g.StockManager.IndexList.Add("KODEX 코스닥150선물인버스");
             }
 
-            foreach (var data in g.StockRepository.AllDatas)
+            foreach (var t in g.StockRepository.AllDatas)
             {
-                string file = Path.Combine(path, data.Stock + ".txt");
+                string file = Path.Combine(path, t.Stock + ".txt");
 
                 if (!File.Exists(file))
                 {
@@ -182,7 +182,7 @@ namespace New_Tradegy.Library.IO
                 {
                     File.Delete(file);
                     File.Create(file).Close();
-                    string line = g.StockManager.IndexList.Contains(data.Stock)
+                    string line = g.StockManager.IndexList.Contains(t.Stock)
                         ? "85959\t0\t100\t0\t0\t0\t0\t0\t0\t0\t0\t0"
                         : "85959\t0\t100\t10000\t0\t0\t0\t0\t0\t0\t0\t0";
 
@@ -192,7 +192,7 @@ namespace New_Tradegy.Library.IO
                     lines = File.ReadAllLines(file);
                 }
 
-                data.Api.nrow = 0;
+                t.Api.nrow = 0;
 
                 foreach (var line in lines)
                 {
@@ -205,56 +205,56 @@ namespace New_Tradegy.Library.IO
 
                     if (time >= 85959 && time < 152100)
                     {
-                        data.Api.x[data.Api.nrow, 0] = time;
+                        t.Api.x[t.Api.nrow, 0] = time;
                         for (int j = 1; j < words.Length; j++)
                         {
-                            data.Api.x[data.Api.nrow, j] = Convert.ToInt32(words[j]);
+                            t.Api.x[t.Api.nrow, j] = Convert.ToInt32(words[j]);
                         }
-                        data.Api.nrow++;
+                        t.Api.nrow++;
                     }
                     else
                         break;
                 }
 
-                for (int j = data.Api.nrow; j < g.MAX_ROW; j++)
+                for (int j = t.Api.nrow; j < g.MAX_ROW; j++)
                     for (int m = 0; m < 12; m++)
-                        data.Api.x[j, m] = 0;
+                        t.Api.x[j, m] = 0;
 
-                if (data.Api.nrow == 0) continue;
+                if (t.Api.nrow == 0) continue;
 
-                int row = data.Api.nrow - 1;
+                int row = t.Api.nrow - 1;
                 int[] last = new int[12];
                 for (int k = 0; k < 12; k++)
-                    last[k] = data.Api.x[row, k];
+                    last[k] = t.Api.x[row, k];
 
                 int 거래량 = last[7];
                 double intensity = last[3] / (double)g.HUNDRED;
 
-                data.Api.당일프로그램순매수량 = last[4];
-                data.Api.당일외인순매수량 = last[5];
-                data.Api.당일기관순매수량 = last[6];
+                t.Api.당일프로그램순매수량 = last[4];
+                t.Api.당일외인순매수량 = last[5];
+                t.Api.당일기관순매수량 = last[6];
 
-                data.Api.틱의시간[0] = last[0];
-                data.Api.틱의가격[0] = last[1];
-                data.Api.틱의수급[0] = last[2];
-                data.Api.틱의체강[0] = last[3];
+                t.Api.틱의시간[0] = last[0];
+                t.Api.틱의가격[0] = last[1];
+                t.Api.틱의수급[0] = last[2];
+                t.Api.틱의체강[0] = last[3];
 
                 if (intensity > 0)
                 {
-                    data.Api.틱매수량[0] = (int)(거래량 * intensity / (100.0 + intensity));
-                    data.Api.틱매도량[0] = (int)(거래량 * 100.0 / (100.0 + intensity));
+                    t.Api.틱매수량[0] = (int)(거래량 * intensity / (100.0 + intensity));
+                    t.Api.틱매도량[0] = (int)(거래량 * 100.0 / (100.0 + intensity));
                 }
 
-                data.Api.틱매수배[0] = last[8];
-                data.Api.틱매도배[0] = last[9];
+                t.Api.틱매수배[0] = last[8];
+                t.Api.틱매도배[0] = last[9];
 
-                data.Post.종거천 = (int)(data.Api.전일종가 * 거래량 / g.천만원 * wk.누적거래액환산율(last[0]));
+                t.Post.종거천 = (int)(t.Api.전일종가 * 거래량 / g.천만원 * wk.누적거래액환산율(last[0]));
 
-                if (!g.StockManager.IndexList.Contains(data.Stock) && !data.Stock.Contains("혼합") && data.Api.nrow >= 2)
+                if (!g.StockManager.IndexList.Contains(t.Stock) && !t.Stock.Contains("혼합") && t.Api.nrow >= 2)
                 {
-                    for (int j = 1; j < data.Api.nrow; j++)
+                    for (int j = 1; j < t.Api.nrow; j++)
                     {
-                        var x = data.Api.x;
+                        var x = t.Api.x;
 
                         x[j, 10] = (x[j, 7] == x[j - 1, 7])
                             ? x[j - 1, 10]
@@ -266,12 +266,12 @@ namespace New_Tradegy.Library.IO
                     }
                 }
 
-                for (int j = 0; j < data.Api.nrow; j++)
-                    PostProcessor.PostPassing(data, j, false);
+                for (int j = 0; j < t.Api.nrow; j++)
+                    PostProcessor.PostPassing(t, j, false);
             }
 
-            var leverage = g.StockManager.Repository.TryGetStockOrNull("KODEX 레버리지");
-            if (leverage != null && leverage.Api.x[0, 3] > 1000)
+            var data = g.StockManager.Repository.TryGetStockOrNull("KODEX 레버리지");
+            if (data != null && data.Api.x[0, 3] > 1000)
             {
                 PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
             }
@@ -293,8 +293,7 @@ namespace New_Tradegy.Library.IO
             //    g.StockManager.AddIfMissing(FileIn.read_그룹_네이버_업종()); // replaces total_stock_list = ...
             //}
 
-            FileIn.read_상관(tgl_title, tgl, g.StockManager.TotalStockList); // duration 1.3 seconds
-
+           
 
 
             var 시총Map = new ConcurrentDictionary<string, double>(
@@ -331,7 +330,7 @@ namespace New_Tradegy.Library.IO
 
             FileIn.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
-            GroupManager.gen_oGL_data(tgl_title, tgl); // generate oGL_data
+            GroupManager.gen_oGL_data(); // generate oGL_data
 
             FileIn.read_write_kodex_magnifier("read"); // duration 0.001 seconds
         }
@@ -681,7 +680,7 @@ namespace New_Tradegy.Library.IO
 
             string[] grlines = File.ReadAllLines(filename, Encoding.Default);
 
-            StockData current = null;
+            StockData data = null;
 
             foreach (string line in grlines)
             {
@@ -689,13 +688,13 @@ namespace New_Tradegy.Library.IO
 
                 if (words.Length == 1)
                 {
-                    current = g.StockManager.Repository.TryGetStockOrNull(words[0]);
+                    data = g.StockManager.Repository.TryGetStockOrNull(words[0]);
                 }
-                else if (words.Length == 2 && current != null)
+                else if (words.Length == 2 && data != null)
                 {
-                    if (current.Misc.Friends.Count < 9)
+                    if (data.Misc.Friends.Count < 9)
                     {
-                        current.Misc.Friends.Add(line);  // stores the full line like "0.72\t삼성전자"
+                        data.Misc.Friends.Add(line);  // stores the full line like "0.72\t삼성전자"
                     }
                 }
             }

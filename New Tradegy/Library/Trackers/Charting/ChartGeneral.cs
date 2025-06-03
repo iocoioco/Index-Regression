@@ -112,6 +112,7 @@ namespace New_Tradegy.Library.Trackers
         public void CreateChartArea(string stock, int row, int col)
         {
             var data = g.StockRepository.TryGetStockOrNull(stock);
+            if (data == null) return;
             ChartGeneralRenderer.UpdateChartArea(_chart, data, row, col); // Create Chart Area(string stock, int row, int col)
         }
     }

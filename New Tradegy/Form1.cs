@@ -11,6 +11,7 @@ using New_Tradegy.Library.UI.KeyBindings;
 using New_Tradegy.Library.Utils;
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         private int _timerCount;
 
         private PingAndSpeedMonitor networkMonitor;
-        public static Form1 Instance { get; private set; }
+        public static Form1 Instance { get; private set; } // Form1.Instance.SomeMethod();
 
         public Form1()
         {
@@ -58,75 +59,19 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void StartNetworkMonitor()
         {
-
             networkMonitor = new PingAndSpeedMonitor(
             host: "daishin.co.kr",
             logFilePath: "@\"C:\\병신\\ping_log.txt",
             wavFilePath: @"Resources\alert.wav",
             logIntervalSeconds: 600,         // log every 10 min
             pingThresholdMs: 300,            // warn if ping > 300ms
-            speedThresholdMbps: 10.0         // warn if speed < 10 Mbps
-);
+            speedThresholdMbps: 10.0);       // warn if speed < 10 Mbps
+
             networkMonitor.Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            this.FormClosing += Form1_FormClosing;
-            StartNetworkMonitor();
-
-            KeyBindingRegistrar.RegisterAll();
-
-            g.StockRepository = StockRepository.Instance;
-
-
-            ChartIndex.UpdateChart(g.chart1);
-            ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
-            g.ChartGeneral1 = new ChartGeneral();
-            g.ChartGeneral1.Initialize(chart1, this, g.nRow, g.nCol);
-
-            g.ChartGeneral2 = new ChartGeneral();
-            g.ChartGeneral2.Initialize(chart1, this, g.nRow / 2, g.nCol);
-            Form Form_보조_차트 = new Form_보조_차트();
-            Form_보조_차트.Show(); // second chart
-
-            StockManagerEvents.ListsChanged += () =>
-            {
-                if (Form1.Instance.InvokeRequired)
-                {
-                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral1.UpdateLayoutIfChanged()));
-                }
-                else
-                {
-                    g.ChartGeneral1.UpdateLayoutIfChanged();
-                }
-            };
-
-            FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
-
-            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
-            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
-            g.StockManager.AddIfMissing(new[] {
-                "KODEX 레버리지",
-                "KODEX 200선물인버스2X",
-                "KODEX 코스닥150레버리지",
-                "KODEX 코스닥150선물인버스"
-            });
-            g.StockManager.AddIfMissing(File.ReadAllLines(@"C:\병신\DataStockSelected\StockSelection.txt",
-                Encoding.UTF8).ToList());
-
-            g.GroupManager = new GroupManager(); // group data is loaded into 
-            var groups = GroupRepository.LoadGroups(); // 상관.txt read
-            GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt");
-
-
-            // g.ChartGeneral1 = new ChartGeneral();
-            g.ChartManager = new ChartManager();
-            g.ChartManager.SetChart1(chart1);
-
-            ControlPanelRenderer.SetupAndAttachControlPanel(this);  // call from main form or container
-
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
 
@@ -164,25 +109,64 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             FileIn.read_제어();
 
+            this.FormClosing += Form1_FormClosing;
+            StartNetworkMonitor();
+
+            KeyBindingRegistrar.RegisterAll();
+
+            g.ChartManager = new ChartManager();
+            g.ChartManager.SetChart1(chart1);
+
+            g.ChartGeneral1 = new ChartGeneral();
+            g.ChartGeneral1.Initialize(chart1, this, g.nRow, g.nCol);
+
+            g.StockRepository = StockRepository.Instance;
+            g.StockManager = new StockManager(g.StockRepository);
+            
+            StockManagerEvents.ListsChanged += () =>
+            {
+                if (Form1.Instance.InvokeRequired)
+                {
+                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral1.UpdateLayoutIfChanged()));
+                }
+                else
+                {
+                    g.ChartGeneral1.UpdateLayoutIfChanged();
+                }
+            };
+
+            FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
+            var NaverList = FileIn.read_그룹_네이버_업종();
+
+            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
+            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
+            g.StockManager.AddIfMissing(NaverList);
+            g.StockManager.AddIfMissing(new[] {
+                "KODEX 레버리지",
+                "KODEX 200선물인버스2X",
+                "KODEX 코스닥150레버리지",
+                "KODEX 코스닥150선물인버스"
+            });
+
+            g.GroupManager = new GroupManager(); 
+            var groups = GroupRepository.LoadGroups(); // 상관.txt read
+            GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt"); // check 
+            foreach (var group in groups)
+            {
+                g.StockManager.AddIfMissing(group.Stocks);
+            }
+
             string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
             FileIn.read_변수(); //
-
             FileIn.read_무게(); //
-
             FileIn.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
-
             FileIn.read_or_set_stocks(); // duration : 0.36 seconds
+            FileIn.read_파일관심종목(); // duration 0.000 seconds
 
-
-            ControlPanelRenderer.SetupAndAttachControlPanel(this);
-            TradePanelRenderer.SetupAndAttachTradePanel(this);
-            GroupPanelRenderer.SetupAndAttachGroupPanel(this);
-
+            
             this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
-
-
 
             if (!g.test) // for market trading
             {
@@ -212,9 +196,20 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
             }
+            ControlPanelRenderer.SetupAndAttachControlPanel(this);
+            TradePanelRenderer.SetupAndAttachTradePanel(this);
+            GroupPanelRenderer.SetupAndAttachGroupPanel(this);
+
+            // use Panel in RankLogic
             RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
-            FileIn.read_파일관심종목(); // duration 0.000 seconds
+            
             g.ChartGeneral1.UpdateLayoutIfChanged(); // all new, Form_1 start
+            ChartIndex.UpdateChart(g.chart1);
+            ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
+
+           
+            Form Form_보조_차트 = new Form_보조_차트();
+            Form_보조_차트.Show(); // second chart
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());
