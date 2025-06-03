@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.ConstrainedExecution;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Core;
@@ -10,6 +11,7 @@ using New_Tradegy.Library.Deals;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.PostProcessing;
 using New_Tradegy.Library.UI.KeyBindings;
+using Newtonsoft.Json.Linq;
 
 
 namespace New_Tradegy.Library.UI.ChartClickHandlers
@@ -18,10 +20,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
     {
         private static CPUTILLib.CpCybos _cpcybos;
 
-        private static void RunAction(bool clear, bool post, bool eval, char draw)
-        {
-            ActionCode.New(clear: clear, post: post, eval: eval, draw: draw).Run();
-        }
+        
 
         private static int GetPriceFromGivenStock(string stockName)
         {
@@ -37,7 +36,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
         public static void HandleControlClick(Chart chart, string selection, int row, int col)
         {
-            switch ()
+            switch (selection)
             {
                 case "l1": // buy at market price
                     if (!g.StockManager.HoldingList.Contains(g.clickedStock) && !g.StockManager.InterestedWithBidList.Contains(g.clickedStock))
@@ -76,8 +75,8 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (magnifierIdx >= 0)
                     {
                         g.kodex_magnifier[magnifierIdx, 0] *= 1.333;
-                        RunAction(true, false, true, 'B');
-                       
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
+
                     }
                     break;
 
@@ -86,7 +85,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (magnifierIdx >= 0)
                     {
                         g.kodex_magnifier[magnifierIdx, 0] *= 0.666;
-                        RunAction(true, false, true, 'B');
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
                     }
                     break;
             }
@@ -103,7 +102,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                 case "l1":
                 {
                     stockData.Misc.ShrinkDraw = !stockData.Misc.ShrinkDraw;
-                        RunAction(true, false, true, 'B');
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
 
                         break;
                 }
@@ -111,7 +110,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                 case "l2":
                     {
                         stockData.Misc.수급과장배수 *= 1.5;
-                        RunAction(true, false, true, 'B');
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run(         ;
                     }
                     break;
 
@@ -129,7 +128,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (g.test)
                     {
                         ActionHandlers.TimeShortMoveKey?.Invoke();
-                        RunAction(true, false, true, 'B');
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
 
                     }
                     break;
@@ -149,7 +148,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                                     g.StockManager.InterestedOnlyList.Remove(g.clickedStock);
                             }
                         }
-                        RunAction(true, false, true, 'B');
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
                     }
                     break;
 
@@ -168,7 +167,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                             else g.StockManager.InterestedOnlyList.Add(g.clickedStock);
                         }
                     }
-                    RunAction(true, false, true, 'B');
+                    ActionCode.New(true, false, eval: true, draw: 'B').Run();
 
                     break;
 
@@ -178,7 +177,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
                 case "l8":
                     stockData.Misc.수급과장배수 *= 0.66;
-                    action = "B  B";
+                    ActionCode.New(true, false, eval: true, draw: 'B').Run();
                     break;
 
                 case "l9":
@@ -190,7 +189,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                             g.Npts[0] = 0;
                             g.Npts[1] = 2;
                         }
-                        action = " peB";
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
                     }
                     break;
 
@@ -219,7 +218,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                             g.Npts[0] = 0;
                             g.Npts[1] = 2;
                         }
-                        action = " peB";
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
                     }
                     break;
 
@@ -277,28 +276,9 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                         //❌ Otherwise:
                         //Assign "상관" to key(as a fallback default).
                         string key = (g.v.SubChartDisplayMode == "상관" || g.v.SubChartDisplayMode == "절친") ? g.v.SubChartDisplayMode : "상관";
-                        mm.ManageChart2(key);
+                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
                     }
                     break;
-            }
-            // action[0] m main, s sub, B both Delete ?
-            // action[1] p post_test
-            // action[2] e evalstock()
-            // action[3] m main, s sub, B both Redraw ?
-            if (action[0] != ' ')
-            {
-                if (action[0] == 'm' || action[0] == 'B')
-                    mm.ClearChartAreaAndAnnotations(g.ChartManager.Chart1, g.clickedStock);
-                if (action[0] == 's' || action[0] == 'B')
-                    mm.ManageChart2();
-            }
-
-            if (action[1] != ' ') PostProcessor.post_test();
-            if (action[2] != ' ') RankLogic.EvalStock();
-            if (action[3] != ' ')
-            {
-                if (action[3] == 'm' || action[3] == 'B') mm.ManageChart1();
-                if (action[3] == 's' || action[3] == 'B') mm.ManageChart2();
             }
         }
     }

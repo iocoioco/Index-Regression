@@ -125,7 +125,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         public static readonly Action 피올_닥올 = () =>
         {
             var list = new List<string> { "피올", "닥올" };
-            g.v.MainChartDisplayMode = .cycleStrings(g.v.MainChartDisplayMode, list);
+            g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
             Form se = (Form)Application.OpenForms["Form1"];
