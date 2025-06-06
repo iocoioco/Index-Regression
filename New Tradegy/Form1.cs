@@ -138,7 +138,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.chart1 = chart1;
 
             g.ChartGeneral1 = new ChartGeneral();
-            g.ChartGeneral1.Initialize(g.chart1, this, g.nRow, g.nCol);
+            g.ChartGeneral1.Initialize(g.chart1, this, g.nRow, g.nCol); 
 
             
            
