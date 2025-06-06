@@ -162,13 +162,13 @@ namespace New_Tradegy.Library.Deals
                 return;
             }
 
-            int dealDeposit = (int)(cashAvailable / 10000); // 현금주문가능금액 단위변환
+            g.예치금 = (int)(cashAvailable / 10000); // 현금주문가능금액 단위변환
 
             if (g.제어.dtb.Rows.Count > 0)  // safer check
             {
-                if (g.제어.dtb.Rows[0][3].ToString() != dealDeposit.ToString())
+                if (g.제어.dtb.Rows[0][3].ToString() != g.예치금.ToString())
                 {
-                    g.제어.dtb.Rows[0][3] = dealDeposit.ToString();
+                    g.제어.dtb.Rows[0][3] = g.예치금.ToString();
                 }
             }
         }

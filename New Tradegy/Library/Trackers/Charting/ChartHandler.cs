@@ -36,8 +36,8 @@ namespace New_Tradegy.Library.Trackers
             return chart.ChartAreas.IndexOf(stock) >= 0;
         }
 
-        public static void SeriesInfomation(System.Windows.Forms.DataVisualization.Charting.Series t,
-     ref string chartAreaName, ref string Stock, ref int ColumnIndex, ref int EndPoint)
+        public static void SeriesInfomation(Series t, ref string chartAreaName, ref string Stock, 
+                                            ref int ColumnIndex, ref int EndPoint)
         {
             // Get the last occurrence of the delimiter ' '
             string[] parts = t.Name.Split(' ');

@@ -112,45 +112,44 @@ namespace New_Tradegy // added for test on 20241020 0300
             this.FormClosing += Form1_FormClosing;
             StartNetworkMonitor();
 
-            KeyBindingRegistrar.RegisterAll();
+            FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
+            var NaverList = FileIn.read_그룹_네이버_업종();
 
             g.ChartManager = new ChartManager();
             g.ChartManager.SetChart1(chart1);
 
-            g.ChartGeneral1 = new ChartGeneral();
-            g.ChartGeneral1.Initialize(chart1, this, g.nRow, g.nCol);
-
             g.StockRepository = StockRepository.Instance;
             g.StockManager = new StockManager(g.StockRepository);
-            
-            StockManagerEvents.ListsChanged += () =>
-            {
-                if (Form1.Instance.InvokeRequired)
-                {
-                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral1.UpdateLayoutIfChanged()));
-                }
-                else
-                {
-                    g.ChartGeneral1.UpdateLayoutIfChanged();
-                }
-            };
-
-            FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
-            var NaverList = FileIn.read_그룹_네이버_업종();
-
-            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
-            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
-            g.StockManager.AddIfMissing(NaverList);
             g.StockManager.AddIfMissing(new[] {
                 "KODEX 레버리지",
                 "KODEX 200선물인버스2X",
                 "KODEX 코스닥150레버리지",
                 "KODEX 코스닥150선물인버스"
             });
+            
+            g.StockManager.AddIfMissing(g.kospi_mixed.stock);
+            g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
+            g.StockManager.AddIfMissing(NaverList);
+            
+            
+
+            KeyBindingRegistrar.RegisterAll();
+
+            g.chart1 = chart1;
+
+            g.ChartGeneral1 = new ChartGeneral();
+            g.ChartGeneral1.Initialize(g.chart1, this, g.nRow, g.nCol);
+
+            
+           
+
+
+           
 
             g.GroupManager = new GroupManager(); 
             var groups = GroupRepository.LoadGroups(); // 상관.txt read
             GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt"); // check 
+
             foreach (var group in groups)
             {
                 g.StockManager.AddIfMissing(group.Stocks);
@@ -167,6 +166,21 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             
             this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
+            ControlPanelRenderer.SetupAndAttachControlPanel(this);
+            TradePanelRenderer.SetupAndAttachTradePanel(this);
+            GroupPanelRenderer.SetupAndAttachGroupPanel(this);
+
+            // use Panel in RankLogic
+            RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
+
+            g.ChartGeneral1.UpdateLayoutIfChanged(); // all new, Form_1 start
+
+            
+            ChartIndex.UpdateChart(g.chart1);
+
+            Form Form_보조_차트 = new Form_보조_차트();
+            Form_보조_차트.Show(); // second chart
+
 
             if (!g.test) // for market trading
             {
@@ -196,20 +210,20 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
             }
-            ControlPanelRenderer.SetupAndAttachControlPanel(this);
-            TradePanelRenderer.SetupAndAttachTradePanel(this);
-            GroupPanelRenderer.SetupAndAttachGroupPanel(this);
 
-            // use Panel in RankLogic
-            RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
-            
-            g.ChartGeneral1.UpdateLayoutIfChanged(); // all new, Form_1 start
-            ChartIndex.UpdateChart(g.chart1);
-            ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
-
-           
-            Form Form_보조_차트 = new Form_보조_차트();
-            Form_보조_차트.Show(); // second chart
+            // how to call // 🔔 Notify listeners
+            // StockManagerEvents.NotifyChanged();
+            StockManagerEvents.ListsChanged += () =>
+            {
+                if (Form1.Instance.InvokeRequired)
+                {
+                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartGeneral1.UpdateLayoutIfChanged()));
+                }
+                else
+                {
+                    g.ChartGeneral1.UpdateLayoutIfChanged();
+                }
+            };
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());

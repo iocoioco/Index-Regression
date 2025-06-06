@@ -124,8 +124,9 @@ namespace New_Tradegy.Library.Utils
 
                 if (shouldAlert)
                 {
-                    ShowAlertForm(message);
-                    PlayAlertSound();
+                    //ShowAlertForm(message);
+                    //PlayAlertSound();
+                    SoundUtils.Sound("일반", "WiFi Trouble");
                     _lastAlertTime = DateTime.Now;
                     _consecutiveBadCount = 0;
                 }

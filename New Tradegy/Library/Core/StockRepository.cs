@@ -30,14 +30,7 @@ namespace New_Tradegy.Library.Core
         private Dictionary<string, StockData> _stockMap = new Dictionary<string, StockData>();
 
 
-        public void Initialize(IEnumerable<string> stocks)
-        {
-            foreach (var stock in stocks)
-            {
-                _stockMap[stock] = new StockData { Stock = stock };
-            }
-        }
-
+        
         public void AddOrUpdate(string stock, StockData data)
         {
             _stockMap[stock] = data;

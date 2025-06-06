@@ -52,9 +52,12 @@ namespace New_Tradegy
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
         {
-            g.ChartManager.SetChart2(chart2);
+            g.chart2 = chart2;
+            
+
+            g.ChartManager.SetChart2(g.chart2);
             g.ChartGeneral2 = new ChartGeneral();
-            g.ChartGeneral2.Initialize(chart2, this, g.nRow / 2, g.nCol);
+            g.ChartGeneral2.Initialize(g.chart2, this, g.nRow / 2, g.nCol);
 
             // Configure DataGridView appearance
             ConfigureDataGridView();
@@ -63,6 +66,7 @@ namespace New_Tradegy
             // Initialize DataTable
             InitializeDataTable();
 
+            // ChartIndex.UpdateChart(g.chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
             // Draw initial charts
             Form_보조_차트_DRAW();
         }
@@ -118,7 +122,7 @@ namespace New_Tradegy
 
         public void Form_보조_차트_DRAW()
         {
-
+            g.v.SubChartDisplayMode = "피올";
             DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title

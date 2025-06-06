@@ -2,14 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using New_Tradegy.Library.Deals;
 
 namespace New_Tradegy.Library.Trackers
 {
     public class ControlPanelRenderer
     {
+        // to assign value to a cell
+        // var panel = new ControlPanelRenderer();
+        // DataTable table = manager._table;
+        // _table.Rows[rowIndex][columnIndex] = value;
         private class ControlSetting
         {
             public string Name { get; set; }
@@ -37,31 +43,185 @@ namespace New_Tradegy.Library.Trackers
 
         public void InitializeSettings()
         {
+            Settings["adv"] = new ControlSetting
+            {
+                Name = "adv",
+                Values = new[] { 0, 50, 100, 200, 500, 1000, 1500, 2000 },
+                Get = () => g.v.q_advance_lines,
+                Set = val =>
+                {
+                    g.v.종가기준추정거래액이상_천만원 = val * 10;
+                    g.제어.dtb.Rows[5][1] = val;
+                }
+            };
+
             Settings["종거"] = new ControlSetting
             {
                 Name = "종거",
                 Values = new[] { 0, 50, 100, 200, 500, 1000, 1500, 2000 },
-                Get = () => (int)g.v.종가기준추정거래액이상_천만원 / 10,
-                Set = val => g.v.종가기준추정거래액이상_천만원 = val * 10
+                Get = () => (int)(g.v.종가기준추정거래액이상_천만원 / 10),
+                Set = val =>
+                {
+                    g.v.종가기준추정거래액이상_천만원 = val * 10;
+                    g.제어.dtb.Rows[5][1] = val;
+                }
             };
 
             Settings["분거"] = new ControlSetting
             {
                 Name = "분거",
                 Values = new[] { 0, 2, 5, 10, 20, 30, 50 },
-                Get = () => (int)g.v.분당거래액이상_천만원,
-                Set = val => g.v.분당거래액이상_천만원 = val
+                Get = () => g.v.분당거래액이상_천만원,
+                Set = val =>
+                {
+                    g.v.분당거래액이상_천만원 = val;
+                    g.제어.dtb.Rows[5][3] = val;
+                }
             };
 
-            Settings["Font"] = new ControlSetting
+            Settings["호가"] = new ControlSetting
             {
-                Name = "Font",
-                Values = new[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 },
-                Get = () => (int)(g.v.font * 2.0),
-                Set = val => g.v.font = val / 2.0f
+                Name = "호가",
+                Values = new[] { 0, 5, 10, 20, 30, 50 },
+                Get = () => g.v.호가거래액_백만원,
+                Set = val =>
+                {
+                    g.v.호가거래액_백만원 = val;
+                    g.제어.dtb.Rows[6][1] = val;
+                }
             };
 
-            // Add more settings here as needed...
+            Settings["편차"] = new ControlSetting
+            {
+                Name = "편차",
+                Values = new[] { 0, 1, 2, 3, 5, 7 },
+                Get = () => g.v.편차이상,
+                Set = val =>
+                {
+                    g.v.편차이상 = val;
+                    g.제어.dtb.Rows[6][3] = val;
+                }
+            };
+
+            Settings["배차"] = new ControlSetting
+            {
+                Name = "배차",
+                Values = new[] { 0, 10, 25, 50, 75, 100 },
+                Get = () => g.v.배차이상,
+                Set = val =>
+                {
+                    g.v.배차이상 = val;
+                    g.제어.dtb.Rows[7][1] = val;
+                }
+            };
+
+            Settings["시총"] = new ControlSetting
+            {
+                Name = "시총",
+                Values = new[] { 0, 10, 30, 50, 100, 200 },
+                Get = () => g.v.시총이상,
+                Set = val =>
+                {
+                    g.v.시총이상 = val;
+                    g.제어.dtb.Rows[7][3] = val;
+                }
+            };
+
+            Settings["수과"] = new ControlSetting
+            {
+                Name = "수과",
+                Values = new[] { 5, 10, 15, 20, 25, 30, 40, 60, 100 },
+                Get = () => g.v.수급과장배수,
+                Set = val =>
+                {
+                    g.v.수급과장배수 = val;
+                    g.제어.dtb.Rows[8][1] = val;
+                }
+            };
+
+            Settings["배과"] = new ControlSetting
+            {
+                Name = "배과",
+                Values = new[] { 1, 2, 3, 4, 5, 7, 10 },
+                Get = () => (int)(1.0 / g.v.배수과장배수),
+                Set = val =>
+                {
+                    g.v.배수과장배수 = val;
+                    g.제어.dtb.Rows[8][3] = val;
+                }
+            };
+
+            Settings["평가"] = new ControlSetting
+            {
+                Name = "평가",
+                Values = new[] { 2, 5, 7, 10, 15, 20, 25, 40, 60 },
+                Get = () => g.MarketeyeCountDivicer,
+                Set = val =>
+                {
+                    g.MarketeyeCountDivicer = val;
+                    g.제어.dtb.Rows[9][1] = val;
+                }
+            };
+
+            Settings["초간"] = new ControlSetting
+            {
+                Name = "초간",
+                Values = new[] { 10, 15, 20, 25, 30, 40, 50, 60, 70 },
+                Get = () => g.MarketeyeCountDivicer,
+                Set = val =>
+                {
+                    g.MarketeyeCountDivicer = val;
+                    g.제어.dtb.Rows[9][3] = val;
+                }
+            };
+            
+            Settings["Main"] = new ControlSetting
+            {
+                Name = "Main",
+                Values = new[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 },
+                Get = () => (int)(g.v.font * 2),
+                Set = val =>
+                {
+                    g.v.font = val / 2f;
+                    g.제어.dtb.Rows[10][1] = val;
+                }
+            };
+
+            Settings["푀플"] = new ControlSetting
+            {
+                Name = "푀플",
+                Values = new[] { 0, 1 },
+                Get = () => g.v.푀플,
+                Set = val =>
+                {
+                    g.v.푀플 = val;
+                    g.제어.dtb.Rows[12][1] = val.ToString();
+                }
+            };
+
+            Settings["배플"] = new ControlSetting
+            {
+                Name = "배플",
+                Values = new[] { 0, 1 },
+                Get = () => g.v.배플,
+                Set = val =>
+                {
+                    g.v.배플 = val;
+                    g.제어.dtb.Rows[12][3] = val.ToString();
+                }
+            };
+
+            Settings["선폭"] = new ControlSetting
+            {
+                Name = "가격",
+                Values = new[] { 1, 2, 3 },
+                Get = () => g.LineWidth,
+                Set = val =>
+                {
+                    g.LineWidth = val;
+                    g.제어.dtb.Rows[13][1] = val;
+                }
+            };
         }
 
         public void BindGrid(DataGridView dgv)
@@ -72,18 +232,100 @@ namespace New_Tradegy.Library.Trackers
             _view = dgv;
             _table = new DataTable();
 
-            _table.Columns.Add("Label");
-            _table.Columns.Add("Value");
+            _table.Columns.Add("0");
+            _table.Columns.Add("1");
+            _table.Columns.Add("2");
+            _table.Columns.Add("3");
 
-            foreach (var setting in Settings.Values)
+            int Rows = 15, Columns = 4;
+
+            g.제어.dtb = new DataTable();
+            g.제어.dtb.Columns.Add("0");
+            g.제어.dtb.Columns.Add("1");
+            g.제어.dtb.Columns.Add("2");
+            g.제어.dtb.Columns.Add("3");
+            for (int i = 0; i < Rows; i++)
             {
-                var row = _table.NewRow();
-                row[0] = setting.Name;
-                row[1] = setting.Get();
-                _table.Rows.Add(row);
+                g.제어.dtb.Rows.Add("", "", "", "");
             }
 
-            dgv.DataSource = _table;
+            // Row 0
+            int month = g.date % 10000 / 100;
+            int day = g.date % 10000 % 100;
+            g.일회거래액 = 0;
+            g.제어.dtb.Rows[0][0] = month.ToString() + "/" + day.ToString();
+            //g.제어.dtb.Rows[0][1] = g.v.key_string;
+            g.제어.dtb.Rows[0][2] = g.일회거래액;
+            g.제어.dtb.Rows[0][3] = g.예치금;
+
+            // Row 1
+            g.제어.dtb.Rows[1][0] = 0;
+            g.제어.dtb.Rows[1][1] = 0; // (int)usd_krw; 
+            g.제어.dtb.Rows[1][2] = 0;
+            g.제어.dtb.Rows[1][3] = 0;
+
+            // Row 2
+            g.제어.dtb.Rows[2][0] = ""; //상해
+            g.제어.dtb.Rows[2][1] = ""; // 홍콩
+            g.제어.dtb.Rows[2][2] = ""; // 니케이
+            g.제어.dtb.Rows[2][2] = ""; // 대만가권
+
+
+            // Row 4
+            g.제어.dtb.Rows[4][0] = "adv";
+            g.제어.dtb.Rows[4][1] = g.v.q_advance_lines;
+
+
+            // Row 5
+            g.제어.dtb.Rows[5][0] = "종거";
+            g.제어.dtb.Rows[5][1] = 100; g.v.종가기준추정거래액이상_천만원 = 100;
+            g.제어.dtb.Rows[5][2] = "분거";
+            g.제어.dtb.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
+
+
+            // Row 6
+            g.제어.dtb.Rows[6][0] = "호가";
+            g.제어.dtb.Rows[6][1] = 10; g.v.호가거래액_백만원 = 10; // not active for g.tesing
+            g.제어.dtb.Rows[6][2] = "편차";
+            g.제어.dtb.Rows[6][3] = 1; g.v.편차이상 = 1;
+
+            // Row 7
+            g.제어.dtb.Rows[7][0] = "배차";
+            g.제어.dtb.Rows[7][1] = 0; g.v.배차이상 = 0; // defined, but not used
+            g.제어.dtb.Rows[7][2] = "시총";
+            g.제어.dtb.Rows[7][3] = 0; g.v.시총이상 = 0;
+
+            // Row 8
+            g.제어.dtb.Rows[8][0] = "수과";
+            g.제어.dtb.Rows[8][1] = 20; g.v.수급과장배수 = 20;
+            g.제어.dtb.Rows[8][2] = "배과";
+            g.제어.dtb.Rows[8][3] = 1; g.v.배수과장배수 = 1;
+
+            // Row 9
+            g.제어.dtb.Rows[9][0] = "평가";
+            g.제어.dtb.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
+            g.제어.dtb.Rows[9][2] = "초간";
+            g.제어.dtb.Rows[9][3] = 30; g.postInterval = 30;
+
+            // Row 10
+            g.제어.dtb.Rows[10][0] = "Main";
+            g.제어.dtb.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0F;
+            
+            // Row 12
+            g.제어.dtb.Rows[12][0] = "푀플";
+            g.제어.dtb.Rows[12][1] = "1"; g.v.푀플 = 1;
+            g.제어.dtb.Rows[12][2] = "배플";
+            g.제어.dtb.Rows[12][3] = "1"; g.v.배플 = 1;
+
+            // Row 13
+            g.제어.dtb.Rows[13][0] = "선폭";
+            g.제어.dtb.Rows[13][1] = 2; g.LineWidth = 2;
+
+
+            g.제어.dgv = new DataGridView();
+            dgv = g.제어.dgv;
+
+            dgv.DataSource = g.제어.dtb;
             dgv.ReadOnly = true;
             dgv.ColumnHeadersVisible = false;
             dgv.RowHeadersVisible = false;
@@ -94,31 +336,114 @@ namespace New_Tradegy.Library.Trackers
             dgv.AllowUserToDeleteRows = false;
 
             dgv.CellMouseClick += Dgv_CellMouseClick;
+
+            if (g.제어.dgv.Columns.Count < Columns)
+            {
+                for (int i = g.제어.dgv.Columns.Count; i < Columns; i++)
+                    g.제어.dgv.Columns.Add(i.ToString(), i.ToString());
+            }
+
+            for (int i = 0; i < Columns; i++)
+            {
+                int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
+                g.제어.dgv.Columns[i].Width = (g.screenWidth / (11) - scrollbarWidth) / 4;
+            }
         }
 
         private void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.RowIndex < 0 || (e.ColumnIndex != 0 && e.ColumnIndex != 1)) return;
+            if (e.RowIndex < 0 || (e.ColumnIndex > 3)) return;
 
-            string key = _view.Rows[e.RowIndex].Cells[0].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(key) || !Settings.ContainsKey(key)) return;
 
-            var setting = Settings[key];
-            int current = setting.Get();
-            bool increase = (e.ColumnIndex == 1);
-            int next = GetNextValue(setting.Values, current, increase);
-
-            if (next != current)
+            if (e.RowIndex < 5)
             {
-                setting.Set(next);
-                _table.Rows[e.RowIndex][1] = next;
-                _view.Refresh();
+                switch (e.RowIndex)
+                {
+                    case 0:
+                        switch (e.ColumnIndex)
+                        {
+                            case 3:
+                                DealManager.DealDeposit();
+                                break;
+                        }
+                        break;
 
-                //g.ChartManager.ClearAll();
-                //ev.eval_stock();
-                //mm.ManageChart1();
-                //mm.ManageChart2();
+                    case 1:
+                        switch (e.ColumnIndex)
+                        {
+                            case 0:
+                                DealManager.DealProfit();
+                                break;
+                            case 1:
+                                Process.Start("chrome.exe", "https://kr.investing.com/currencies/usd-krw");
+                                break;
+                            case 2:
+                                Process.Start("https://www.investing.com/indices/nq-100-futures?cid=1175151");
+                                break;
+                            case 3:
+                                Process.Start("chrome.exe", "https://finviz.com/map.ashx?t=sec");
+                                break;
+                        }
+                        break;
+
+                    case 2:
+                        Process.Start("chrome.exe", "https://www.investing.com/indices/major-indices");
+                        break;
+
+                    case 3:
+                        switch (e.ColumnIndex)
+                        {
+                            case 0:
+                            case 1:
+                                Process.Start("chrome.exe", "https://www.investing.com/crypto/bitcoin/chart");
+                                break;
+                        }
+                        break;
+
+                    case 4:
+                        if (e.ColumnIndex == 0)
+                        {
+                            g.v.q_advance_lines -= 5;
+                        }
+                        if (e.ColumnIndex == 1)
+                        {
+                            g.v.q_advance_lines += 5;
+                        }
+                        g.제어.dtb.Rows[4][1] = g.v.q_advance_lines;
+                        break;
+                }
             }
+            else
+            {
+                int selecteddColumnIndex = 0;
+                if (e.ColumnIndex > 1)
+                {
+                    selecteddColumnIndex = 1;
+                }
+                string key = _view.Rows[e.RowIndex].Cells[selecteddColumnIndex].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(key) || !Settings.ContainsKey(key)) return;
+
+
+                var setting = Settings[key];
+                int current = setting.Get();
+                bool increase = (e.ColumnIndex == 1);
+                int next = GetNextValue(setting.Values, current, increase);
+
+                if (next != current)
+                {
+                    setting.Set(next);
+
+
+                    _table.Rows[e.RowIndex][1] = next;
+                    _view.Refresh();
+
+                    //g.ChartManager.ClearAll();
+                    //ev.eval_stock();
+                    //mm.ManageChart1();
+                    //mm.ManageChart2();
+                }
+            }
+
         }
 
         private int GetNextValue(int[] array, int current, bool increase)

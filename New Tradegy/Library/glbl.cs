@@ -48,7 +48,7 @@ namespace New_Tradegy.Library
         public static bool add_interest = false; // add stock or not to the 관심종목 when stocks active
         public static bool confirm_sell = false; // sell by click or modal display to confirm sell condition
         public static int 일회거래액 = 0; // amount of deal money in 10 thousands Won
-
+        public static int 예치금 = 0; 
 
         public static int UpdateDealProfit = 0; // profit for the day
 
@@ -150,7 +150,7 @@ namespace New_Tradegy.Library
         public static int rqwey_nRow = 3; // number of chart area rows in main chart
 
         public static int MarketeyeCount = 0; // total count of API download from start of market
-        public static int MarketeyeCountDividerForEvalStock = 10; // evaluation of stocks after how many MarketeyeCount increases
+        public static int MarketeyeCountDivicer = 10; // evaluation of stocks after how many MarketeyeCount increases
         public static int minuteSaveAll = 0; // to block repeated saving of minute data of all stocks (every hour saved)
         public static int AlarmedHHmm = 0; // to bock alarm repeated like "Taiwan market open"
 
@@ -227,16 +227,17 @@ namespace New_Tradegy.Library
             public string SubChartDisplayMode = "그순";
             public string old_MainChartDisplayMode = "푀분";
 
-            public double 분당거래액이상_천만원; // in setting 10
-            public double 호가거래액_백만원; // in setting 10
-            public double 편차이상;  // in setting 1
-            public double 배차이상; // in setting 0, not used
-            public double 종가기준추정거래액이상_천만원; // insetting 0
-            public double 시총이상; // in setting 0
+            public int 분당거래액이상_천만원; // in setting 10
+            public int 호가거래액_백만원; // in setting 10
+            public int 편차이상;  // in setting 1
+            public int 배차이상; // in setting 0, not used
+            public int 종가기준추정거래액이상_천만원; // insetting 0
+            public int 시총이상; // in setting 0
 
             public int 푀플 = 1;
             public int 배플 = 1;
-            public double 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
+            public int 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
+            public int 배수과장배수 = 20;
 
             public int q_advance_lines = 15;
             public int Q_advance_lines = 150;

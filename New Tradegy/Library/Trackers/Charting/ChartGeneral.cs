@@ -44,7 +44,7 @@ namespace New_Tradegy.Library.Trackers
             var rankedStocks = g.StockManager.StockRankingList;
 
             var withBookBid = holdings
-                .Concat(interestedOnly)
+                .Concat(interestedWithBid)
                 .Distinct()
                 .Take(MaxSpaces / 2)
                 .ToList();
@@ -61,15 +61,20 @@ namespace New_Tradegy.Library.Trackers
             bool changed = !_prevWithBid.SequenceEqual(withBookBid)
                         || !_prevWithoutBid.SequenceEqual(withoutBookBid);
 
-            if (changed)
-            {
-                RefreshLayout(withBookBid, withoutBookBid);
-                _prevWithBid = withBookBid.ToList();
-                _prevWithoutBid = withoutBookBid.ToList();
+            RefreshLayout(withBookBid, withoutBookBid);
+            _prevWithBid = withBookBid.ToList();
+            _prevWithoutBid = withoutBookBid.ToList();
 
-                // 🔔 Notify listeners
-                StockManagerEvents.NotifyChanged();
-            }
+            // chartarea exist ... change end data in each series
+            // chartarea not exist ... generate chartarea
+            // relocation needed
+
+            //if (changed)
+            //{
+            //    RefreshLayout(withBookBid, withoutBookBid);
+            //    _prevWithBid = withBookBid.ToList();
+            //    _prevWithoutBid = withoutBookBid.ToList();
+            //}
 
         }
 

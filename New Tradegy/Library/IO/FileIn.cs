@@ -94,7 +94,7 @@ namespace New_Tradegy.Library.IO
                 if (words.Length != 14)
                     continue;
 
-                var stockData = g.StockManager.Repository.TryGetStockOrNull(words[0]);
+                var stockData = g.StockRepository.TryGetStockOrNull(words[0]);
                 if (stockData == null || stockData.Api.전일종가 <= 0)
                     continue;
 
@@ -270,7 +270,7 @@ namespace New_Tradegy.Library.IO
                     PostProcessor.PostPassing(t, j, false);
             }
 
-            var data = g.StockManager.Repository.TryGetStockOrNull("KODEX 레버리지");
+            var data = g.StockRepository.TryGetStockOrNull("KODEX 레버리지");
             if (data != null && data.Api.x[0, 3] > 1000)
             {
                 PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
@@ -688,7 +688,7 @@ namespace New_Tradegy.Library.IO
 
                 if (words.Length == 1)
                 {
-                    data = g.StockManager.Repository.TryGetStockOrNull(words[0]);
+                    data = g.StockRepository.TryGetStockOrNull(words[0]);
                 }
                 else if (words.Length == 2 && data != null)
                 {
