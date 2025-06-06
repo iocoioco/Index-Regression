@@ -150,6 +150,8 @@ namespace New_Tradegy.Library
             {
                 return false;
             }
+            if (일최대거래액 < 30) // 일최대거래액 30억 이하 제외
+                return false;
 
             var cpStockCode = new CPUTILLib.CpStockCode();
             string code = cpStockCode.NameToCode(stock);

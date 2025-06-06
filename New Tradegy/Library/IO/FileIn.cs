@@ -278,7 +278,7 @@ namespace New_Tradegy.Library.IO
         }
 
 
-       
+
 
         // 업종, 10억이상, 상관, 상관, 통계
         public static void gen_ogldata_oGLdata()
@@ -293,18 +293,20 @@ namespace New_Tradegy.Library.IO
             //    g.StockManager.AddIfMissing(FileIn.read_그룹_네이버_업종()); // replaces total_stock_list = ...
             //}
 
-           
 
 
             var 시총Map = new ConcurrentDictionary<string, double>(
-                File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
-                .Select(line => line.Trim().Split(' '))
-                .Where(parts => parts.Length >= 2)
-                .Where(parts => !parts[0].Contains("KODEX") && !parts[0].Contains("레버리지") && !parts[0].Contains("인버스"))
-                .ToDictionary(
-                    parts => parts[0].Replace("_", " "),
-                    parts => double.TryParse(parts[1], out var v) ? v : -1
-            ));
+    File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
+        .Select(line => line.Trim().Split(' '))
+        .Where(parts => parts.Length >= 2)
+        .GroupBy(parts => parts[0].Replace("_", " "))
+        .ToDictionary(
+            group => group.Key,
+            group => double.TryParse(group.First()[1], out var v) ? v : -1
+        )
+);
+
+
 
 
             foreach (var stock in g.StockManager.TotalStockList) // StockManager.TotalStockList is used only in this method
@@ -1400,7 +1402,7 @@ namespace New_Tradegy.Library.IO
             if (!File.Exists(file))
                 return 0;
 
-            
+
             string[] lines = File.ReadAllLines(file, Encoding.Default);
 
             int nrow = 0;
