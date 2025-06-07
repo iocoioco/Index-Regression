@@ -133,12 +133,14 @@ namespace New_Tradegy.Library.Trackers
 
         //Retrieves the StockData object via TryGetStockOrNull() from StockRepository.
         //Delegates the rendering logic to ChartRenderer.CreateOrUpdateChartarea(...).
-        public void CreateChartArea(string stock, int row, int col)
-        {
-            var data = g.StockRepository.TryGetStockOrNull(stock);
-            if (data == null) return;
-            ChartGeneralRenderer.UpdateChartArea(_chart, data, row, col); // Create Chart Area(string stock, int row, int col)
-        }
+        //public void CreateChartArea(string stock, int row, int col)
+        //{
+        //    var data = g.StockRepository.TryGetStockOrNull(stock);
+        //    if (data == null) return;
+
+            
+        //    ChartGeneralRenderer.UpdateChartArea(_chart, data, row, col); // Create Chart Area(string stock, int row, int col)
+        //}
     }
 
     public class ChartGridLayout

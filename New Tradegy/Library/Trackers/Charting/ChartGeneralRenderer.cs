@@ -1,6 +1,7 @@
 ﻿using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -17,10 +18,11 @@ namespace New_Tradegy.Library.Trackers
         private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
         Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
 
-        public static void UpdateChartArea(Chart chart, StockData data, int row, int col)
+        public static (ChartArea area, Annotation anno) UpdateChartArea(Chart chart, StockData data, int row, int col)
         {
             string areaName = data.Stock;
             ChartArea area;
+            Annotation anno;
 
             if (chart.ChartAreas.IndexOf(areaName) >= 0)
             {
@@ -30,6 +32,7 @@ namespace New_Tradegy.Library.Trackers
             }
             else
             {
+                ChartBasicRenderer.RemoveChartBlock(chart, data.Stock);
                 area = new ChartArea(areaName);
                 chart.ChartAreas.Add(area);
 
@@ -37,8 +40,9 @@ namespace New_Tradegy.Library.Trackers
                 RedrawAnnotation(chart, data, row, col);
             }
 
-            // Apply layout after content setup
-            ChartBasicRenderer.RelocateChartArea(area, row, col, 3, 10); // fixed nRow=3, nCol=10
+            return (area, anno);
+
+
         }
 
         public static void AddSeries(Chart chart, ChartArea area, StockData data)
@@ -398,10 +402,10 @@ namespace New_Tradegy.Library.Trackers
             t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
         }
 
-        public static void RedrawAnnotation(Chart chart, StockData data, int row, int col)
+        public static Annotation RedrawAnnotation(Chart chart, StockData data, int row, int col)
         {
             if (chart == null || data == null)
-                return;
+                return null;
 
             // Remove old annotation
             string annotationName = data.Stock;
@@ -435,8 +439,10 @@ namespace New_Tradegy.Library.Trackers
             // Adjust vertical offset depending on chart
             float yOffset = chart.Name == "chart1" ? 0f : 3f;
             string areaName = data.Stock;
-            AnnotationAddRectangleWithText(chart, annotation,
+            Annotation newAnno = AnnotationAddRectangleWithText(chart, annotation,
                 new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), areaName, Color.Black, BackColor);
+
+            return newAnno;
         }
 
         public static string AnnotationText(Chart chart, StockData o, int[,] x, int StartNpts, int EndNpts, int total_nrow)
@@ -521,7 +527,7 @@ namespace New_Tradegy.Library.Trackers
             chartAreaHeight = rowHeightPercent - annotationHeight;
         }
 
-        private static void AnnotationAddRectangleWithText(
+        private static Annotation AnnotationAddRectangleWithText(
         Chart chart,
         string text,
         RectangleF rect,
@@ -564,6 +570,8 @@ namespace New_Tradegy.Library.Trackers
 
             // Add and redraw
             chart.Annotations.Add(annotation);
+
+            return annotation;
         }
 
         public static string AnnotationMinute(StockData o, int[,] x, int StartNpts, int EndNpts)

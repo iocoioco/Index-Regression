@@ -21,7 +21,7 @@ namespace New_Tradegy
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
-        private string PreSubChartDisplayMode = "";
+       
 
         public Form_보조_차트()
         {
@@ -131,11 +131,7 @@ namespace New_Tradegy
             // Determine grid layout based on the number of displayList
             SetGridDimensions();
 
-            if (g.v.SubChartDisplayMode != PreSubChartDisplayMode) // if g.v.SubChartDisplayMode changes, Clear Chart
-            {
-                PreSubChartDisplayMode = g.v.SubChartDisplayMode;
-                g.ChartManager.Chart2Handler.Clear();
-            }
+            
 
             for (int i = 0; i < nRow * nCol; i++)
             {
@@ -151,16 +147,16 @@ namespace New_Tradegy
 
 
 
-                //?if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || data.Misc.ShrinkDraw || g.test)
-                if (true)
+                if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || data.Misc.ShrinkDraw || g.test)
+          
                 {
                     if (g.StockManager.IndexList.Contains(data.Stock))
                     {
-                        ChartIndex.UpdateChartArea(g.ChartManager.Chart2, data);
+                        ChartIndex.UpdateChartArea(chart2, data);
                     }
                     else
                     {
-                        g.ChartGeneral2.CreateChartArea(data.Stock, i % 3, i / 3);
+                        ChartGeneralRenderer.UpdateChartArea(chart2, data, i % 3, i / 3);
                     }
 
                 }
@@ -178,7 +174,7 @@ namespace New_Tradegy
 
             }
 
-            //?RelocateChart2AreasAndAnnotations();
+            RelocateChart2AreasAndAnnotations();
 
             dataGridView1.Refresh();
 

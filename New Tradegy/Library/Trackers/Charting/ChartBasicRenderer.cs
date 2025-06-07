@@ -19,5 +19,31 @@ namespace New_Tradegy.Library.Trackers
             area.Position.Width = width;
             area.Position.Height = height;
         }
+
+        public static void RemoveChartBlock(Chart chart, string stockName)
+        {
+            // 🔸 Remove related series (Name starts with stockName)
+            var seriesToRemove = chart.Series
+                .Where(s => s.ChartArea == stockName || s.Name.StartsWith(stockName + " "))
+                .ToList();
+
+            foreach (var s in seriesToRemove)
+                chart.Series.Remove(s);
+
+            // 🔸 Remove related annotation (Name == stockName)
+            var annotationToRemove = chart.Annotations
+                .FirstOrDefault(a => a.Name == stockName);
+
+            if (annotationToRemove != null)
+                chart.Annotations.Remove(annotationToRemove);
+
+            // 🔸 Remove chart area (Name == stockName)
+            var area = chart.ChartAreas.FindByName(stockName);
+            if (area != null)
+                chart.ChartAreas.Remove(area);
+        }
     }
+
+    
+
 }

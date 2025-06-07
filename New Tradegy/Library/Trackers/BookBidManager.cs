@@ -32,6 +32,8 @@ namespace New_Tradegy.Library.Trackers
             _jpMap[stock] = generator;
 
             var grid = generator.GenerateBookBidView(stock);
+            if (grid == null) 
+                return null; //?
             _gridMap[stock] = grid;
 
             grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);

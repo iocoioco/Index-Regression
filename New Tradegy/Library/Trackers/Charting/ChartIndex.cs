@@ -35,11 +35,16 @@ namespace New_Tradegy.Library.Trackers
                     g.MarketeyeCount % g.MarketeyeCountDivicer != 1 &&
                     g.connected && !g.test && !data.Misc.ShrinkDraw;
 
-                shouldUpdateSeries = false; //?
+                
                 if (shouldUpdateSeries)
                     UpdateSeries(chart, data);
                 else
+                {
+
+                    
                     UpdateChartArea(chart, data);
+                }
+                    
 
                 if (isChart1 && g.connected && !Utils.FormUtils.DoesDataGridViewExist(Utils.FormUtils.FindFormByName("Form1"), stock))
                 {
@@ -63,10 +68,7 @@ namespace New_Tradegy.Library.Trackers
             if (data.Api.nrow <= 1)
                 return null;
 
-            List<string> areasList = chart.ChartAreas //?
-    .Select(a => a.Name)
-    .ToList();
-
+  
             // Determine Start and End Row
             int start = g.Npts[0];
             int end = g.test ? Math.Min(g.Npts[1], data.Api.nrow) : data.Api.nrow;
@@ -78,7 +80,11 @@ namespace New_Tradegy.Library.Trackers
 
 
 
+            ChartBasicRenderer.RemoveChartBlock(chart, stock);
+
             ChartArea area = new ChartArea(stock);
+
+           
             chart.ChartAreas.Add(area);
 
             int ymin = int.MaxValue, ymax = int.MinValue;
