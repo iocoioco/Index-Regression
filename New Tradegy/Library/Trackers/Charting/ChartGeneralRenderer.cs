@@ -18,7 +18,7 @@ namespace New_Tradegy.Library.Trackers
         private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
         Color.LightCoral, Color.DarkBlue, Color.Magenta, Color.Cyan };
 
-        public static (ChartArea area, Annotation anno) UpdateChartArea(Chart chart, StockData data, int row, int col)
+        public static (ChartArea area, Annotation anno) UpdateChartArea(Chart chart, StockData data)
         {
             string areaName = data.Stock;
             ChartArea area;
@@ -28,7 +28,7 @@ namespace New_Tradegy.Library.Trackers
             {
                 area = chart.ChartAreas[areaName];
                 UpdateSeries(chart, data);
-                RedrawAnnotation(chart, data, row, col);
+                anno = RedrawAnnotation(chart, data);
             }
             else
             {
@@ -37,7 +37,7 @@ namespace New_Tradegy.Library.Trackers
                 chart.ChartAreas.Add(area);
 
                 AddSeries(chart, area, data);
-                RedrawAnnotation(chart, data, row, col);
+                anno = RedrawAnnotation(chart, data);
             }
 
             return (area, anno);
@@ -402,7 +402,7 @@ namespace New_Tradegy.Library.Trackers
             t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
         }
 
-        public static Annotation RedrawAnnotation(Chart chart, StockData data, int row, int col)
+        public static Annotation RedrawAnnotation(Chart chart, StockData data)
         {
             if (chart == null || data == null)
                 return null;
@@ -439,10 +439,10 @@ namespace New_Tradegy.Library.Trackers
             // Adjust vertical offset depending on chart
             float yOffset = chart.Name == "chart1" ? 0f : 3f;
             string areaName = data.Stock;
-            Annotation newAnno = AnnotationAddRectangleWithText(chart, annotation,
+            Annotation anno = AnnotationAddRectangleWithText(chart, annotation,
                 new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), areaName, Color.Black, BackColor);
 
-            return newAnno;
+            return anno;
         }
 
         public static string AnnotationText(Chart chart, StockData o, int[,] x, int StartNpts, int EndNpts, int total_nrow)

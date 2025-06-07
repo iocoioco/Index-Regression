@@ -145,6 +145,7 @@ namespace New_Tradegy
                     continue;
                 }
 
+                List <ChartArea> chartAreas = new List<ChartArea>();
 
 
                 if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || data.Misc.ShrinkDraw || g.test)
@@ -152,11 +153,12 @@ namespace New_Tradegy
                 {
                     if (g.StockManager.IndexList.Contains(data.Stock))
                     {
-                        ChartIndex.UpdateChartArea(chart2, data);
+                        var area = ChartIndex.UpdateChartArea(chart2, data);
+                        chartAreas.Add(area);
                     }
                     else
                     {
-                        ChartGeneralRenderer.UpdateChartArea(chart2, data, i % 3, i / 3);
+                        var(area, anno) = ChartGeneralRenderer.UpdateChartArea(chart2, data);
                     }
 
                 }
@@ -164,11 +166,11 @@ namespace New_Tradegy
                 {
                     if (g.StockManager.IndexList.Contains(data.Stock))
                     {
-                        ChartIndex.UpdateSeries(g.ChartManager.Chart1, data);
+                        ChartIndex.UpdateSeries(chart2, data);
                     }
                     else
                     {
-                        ChartGeneralRenderer.UpdateSeries(g.ChartManager.Chart2, data);
+                        ChartGeneralRenderer.UpdateSeries(chart2, data);
                     }
                 }
 
