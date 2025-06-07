@@ -973,23 +973,34 @@ namespace New_Tradegy.Library.IO
                 {
                     if (empty_line_met == false)
                     {
-                        string stock = words[1];
-                        g.kospi_mixed.stock.Add(stock);
-                        string t = words[5].Trim(new Char[] { '%', '(', ')' });
-                        double d = Convert.ToDouble(t);
-                        g.kospi_mixed.weight.Add(d); // 22 items sum 38.21
-                        kospi_weight_sum += d;
-                        kospi_mixed_stock_count++;
+                        //?
+                        if (kospi_mixed_stock_count <= 20)
+                        {
+                            string stock = words[1];
+                            g.kospi_mixed.stock.Add(stock);
+                            string t = words[5].Trim(new Char[] { '%', '(', ')' });
+                            double d = Convert.ToDouble(t);
+                            g.kospi_mixed.weight.Add(d); // 22 items sum 38.21
+                            kospi_weight_sum += d;
+                            kospi_mixed_stock_count++;
+                        }
+                        
                     }
                     else
                     {
-                        string stock = words[1];
-                        g.kosdaq_mixed.stock.Add(stock);
-                        string t = words[5].Trim(new Char[] { '%', '(', ')' });
-                        double d = Convert.ToDouble(t);
-                        g.kosdaq_mixed.weight.Add(d); // 24 items sum 38.47
-                        kosdaq_weight_sum += d;
-                        kosdaq_mixed_stock_count++;
+                        //?
+                        if(kosdaq_mixed_stock_count <= 20)
+
+                        {
+                            string stock = words[1];
+                            g.kosdaq_mixed.stock.Add(stock);
+                            string t = words[5].Trim(new Char[] { '%', '(', ')' });
+                            double d = Convert.ToDouble(t);
+                            g.kosdaq_mixed.weight.Add(d); // 24 items sum 38.47
+                            kosdaq_weight_sum += d;
+                            kosdaq_mixed_stock_count++;
+                        }
+                        
                     }
                 }
             }

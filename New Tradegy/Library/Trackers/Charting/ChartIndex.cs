@@ -1,7 +1,9 @@
 ﻿using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.Models;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.Trackers
@@ -33,7 +35,7 @@ namespace New_Tradegy.Library.Trackers
                     g.MarketeyeCount % g.MarketeyeCountDivicer != 1 &&
                     g.connected && !g.test && !data.Misc.ShrinkDraw;
 
-
+                shouldUpdateSeries = false; //?
                 if (shouldUpdateSeries)
                     UpdateSeries(chart, data);
                 else
@@ -57,8 +59,13 @@ namespace New_Tradegy.Library.Trackers
         public static ChartArea UpdateChartArea(Chart chart, StockData data)
         {
             string stock = data.Stock;
+            string chartname = chart.Name; //?
             if (data.Api.nrow <= 1)
                 return null;
+
+            List<string> areasList = chart.ChartAreas //?
+    .Select(a => a.Name)
+    .ToList();
 
             // Determine Start and End Row
             int start = g.Npts[0];
@@ -68,6 +75,9 @@ namespace New_Tradegy.Library.Trackers
 
             // Create ChartArea and Removes default "ChartArea1"
             chart.ChartAreas.Remove(chart.ChartAreas.FindByName("ChartArea1"));
+
+
+
             ChartArea area = new ChartArea(stock);
             chart.ChartAreas.Add(area);
 

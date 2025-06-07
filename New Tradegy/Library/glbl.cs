@@ -223,7 +223,7 @@ namespace New_Tradegy.Library
         // variables : chart1 control, stock selection, font etc
         public class Variable
         {
-            public string MainChartDisplayMode = "분푀";
+            public string MainChartDisplayMode = "푀분";
             public string SubChartDisplayMode = "그순";
             public string old_MainChartDisplayMode = "푀분";
 

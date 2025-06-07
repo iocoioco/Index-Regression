@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using New_Tradegy.Library.Models;
@@ -82,10 +83,74 @@ namespace New_Tradegy.Library.Core
             var resultList = new List<(double value, string code)>();
             double value = 0.0;
 
+
+            if (g.test) // 실제 run 에서는 post() 에서 합산됨
+            {
+                foreach (var data in repo.AllDatas)
+                {
+                    string stock = data.Stock;
+                    if (data.Api.nrow < 2)
+                        continue;
+                    PostProcessor.post(data);
+
+                    //data.Pass.previousPriceHigh = int.MinValue;
+                    //data.Pass.previousPriceLow = null;
+                    //data.Pass.priceStatus = 0;
+                    //data.Pass.previousProgramHigh = int.MinValue;
+                    //data.Pass.previousProgramLow = null;
+                    //data.Pass.programStatus = 0;
+                    //data.Pass.monthStatus = 0;
+                    //data.Pass.quarterStatus = 0;
+                    //data.Pass.halfStatus = 0;
+                    //data.Pass.yearStatus = 0;
+
+
+                    //int check_row = 0;
+                    //check_row = g.Npts[1] - 1;
+                    //if (check_row > data.Api.nrow - 1)
+                    //    check_row = data.Api.nrow - 1;
+
+                    //for (int j = 1; j <= check_row; j++)
+                    //{
+                    //    if (j == check_row)
+                    //    {
+                    //        PostProcessor.PostPassing(data, j, true); // eval_stock -> test
+                    //    }
+                    //    else
+                    //    {
+                    //        PostProcessor.PostPassing(data, j, false); // eval_stock -> test
+                    //    }
+                    //}
+
+                }
+            }
+
+
+
             var specialGroupKeys = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
             foreach (var data in repo.AllDatas)
             {
+                var holdings = g.StockManager.HoldingList;
+                var interestedWithBid = g.StockManager.InterestedWithBidList;
+                var interestedOnly = interestedWithBid.Except(holdings).ToList();
+                var rankedStocks = g.StockManager.StockRankingList;
+
+
+                // 레버리지 외 지수관련 모두 제외;
+                if ((
+                    data.Stock.Contains("KODEX") ||
+                data.Stock.Contains("KOSEF") ||
+                data.Stock.Contains("HANARO") ||
+                data.Stock.Contains("TIGER") ||
+                data.Stock.Contains("KBSTAR") ||
+                data.Stock.Contains("혼합") ||
+                g.StockManager.HoldingList.Contains(data.Stock) ||
+                g.StockManager.InterestedWithBidList.Contains(data.Stock)))
+                {
+                    continue;
+                }
+
                 var stat = data.Statistics;
                 string mode = g.v.MainChartDisplayMode;
 
@@ -117,8 +182,8 @@ namespace New_Tradegy.Library.Core
                     PostProcessor.post(data); // ensure Post values are updated
 
                     int nrow = data.Api.nrow;
-                    if (!EvalInclusion(data) || nrow < 2)
-                        continue;
+                    //?if (!EvalInclusion(data) || nrow < 2)
+                    //?    continue;
 
                     int checkRow = g.test
                         ? Math.Min(g.Npts[1] - 1, nrow - 1)

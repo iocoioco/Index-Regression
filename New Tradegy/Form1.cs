@@ -129,7 +129,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             
             g.StockManager.AddIfMissing(g.kospi_mixed.stock);
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
-            g.StockManager.AddIfMissing(NaverList);
+            //?g.StockManager.AddIfMissing(NaverList);
             
             
 

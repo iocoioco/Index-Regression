@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -95,19 +96,37 @@ namespace New_Tradegy.Library.Trackers
 
             foreach (var stock in withBookBid)
             {
-                (int row, int col) = _layout.GetNext(true);
-                CreateChartArea(stock, row, col);
-                _bookBidManager.GetOrCreate(stock, row, col);
-                gridMap[row, col] = stock;
-                gridMap[row, col + 1] = " "; // bookbid placeholder
+                try
+                {
+                    var (row, col) = _layout.GetNext(true);
+                    CreateChartArea(stock, row, col);
+                    _bookBidManager.GetOrCreate(stock, row, col);
+                    gridMap[row, col] = stock;
+                    gridMap[row, col + 1] = " ";
+                }
+                catch (InvalidOperationException)
+                {
+                    Debug.WriteLine("Chart layout full — skipping extra withBookBid stocks.");
+                    break;
+                }
             }
 
             foreach (var stock in withoutBookBid)
             {
-                (int row, int col) = _layout.GetNext(true);
-                CreateChartArea(stock, row, col);
-                gridMap[row, col] = stock;
+                try
+                {
+                    var (row, col) = _layout.GetNext(false); // 🛠 corrected: false
+                    CreateChartArea(stock, row, col);
+                    gridMap[row, col] = stock;
+                }
+                catch (InvalidOperationException)
+                {
+                    Debug.WriteLine("Chart layout full — skipping extra withoutBookBid stocks.");
+                    break;
+                }
             }
+
+
 
             // Optionally store or log gridMap for debugging or UI interaction mapping
         }

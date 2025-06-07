@@ -459,7 +459,7 @@ namespace New_Tradegy.Library.Trackers
             stock_title += stock.Length >= 5 ? stock.Substring(0, 5) : stock;
 
             var groupTitle = g.GroupManager.FindGroupByStock(stock); // group title
-            stock_title += groupTitle == null ? "%" : " "; //?
+            stock_title += groupTitle == null ? "%" : " "; 
             stock_title += Math.Round(o.Post.종거천 / 10.0) + "  " +
                            (o.Post.푀누천 / 10.0).ToString("F1") + "  " +
                            (o.Post.외누천 / 10.0).ToString("F1") + "  " +
