@@ -1,11 +1,14 @@
 ﻿
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.PostProcessing;
+using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace New_Tradegy.Library.UI.KeyBindings
 {
@@ -35,29 +38,33 @@ namespace New_Tradegy.Library.UI.KeyBindings
         public void Run()
         {
             if (Clear)
-            { 
+            {
             }
 
             if (Post)
             {
-                if(g.test)
+                if (g.test)
                     PostProcessor.post_test();
             }
-                
+
 
             if (Eval)
-                RankLogic.EvalStock(); 
+                RankLogic.EvalStock();
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
-                g.ChartGeneral1.UpdateLayoutIfChanged();
+                g.ChartMainRenderer.RefreshMainChart();
 
 
             if (DrawTarget == 's' || DrawTarget == 'B')
-                g.ChartGeneral2.UpdateLayoutIfChanged();
-
+            {
+                Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
+                if (Form_보조_차트 != null)
+                {
+                    Form_보조_차트.Form_보조_차트_DRAW();
+                }
+            }
         }
     }
-
 }
 
 

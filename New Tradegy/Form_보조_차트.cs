@@ -21,6 +21,8 @@ namespace New_Tradegy
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
+        private int _maxSpace = 15;
+
         public Form_보조_차트()
         {
             InitializeComponent();
@@ -120,12 +122,11 @@ namespace New_Tradegy
             // Determine grid layout based on the number of displayList
             SetGridDimensions();
 
-
             var chartAreas = new List<ChartArea>();
             var annotations = new List<Annotation>();
-            for (int i = 0; i < nRow * nCol; i++)
+            for (int i = 0; i < displayList.Count; i++)
             {
-                if (i >= displayList.Count)
+                if (i >= _maxSpace)
                     break;
                 string stock = displayList[i];
 
@@ -151,6 +152,8 @@ namespace New_Tradegy
 
             RelocateChart2AreasAndAnnotations();
 
+            CleanupChart2();
+
             dataGridView1.Refresh();
 
             g.ChartManager.Chart2.Invalidate();
@@ -163,24 +166,26 @@ namespace New_Tradegy
 
         public void RelocateChart2AreasAndAnnotations()
         {
-            int totalAreas = Math.Min(displayList.Count, nRow * nCol);
-            float cellWidth = 100.0F / nCol; // Width percentage per column
-            float cellHeight = 100.0F / nRow; // Height percentage per row
+            float cellWidth = 100f / nCol;   // width % per column
+            float cellHeight = 100f / nRow;  // height % per row
 
-            for (int i = 0; i < totalAreas; i++)
+            for (int i = 0; i < displayList.Count; i++)
             {
+                if (i >= _maxSpace)
+                    break;
+
                 string stock = displayList[i];
                 string areaName = stock;
 
-                int row = i / nCol;
-                int col = i % nCol;
+                int row = i % nRow;
+                int col = i / nRow;
 
-                float x = col * (100f / nCol);
-                float y = row * (100f / nRow);
-                float width = 100f / nCol;
-                float height = 100f / nRow;
+                float x = col * cellWidth;
+                float y = row * cellHeight;
+                float width = cellWidth;
+                float height = cellHeight;
 
-                // Move chart area
+                // Move ChartArea (always)
                 if (chart2.ChartAreas.IndexOf(areaName) >= 0)
                 {
                     var area = chart2.ChartAreas[areaName];
@@ -188,16 +193,16 @@ namespace New_Tradegy
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
                 }
 
-                // Move annotation (only if it's not an index stock)
+                // Move Annotation (only for non-index stocks)
                 if (!g.StockManager.IndexList.Contains(stock))
                 {
                     var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
                     if (annotation is RectangleAnnotation rect)
                     {
                         rect.X = x;
-                        rect.Y = y + height; // place directly below chart
+                        rect.Y = y; // + height; // directly below chart
                         rect.Width = width;
-                        rect.Height = 5.155f + 2f;
+                        rect.Height = 5.155f + 2f; // standard height
                     }
                 }
             }
@@ -205,7 +210,45 @@ namespace New_Tradegy
             chart2.Invalidate(); // Redraw the chart
         }
 
-        
+
+        private void CleanupChart2()
+        {
+            var validStocks = new HashSet<string>(displayList.Take(_maxSpace));
+
+            // Remove unnecessary chart areas (name == stock)
+            var areasToRemove = g.ChartManager.Chart2.ChartAreas
+                .Where(area => !validStocks.Contains(area.Name))
+                .ToList();
+
+            foreach (var area in areasToRemove)
+                g.ChartManager.Chart2.ChartAreas.Remove(area);
+
+            // Remove unnecessary annotations (name == stock)
+            var annotationsToRemove = g.ChartManager.Chart2.Annotations
+                .Where(anno => !validStocks.Contains(anno.Name))
+                .ToList();
+
+            foreach (var anno in annotationsToRemove)
+                g.ChartManager.Chart2.Annotations.Remove(anno);
+
+            // Remove unnecessary series (name starts with stockName but stockName not in displayList)
+            var seriesToRemove = g.ChartManager.Chart2.Series
+                .Where(series =>
+                {
+                    foreach (var stock in validStocks)
+                    {
+                        if (series.Name.StartsWith(stock))
+                            return false;
+                    }
+                    return true;
+                })
+                .ToList();
+
+            foreach (var s in seriesToRemove)
+                g.ChartManager.Chart2.Series.Remove(s);
+        }
+
+
 
         // 상관, 보유, 그순, 관심, 닥올, 피올, 절친, 푀손
         public static void DisplayListGivenDisplayMode(string MainChartDisplayMode, List<string> displayList, string clickedStock, string clickedTitle)

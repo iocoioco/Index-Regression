@@ -5,6 +5,7 @@ using New_Tradegy.Library.Utils;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Trackers.Charting;
 
 
 /* 배점 : 대형주 배차 조건 충족시, 수일 과다 움직임 높게(dev 큰 종목 가능성 높음) + 배차
@@ -44,23 +45,24 @@ namespace New_Tradegy.Library.PostProcessing
             Form se = (Form)Application.OpenForms["Form1"];
             if (se.InvokeRequired)
             {
-                se.Invoke(new Action(() => g.ChartGeneral1.UpdateLayoutIfChanged()));
+                se.Invoke(new Action(() => g.ChartMainRenderer.RefreshMainChart()));
             }
             else
             {
-                g.ChartGeneral1.UpdateLayoutIfChanged();
+                g.ChartMainRenderer.RefreshMainChart();
             }
         }
         public static void ManageChart2Invoke()
         {
-            Form se = (Form)Application.OpenForms["Form1"];
-            if (se.InvokeRequired)
+        
+            Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
+            if (Form_보조_차트.InvokeRequired)
             {
-                se.Invoke(new Action(() => g.ChartGeneral2.UpdateLayoutIfChanged()));
+                Form_보조_차트.Invoke(new Action(() => Form_보조_차트.Form_보조_차트_DRAW()));
             }
             else
             {
-                g.ChartGeneral2.UpdateLayoutIfChanged();
+                Form_보조_차트.Form_보조_차트_DRAW();
             }
         }
 

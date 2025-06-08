@@ -10,6 +10,7 @@ using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Deals;
 using New_Tradegy.Library.Listeners;
 using New_Tradegy.Library.PostProcessing;
+using New_Tradegy.Library.Trackers.Charting;
 using New_Tradegy.Library.UI.KeyBindings;
 using Newtonsoft.Json.Linq;
 
@@ -43,7 +44,10 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
-                    g.ChartGeneral1.UpdateLayoutIfChanged(); // index already has bookbid
+                    g.ChartMainRenderer.RefreshMainChart(); // index already has bookbid
+
+                     
+
 
                     int price = GetPriceFromGivenStock(g.clickedStock);
                     if (price < 0) return;

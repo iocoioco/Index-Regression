@@ -81,6 +81,8 @@ namespace New_Tradegy.Library.Listeners
             _jpbidPrimary = new DSCBO1Lib.StockJpbid();
             _jpbidPrimary.SetInputValue(0, stockcode);
             _jpbidPrimary.Received += new DSCBO1Lib._IDibEvents_ReceivedEventHandler(OnBookBidReceived);
+
+            bool a = g.connected; //?
             _jpbidPrimary.Subscribe();
 
             if (g.BookBidInstances.ContainsKey(_stock))
