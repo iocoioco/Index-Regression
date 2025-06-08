@@ -28,7 +28,7 @@ namespace New_Tradegy.Library.Trackers
             if (chart.ChartAreas.IndexOf(areaName) >= 0)
             {
                 area = chart.ChartAreas[areaName];
-                UpdateSeries(chart, data);
+                //UpdateSeries(chart, data);
             }
             // Generate a new chartarea
             else
