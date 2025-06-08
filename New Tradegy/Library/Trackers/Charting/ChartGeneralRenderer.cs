@@ -21,8 +21,8 @@ namespace New_Tradegy.Library.Trackers
         public static (ChartArea area, Annotation anno) UpdateChartArea(Chart chart, StockData data)
         {
             string areaName = data.Stock;
-            ChartArea area;
-            Annotation anno;
+            ChartArea area = null;
+            Annotation anno = null;
 
             // Update exiting chartarea
             if (chart.ChartAreas.IndexOf(areaName) >= 0)
@@ -36,7 +36,11 @@ namespace New_Tradegy.Library.Trackers
                 ChartBasicRenderer.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
                 area = CreateChartArea(chart, data);
             }
-            anno = RedrawAnnotation(chart, data); // existing annotation will be deleted in RedrawAnnotation
+            if(area != null)
+            {
+                anno = RedrawAnnotation(chart, data); // existing annotation will be deleted in RedrawAnnotation
+            }
+            
             return (area, anno);
         }
 
@@ -434,6 +438,11 @@ namespace New_Tradegy.Library.Trackers
             }
 
             string annotation = AnnotationText(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
+
+            if(annotation == null) //?
+            {
+                int a = 1;
+            }
 
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 

@@ -170,11 +170,14 @@ namespace New_Tradegy.Library.Trackers.Charting
 
             foreach (var stock in withBookBid)
             {
-                if (currentCol + 1 >= nCol) // go to next row if no space
+                if (currentRow + 1 > nRow) // If row is full, move to next chart/bookbid column pair
                 {
-                    currentCol = 2;
-                    currentRow++;
+                    currentCol += 2;
+                    currentRow = 0;
                 }
+
+                if (currentCol + 1 >= nCol) // Safety: no space left
+                    break;
 
                 float x = currentCol * cellWidth;
                 float y = currentRow * cellHeight;
@@ -201,17 +204,19 @@ namespace New_Tradegy.Library.Trackers.Charting
                     }
                 }
 
-                currentCol += 2; // skip bookbid column
+                currentRow++; // Go to next row
             }
+
 
             // === 3. WithoutBookBid: place in any unoccupied cell ===
             foreach (var stock in withoutBookBid)
             {
                 bool placed = false;
-                for (int row = 0; row < nRow && !placed; row++)
+                for (int col = 2; col < nCol && !placed; col++) // skip col 0, 1
                 {
-                    for (int col = 2; col < nCol && !placed; col++) // skip col 0, 1
+                    for (int row = 0; row < nRow && !placed; row++)
                     {
+
                         if (!occupied[col, row])
                         {
                             float x = col * cellWidth;
@@ -232,7 +237,7 @@ namespace New_Tradegy.Library.Trackers.Charting
                                 if (annotation is RectangleAnnotation rect)
                                 {
                                     rect.X = x;
-                                    rect.Y = y + cellHeight;
+                                    rect.Y = y; // + cellHeight;
                                     rect.Width = cellWidth;
                                     rect.Height = 5.155f + 2f;
                                 }

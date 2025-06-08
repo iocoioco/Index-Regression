@@ -139,14 +139,18 @@ namespace New_Tradegy
                 if (g.StockManager.IndexList.Contains(data.Stock))
                 {
                     var area = ChartIndex.UpdateChartArea(chart2, data);
-                    chartAreas.Add(area);
+                    if(area != null)
+                        chartAreas.Add(area);
                 }
                 // General
                 else
                 {
                     var (area, anno) = ChartGeneralRenderer.UpdateChartArea(chart2, data);
-                    chartAreas.Add(area);
-                    annotations.Add(anno);
+                    if(area != null)
+                    {
+                        chartAreas.Add(area);
+                        annotations.Add(anno);
+                    }
                 }
             }
 
@@ -189,6 +193,8 @@ namespace New_Tradegy
                 if (chart2.ChartAreas.IndexOf(areaName) >= 0)
                 {
                     var area = chart2.ChartAreas[areaName];
+                    if (area == null)
+                        continue;
                     area.Position = new ElementPosition(x, y, width, height);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
                 }
@@ -197,6 +203,8 @@ namespace New_Tradegy
                 if (!g.StockManager.IndexList.Contains(stock))
                 {
                     var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
+                    if (annotation == null)
+                        continue;
                     if (annotation is RectangleAnnotation rect)
                     {
                         rect.X = x;
