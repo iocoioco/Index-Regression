@@ -22,7 +22,7 @@ namespace New_Tradegy.Library.Trackers
 
         public static void RemoveChartBlock(Chart chart, string stockName)
         {
-            // 🔸 Remove related series (Name starts with stockName)
+            // Remove related series (Name starts with stockName)
             var seriesToRemove = chart.Series
                 .Where(s => s.ChartArea == stockName || s.Name.StartsWith(stockName + " "))
                 .ToList();
@@ -30,14 +30,7 @@ namespace New_Tradegy.Library.Trackers
             foreach (var s in seriesToRemove)
                 chart.Series.Remove(s);
 
-            // 🔸 Remove related annotation (Name == stockName)
-            var annotationToRemove = chart.Annotations
-                .FirstOrDefault(a => a.Name == stockName);
-
-            if (annotationToRemove != null)
-                chart.Annotations.Remove(annotationToRemove);
-
-            // 🔸 Remove chart area (Name == stockName)
+            // Remove chart area (Name == stockName)
             var area = chart.ChartAreas.FindByName(stockName);
             if (area != null)
                 chart.ChartAreas.Remove(area);

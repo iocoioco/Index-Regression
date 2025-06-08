@@ -24,29 +24,26 @@ namespace New_Tradegy.Library.Trackers
             ChartArea area;
             Annotation anno;
 
+            // Update exiting chartarea
             if (chart.ChartAreas.IndexOf(areaName) >= 0)
             {
                 area = chart.ChartAreas[areaName];
                 UpdateSeries(chart, data);
-                anno = RedrawAnnotation(chart, data);
             }
+            // Generate a new chartarea
             else
             {
-                ChartBasicRenderer.RemoveChartBlock(chart, data.Stock);
-                area = new ChartArea(areaName);
-                chart.ChartAreas.Add(area);
-
-                AddSeries(chart, area, data);
-                anno = RedrawAnnotation(chart, data);
+                ChartBasicRenderer.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
+                area = CreateChartArea(chart, data);
             }
-
+            anno = RedrawAnnotation(chart, data); // existing annotation will be deleted in RedrawAnnotation
             return (area, anno);
-
-
         }
 
-        public static void AddSeries(Chart chart, ChartArea area, StockData data)
+        public static ChartArea CreateChartArea(Chart chart, StockData data)
         {
+            var areaName = data.Stock;
+
             double y_min = 100000;
             double y_max = -100000;
 
@@ -57,10 +54,14 @@ namespace New_Tradegy.Library.Trackers
                 StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
 
             if (data.Api.x[EndNpts - 1, 3] == 0)
-                return;
+                return null;
+
+            var area = new ChartArea(areaName);
+            chart.ChartAreas.Add(area);
 
             bool success = AddSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts, ref y_min, ref y_max);
-            if (!success) return;
+            if (!success)
+                return null;
 
             area.AxisY.LabelStyle.Enabled = false;
             area.AxisY.MajorTickMark.Enabled = false;
@@ -91,6 +92,8 @@ namespace New_Tradegy.Library.Trackers
             {
                 area.BackColor = g.Colors[5];
             }
+
+            return area;
         }
 
         public static void UpdateSeries(Chart chart, StockData o)
@@ -404,6 +407,14 @@ namespace New_Tradegy.Library.Trackers
 
         public static Annotation RedrawAnnotation(Chart chart, StockData data)
         {
+            // If annotation with the name of data.Stock exists, delete it
+            var annoName = data.Stock;
+            var existingAnno = chart.Annotations.FindByName(annoName);
+            if (existingAnno != null)
+            {
+                chart.Annotations.Remove(existingAnno);
+            }
+
             if (chart == null || data == null)
                 return null;
 
@@ -438,9 +449,9 @@ namespace New_Tradegy.Library.Trackers
             }
             // Adjust vertical offset depending on chart
             float yOffset = chart.Name == "chart1" ? 0f : 3f;
-            string areaName = data.Stock;
+
             Annotation anno = AnnotationAddRectangleWithText(chart, annotation,
-                new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), areaName, Color.Black, BackColor);
+                new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), annoName, Color.Black, BackColor);
 
             return anno;
         }
@@ -465,7 +476,7 @@ namespace New_Tradegy.Library.Trackers
             stock_title += stock.Length >= 5 ? stock.Substring(0, 5) : stock;
 
             var groupTitle = g.GroupManager.FindGroupByStock(stock); // group title
-            stock_title += groupTitle == null ? "%" : " "; 
+            stock_title += groupTitle == null ? "%" : " ";
             stock_title += Math.Round(o.Post.종거천 / 10.0) + "  " +
                            (o.Post.푀누천 / 10.0).ToString("F1") + "  " +
                            (o.Post.외누천 / 10.0).ToString("F1") + "  " +
@@ -623,7 +634,7 @@ namespace New_Tradegy.Library.Trackers
             return sb.ToString();
         }
 
-        
+
         // no use : modified by Sensei
         //public static void ClearUnusedChartAreasAndAnnotations(Chart chart, List<string> activeStocks)
         //{

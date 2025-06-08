@@ -9,6 +9,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Trackers.Charting;
 
 namespace New_Tradegy.Library
 {
@@ -22,8 +23,10 @@ namespace New_Tradegy.Library
         //public static DataGridView ActiveBookBid;
 
         //public static ChartIndex ChartIndex;
-        public static ChartGeneral ChartGeneral1;
-        public static ChartGeneral ChartGeneral2;
+
+        public static BookBidManager BookBidManager;
+        public static ChartMainRenderer ChartMainRenderer;
+        
         public static ChartManager ChartManager;
 
         public static StockManager StockManager;

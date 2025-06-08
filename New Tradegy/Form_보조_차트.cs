@@ -21,8 +21,6 @@ namespace New_Tradegy
         public static List<string> displayList = new List<string>();
         private DataTable dtb;
 
-       
-
         public Form_보조_차트()
         {
             InitializeComponent();
@@ -36,15 +34,6 @@ namespace New_Tradegy
             };
             this.Controls.Add(titleBar);
 
-            //// Add the DataGridView to the custom title bar
-            //DataGridView dgv = new DataGridView
-            //{
-            //    Dock = DockStyle.Fill,
-            //    ColumnCount = 3
-            //};
-            //dgv.Columns[0].Name = "상관";
-            //dgv.Columns[1].Name = "보유";
-            //dgv.Columns[2].Name = "그순";
 
             titleBar.Controls.Add(dataGridView1); // Add DataGridView to the title bar
 
@@ -52,12 +41,12 @@ namespace New_Tradegy
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
         {
-           //  g.chart2 = chart2;
-            
+            //  g.chart2 = chart2;
+
 
             g.ChartManager.SetChart2(chart2);
-            g.ChartGeneral2 = new ChartGeneral();
-            g.ChartGeneral2.Initialize(chart2, this, g.nRow / 2, g.nCol);
+            //g.ChartGeneral2 = new ChartGeneral();
+            //g.ChartGeneral2.Initialize(chart2, this, g.nRow / 2, g.nCol);
 
             // Configure DataGridView appearance
             ConfigureDataGridView();
@@ -122,7 +111,7 @@ namespace New_Tradegy
 
         public void Form_보조_차트_DRAW()
         {
-            
+
             DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title
@@ -131,8 +120,9 @@ namespace New_Tradegy
             // Determine grid layout based on the number of displayList
             SetGridDimensions();
 
-            
 
+            var chartAreas = new List<ChartArea>();
+            var annotations = new List<Annotation>();
             for (int i = 0; i < nRow * nCol; i++)
             {
                 if (i >= displayList.Count)
@@ -144,36 +134,19 @@ namespace New_Tradegy
                 {
                     continue;
                 }
-
-                List <ChartArea> chartAreas = new List<ChartArea>();
-
-
-                if (!ChartHandler.ChartAreaExists(g.ChartManager.Chart2, stock) || data.Misc.ShrinkDraw || g.test)
-          
+                // Index
+                if (g.StockManager.IndexList.Contains(data.Stock))
                 {
-                    if (g.StockManager.IndexList.Contains(data.Stock))
-                    {
-                        var area = ChartIndex.UpdateChartArea(chart2, data);
-                        chartAreas.Add(area);
-                    }
-                    else
-                    {
-                        var(area, anno) = ChartGeneralRenderer.UpdateChartArea(chart2, data);
-                    }
-
+                    var area = ChartIndex.UpdateChartArea(chart2, data);
+                    chartAreas.Add(area);
                 }
+                // General
                 else
                 {
-                    if (g.StockManager.IndexList.Contains(data.Stock))
-                    {
-                        ChartIndex.UpdateSeries(chart2, data);
-                    }
-                    else
-                    {
-                        ChartGeneralRenderer.UpdateSeries(chart2, data);
-                    }
+                    var (area, anno) = ChartGeneralRenderer.UpdateChartArea(chart2, data);
+                    chartAreas.Add(area);
+                    annotations.Add(anno);
                 }
-
             }
 
             RelocateChart2AreasAndAnnotations();
@@ -193,123 +166,46 @@ namespace New_Tradegy
             int totalAreas = Math.Min(displayList.Count, nRow * nCol);
             float cellWidth = 100.0F / nCol; // Width percentage per column
             float cellHeight = 100.0F / nRow; // Height percentage per row
-      
+
             for (int i = 0; i < totalAreas; i++)
             {
                 string stock = displayList[i];
                 string areaName = stock;
 
-                // Calculate row and column
-                int row = i % nRow;
-                int col = i / nRow;
+                int row = i / nCol;
+                int col = i % nCol;
 
-                // Calculate chart area position
-                float x = col * cellWidth;
-                float y = row * cellHeight;
+                float x = col * (100f / nCol);
+                float y = row * (100f / nRow);
+                float width = 100f / nCol;
+                float height = 100f / nRow;
 
-                // Relocate the ChartArea
+                // Move chart area
                 if (chart2.ChartAreas.IndexOf(areaName) >= 0)
                 {
-                    var chartArea = chart2.ChartAreas[areaName];
-                    if (areaName.Contains("KODEX"))
-                    {
-                        chartArea.Position = new ElementPosition(
-                        x,    // X position 20
-                        y,   // Y position
-                        cellWidth,          // Width
-                        cellHeight); //cellHeight       // Height
-                    }
-                    else
-                    {
-                        chartArea.Position = new ElementPosition(
-                        x,    // X position 20
-                        y + 5.155F,   // Y position
-                        cellWidth,          // Width
-                        cellHeight - 5.155F); //cellHeight       // Height
-                    }
+                    var area = chart2.ChartAreas[areaName];
+                    area.Position = new ElementPosition(x, y, width, height);
+                    area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+                }
 
-                    // Set InnerPlotPosition for plot area
-                    chartArea.InnerPlotPosition = new ElementPosition(
-                        5, // Leave a 10% margin on the left
-                        10, // Leave a 10% margin at the top
-                        75, // Use 80% of the ChartArea's width for the plot
-                        80  // Use 80% of the ChartArea's height for the plot
-                    );
-
-                    // Adjust corresponding Annotation's position (independently)
-                    Annotation annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
-                    if (annotation is RectangleAnnotation rectangleAnnotation)
+                // Move annotation (only if it's not an index stock)
+                if (!g.StockManager.IndexList.Contains(stock))
+                {
+                    var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
+                    if (annotation is RectangleAnnotation rect)
                     {
-                        rectangleAnnotation.X = chartArea.Position.X; // Match the ChartArea's X
-                        rectangleAnnotation.Y = row * cellHeight; //chartArea.Position.Y; // Place annotation slightly above ChartArea
-                        rectangleAnnotation.Width = chartArea.Position.Width; // Match ChartArea's width
-                        rectangleAnnotation.Height = 5.155 + 2; // Annotation height (adjust as needed)
+                        rect.X = x;
+                        rect.Y = y + height; // place directly below chart
+                        rect.Width = width;
+                        rect.Height = 5.155f + 2f;
                     }
                 }
             }
+
             chart2.Invalidate(); // Redraw the chart
         }
 
-        public void RelocateChart2AreasAndAnnotations_old()
-        {
-            int totalAreas = Math.Min(displayList.Count, nRow * nCol);
-            double cellWidth = 100.0 / nCol; // Width percentage per column
-            double cellHeight = 100.0 / nRow; // Height percentage per row
-            float annotationHeight = 5.155F;
-            for (int i = 0; i < totalAreas; i++)
-            {
-                string stock = displayList[i];
-                string areaName = stock;
-
-                // Calculate row and column
-                int row = i % nRow;
-                int col = i / nRow;
-
-                // Calculate chart area position
-                double x = col * cellWidth;
-                double y = row * cellHeight;
-
-
-                // Relocate the ChartArea
-                if (chart2.ChartAreas.IndexOf(areaName) >= 0)
-                {
-                    var chartArea = chart2.ChartAreas[areaName];
-                    if (areaName.Contains("KODEX"))
-                    {
-                        chartArea.Position = new ElementPosition((float)x, (float)(y),
-                        (float)cellWidth, (float)(cellHeight));
-                    }
-                    else
-                    {
-                        var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
-
-                        if (annotation != null)
-                        {
-                            // Explicitly cast to TextAnnotation
-                            if (annotation is TextAnnotation textAnnotation)
-                            {
-                                string text = textAnnotation.Text; // Now safe to access Text
-                                annotationHeight = text.Split('\n').Length - 1 + 1;
-
-                                annotation.X = x;
-                                annotation.Y = y;
-                                annotation.Width = 20;
-                                //annotation.Height = annotationHeight;
-
-                                chartArea.Position = new ElementPosition((float)x, (float)(y + annotationHeight),
-                                        (float)cellWidth, (float)(cellHeight - annotationHeight));
-                            }
-                        }
-
-                        chartArea.Position = new ElementPosition((float)x, (float)(y + annotationHeight),
-                        (float)cellWidth, (float)(cellHeight - annotationHeight));
-                    }
-
-                    chartArea.InnerPlotPosition = new ElementPosition(5, 3, 55, 87);
-                }
-            }
-            chart2.Invalidate(); // Redraw the chart
-        }
+        
 
         // 상관, 보유, 그순, 관심, 닥올, 피올, 절친, 푀손
         public static void DisplayListGivenDisplayMode(string MainChartDisplayMode, List<string> displayList, string clickedStock, string clickedTitle)
@@ -493,8 +389,8 @@ namespace New_Tradegy
         private void chart2_MouseClick(object sender, MouseEventArgs e)
         {
             string selection = "";
-            
-       
+
+
             int row_id = 0, col_id = 0;
 
             //chart2_info(e, ref selection, ref xval, ref yval, ref row_percentage,

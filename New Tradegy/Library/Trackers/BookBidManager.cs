@@ -16,11 +16,11 @@ namespace New_Tradegy.Library.Trackers
     {
         private readonly Dictionary<string, BookBidGenerator> _jpMap = new Dictionary<string, BookBidGenerator>();
         private readonly Dictionary<string, DataGridView> _gridMap = new Dictionary<string, DataGridView>();
-        private readonly ChartGridLayout _layout;
+         
 
-        public BookBidManager(ChartGridLayout layout)
+        public BookBidManager( )
         {
-            _layout = layout;
+             
         }
 
         public DataGridView GetOrCreate(string stock, int row, int col)
@@ -89,7 +89,34 @@ namespace New_Tradegy.Library.Trackers
 
             _gridMap.Clear();
             _jpMap.Clear();
-            _layout.Reset();
+            
+        }
+
+        public void CleanupAllExcept(IEnumerable<string> keepStocks)
+        {
+            var keepSet = new HashSet<string>(keepStocks);
+
+            foreach (var stock in _gridMap.Keys.ToList())
+            {
+                if (!keepSet.Contains(stock))
+                    Remove(stock);
+            }
+        }
+
+        public void Relocate(string stock)
+        {
+            if (_gridMap.TryGetValue(stock, out var grid))
+            {
+                // Determine row/col from chart layout
+                if (g.ChartManager.Chart1.ChartAreas.IndexOf(stock) is int index && index >= 0)
+                {
+                    int nCol = g.nCol;
+                    int row = index / nCol;
+                    int col = index % nCol;
+
+                    grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);
+                }
+            }
         }
     }
 }

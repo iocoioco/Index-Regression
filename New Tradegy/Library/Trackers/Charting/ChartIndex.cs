@@ -17,74 +17,44 @@ namespace New_Tradegy.Library.Trackers
         //How to call
         //ChartIndex.UpdateIndexChart(g.chart1);
         //ChartIndex.UpdateIndexChart(g.chart2, isChart1: false);
-        public static void UpdateChart(Chart chart, bool isChart1 = true, bool includeIndex = true)
+        public static ChartArea UpdateChartArea(Chart chart, StockData data)
         {
-            if (!includeIndex) return; // e.g., chart2 might not have index
+            string areaName = data.Stock;
+            ChartArea area;
 
-            var indexStocks = new[] { "KODEX 레버리지", "KODEX 코스닥150레버리지" };
-            int nRow = g.nRow;
-            int nCol = isChart1 ? g.nCol : 5;
-
-            for (int i = 0; i < indexStocks.Length; i++)
+            if (chart.ChartAreas.IndexOf(areaName) >= 0)
             {
-                string stock = indexStocks[i];
-                var data = g.StockRepository.TryGetStockOrNull(stock);
-                if (data == null) continue;
-
-                bool shouldUpdateSeries = ChartHandler.ChartAreaExists(chart, stock) &&
-                    g.MarketeyeCount % g.MarketeyeCountDivicer != 1 &&
-                    g.connected && !g.test && !data.Misc.ShrinkDraw;
-
-                
-                if (shouldUpdateSeries)
-                    UpdateSeries(chart, data);
-                else
-                {
-
-                    
-                    UpdateChartArea(chart, data);
-                }
-                    
-
-                if (isChart1 && g.connected && !Utils.FormUtils.DoesDataGridViewExist(Utils.FormUtils.FindFormByName("Form1"), stock))
-                {
-                    var b = new BookBidGenerator();
-                    var bookbid = b.GenerateBookBidView(stock);
-                    bookbid.Height = g.DgvCellHeight * 12;
-
-                    int x = (g.screenWidth / nCol) + 10;
-                    int y = (g.screenHeight / nRow) * (i == 0 ? 0 : 2) - 4 * (i == 0 ? 0 : 2);
-                    bookbid.Location = new Point(x, y);
-                }
+                area = chart.ChartAreas[areaName];
+                UpdateSeries(chart, data);
             }
-
-            chart.Invalidate();
+            // Generate a new chartarea
+            else
+            {
+                ChartBasicRenderer.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
+  
+                area = CreateChartArea(chart, data);
+            }
+            return area;
         }
 
-        public static ChartArea UpdateChartArea(Chart chart, StockData data)
+        public static ChartArea CreateChartArea(Chart chart, StockData data)
         {
             string stock = data.Stock;
             string chartname = chart.Name; //?
             if (data.Api.nrow <= 1)
                 return null;
 
-  
+
             // Determine Start and End Row
             int start = g.Npts[0];
             int end = g.test ? Math.Min(g.Npts[1], data.Api.nrow) : data.Api.nrow;
             if (data.Misc.ShrinkDraw)
                 start = Math.Max(end - g.NptsForShrinkDraw, g.Npts[0]);
 
-            // Create ChartArea and Removes default "ChartArea1"
-            chart.ChartAreas.Remove(chart.ChartAreas.FindByName("ChartArea1"));
-
-
-
-            ChartBasicRenderer.RemoveChartBlock(chart, stock);
 
             ChartArea area = new ChartArea(stock);
 
-           
+
             chart.ChartAreas.Add(area);
 
             int ymin = int.MaxValue, ymax = int.MinValue;
@@ -244,7 +214,7 @@ namespace New_Tradegy.Library.Trackers
             // Placeholder: you can move your US index interpolation logic here
             return data.Api.x[k, id];
         }
-        
+
         private static void Magnifier(string stock, int id, ref double magnifier)
         {
             int i = -1;
