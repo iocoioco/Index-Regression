@@ -33,10 +33,11 @@ namespace New_Tradegy.Library.Trackers.Charting
 
             const int MaxChartSlots = 24; // Or dynamically from nRow * 8
             var withBookBid = holdings
-                .Concat(interestedWithBid)
-                .Distinct()
-                .Take(MaxChartSlots / 2)
-                .ToList();
+    .Concat(interestedWithBid)
+    .Distinct()
+    .Where(stock => !g.StockManager.IndexList.Contains(stock)) // Exclude index stocks
+    .Take(MaxChartSlots / 2)
+    .ToList();
 
             int usedSlots = withBookBid.Count * 2;
             int remainingSlots = MaxChartSlots - usedSlots;

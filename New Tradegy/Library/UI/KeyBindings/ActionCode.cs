@@ -37,6 +37,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         public void Run()
         {
+            // no need to used Clear 
             if (Clear)
             {
             }
