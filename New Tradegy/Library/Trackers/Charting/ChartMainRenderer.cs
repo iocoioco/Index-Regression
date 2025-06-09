@@ -78,6 +78,7 @@ namespace New_Tradegy.Library.Trackers.Charting
 
                 if (withBookBid.Contains(stock) || indexList.Contains(stock))
                 {
+                    //? does not work ?
                     int row = -1, col = -1;
                     if (stock == indexList[0])
                     {
@@ -198,7 +199,7 @@ namespace New_Tradegy.Library.Trackers.Charting
                     if (annotation is RectangleAnnotation rect)
                     {
                         rect.X = x;
-                        rect.Y = y + cellHeight;
+                        rect.Y = y; // + cellHeight;
                         rect.Width = cellWidth;
                         rect.Height = 5.155f + 2f;
                     }

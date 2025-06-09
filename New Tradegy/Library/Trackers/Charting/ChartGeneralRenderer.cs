@@ -73,10 +73,11 @@ namespace New_Tradegy.Library.Trackers
             area.AxisY.MajorGrid.Enabled = false;
             area.AxisY.MinorGrid.Enabled = false;
 
-            area.InnerPlotPosition = new ElementPosition(20, 5, 55, 100);
-            double padding = (y_max - y_min) * 0.05;
-            area.AxisY.Minimum = y_min - padding;
-            area.AxisY.Maximum = y_max + padding * 1.5;
+            //area.Position = new ElementPosition(20, 5, 55, 60); // outer chart area
+            area.InnerPlotPosition = new ElementPosition(20, 5, 55, 80);
+            double padding = (y_max - y_min) * 0.1; // was 0.05
+            area.AxisY.Minimum = y_min - 0.0 * padding; // was 1.0
+            area.AxisY.Maximum = y_max + 2.5 * padding; // was 1.5
 
             int TotalNumberPoint = EndNpts - StartNpts;
             area.AxisX.LabelStyle.Enabled = true;
