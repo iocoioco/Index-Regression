@@ -42,14 +42,14 @@ namespace New_Tradegy.Library.Listeners
                 }
 
 
-                if (wk.isWorkingHour())
-                {
+                //?if (wk.isWorkingHour())
+                //{
                     // Trigger the marketeye alarm task
                     await SoundUtils.MarketTimeAlarmsAsync(HHmm);
 
                     // Call marketeye logic
                     await DownloadBatchAsync();
-                }
+                //?}
 
                 // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
                 await Task.Delay(300);

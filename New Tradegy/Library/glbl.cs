@@ -74,17 +74,17 @@ namespace New_Tradegy.Library
 
         // DgvControl
 
-        public class dgvClass
-        {
-            public DataTable dtb;
-            public DataGridView dgv;
-            public TradePanelRenderer TradeRenderer;
-            public GroupPanelRenderer GroupRenderer;
-            public ControlPanelRenderer ControlRenderer;
-        }
-        public static dgvClass 매매 = new dgvClass();
-        public static dgvClass 그룹 = new dgvClass();
-        public static dgvClass 제어 = new dgvClass();
+        //public class dgvClass
+        //{
+        //    public DataTable dtb;
+        //    public DataGridView dgv;
+        //    public TradePane TradeRenderer;
+        //    public GroupPane GroupRenderer;
+        //    public ControlPane ControlRenderer;
+        //}
+        //public static dgvClass 매매 = new dgvClass();
+        //public static dgvClass 그룹 = new dgvClass();
+        //public static dgvClass 제어 = new dgvClass();
 
         // APIControl
         public static bool connected = false; // Daishin API connected or not

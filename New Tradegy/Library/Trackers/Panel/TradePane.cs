@@ -10,12 +10,12 @@ using New_Tradegy.Library.Deals;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public class TradePanelRenderer
+    public class TradePane
     {
         private readonly DataGridView _view;
         private readonly DataTable _table;
 
-        public TradePanelRenderer(DataGridView view, DataTable table)
+        public TradePane(DataGridView view, DataTable table)
         {
             _view = view;
             _table = table;
@@ -79,7 +79,7 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-        // call TradePanelRenderer.Initialize(this); in the MainForm
+        // call TradePane.Initialize(this); in the MainForm
         public static void SetupAndAttachTradePanel(Control container)
         {
             var dgv = new DataGridView
@@ -122,7 +122,7 @@ namespace New_Tradegy.Library.Trackers
             g.매매.dgv = dgv;
             g.매매.dtb = dtb;
 
-            g.매매.TradeRenderer = new TradePanelRenderer(dgv, dtb);
+            g.매매.TradeRenderer = new TradePane(dgv, dtb);
     
 
            
@@ -176,5 +176,22 @@ namespace New_Tradegy.Library.Trackers
             _view.Rows[row].DefaultCellStyle.BackColor = Color.FromArgb(red, green, 255);
             o.Deal.전수익률 = o.Deal.수익률;
         }
+
+        public void SetCellValue(int row, int col, object value)
+        {
+            _table.Rows[row][col] = value;
+        }
+
+        public object GetCellValue(int row, int col)
+        {
+            return _table.Rows[row][col];
+        }
+
+        public bool HasRows()
+        {
+            return _table != null && _table.Rows.Count > 0;
+        }
     }
+
+
 }

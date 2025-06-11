@@ -9,7 +9,7 @@ using New_Tradegy.Library.UI.KeyBindings;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public class GroupPanelRenderer
+    public class GroupPane
     {
         private DataGridView _view;
         private DataTable _table;
@@ -84,8 +84,8 @@ namespace New_Tradegy.Library.Trackers
 
         public static void Initialize(DataGridView dgv)
         {
-            g.그룹.GroupRenderer = new GroupPanelRenderer();
-            g.그룹.GroupRenderer.BindGrid(dgv, g.GroupManager.GroupRankingList);
+            var pane = new GroupPane();
+            pane.BindGrid(dgv, g.GroupManager.GroupRankingList);
         }
 
         public void Update(List<GroupData> updatedGroups)
@@ -124,6 +124,22 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
+        public void SetCellValue(int row, int col, object value)
+        {
+            _table.Rows[row][col] = value;
+        }
+
+        public object GetCellValue(int row, int col)
+        {
+            return _table.Rows[row][col];
+        }
+
+        public bool HasRows()
+        {
+            return _table != null && _table.Rows.Count > 0;
+        }
     }
+
+}
 
 }

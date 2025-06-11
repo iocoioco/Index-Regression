@@ -33,7 +33,7 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         public DataGridView GenerateBookBidView(string stock)
         {
-            if (g.test)
+            if (!g.connected)
                 return null;
 
             _stock = stock;

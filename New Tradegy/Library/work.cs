@@ -15,6 +15,7 @@ using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.UI.KeyBindings;
+using New_Tradegy.Library.Trackers;
 
 namespace New_Tradegy.Library
 {
@@ -95,7 +96,12 @@ namespace New_Tradegy.Library
             // MOD info date modification
             int month_1 = g.date % 10000 / 100;
             int day_1 = g.date % 10000 % 100;
-            g.제어.dtb.Rows[0][0] = month_1.ToString() + "/" + day_1.ToString();
+            string date = month_1.ToString() + "/" + day_1.ToString();
+
+            var pane = new ControlPane();
+            if(pane.GetCellValue(0, 0) != date)
+                pane.SetCellValue(0, 0, date);
+
             RankLogic.EvalStock(); // date backwards forwards
             ActionCode.New(true, false, eval: true, draw: 'B').Run();
         }

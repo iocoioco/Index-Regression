@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.PostProcessing;
+using New_Tradegy.Library.Trackers;
 
 namespace New_Tradegy.Library.Core
 {
@@ -252,10 +253,11 @@ namespace New_Tradegy.Library.Core
                 }
 
                 string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllDatas.Count()}";
-                if (g.제어.dtb.Rows[1][1].ToString() != newValue)
-                {
-                    g.제어.dtb.Rows[1][1] = newValue;
-                }
+                
+
+                var pane = new ControlPane();
+                if(pane.GetCellValue(1,1) != newValue)
+                    pane.SetCellValue(1, 1, newValue);
             }
 
             EvalGroup(); // re-evaluate groups after stock ranking
@@ -428,7 +430,8 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            g.그룹.GroupRenderer?.Update(g.GroupManager.GroupRankingList);
+            var pane = new GroupPane();
+            pane?.Update(g.GroupManager.GroupRankingList);
         }
 
     }

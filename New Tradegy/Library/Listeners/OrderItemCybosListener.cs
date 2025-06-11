@@ -174,7 +174,8 @@ namespace New_Tradegy.Library.Listeners
                     ActionCode.New(true, false, eval: true, draw: 'B').Run();
                 }
 
-                g.매매.TradeRenderer?.Update(); // ? -> if g.매매.Renderer assigned
+                var pane = new TradePane();
+                pane?.Update(); // ? -> if g.매매.Renderer assigned
             }
             catch (Exception ex)
             {

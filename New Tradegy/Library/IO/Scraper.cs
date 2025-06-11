@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections;
+using New_Tradegy.Library.Trackers;
 
 namespace New_Tradegy.Library.IO
 {
@@ -118,10 +119,9 @@ namespace New_Tradegy.Library.IO
 
                             if (float.TryParse(priceString, out float usdKrw))
                             {
-                                if (g.제어.dtb.Rows[1][1].ToString() != usdKrw.ToString())
-                                {
-                                    g.제어.dtb.Rows[1][1] = usdKrw.ToString();
-                                }
+                                var pane = new ControlPane();
+                                if (pane.GetCellValue(1, 1) != usdKrw.ToString())
+                                    pane.SetCellValue(1, 1, usdKrw.ToString());
                             }
                             else
                             {
@@ -192,10 +192,10 @@ namespace New_Tradegy.Library.IO
 
                             if (float.TryParse(priceString, out float usdKrw))
                             {
-                                if (g.제어.dtb.Rows[1][1].ToString() != usdKrw.ToString())
-                                {
-                                    g.제어.dtb.Rows[1][1] = usdKrw.ToString();
-                                }
+
+                                var pane = new ControlPane();
+                                if (pane.GetCellValue(1, 1) != usdKrw.ToString())
+                                    pane.SetCellValue(1, 1, usdKrw.ToString());
                             }
                             else
                             {
@@ -253,9 +253,11 @@ namespace New_Tradegy.Library.IO
                             Console.WriteLine("Extracted price string: " + priceString); // Log extracted price string
                             if (float.TryParse(priceString, out float usdKrw))
                             {
-                                if (g.제어.dtb.Rows[1][1].ToString() != usdKrw.ToString())
+
+                                var pane = new ControlPane();
+                                if (pane.GetCellValue(1, 1) != usdKrw.ToString())
                                 {
-                                    g.제어.dtb.Rows[1][1] = usdKrw.ToString();
+                                    pane.SetCellValue(1, 1, usdKrw.ToString());
                                 }
                             }
                             else
@@ -338,14 +340,13 @@ namespace New_Tradegy.Library.IO
                         MajorIndex.Instance.NasdaqIndex = Nasdaq_지수;
 
                     // Update the global data table
-                    if (g.제어.dtb.Rows[1][2].ToString() != MajorIndex.Instance.NasdaqIndex.ToString())
-                    {
-                        g.제어.dtb.Rows[1][2] = MajorIndex.Instance.NasdaqIndex.ToString();
-                    }
-                    if (g.제어.dtb.Rows[1][3].ToString() != MajorIndex.Instance.Snp500Index.ToString())
-                    {
-                        g.제어.dtb.Rows[1][3] = MajorIndex.Instance.Snp500Index.ToString();
-                    }
+                    var pane = new ControlPane();
+                    if (pane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
+                        pane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString());
+                    if (pane.GetCellValue(1, 3) != MajorIndex.Instance.Snp500Index.ToString())
+                        pane.SetCellValue(1, 3, MajorIndex.Instance.Snp500Index.ToString());
+
+
 
                     DateTime date = DateTime.Now;
                     int HHmm = Convert.ToInt32(date.ToString("HHmm"));
@@ -388,7 +389,7 @@ namespace New_Tradegy.Library.IO
                 {
                     continue;
                 }
-        
+
                 int time_befr_6int = data.Api.x[data.Api.nrow - 1, 0];
                 bool append;
 
@@ -475,24 +476,23 @@ namespace New_Tradegy.Library.IO
                 float.TryParse(t, out 대만가권);
 
                 // Update global data table
-                if (g.제어.dtb.Rows[2][0].ToString() != MajorIndex.Instance.ShanghaiIndex.ToString())
+                var pane = new ControlPane();
+                if (pane.GetCellValue(2, 0) != MajorIndex.Instance.ShanghaiIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][0] = MajorIndex.Instance.ShanghaiIndex.ToString();
+                    pane.SetCellValue(2, 0, MajorIndex.Instance.ShanghaiIndex.ToString())
                 }
 
-                if (g.제어.dtb.Rows[2][1].ToString() != MajorIndex.Instance.HangSengIndex.ToString())
+                if (pane.GetCellValue(2, 1) != MajorIndex.Instance.HangSengIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][1] = MajorIndex.Instance.HangSengIndex.ToString();
+                    pane.SetCellValue(2, 1, MajorIndex.Instance.HangSengIndex.ToString());
                 }
-
-                if (g.제어.dtb.Rows[2][2].ToString() != MajorIndex.Instance.NikkeiIndex.ToString())
+                if (pane.GetCellValue(2, 2) != MajorIndex.Instance.NikkeiIndex.ToString())
                 {
-                    g.제어.dtb.Rows[2][2] = MajorIndex.Instance.NikkeiIndex.ToString();
+                    pane.SetCellValue(2, 2, MajorIndex.Instance.NikkeiIndex.ToString());
                 }
-
-                if (g.제어.dtb.Rows[2][3].ToString() != 대만가권.ToString())
+                if (pane.GetCellValue(2, 3) != 대만가권.ToString())
                 {
-                    g.제어.dtb.Rows[2][3] = 대만가권.ToString();
+                    pane.SetCellValue(2, 3, 대만가권.ToString());
                 }
 
                 // Wait for 30 seconds before the next iteration
@@ -545,10 +545,9 @@ namespace New_Tradegy.Library.IO
                 float.TryParse(t, out bitcoin);
 
                 // Update global data table
-                if (g.제어.dtb.Rows[3][1].ToString() != bitcoin.ToString())
-                {
-                    g.제어.dtb.Rows[3][1] = bitcoin.ToString();
-                }
+                var pane = new ControlPane();
+                if(pane.GetCellValue(3, 1) != bitcoin.ToString())
+                    pane.SetCellValue(3, 1, bitcoin.ToString());
 
                 // Wait for 12 seconds before the next iteration
                 await Task.Delay(12000);  // Non-blocking delay

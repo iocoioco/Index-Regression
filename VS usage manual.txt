@@ -1,5 +1,5 @@
 ﻿To open the same file in two places:
-	Open the file (e.g., GroupPanelRenderer.cs)
+	Open the file (e.g., GroupPane.cs)
 	Go to the top menu:
 	Window → New Window
 	Drag the new tab to the right

@@ -10,10 +10,10 @@ using New_Tradegy.Library.Deals;
 
 namespace New_Tradegy.Library.Trackers
 {
-    public class ControlPanelRenderer
+    public class ControlPane
     {
         // to assign value to a cell
-        // var panel = new ControlPanelRenderer();
+        // var panel = new ControlPane();
         // DataTable table = manager._table;
         // _table.Rows[rowIndex][columnIndex] = value;
         private class ControlSetting
@@ -31,13 +31,13 @@ namespace New_Tradegy.Library.Trackers
         private readonly Dictionary<string, ControlSetting> Settings = new Dictionary<string, ControlSetting>();
 
         // usage
-        // ControlPanelRenderer.SetupAndAttachControlPanel(this);
+        // ControlPane.SetupAndAttachControlPanel(this);
         public static void SetupAndAttachControlPanel(Form containerForm)
         {
             DataGridView dgv = new DataGridView();
             containerForm.Controls.Add(dgv);
             Initialize(dgv);
-            ControlPanelRenderer renderer = new ControlPanelRenderer();
+            ControlPane renderer = new ControlPane();
             renderer.BindGrid(dgv);
         }
 
@@ -51,7 +51,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.종가기준추정거래액이상_천만원 = val * 10;
-                    g.제어.dtb.Rows[5][1] = val;
+                    _table.Rows[5][1] = val;
                 }
             };
 
@@ -63,7 +63,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.종가기준추정거래액이상_천만원 = val * 10;
-                    g.제어.dtb.Rows[5][1] = val;
+                    _table.Rows[5][1] = val;
                 }
             };
 
@@ -75,7 +75,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.분당거래액이상_천만원 = val;
-                    g.제어.dtb.Rows[5][3] = val;
+                    _table.Rows[5][3] = val;
                 }
             };
 
@@ -87,7 +87,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.호가거래액_백만원 = val;
-                    g.제어.dtb.Rows[6][1] = val;
+                    _table.Rows[6][1] = val;
                 }
             };
 
@@ -99,7 +99,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.편차이상 = val;
-                    g.제어.dtb.Rows[6][3] = val;
+                    _table.Rows[6][3] = val;
                 }
             };
 
@@ -111,7 +111,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.배차이상 = val;
-                    g.제어.dtb.Rows[7][1] = val;
+                    _table.Rows[7][1] = val;
                 }
             };
 
@@ -123,7 +123,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.시총이상 = val;
-                    g.제어.dtb.Rows[7][3] = val;
+                    _table.Rows[7][3] = val;
                 }
             };
 
@@ -135,7 +135,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.수급과장배수 = val;
-                    g.제어.dtb.Rows[8][1] = val;
+                    _table.Rows[8][1] = val;
                 }
             };
 
@@ -147,7 +147,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.배수과장배수 = val;
-                    g.제어.dtb.Rows[8][3] = val;
+                    _table.Rows[8][3] = val;
                 }
             };
 
@@ -159,7 +159,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.MarketeyeCountDivicer = val;
-                    g.제어.dtb.Rows[9][1] = val;
+                    _table.Rows[9][1] = val;
                 }
             };
 
@@ -171,7 +171,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.MarketeyeCountDivicer = val;
-                    g.제어.dtb.Rows[9][3] = val;
+                    _table.Rows[9][3] = val;
                 }
             };
             
@@ -183,7 +183,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.font = val / 2f;
-                    g.제어.dtb.Rows[10][1] = val;
+                    _table.Rows[10][1] = val;
                 }
             };
 
@@ -195,7 +195,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.푀플 = val;
-                    g.제어.dtb.Rows[12][1] = val.ToString();
+                    _table.Rows[12][1] = val.ToString();
                 }
             };
 
@@ -207,7 +207,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.v.배플 = val;
-                    g.제어.dtb.Rows[12][3] = val.ToString();
+                    _table.Rows[12][3] = val.ToString();
                 }
             };
 
@@ -219,7 +219,7 @@ namespace New_Tradegy.Library.Trackers
                 Set = val =>
                 {
                     g.LineWidth = val;
-                    g.제어.dtb.Rows[13][1] = val;
+                    _table.Rows[13][1] = val;
                 }
             };
         }
@@ -239,93 +239,93 @@ namespace New_Tradegy.Library.Trackers
 
             int Rows = 15, Columns = 4;
 
-            g.제어.dtb = new DataTable();
-            g.제어.dtb.Columns.Add("0");
-            g.제어.dtb.Columns.Add("1");
-            g.제어.dtb.Columns.Add("2");
-            g.제어.dtb.Columns.Add("3");
+            _table = new DataTable();
+            _table.Columns.Add("0");
+            _table.Columns.Add("1");
+            _table.Columns.Add("2");
+            _table.Columns.Add("3");
             for (int i = 0; i < Rows; i++)
             {
-                g.제어.dtb.Rows.Add("", "", "", "");
+                _table.Rows.Add("", "", "", "");
             }
 
             // Row 0
             int month = g.date % 10000 / 100;
             int day = g.date % 10000 % 100;
             g.일회거래액 = 0;
-            g.제어.dtb.Rows[0][0] = month.ToString() + "/" + day.ToString();
-            //g.제어.dtb.Rows[0][1] = g.v.key_string;
-            g.제어.dtb.Rows[0][2] = g.일회거래액;
-            g.제어.dtb.Rows[0][3] = g.예치금;
+            _table.Rows[0][0] = month.ToString() + "/" + day.ToString();
+            //_table.Rows[0][1] = g.v.key_string;
+            _table.Rows[0][2] = g.일회거래액;
+            _table.Rows[0][3] = g.예치금;
 
             // Row 1
-            g.제어.dtb.Rows[1][0] = 0;
-            g.제어.dtb.Rows[1][1] = 0; // (int)usd_krw; 
-            g.제어.dtb.Rows[1][2] = 0;
-            g.제어.dtb.Rows[1][3] = 0;
+            _table.Rows[1][0] = 0;
+            _table.Rows[1][1] = 0; // (int)usd_krw; 
+            _table.Rows[1][2] = 0;
+            _table.Rows[1][3] = 0;
 
             // Row 2
-            g.제어.dtb.Rows[2][0] = ""; //상해
-            g.제어.dtb.Rows[2][1] = ""; // 홍콩
-            g.제어.dtb.Rows[2][2] = ""; // 니케이
-            g.제어.dtb.Rows[2][2] = ""; // 대만가권
+            _table.Rows[2][0] = ""; //상해
+            _table.Rows[2][1] = ""; // 홍콩
+            _table.Rows[2][2] = ""; // 니케이
+            _table.Rows[2][2] = ""; // 대만가권
 
 
             // Row 4
-            g.제어.dtb.Rows[4][0] = "adv";
-            g.제어.dtb.Rows[4][1] = g.v.q_advance_lines;
+            _table.Rows[4][0] = "adv";
+            _table.Rows[4][1] = g.v.q_advance_lines;
 
 
             // Row 5
-            g.제어.dtb.Rows[5][0] = "종거";
-            g.제어.dtb.Rows[5][1] = 100; g.v.종가기준추정거래액이상_천만원 = 100;
-            g.제어.dtb.Rows[5][2] = "분거";
-            g.제어.dtb.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
+            _table.Rows[5][0] = "종거";
+            _table.Rows[5][1] = 100; g.v.종가기준추정거래액이상_천만원 = 100;
+            _table.Rows[5][2] = "분거";
+            _table.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
 
 
             // Row 6
-            g.제어.dtb.Rows[6][0] = "호가";
-            g.제어.dtb.Rows[6][1] = 10; g.v.호가거래액_백만원 = 10; // not active for g.tesing
-            g.제어.dtb.Rows[6][2] = "편차";
-            g.제어.dtb.Rows[6][3] = 1; g.v.편차이상 = 1;
+            _table.Rows[6][0] = "호가";
+            _table.Rows[6][1] = 10; g.v.호가거래액_백만원 = 10; // not active for g.tesing
+            _table.Rows[6][2] = "편차";
+            _table.Rows[6][3] = 1; g.v.편차이상 = 1;
 
             // Row 7
-            g.제어.dtb.Rows[7][0] = "배차";
-            g.제어.dtb.Rows[7][1] = 0; g.v.배차이상 = 0; // defined, but not used
-            g.제어.dtb.Rows[7][2] = "시총";
-            g.제어.dtb.Rows[7][3] = 0; g.v.시총이상 = 0;
+            _table.Rows[7][0] = "배차";
+            _table.Rows[7][1] = 0; g.v.배차이상 = 0; // defined, but not used
+            _table.Rows[7][2] = "시총";
+            _table.Rows[7][3] = 0; g.v.시총이상 = 0;
 
             // Row 8
-            g.제어.dtb.Rows[8][0] = "수과";
-            g.제어.dtb.Rows[8][1] = 20; g.v.수급과장배수 = 20;
-            g.제어.dtb.Rows[8][2] = "배과";
-            g.제어.dtb.Rows[8][3] = 1; g.v.배수과장배수 = 1;
+            _table.Rows[8][0] = "수과";
+            _table.Rows[8][1] = 20; g.v.수급과장배수 = 20;
+            _table.Rows[8][2] = "배과";
+            _table.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
             // Row 9
-            g.제어.dtb.Rows[9][0] = "평가";
-            g.제어.dtb.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
-            g.제어.dtb.Rows[9][2] = "초간";
-            g.제어.dtb.Rows[9][3] = 30; g.postInterval = 30;
+            _table.Rows[9][0] = "평가";
+            _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
+            _table.Rows[9][2] = "초간";
+            _table.Rows[9][3] = 30; g.postInterval = 30;
 
             // Row 10
-            g.제어.dtb.Rows[10][0] = "Main";
-            g.제어.dtb.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0F;
+            _table.Rows[10][0] = "Main";
+            _table.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0F;
             
             // Row 12
-            g.제어.dtb.Rows[12][0] = "푀플";
-            g.제어.dtb.Rows[12][1] = "1"; g.v.푀플 = 1;
-            g.제어.dtb.Rows[12][2] = "배플";
-            g.제어.dtb.Rows[12][3] = "1"; g.v.배플 = 1;
+            _table.Rows[12][0] = "푀플";
+            _table.Rows[12][1] = "1"; g.v.푀플 = 1;
+            _table.Rows[12][2] = "배플";
+            _table.Rows[12][3] = "1"; g.v.배플 = 1;
 
             // Row 13
-            g.제어.dtb.Rows[13][0] = "선폭";
-            g.제어.dtb.Rows[13][1] = 2; g.LineWidth = 2;
+            _table.Rows[13][0] = "선폭";
+            _table.Rows[13][1] = 2; g.LineWidth = 2;
 
 
             g.제어.dgv = new DataGridView();
             dgv = g.제어.dgv;
 
-            dgv.DataSource = g.제어.dtb;
+            dgv.DataSource = _table;
             dgv.ReadOnly = true;
             dgv.ColumnHeadersVisible = false;
             dgv.RowHeadersVisible = false;
@@ -409,7 +409,7 @@ namespace New_Tradegy.Library.Trackers
                         {
                             g.v.q_advance_lines += 5;
                         }
-                        g.제어.dtb.Rows[4][1] = g.v.q_advance_lines;
+                        _table.Rows[4][1] = g.v.q_advance_lines;
                         break;
                 }
             }
@@ -491,5 +491,19 @@ namespace New_Tradegy.Library.Trackers
                 dgv.FirstDisplayedScrollingRowIndex = 0;
         }
 
+        public void SetCellValue(int row, int col, object value)
+        {
+            _table.Rows[row][col] = value;
+        }
+
+        public object GetCellValue(int row, int col)
+        {
+            return _table.Rows[row][col];
+        }
+
+        public bool HasRows()
+        {
+            return _table != null && _table.Rows.Count > 0;
+        }
     }
 }

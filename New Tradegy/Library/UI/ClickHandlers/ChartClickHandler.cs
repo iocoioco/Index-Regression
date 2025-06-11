@@ -9,6 +9,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Deals;
 using New_Tradegy.Library.Listeners;
+using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.PostProcessing;
 using New_Tradegy.Library.Trackers.Charting;
 using New_Tradegy.Library.UI.KeyBindings;
@@ -239,10 +240,12 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     int month = g.date % 10000 / 100;
                     int day = g.date % 100;
                     string newValue = month + "/" + day;
-                    if (g.제어.dtb.Rows[0][0].ToString() != newValue)
-                    {
-                        g.제어.dtb.Rows[0][0] = newValue;
-                    }
+
+                        var pane = new ControlPane();
+                        if (pane.GetCellValue(0, 0) != newValue)
+                            pane.SetCellValue(0, 0, newValue);
+
+                   
                 }
                 else
                 {

@@ -168,9 +168,9 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             
             this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
-            ControlPanelRenderer.SetupAndAttachControlPanel(this);
-            TradePanelRenderer.SetupAndAttachTradePanel(this);
-            GroupPanelRenderer.SetupAndAttachGroupPanel(this);
+            ControlPane.SetupAndAttachControlPanel(this);
+            TradePane.SetupAndAttachTradePanel(this);
+            GroupPane.SetupAndAttachGroupPanel(this);
 
             // use Panel in RankLogic
             RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
