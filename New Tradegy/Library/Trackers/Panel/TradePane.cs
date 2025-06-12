@@ -15,13 +15,18 @@ namespace New_Tradegy.Library.Trackers
         private readonly DataGridView _view;
         private readonly DataTable _table;
 
-        public TradePane(DataGridView view, DataTable table)
+        public TradePane(Form containerForm)
         {
+            var dgv = new DataGridView();
+            containerForm.Controls.Add(dgv);
+
+            Initialize(dgv);
+
             _view = view;
             _table = table;
 
-            _view.CellFormatting += Dgv_CellFormatting;
-            _view.CellMouseClick += Dgv_CellMouseClick;
+            _view.CellFormatting += CellFormatting;
+            _view.CellMouseClick += CellMouseClick;
         }
 
         public void Update()
@@ -80,7 +85,7 @@ namespace New_Tradegy.Library.Trackers
         }
 
         // call TradePane.Initialize(this); in the MainForm
-        public static void SetupAndAttachTradePanel(Control container)
+        public static void Setup(Control container)
         {
             var dgv = new DataGridView
             {
@@ -133,7 +138,7 @@ namespace New_Tradegy.Library.Trackers
             dgv.Columns[3].Width = (int)(dgv.Width * 0.35);
         }
 
-        private static void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private static void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right) return;
 
@@ -145,7 +150,7 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-        private static void Dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private static void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             g.매매.dgv.Rows[0].DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
         }
@@ -176,6 +181,8 @@ namespace New_Tradegy.Library.Trackers
             _view.Rows[row].DefaultCellStyle.BackColor = Color.FromArgb(red, green, 255);
             o.Deal.전수익률 = o.Deal.수익률;
         }
+
+
 
         public void SetCellValue(int row, int col, object value)
         {

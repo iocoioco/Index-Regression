@@ -94,35 +94,6 @@ namespace New_Tradegy.Library.Core
                         continue;
                     PostProcessor.post(data);
 
-                    //data.Pass.previousPriceHigh = int.MinValue;
-                    //data.Pass.previousPriceLow = null;
-                    //data.Pass.priceStatus = 0;
-                    //data.Pass.previousProgramHigh = int.MinValue;
-                    //data.Pass.previousProgramLow = null;
-                    //data.Pass.programStatus = 0;
-                    //data.Pass.monthStatus = 0;
-                    //data.Pass.quarterStatus = 0;
-                    //data.Pass.halfStatus = 0;
-                    //data.Pass.yearStatus = 0;
-
-
-                    //int check_row = 0;
-                    //check_row = g.Npts[1] - 1;
-                    //if (check_row > data.Api.nrow - 1)
-                    //    check_row = data.Api.nrow - 1;
-
-                    //for (int j = 1; j <= check_row; j++)
-                    //{
-                    //    if (j == check_row)
-                    //    {
-                    //        PostProcessor.PostPassing(data, j, true); // eval_stock -> test
-                    //    }
-                    //    else
-                    //    {
-                    //        PostProcessor.PostPassing(data, j, false); // eval_stock -> test
-                    //    }
-                    //}
-
                 }
             }
 
@@ -163,7 +134,7 @@ namespace New_Tradegy.Library.Core
                             if (stat.시장구분 == 'S')
                                 resultList.Add((stat.시총, data.Stock));
                             break;
-
+                            
                         case "닥올":
                             if (stat.시장구분 == 'D')
                                 resultList.Add((stat.시총, data.Stock));

@@ -425,9 +425,9 @@ namespace New_Tradegy.Library.Trackers
 
             // Remove old annotation
             string annotationName = data.Stock;
-            var old_annotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
-            if (old_annotation != null)
-                chart.Annotations.Remove(old_annotation);
+            var previousAnnotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
+            if (previousAnnotation != null)
+                chart.Annotations.Remove(previousAnnotation);
 
             // Determine range for annotation based on shrink setting
             int StartNpts = g.Npts[0];

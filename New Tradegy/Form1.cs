@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Trackers.Charting;
+using System.Data;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
@@ -168,9 +169,23 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             
             this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
-            ControlPane.SetupAndAttachControlPanel(this);
-            TradePane.SetupAndAttachTradePanel(this);
-            GroupPane.SetupAndAttachGroupPanel(this);
+
+            var controlDgv = new DataGridView();
+            this.Controls.Add(controlDgv); // ✅ added to Form
+            var controlDtb = new DataTable();
+            var controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
+
+            var groupDgv = new DataGridView();
+            this.Controls.Add(groupDgv); // ✅ added to Form
+            var groupDtb = new DataTable();
+            var groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+
+            var tradeDgv = new DataGridView();
+            this.Controls.Add(tradeDgv); // ✅ added to Form
+            var tradeDtb = new DataTable();
+            var tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
+
+
 
             // use Panel in RankLogic
             RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds

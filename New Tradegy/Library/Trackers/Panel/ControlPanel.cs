@@ -1,4 +1,4 @@
-﻿using NLog.Layouts;
+﻿using New_Tradegy.Library.Deals;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using New_Tradegy.Library.Deals;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -30,15 +29,45 @@ namespace New_Tradegy.Library.Trackers
 
         private readonly Dictionary<string, ControlSetting> Settings = new Dictionary<string, ControlSetting>();
 
-        // usage
-        // ControlPane.SetupAndAttachControlPanel(this);
-        public static void SetupAndAttachControlPanel(Form containerForm)
+        public ControlPane(DataGridView dgv, DataTable dtb)
         {
-            DataGridView dgv = new DataGridView();
-            containerForm.Controls.Add(dgv);
-            Initialize(dgv);
-            ControlPane renderer = new ControlPane();
-            renderer.BindGrid(dgv);
+            _table = dtb;
+            _view = dgv;
+            dgv.DataSource = _table;
+            BindGrid(dgv);
+            // Optionally store dgv for formatting, event handling, etc.
+        }
+
+        private void InitializeDgv(DataGridView dgv)
+        {
+            int width = g.screenWidth / g.nCol - 20;
+            int height = g.DgvCellHeight * 3;
+            int x = g.screenWidth / g.nCol + 10;
+            int y = g.screenHeight / 3 + 2;
+
+            dgv.Location = new Point(x, y);
+            dgv.Size = new Size(width, height);
+
+            dgv.ColumnHeadersVisible = false;
+            dgv.RowHeadersVisible = false;
+            dgv.ReadOnly = true;
+            dgv.ScrollBars = ScrollBars.Vertical;
+            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgv.AllowUserToResizeColumns = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.Dock = DockStyle.Fill;
+            dgv.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            dgv.RowTemplate.Height = g.DgvCellHeight;
+            dgv.ForeColor = Color.Black;
+            dgv.TabStop = false;
+
+            // Optional: You may also want to scroll to top
+            if (dgv.Rows.Count > 0)
+                dgv.FirstDisplayedScrollingRowIndex = 0;
         }
 
         public void InitializeSettings()
@@ -174,7 +203,7 @@ namespace New_Tradegy.Library.Trackers
                     _table.Rows[9][3] = val;
                 }
             };
-            
+
             Settings["Main"] = new ControlSetting
             {
                 Name = "Main",
@@ -213,7 +242,7 @@ namespace New_Tradegy.Library.Trackers
 
             Settings["선폭"] = new ControlSetting
             {
-                Name = "가격",
+                Name = "선폭",
                 Values = new[] { 1, 2, 3 },
                 Get = () => g.LineWidth,
                 Set = val =>
@@ -230,102 +259,58 @@ namespace New_Tradegy.Library.Trackers
                 InitializeSettings();
 
             _view = dgv;
-            _table = new DataTable();
-
-            _table.Columns.Add("0");
-            _table.Columns.Add("1");
-            _table.Columns.Add("2");
-            _table.Columns.Add("3");
 
             int Rows = 15, Columns = 4;
-
             _table = new DataTable();
-            _table.Columns.Add("0");
-            _table.Columns.Add("1");
-            _table.Columns.Add("2");
-            _table.Columns.Add("3");
-            for (int i = 0; i < Rows; i++)
-            {
-                _table.Rows.Add("", "", "", "");
-            }
+            for (int i = 0; i < Columns; i++)
+                _table.Columns.Add(i.ToString());
 
-            // Row 0
+            for (int i = 0; i < Rows; i++)
+                _table.Rows.Add("", "", "", "");
+
+            // Initialize key rows
             int month = g.date % 10000 / 100;
-            int day = g.date % 10000 % 100;
+            int day = g.date % 100;
             g.일회거래액 = 0;
-            _table.Rows[0][0] = month.ToString() + "/" + day.ToString();
-            //_table.Rows[0][1] = g.v.key_string;
+            _table.Rows[0][0] = $"{month}/{day}";
             _table.Rows[0][2] = g.일회거래액;
             _table.Rows[0][3] = g.예치금;
 
-            // Row 1
             _table.Rows[1][0] = 0;
-            _table.Rows[1][1] = 0; // (int)usd_krw; 
+            _table.Rows[1][1] = 0;
             _table.Rows[1][2] = 0;
             _table.Rows[1][3] = 0;
 
-            // Row 2
-            _table.Rows[2][0] = ""; //상해
-            _table.Rows[2][1] = ""; // 홍콩
-            _table.Rows[2][2] = ""; // 니케이
-            _table.Rows[2][2] = ""; // 대만가권
-
-
-            // Row 4
+            // Row 2–13 configuration
             _table.Rows[4][0] = "adv";
             _table.Rows[4][1] = g.v.q_advance_lines;
 
+            _table.Rows[5][0] = "종거"; _table.Rows[5][1] = 100; g.v.종가기준추정거래액이상_천만원 = 100;
+            _table.Rows[5][2] = "분거"; _table.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
 
-            // Row 5
-            _table.Rows[5][0] = "종거";
-            _table.Rows[5][1] = 100; g.v.종가기준추정거래액이상_천만원 = 100;
-            _table.Rows[5][2] = "분거";
-            _table.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
+            _table.Rows[6][0] = "호가"; _table.Rows[6][1] = 10; g.v.호가거래액_백만원 = 10;
+            _table.Rows[6][2] = "편차"; _table.Rows[6][3] = 1; g.v.편차이상 = 1;
 
+            _table.Rows[7][0] = "배차"; _table.Rows[7][1] = 0; g.v.배차이상 = 0;
+            _table.Rows[7][2] = "시총"; _table.Rows[7][3] = 0; g.v.시총이상 = 0;
 
-            // Row 6
-            _table.Rows[6][0] = "호가";
-            _table.Rows[6][1] = 10; g.v.호가거래액_백만원 = 10; // not active for g.tesing
-            _table.Rows[6][2] = "편차";
-            _table.Rows[6][3] = 1; g.v.편차이상 = 1;
+            _table.Rows[8][0] = "수과"; _table.Rows[8][1] = 20; g.v.수급과장배수 = 20;
+            _table.Rows[8][2] = "배과"; _table.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
-            // Row 7
-            _table.Rows[7][0] = "배차";
-            _table.Rows[7][1] = 0; g.v.배차이상 = 0; // defined, but not used
-            _table.Rows[7][2] = "시총";
-            _table.Rows[7][3] = 0; g.v.시총이상 = 0;
+            _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
+            _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30; g.postInterval = 30;
 
-            // Row 8
-            _table.Rows[8][0] = "수과";
-            _table.Rows[8][1] = 20; g.v.수급과장배수 = 20;
-            _table.Rows[8][2] = "배과";
-            _table.Rows[8][3] = 1; g.v.배수과장배수 = 1;
+            _table.Rows[10][0] = "Main"; _table.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0f;
 
-            // Row 9
-            _table.Rows[9][0] = "평가";
-            _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
-            _table.Rows[9][2] = "초간";
-            _table.Rows[9][3] = 30; g.postInterval = 30;
+            _table.Rows[12][0] = "푀플"; _table.Rows[12][1] = "1"; g.v.푀플 = 1;
+            _table.Rows[12][2] = "배플"; _table.Rows[12][3] = "1"; g.v.배플 = 1;
 
-            // Row 10
-            _table.Rows[10][0] = "Main";
-            _table.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0F;
-            
-            // Row 12
-            _table.Rows[12][0] = "푀플";
-            _table.Rows[12][1] = "1"; g.v.푀플 = 1;
-            _table.Rows[12][2] = "배플";
-            _table.Rows[12][3] = "1"; g.v.배플 = 1;
+            _table.Rows[13][0] = "선폭"; _table.Rows[13][1] = 2; g.LineWidth = 2;
 
-            // Row 13
-            _table.Rows[13][0] = "선폭";
-            _table.Rows[13][1] = 2; g.LineWidth = 2;
-
-
-            g.제어.dgv = new DataGridView();
-            dgv = g.제어.dgv;
-
+            // Bind to DataGridView
             dgv.DataSource = _table;
+
+            // Appearance
             dgv.ReadOnly = true;
             dgv.ColumnHeadersVisible = false;
             dgv.RowHeadersVisible = false;
@@ -334,23 +319,24 @@ namespace New_Tradegy.Library.Trackers
             dgv.AllowUserToResizeColumns = false;
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
+            dgv.ScrollBars = ScrollBars.Vertical;
 
-            dgv.CellMouseClick += Dgv_CellMouseClick;
+            dgv.CellMouseClick += CellMouseClick;
 
-            if (g.제어.dgv.Columns.Count < Columns)
+            // Ensure correct column count (if bound from existing table)
+            if (dgv.Columns.Count < Columns)
             {
-                for (int i = g.제어.dgv.Columns.Count; i < Columns; i++)
-                    g.제어.dgv.Columns.Add(i.ToString(), i.ToString());
+                for (int i = dgv.Columns.Count; i < Columns; i++)
+                    dgv.Columns.Add(i.ToString(), i.ToString());
             }
 
+            // Set column widths
+            int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
             for (int i = 0; i < Columns; i++)
-            {
-                int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
-                g.제어.dgv.Columns[i].Width = (g.screenWidth / (11) - scrollbarWidth) / 4;
-            }
+                dgv.Columns[i].Width = (g.screenWidth / 11 - scrollbarWidth) / Columns;
         }
 
-        private void Dgv_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex < 0 || (e.ColumnIndex > 3)) return;
 
@@ -459,37 +445,7 @@ namespace New_Tradegy.Library.Trackers
             return current;
         }
 
-        public static void Initialize(DataGridView dgv)
-        {
-            int width = g.screenWidth / g.nCol - 20;
-            int height = g.DgvCellHeight * 3;
-            int x = g.screenWidth / g.nCol + 10;
-            int y = g.screenHeight / 3 + 2;
 
-            dgv.Location = new Point(x, y);
-            dgv.Size = new Size(width, height);
-
-            dgv.ColumnHeadersVisible = false;
-            dgv.RowHeadersVisible = false;
-            dgv.ReadOnly = true;
-            dgv.ScrollBars = ScrollBars.Vertical;
-            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            dgv.AllowUserToResizeColumns = false;
-            dgv.AllowUserToResizeRows = false;
-            dgv.AllowUserToAddRows = false;
-            dgv.AllowUserToDeleteRows = false;
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Dock = DockStyle.None;
-            dgv.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.DgvCellHeight;
-            dgv.ForeColor = Color.Black;
-            dgv.TabStop = false;
-
-            // Optional: You may also want to scroll to top
-            if (dgv.Rows.Count > 0)
-                dgv.FirstDisplayedScrollingRowIndex = 0;
-        }
 
         public void SetCellValue(int row, int col, object value)
         {

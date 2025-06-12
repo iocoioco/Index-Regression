@@ -15,12 +15,15 @@ namespace New_Tradegy.Library.Trackers
         private DataTable _table;
         private List<GroupData> _groups;
 
-        public static void SetupAndAttachGroupPanel(Form containerForm)
+        public static void Setup(Form containerForm)
         {
             var dgv = new DataGridView();
             containerForm.Controls.Add(dgv);
-            Initialize(dgv);
+
+            var pane = new GroupPane();
+            pane.BindGrid(dgv, g.GroupManager.GroupRankingList);
         }
+
 
         public void BindGrid(DataGridView view, List<GroupData> groups)
         {
@@ -55,10 +58,10 @@ namespace New_Tradegy.Library.Trackers
                 _view.Columns[i].Width = colWidth;
             }
 
-            _view.CellMouseClick += HandleCellMouseClick;
+            _view.CellMouseClick += CellMouseClick;
         }
 
-        private void HandleCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= _groups.Count) return;
 
@@ -80,12 +83,6 @@ namespace New_Tradegy.Library.Trackers
                 string url = $"http://google.com/search?q={title} 주식 뉴스 &tbs=qdr:d";
                 Process.Start(url);
             }
-        }
-
-        public static void Initialize(DataGridView dgv)
-        {
-            var pane = new GroupPane();
-            pane.BindGrid(dgv, g.GroupManager.GroupRankingList);
         }
 
         public void Update(List<GroupData> updatedGroups)
@@ -123,6 +120,8 @@ namespace New_Tradegy.Library.Trackers
                 _view.ResumeLayout();
             }
         }
+
+
 
         public void SetCellValue(int row, int col, object value)
         {

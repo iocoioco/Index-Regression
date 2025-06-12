@@ -228,7 +228,7 @@ namespace New_Tradegy.Library
         {
             public string MainChartDisplayMode = "푀분";
             public string SubChartDisplayMode = "그순";
-            public string old_MainChartDisplayMode = "푀분";
+            public string PreviousMainChartDisplayMode = "푀분";
 
             public int 분당거래액이상_천만원; // in setting 10
             public int 호가거래액_백만원; // in setting 10
