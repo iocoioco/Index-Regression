@@ -29,6 +29,76 @@ namespace New_Tradegy.Library.Trackers
             _view.CellMouseClick += CellMouseClick;
         }
 
+        public TradePane(DataGridView dgv, DataTable dtb)
+        {
+            _table = dtb;
+            _view = dgv;
+            dgv.DataSource = _table;
+            InitializeDgv(dgv);
+            BindGrid(dgv); // has InitializeSetting()
+        }
+
+        private void InitializeDgv(DataGridView dgv, int width, int height)
+        {
+            int fontSize = 10;
+
+            dgv.Location = new Point(0, 0);
+            dgv.Size = new Size(width, height);
+
+            dgv.DataError += (s, f) => wr.DataGridView_DataError(s, f, "매매 dgv");
+            dgv.DataSource = g.제어.dtb;
+            dgv.ColumnHeadersVisible = false;
+            dgv.RowHeadersVisible = false;
+
+            dgv.ReadOnly = true;
+            dgv.DefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
+            dgv.RowTemplate.Height = g.formSize.ch - 1;
+            dgv.ForeColor = Color.Black;
+
+            dgv.ScrollBars = ScrollBars.None;
+            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgv.AllowUserToResizeColumns = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+
+            dgv.Dock = DockStyle.Fill;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.TabIndex = 1;
+
+            dgv.CellFormatting += new DataGridViewCellFormattingEventHandler(매매_CellFormatting);
+            dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(매매_CellMouseClick);
+            dgv.KeyPress += 매매_KeyPress;
+        }
+
+        private void BindGrid(DataGridView dgv)
+        {
+            // Setup columns
+            _table.Columns.Clear();
+            _table.Columns.Add("0"); // stock
+            _table.Columns.Add("1"); // 매수/매도
+            _table.Columns.Add("2"); // 가격
+            _table.Columns.Add("3"); // 거래진행
+
+            // Add rows
+            int Rows = 10; // or configurable
+            for (int j = 0; j < Rows; j++)
+                _table.Rows.Add("", "", "", "");
+
+            // Bind table to DataGridView
+            dgv.DataSource = _table;
+
+            // Optional: column widths
+            dgv.Columns[0].Width = (int)(dgv.Width * 0.20); // stock
+            dgv.Columns[1].Width = (int)(dgv.Width * 0.20); // 매수/매도
+            dgv.Columns[2].Width = (int)(dgv.Width * 0.25); // 가격
+            dgv.Columns[3].Width = (int)(dgv.Width * 0.35); // 거래진행
+
+            dgv.Visible = true;
+        }
+
+
         public void Update()
         {
             lock (OrderItemTracker.orderLock)
@@ -84,71 +154,64 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-        // call TradePane.Initialize(this); in the MainForm
-        public static void Setup(Control container)
+
+
+        private void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var dgv = new DataGridView
+            if (e.Button == MouseButtons.Right || e.RowIndex < 0 || e.RowIndex >= _view.Rows.Count)
+                return; // Ignore right-clicks or invalid rows
+
+            string stock = _view.Rows[e.RowIndex].Cells[0].Value?.ToString();
+            if (string.IsNullOrEmpty(stock)) return;
+
+            switch (e.ColumnIndex)
             {
-                ColumnHeadersVisible = false,
-                RowHeadersVisible = false,
-                ReadOnly = true,
-                ScrollBars = ScrollBars.None,
-                Dock = DockStyle.Fill,
-                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None,
-                AllowUserToResizeColumns = false,
-                AllowUserToResizeRows = false,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Font = new Font("Arial", 8, FontStyle.Bold),
-                    ForeColor = Color.Black
-                }
-            };
+                case 1: // 체결중 주문 취소
+                    if (g.test) return;
 
-            dgv.RowTemplate.Height = g.DgvCellHeight - 1;
-            dgv.Size = new Size(g.screenWidth / g.nCol - SystemInformation.VerticalScrollBarWidth - 3, g.DgvCellHeight * 10 - 7);
-            dgv.Location = new Point(g.screenWidth / g.rqwey_nCol + 10, g.screenHeight / 3 + g.DgvCellHeight * 3 + 3);
+                    if (e.RowIndex < g.m_mapOrder.Count)
+                    {
+                        dl.DealCancelRowIndex(e.RowIndex); // cancel order
+                        ms.Sound("Keys", "cancel");
+                    }
+                    break;
 
-            var dtb = new DataTable();
-            dtb.Columns.Add("0");
-            dtb.Columns.Add("1");
-            dtb.Columns.Add("2");
-            dtb.Columns.Add("3");
-            for (int i = 0; i < 11; i++)
-                dtb.Rows.Add("", "", "", "");
+                case 2: // 매도
+                    if (g.test) return;
 
-            dgv.DataSource = dtb;
+                    {
+                        string buySell = "매도";
+                        int 거래가격 = hg.HogaGetValue(stock, 0, 1); // 0: 매도호가 라인, 1: 컬럼
 
-            container.Controls.Add(dgv);
-            dgv.Visible = true;
+                        int Urgency = 100;
+                        if (g.optimumTrading)
+                        {
+                            Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
+                        }
 
-            g.매매.dgv = dgv;
-            g.매매.dtb = dtb;
+                        dl.deal_sett(stock, buySell, 거래가격, Urgency);
+                    }
+                    break;
 
-            g.매매.TradeRenderer = new TradePane(dgv, dtb);
-    
+                case 3: // 매수
+                    if (g.test) return;
 
-           
+                    {
+                        string buySell = "매수";
+                        int 거래가격 = hg.HogaGetValue(stock, -1, 1); // -1: 매수호가 라인, 1: 컬럼
 
-            dgv.Columns[0].Width = (int)(dgv.Width * 0.20);
-            dgv.Columns[1].Width = (int)(dgv.Width * 0.20);
-            dgv.Columns[2].Width = (int)(dgv.Width * 0.25);
-            dgv.Columns[3].Width = (int)(dgv.Width * 0.35);
-        }
+                        int Urgency = 100;
+                        if (g.optimumTrading)
+                        {
+                            Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
+                        }
 
-        private static void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right) return;
-
-            string stock = g.매매.dgv.Rows[e.RowIndex].Cells[0].Value.ToString();
-            if (e.ColumnIndex == 1 && g.connected && e.RowIndex < OrderItemTracker.OrderMap.Count())
-            {
-                DealManager.DealCancelRowIndex(e.RowIndex);
-                Utils.SoundUtils.Sound("Keys", "cancel");
+                        dl.deal_sett(stock, buySell, 거래가격, Urgency);
+                    }
+                    break;
             }
         }
+
 
         private static void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {

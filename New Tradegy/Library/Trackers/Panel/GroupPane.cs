@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.UI.KeyBindings;
+using New_Tradegy.Library.Core;
 
 namespace New_Tradegy.Library.Trackers
 {
@@ -15,51 +16,80 @@ namespace New_Tradegy.Library.Trackers
         private DataTable _table;
         private List<GroupData> _groups;
 
-        public static void Setup(Form containerForm)
+        public GroupPane(DataGridView dgv, DataTable dtb)
         {
-            var dgv = new DataGridView();
-            containerForm.Controls.Add(dgv);
-
-            var pane = new GroupPane();
-            pane.BindGrid(dgv, g.GroupManager.GroupRankingList);
+            _table = dtb;
+            _view = dgv;
+            dgv.DataSource = _table;
+            _groups = g.GroupManager.GetAll();
+            InitializeDgv(dgv);
+            BindGrid(dgv); // has InitializeSetting()
         }
 
 
-        public void BindGrid(DataGridView view, List<GroupData> groups)
+        private void InitializeDgv(DataGridView dgv)
         {
-            _view = view;
-            _groups = groups;
+            int width = g.screenWidth / g.nCol - 20;
+            int height = g.DgvCellHeight * 3;
+            int x = g.screenWidth / g.nCol + 10;
+            int y = g.screenHeight / 3 + 2;
 
-            _table = new DataTable();
-            _table.Columns.Add("총점");
-            _table.Columns.Add("푀분");
-            _table.Columns.Add("가증");
+            dgv.Location = new Point(x, y);
+            dgv.Size = new Size(width, height);
 
-            foreach (var g in groups)
-            {
-                _table.Rows.Add(Math.Round(g.TotalScore, 2), Math.Round(g.푀분, 2), Math.Round(g.가증, 2));
-            }
+            dgv.ColumnHeadersVisible = false;
+            dgv.RowHeadersVisible = false;
+            dgv.ReadOnly = true;
 
-            _view.DataSource = _table;
-            _view.RowTemplate.Height = g.DgvCellHeight;
-            _view.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            _view.ColumnHeadersVisible = false;
-            _view.RowHeadersVisible = false;
-            _view.AllowUserToAddRows = false;
-            _view.AllowUserToDeleteRows = false;
-            _view.AllowUserToResizeColumns = false;
-            _view.AllowUserToResizeRows = false;
-            _view.ScrollBars = ScrollBars.Vertical;
-            _view.Dock = DockStyle.Fill;
+            dgv.ScrollBars = g.test ? ScrollBars.Vertical : ScrollBars.None;
+            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgv.AllowUserToResizeColumns = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
 
-            int colWidth = _view.Width / 3 - 6;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.Dock = DockStyle.Fill;
+            dgv.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
+            dgv.RowTemplate.Height = g.formSize.ch;
+            dgv.ForeColor = Color.Black;
+            dgv.TabStop = false;
+
+            dgv.CellFormatting += 그룹_CellFormatting;
+            dgv.CellMouseClick += 그룹_CellMouseClick;
+            dgv.KeyPress += 그룹_KeyPress;
+
+            if (dgv.Rows.Count > 0)
+                dgv.FirstDisplayedScrollingRowIndex = 0;
+        }
+
+        private void BindGrid(DataGridView dgv)
+        {
+            _table.Clear();
+            _table.Columns.Clear();
+
+            // Columns: "0", "1", "2"
+            for (int i = 0; i < 3; i++)
+                _table.Columns.Add(i.ToString());
+
+            // Determine row count based on mode
+            int rows = g.test ? 9 : _groups.Count;
+
+            // Add blank rows
+            for (int j = 0; j < rows; j++)
+                _table.Rows.Add("", "", "");
+
+            // Adjust column widths based on test mode
             for (int i = 0; i < 3; i++)
             {
-                _view.Columns[i].Width = colWidth;
+                if (g.test)
+                    dgv.Columns[i].Width = this._view.Width / 3 - 10;
+                else
+                    dgv.Columns[i].Width = this._view.Width / 3 - 6;
             }
-
-            _view.CellMouseClick += CellMouseClick;
         }
+
 
         private void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -87,25 +117,34 @@ namespace New_Tradegy.Library.Trackers
 
         public void Update(List<GroupData> updatedGroups)
         {
-            if (_view == null || _table == null) return;
+            if (_view == null || _table == null || updatedGroups == null)
+                return;
 
             _view.SuspendLayout();
 
             try
             {
-                for (int i = 0; i < updatedGroups.Count && i < _table.Rows.Count; i++)
+                int rowCount = Math.Min(updatedGroups.Count, _table.Rows.Count);
+
+                for (int i = 0; i < rowCount; i++)
                 {
                     var group = updatedGroups[i];
 
+                    // Current values in DataTable
                     string currentTitle = _table.Rows[i][0].ToString();
                     string current푀분 = _table.Rows[i][1].ToString();
                     string current총점 = _table.Rows[i][2].ToString();
 
+                    // New values from GroupData
                     string newTitle = group.Title;
-                    string new푀분 = ((int)group.푀분).ToString();
-                    string new총점 = ((int)group.TotalScore).ToString();
+                    string new푀분 = group.푀분.ToString();
+                    string new총점 = group.TotalScore.ToString();
 
-                    bool changed = currentTitle != newTitle || current푀분 != new푀분 || current총점 != new총점;
+                    // Only update if changed
+                    bool changed =
+                        currentTitle != newTitle ||
+                        current푀분 != new푀분 ||
+                        current총점 != new총점;
 
                     if (changed)
                     {
