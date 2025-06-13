@@ -42,8 +42,9 @@ namespace New_Tradegy.Library
 
         // ScreenConfig
 
-        public static int screenHeight; // window height
-        public static int screenWidth; // window width
+        public static int screenWidth = 1920; // window height
+        public static int screenHeight = 1032; // window width
+        public static int cellHeight = 28;
 
         // TradingSettings
 

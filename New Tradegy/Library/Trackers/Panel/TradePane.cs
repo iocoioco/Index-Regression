@@ -8,6 +8,8 @@ using New_Tradegy.Library.Core;
 using System.Linq;
 using New_Tradegy.Library.Deals;
 
+using New_Tradegy.Library.Utils;
+
 namespace New_Tradegy.Library.Trackers
 {
     public class TradePane
@@ -15,19 +17,7 @@ namespace New_Tradegy.Library.Trackers
         private readonly DataGridView _view;
         private readonly DataTable _table;
 
-        public TradePane(Form containerForm)
-        {
-            var dgv = new DataGridView();
-            containerForm.Controls.Add(dgv);
 
-            Initialize(dgv);
-
-            _view = view;
-            _table = table;
-
-            _view.CellFormatting += CellFormatting;
-            _view.CellMouseClick += CellMouseClick;
-        }
 
         public TradePane(DataGridView dgv, DataTable dtb)
         {
@@ -38,22 +28,25 @@ namespace New_Tradegy.Library.Trackers
             BindGrid(dgv); // has InitializeSetting()
         }
 
-        private void InitializeDgv(DataGridView dgv, int width, int height)
+        private void InitializeDgv(DataGridView dgv)
         {
             int fontSize = 10;
+            int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
 
             dgv.Location = new Point(0, 0);
+            int width = g.screenWidth / 10 - scrollbarWidth;
+            int height = g.cellHeight * 9 + 14;
             dgv.Size = new Size(width, height);
 
-            dgv.DataError += (s, f) => wr.DataGridView_DataError(s, f, "매매 dgv");
-            dgv.DataSource = g.제어.dtb;
+             
+            dgv.DataSource = _table;
             dgv.ColumnHeadersVisible = false;
             dgv.RowHeadersVisible = false;
 
             dgv.ReadOnly = true;
             dgv.DefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.formSize.ch - 1;
+            dgv.RowTemplate.Height = g.cellHeight - 1;
             dgv.ForeColor = Color.Black;
 
             dgv.ScrollBars = ScrollBars.None;
@@ -67,9 +60,8 @@ namespace New_Tradegy.Library.Trackers
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.TabIndex = 1;
 
-            dgv.CellFormatting += new DataGridViewCellFormattingEventHandler(매매_CellFormatting);
-            dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(매매_CellMouseClick);
-            dgv.KeyPress += 매매_KeyPress;
+            dgv.CellFormatting += new DataGridViewCellFormattingEventHandler(CellFormatting);
+            dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(CellMouseClick);
         }
 
         private void BindGrid(DataGridView dgv)
@@ -97,7 +89,6 @@ namespace New_Tradegy.Library.Trackers
 
             dgv.Visible = true;
         }
-
 
         public void Update()
         {
@@ -169,10 +160,10 @@ namespace New_Tradegy.Library.Trackers
                 case 1: // 체결중 주문 취소
                     if (g.test) return;
 
-                    if (e.RowIndex < g.m_mapOrder.Count)
+                    if (e.RowIndex < OrderItemTracker.OrderMap.Count)
                     {
-                        dl.DealCancelRowIndex(e.RowIndex); // cancel order
-                        ms.Sound("Keys", "cancel");
+                        DealManager.DealCancelRowIndex(e.RowIndex); // cancel order
+                        SoundUtils.Sound("Keys", "cancel");
                     }
                     break;
 
@@ -189,7 +180,7 @@ namespace New_Tradegy.Library.Trackers
                             Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
                         }
 
-                        dl.deal_sett(stock, buySell, 거래가격, Urgency);
+                        DealManager.deal_sett(stock, buySell, 거래가격, Urgency);
                     }
                     break;
 

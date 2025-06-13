@@ -75,10 +75,9 @@ namespace New_Tradegy.Library.Trackers
             if (Settings.Count == 0)
                 InitializeSettings();
 
-            _view = dgv;
 
             int Rows = 15, Columns = 4;
-            _table = new DataTable();
+
             for (int i = 0; i < Columns; i++)
                 _table.Columns.Add(i.ToString());
 
