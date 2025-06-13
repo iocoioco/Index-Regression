@@ -119,9 +119,9 @@ namespace New_Tradegy.Library.IO
 
                             if (float.TryParse(priceString, out float usdKrw))
                             {
-                                var pane = new ControlPane();
-                                if (pane.GetCellValue(1, 1) != usdKrw.ToString())
-                                    pane.SetCellValue(1, 1, usdKrw.ToString());
+                           
+                                if (g.controlPane.GetCellValue(1, 1) != usdKrw.ToString())
+                                    g.controlPane.SetCellValue(1, 1, usdKrw.ToString());
                             }
                             else
                             {
@@ -192,10 +192,9 @@ namespace New_Tradegy.Library.IO
 
                             if (float.TryParse(priceString, out float usdKrw))
                             {
-
-                                var pane = new ControlPane();
-                                if (pane.GetCellValue(1, 1) != usdKrw.ToString())
-                                    pane.SetCellValue(1, 1, usdKrw.ToString());
+ 
+                                if (g.controlPane.GetCellValue(1, 1) != usdKrw.ToString())
+                                    g.controlPane.SetCellValue(1, 1, usdKrw.ToString());
                             }
                             else
                             {
@@ -254,10 +253,10 @@ namespace New_Tradegy.Library.IO
                             if (float.TryParse(priceString, out float usdKrw))
                             {
 
-                                var pane = new ControlPane();
-                                if (pane.GetCellValue(1, 1) != usdKrw.ToString())
+                         
+                                if (g.controlPane.GetCellValue(1, 1) != usdKrw.ToString())
                                 {
-                                    pane.SetCellValue(1, 1, usdKrw.ToString());
+                                    g.controlPane.SetCellValue(1, 1, usdKrw.ToString());
                                 }
                             }
                             else
@@ -340,11 +339,11 @@ namespace New_Tradegy.Library.IO
                         MajorIndex.Instance.NasdaqIndex = Nasdaq_지수;
 
                     // Update the global data table
-                    var pane = new ControlPane();
-                    if (pane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
-                        pane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString());
-                    if (pane.GetCellValue(1, 3) != MajorIndex.Instance.Snp500Index.ToString())
-                        pane.SetCellValue(1, 3, MajorIndex.Instance.Snp500Index.ToString());
+                 
+                    if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
+                        g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString());
+                    if (g.controlPane.GetCellValue(1, 3) != MajorIndex.Instance.Snp500Index.ToString())
+                        g.controlPane.SetCellValue(1, 3, MajorIndex.Instance.Snp500Index.ToString());
 
 
 
@@ -476,23 +475,23 @@ namespace New_Tradegy.Library.IO
                 float.TryParse(t, out 대만가권);
 
                 // Update global data table
-                var pane = new ControlPane();
-                if (pane.GetCellValue(2, 0) != MajorIndex.Instance.ShanghaiIndex.ToString())
+           
+                if (g.controlPane.GetCellValue(2, 0) != MajorIndex.Instance.ShanghaiIndex.ToString())
                 {
-                    pane.SetCellValue(2, 0, MajorIndex.Instance.ShanghaiIndex.ToString())
+                    g.controlPane.SetCellValue(2, 0, MajorIndex.Instance.ShanghaiIndex.ToString());
                 }
 
-                if (pane.GetCellValue(2, 1) != MajorIndex.Instance.HangSengIndex.ToString())
+                if (g.controlPane.GetCellValue(2, 1) != MajorIndex.Instance.HangSengIndex.ToString())
                 {
-                    pane.SetCellValue(2, 1, MajorIndex.Instance.HangSengIndex.ToString());
+                    g.controlPane.SetCellValue(2, 1, MajorIndex.Instance.HangSengIndex.ToString());
                 }
-                if (pane.GetCellValue(2, 2) != MajorIndex.Instance.NikkeiIndex.ToString())
+                if (g.controlPane.GetCellValue(2, 2) != MajorIndex.Instance.NikkeiIndex.ToString())
                 {
-                    pane.SetCellValue(2, 2, MajorIndex.Instance.NikkeiIndex.ToString());
+                    g.controlPane.SetCellValue(2, 2, MajorIndex.Instance.NikkeiIndex.ToString());
                 }
-                if (pane.GetCellValue(2, 3) != 대만가권.ToString())
+                if (g.controlPane.GetCellValue(2, 3) != 대만가권.ToString())
                 {
-                    pane.SetCellValue(2, 3, 대만가권.ToString());
+                    g.controlPane.SetCellValue(2, 3, 대만가권.ToString());
                 }
 
                 // Wait for 30 seconds before the next iteration
@@ -545,9 +544,9 @@ namespace New_Tradegy.Library.IO
                 float.TryParse(t, out bitcoin);
 
                 // Update global data table
-                var pane = new ControlPane();
-                if(pane.GetCellValue(3, 1) != bitcoin.ToString())
-                    pane.SetCellValue(3, 1, bitcoin.ToString());
+               
+                if(g.controlPane.GetCellValue(3, 1) != bitcoin.ToString())
+                    g.controlPane.SetCellValue(3, 1, bitcoin.ToString());
 
                 // Wait for 12 seconds before the next iteration
                 await Task.Delay(12000);  // Non-blocking delay

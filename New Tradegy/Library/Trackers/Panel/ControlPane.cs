@@ -23,7 +23,6 @@ namespace New_Tradegy.Library.Trackers
             public Action<int> Set { get; set; }
         }
 
-
         private readonly DataTable _table;
         private readonly DataGridView _view;
 
@@ -41,7 +40,7 @@ namespace New_Tradegy.Library.Trackers
         private void InitializeDgv(DataGridView dgv)
         {
             int width = g.screenWidth / g.nCol - 20;
-            int height = g.DgvCellHeight * 3;
+            int height = g.CellHeight * 3;
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
 
@@ -61,7 +60,7 @@ namespace New_Tradegy.Library.Trackers
             dgv.Dock = DockStyle.Fill;
             dgv.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.DgvCellHeight;
+            dgv.RowTemplate.Height = g.CellHeight;
             dgv.ForeColor = Color.Black;
             dgv.TabStop = false;
 
@@ -449,9 +448,9 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[row][col] = value;
         }
 
-        public object GetCellValue(int row, int col)
+        public string GetCellValue(int row, int col)
         {
-            return _table.Rows[row][col];
+            return _table.Rows[row][col]?.ToString() ?? string.Empty;
         }
 
         public bool HasRows()

@@ -20,7 +20,7 @@ namespace New_Tradegy.Library.Listeners
 {
     class BookBidGenerator
     {
-        private CPUTILLib.CpCybos _cybos;
+  
         private CPUTILLib.CpStockCode _stockCodeService = new CPUTILLib.CpStockCode();
         private DSCBO1Lib.StockJpbid _jpbidPrimary;
         private DSCBO1Lib.StockJpbid2 _jpbidSecondary;

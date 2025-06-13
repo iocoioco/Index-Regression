@@ -30,7 +30,7 @@ namespace New_Tradegy.Library.Trackers
         private void InitializeDgv(DataGridView dgv)
         {
             int width = g.screenWidth / g.nCol - 20;
-            int height = g.DgvCellHeight * 3;
+            int height = g.CellHeight * 3;
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
 
@@ -52,13 +52,13 @@ namespace New_Tradegy.Library.Trackers
             dgv.Dock = DockStyle.Fill;
             dgv.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.formSize.ch;
+            dgv.RowTemplate.Height = g.CellHeight;
             dgv.ForeColor = Color.Black;
             dgv.TabStop = false;
 
-            dgv.CellFormatting += 그룹_CellFormatting;
-            dgv.CellMouseClick += 그룹_CellMouseClick;
-            dgv.KeyPress += 그룹_KeyPress;
+            dgv.CellFormatting += CellFormatting;
+            dgv.CellMouseClick += CellMouseClick;
+            
 
             if (dgv.Rows.Count > 0)
                 dgv.FirstDisplayedScrollingRowIndex = 0;
@@ -115,6 +115,47 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
+        private void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            int coloring_column = 0;
+            switch (g.oGl_data_selection)
+            {
+                case "총점":
+                    coloring_column = 0;
+                    break;
+                case "푀분":
+                    coloring_column = 1;
+                    break;
+                case "가증":
+                    coloring_column = 2;
+                    break;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                if (i == coloring_column)
+                {
+                    g.groupPane._view.Columns[i].DefaultCellStyle.BackColor = Color.FromArgb(175, 255, 255); // cyan
+                }
+                else
+                {
+                    g.groupPane._view.Columns[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 255);
+                }
+
+            }
+
+            if (e.RowIndex == 0)
+            {
+                if (e.ColumnIndex == 0)
+                    e.CellStyle.BackColor = Color.FromArgb(255, 175, 255); // red
+                if (e.ColumnIndex == 1)
+                    e.CellStyle.BackColor = Color.FromArgb(255, 255, 255); // red
+                if (e.ColumnIndex == 2)
+                    e.CellStyle.BackColor = Color.FromArgb(255, 175, 255); // red
+                if (e.ColumnIndex == 3)
+                    e.CellStyle.BackColor = Color.FromArgb(255, 255, 255); // red
+            }
+        }
+
         public void Update(List<GroupData> updatedGroups)
         {
             if (_view == null || _table == null || updatedGroups == null)
@@ -167,9 +208,9 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[row][col] = value;
         }
 
-        public object GetCellValue(int row, int col)
+        public string GetCellValue(int row, int col)
         {
-            return _table.Rows[row][col];
+            return _table.Rows[row][col]?.ToString() ?? string.Empty;
         }
 
         public bool HasRows()
@@ -177,7 +218,5 @@ namespace New_Tradegy.Library.Trackers
             return _table != null && _table.Rows.Count > 0;
         }
     }
-
-}
 
 }

@@ -98,9 +98,9 @@ namespace New_Tradegy.Library
             int day_1 = g.date % 10000 % 100;
             string date = month_1.ToString() + "/" + day_1.ToString();
 
-            var pane = new ControlPane();
-            if(pane.GetCellValue(0, 0) != date)
-                pane.SetCellValue(0, 0, date);
+         
+            if(g.controlPane.GetCellValue(0, 0) != date)
+                g.controlPane.SetCellValue(0, 0, date);
 
             RankLogic.EvalStock(); // date backwards forwards
             ActionCode.New(true, false, eval: true, draw: 'B').Run();

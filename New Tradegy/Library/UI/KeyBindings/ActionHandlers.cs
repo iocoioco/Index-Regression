@@ -52,10 +52,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.일회거래액 = 0;
 
                 SoundUtils.Sound_돈(g.일회거래액);
-                var pane = new ControlPane();
-                if(pane.GetCellValue(0, 2) != g.일회거래액.ToString())
+              
+                if(g.controlPane.GetCellValue(0, 2) != g.일회거래액.ToString())
                 {
-                    pane.SetCellValue(0, 2, g.일회거래액);
+                    g.controlPane.SetCellValue(0, 2, g.일회거래액);
 
                 }
             }
@@ -90,10 +90,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                         g.일회거래액 /= 2;
                 }
 
-                var pane = new ControlPane();
-                if (pane.GetCellValue(0, 2) != g.일회거래액.ToString())
+         
+                if (g.controlPane.GetCellValue(0, 2) != g.일회거래액.ToString())
                 {
-                    pane.SetCellValue(0, 2, g.일회거래액);
+                    g.controlPane.SetCellValue(0, 2, g.일회거래액);
 
                 }
             }

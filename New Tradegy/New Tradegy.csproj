@@ -179,7 +179,7 @@
     <Compile Include="Library\Models\StockData.cs" />
     <Compile Include="Library\Core\RankLogic.cs" />
     <Compile Include="Library\PostProcessing\PostProcessing.cs" />
-    <Compile Include="Library\Trackers\Panel\ControlPanel.cs" />
+    <Compile Include="Library\Trackers\Panel\ControlPane.cs" />
     <Compile Include="Library\Trackers\Panel\GroupPane.cs" />
     <Compile Include="Library\Trackers\Charting\ChartIndex.cs" />
     <Compile Include="Library\Trackers\OrderItemTracker.cs" />

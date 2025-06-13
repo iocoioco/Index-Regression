@@ -173,9 +173,8 @@ namespace New_Tradegy.Library.Listeners
                     DealManager.DealHold();
                     ActionCode.New(true, false, eval: true, draw: 'B').Run();
                 }
-
-                var pane = new TradePane();
-                pane?.Update(); // ? -> if g.매매.Renderer assigned
+ 
+                g.tradePane?.Update(); // ? -> if g.매매.Renderer assigned
             }
             catch (Exception ex)
             {

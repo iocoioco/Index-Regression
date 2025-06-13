@@ -118,9 +118,9 @@ namespace New_Tradegy.Library.Deals
                     dealProfit = 0;
                 }
 
-                var pane = new ControlPane();
-                if (pane.GetCellValue(1, 0) != dealProfit.ToString())
-                    pane.SetCellValue(1, 0, dealProfit.ToString());
+            
+                if (g.controlPane.GetCellValue(1, 0) != dealProfit.ToString())
+                    g.controlPane.SetCellValue(1, 0, dealProfit.ToString());
             }
         }
 
@@ -164,10 +164,10 @@ namespace New_Tradegy.Library.Deals
             g.예치금 = (int)(cashAvailable / 10000); // 현금주문가능금액 단위변환
 
            
-            var pane = new ControlPane();
-            if (pane.GetCellValue(0, 3) != g.예치금.ToString())
+      
+            if (g.controlPane.GetCellValue(0, 3) != g.예치금.ToString())
             {
-                pane.SetCellValue(0, 3, g.예치금.ToString());
+                g.controlPane.SetCellValue(0, 3, g.예치금.ToString());
             }
         }
 

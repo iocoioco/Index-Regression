@@ -26,7 +26,7 @@ namespace New_Tradegy.Library
 
         public static BookBidManager BookBidManager;
         public static ChartMainRenderer ChartMainRenderer;
-        
+
         public static ChartManager ChartManager;
 
         public static StockManager StockManager;
@@ -36,11 +36,17 @@ namespace New_Tradegy.Library
         public static GroupManager GroupManager;
         //public static Dictionary<string, StockData> Ogldata = new Dictionary<string, StockData>();
 
+        public static ControlPane controlPane;
+        public static GroupPane groupPane;
+        public static TradePane tradePane;
+
         // AppState
         public static bool test; // test or real
         public static int date; // current day for display
 
         // ScreenConfig
+
+
 
         public static int screenWidth = 1920; // window height
         public static int screenHeight = 1032; // window width
@@ -52,7 +58,7 @@ namespace New_Tradegy.Library
         public static bool add_interest = false; // add stock or not to the 관심종목 when stocks active
         public static bool confirm_sell = false; // sell by click or modal display to confirm sell condition
         public static int 일회거래액 = 0; // amount of deal money in 10 thousands Won
-        public static int 예치금 = 0; 
+        public static int 예치금 = 0;
 
         public static int UpdateDealProfit = 0; // profit for the day
 
@@ -62,7 +68,7 @@ namespace New_Tradegy.Library
         public static double 억원 = 100000000.0; // unit for division
         public static double HUNDRED = 100.0;
         public static double THOUSAND = 1000.0;
-        public static int DgvCellHeight = 28;
+        public static int CellHeight = 28;
 
         // InputControl
         public static bool shortform; // shortform includes less number of stocks for test purpose 
@@ -149,9 +155,6 @@ namespace New_Tradegy.Library
         public static int stocks_per_marketeye = 200; // max. number of stocks to be downloaded at a time thru. API 
 
 
-
-        public static int rqwey_nCol = 10; // number of chart area columns in main chart
-        public static int rqwey_nRow = 3; // number of chart area rows in main chart
 
         public static int MarketeyeCount = 0; // total count of API download from start of market
         public static int MarketeyeCountDivicer = 10; // evaluation of stocks after how many MarketeyeCount increases
@@ -257,6 +260,6 @@ namespace New_Tradegy.Library
     }
 }
 
-   
-       
+
+
 

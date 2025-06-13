@@ -169,35 +169,33 @@ namespace New_Tradegy.Library.Trackers
 
                 case 2: // 매도
                     if (g.test) return;
-
                     {
-                        string buySell = "매도";
-                        int 거래가격 = hg.HogaGetValue(stock, 0, 1); // 0: 매도호가 라인, 1: 컬럼
+                        //string buySell = "매도";
+                        //int 거래가격 = hg.HogaGetValue(stock, 0, 1); // 0: 매도호가 라인, 1: 컬럼
 
-                        int Urgency = 100;
-                        if (g.optimumTrading)
-                        {
-                            Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
-                        }
+                        //int Urgency = 100;
+                        //if (g.optimumTrading)
+                        //{
+                        //    Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
+                        //}
 
-                        DealManager.deal_sett(stock, buySell, 거래가격, Urgency);
+                        // DealManager.deal_sett(stock, buySell, 거래가격, Urgency);
                     }
                     break;
 
                 case 3: // 매수
                     if (g.test) return;
-
                     {
-                        string buySell = "매수";
-                        int 거래가격 = hg.HogaGetValue(stock, -1, 1); // -1: 매수호가 라인, 1: 컬럼
+                        //string buySell = "매수";
+                        //int 거래가격 = hg.HogaGetValue(stock, -1, 1); // -1: 매수호가 라인, 1: 컬럼
 
-                        int Urgency = 100;
-                        if (g.optimumTrading)
-                        {
-                            Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
-                        }
+                        //int Urgency = 100;
+                        //if (g.optimumTrading)
+                        //{
+                        //    Urgency = (int)(e.X / (double)_view.Columns[2].Width * 100);
+                        //}
 
-                        dl.deal_sett(stock, buySell, 거래가격, Urgency);
+                        // dl.deal_sett(stock, buySell, 거래가격, Urgency);
                     }
                     break;
             }
@@ -206,7 +204,7 @@ namespace New_Tradegy.Library.Trackers
 
         private static void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            g.매매.dgv.Rows[0].DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            g.tradePane._view.Rows[0].DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
         }
 
         private void FillEmptyRow(int row)
@@ -243,9 +241,9 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[row][col] = value;
         }
 
-        public object GetCellValue(int row, int col)
+        public string GetCellValue(int row, int col)
         {
-            return _table.Rows[row][col];
+            return _table.Rows[row][col]?.ToString() ?? string.Empty;
         }
 
         public bool HasRows()

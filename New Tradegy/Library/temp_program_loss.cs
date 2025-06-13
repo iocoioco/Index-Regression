@@ -17,7 +17,7 @@ namespace New_Tradegy.Library
         private decimal lastBestBid;
         private decimal lastBestAsk;
         private int lastBestBidSize;
-        private decimal tickSize = 100m; // Samsung tick size (adjust for other stocks)
+       
         private bool orderPlaced = false;
         private Dictionary<string, decimal> programNetBuy = new Dictionary<string, decimal>(); // Program losses per stock
         private Dictionary<string, decimal> avgDailyDealt = new Dictionary<string, decimal>(); // 20-day average daily dealt amount

@@ -241,9 +241,9 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     int day = g.date % 100;
                     string newValue = month + "/" + day;
 
-                        var pane = new ControlPane();
-                        if (pane.GetCellValue(0, 0) != newValue)
-                            pane.SetCellValue(0, 0, newValue);
+                 
+                        if (g.controlPane.GetCellValue(0, 0) != newValue)
+                            g.controlPane.SetCellValue(0, 0, newValue);
 
                    
                 }

@@ -425,7 +425,7 @@ namespace New_Tradegy.Library.Trackers
 
             // Remove old annotation
             string annotationName = data.Stock;
-            var previousAnnotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
+            var previousAnnotation  = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
             if (previousAnnotation != null)
                 chart.Annotations.Remove(previousAnnotation);
 
@@ -440,10 +440,7 @@ namespace New_Tradegy.Library.Trackers
 
             string annotation = AnnotationText(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
 
-            if(annotation == null) //?
-            {
-                int a = 1;
-            }
+     
 
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 

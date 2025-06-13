@@ -224,11 +224,9 @@ namespace New_Tradegy.Library.Core
                 }
 
                 string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllDatas.Count()}";
-                
 
-                var pane = new ControlPane();
-                if(pane.GetCellValue(1,1) != newValue)
-                    pane.SetCellValue(1, 1, newValue);
+                if(g.controlPane.GetCellValue(1,1) != newValue)
+                    g.controlPane.SetCellValue(1, 1, newValue);
             }
 
             EvalGroup(); // re-evaluate groups after stock ranking
@@ -401,8 +399,7 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            var pane = new GroupPane();
-            pane?.Update(g.GroupManager.GroupRankingList);
+            g.groupPane?.Update(g.GroupManager.GroupRankingList);
         }
 
     }

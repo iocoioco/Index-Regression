@@ -173,12 +173,12 @@ namespace New_Tradegy // added for test on 20241020 0300
             var controlDgv = new DataGridView();
             this.Controls.Add(controlDgv); // ✅ added to Form
             var controlDtb = new DataTable();
-            var controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
+            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
 
             var groupDgv = new DataGridView();
             this.Controls.Add(groupDgv); // ✅ added to Form
             var groupDtb = new DataTable();
-            var groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
 
             var tradeDgv = new DataGridView();
             this.Controls.Add(tradeDgv); // ✅ added to Form

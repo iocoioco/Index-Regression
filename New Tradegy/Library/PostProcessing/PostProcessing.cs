@@ -83,8 +83,8 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 if (g.StockManager.HoldingList.Contains(data.Stock)) // Stock is the name
                 {
-                    var pane = new TradePane();
-                    g.매매.TradeRenderer?.Update(); // update DGV for holding stock
+             
+                    g.tradePane?.Update(); // update DGV for holding stock
                     marketeye_received_보유종목_푀분의매수매도_소리내기(data); // renamed to match new structure
                 }
             }
