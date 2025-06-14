@@ -40,7 +40,7 @@ namespace New_Tradegy.Library.Trackers
 
         private void InitializeDgv()
         {
-            
+
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
             _view.Location = new Point(x, y);
@@ -48,10 +48,10 @@ namespace New_Tradegy.Library.Trackers
             int height = g.CellHeight * 3;
             _view.Size = new Size(width, height);
 
-            
+
 
             _view.Visible = true;
-            
+
             _view.ColumnHeadersVisible = false;
             _view.RowHeadersVisible = false;
             _view.ReadOnly = true;
@@ -357,11 +357,22 @@ namespace New_Tradegy.Library.Trackers
                             case 2:
                                 bool isControlPaneOnTop =
                                     _view.Parent.Controls.GetChildIndex(_view) == 0;
+                                int height;
                                 if (isControlPaneOnTop)
-                                    _view.BringToFront();
-                                else
+                                {
+                                    height = g.CellHeight * 3;
+                                    _view.Height = height;
                                     g.tradePane.View.BringToFront();
+                                }
 
+                                else
+                                {
+                                    height = g.CellHeight * 15;
+                                    _view.Height = height;
+                                    _view.BringToFront();
+                                }
+                                    
+                                
                                 break;
                             case 3:
                                 DealManager.DealDeposit();

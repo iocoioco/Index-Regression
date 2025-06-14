@@ -33,15 +33,16 @@ namespace New_Tradegy.Library.Trackers
             
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
+            y = 0; //?
             _view.Location = new Point(x, y);
             int width = g.screenWidth / g.nCol +10;
-            int height = g.CellHeight * 3;
+            int height = g.CellHeight * 10;
             _view.Size = new Size(width, height);
 
             _view.ColumnHeadersVisible = false;
             _view.RowHeadersVisible = false;
             _view.ReadOnly = true;
-
+            
             _view.ScrollBars = g.test ? ScrollBars.Vertical : ScrollBars.None;
             _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             _view.AllowUserToResizeColumns = false;
@@ -50,7 +51,7 @@ namespace New_Tradegy.Library.Trackers
             _view.AllowUserToDeleteRows = false;
 
             _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _view.Dock = DockStyle.Fill;
+            // _view.Dock = DockStyle.Fill;
             _view.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             _view.RowTemplate.Height = g.CellHeight;
@@ -69,12 +70,12 @@ namespace New_Tradegy.Library.Trackers
         {
             _table.Columns.Clear();
 
+            // Determine row count based on mode
+            int rows = g.test ? _groups.Count : 10;
+
             // Columns: "0", "1", "2"
             for (int i = 0; i < 3; i++)
                 _table.Columns.Add(i.ToString());
-
-            // Determine row count based on mode
-            int rows = g.test ? 9 : _groups.Count;
 
             // Add blank rows
             for (int j = 0; j < rows; j++)

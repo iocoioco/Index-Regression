@@ -112,27 +112,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockManager = new StockManager(g.StockRepository);
             g.GroupManager = new GroupManager();
 
-            var controlDgv = new DataGridView();
-            var controlDtb = new DataTable();
-            this.Controls.Add(controlDgv); // ✅ added to Form
-            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
-            controlDgv.BringToFront();
-
-            var tradeDgv = new DataGridView();
-            var tradeDtb = new DataTable();
-            this.Controls.Add(tradeDgv); // ✅ added to Form
-            var tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
-            tradeDgv.BringToFront();
-
-
-            var groupDgv = new DataGridView();
-            var groupDtb = new DataTable();
-            this.Controls.Add(groupDgv); // ✅ added to Form
-            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-            groupDgv.BringToFront();
-            return;
-
-            
+           
             
            
 
@@ -164,21 +144,14 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockManager.AddIfMissing(g.kospi_mixed.stock);
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
             g.StockManager.AddIfMissing(NaverList);
-            
-            
+
+            g.ChartMainRenderer = new ChartMainRenderer(); // all new, Form_1 start
+            g.ChartMainRenderer.RefreshMainChart();
+
 
             KeyBindingRegistrar.RegisterAll();
 
             
-
-            //g.ChartGeneral1 = new ChartGeneral();
-            //g.ChartGeneral1.Initialize(g.chart1, this, g.nRow, g.nCol); 
-
-            
-           
-
-
-           
 
             
             var groups = GroupRepository.LoadGroups(); // 상관.txt read
@@ -202,17 +175,11 @@ namespace New_Tradegy // added for test on 20241020 0300
            
 
 
-            // use Panel in RankLogic
-            RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
-
-            g.ChartMainRenderer = new ChartMainRenderer(); // all new, Form_1 start
-            g.ChartMainRenderer.RefreshMainChart();
-
+            
+            
            
 
-            Form Form_보조_차트 = new Form_보조_차트();
-            Form_보조_차트.Show(); // second chart
-
+            
 
             if (!g.test) // for market trading
             {
@@ -256,6 +223,32 @@ namespace New_Tradegy // added for test on 20241020 0300
                     g.ChartMainRenderer.RefreshMainChart();
                 }
             };
+
+            var controlDgv = new DataGridView();
+            var controlDtb = new DataTable();
+            this.Controls.Add(controlDgv); // ✅ added to Form
+            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
+            controlDgv.BringToFront();
+
+            var tradeDgv = new DataGridView();
+            var tradeDtb = new DataTable();
+            this.Controls.Add(tradeDgv); // ✅ added to Form
+            g.tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
+            tradeDgv.BringToFront();
+
+
+            var groupDgv = new DataGridView();
+            var groupDtb = new DataTable();
+            this.Controls.Add(groupDgv); // ✅ added to Form
+            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            groupDgv.BringToFront();
+
+            // use Panel in RankLogic
+            RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
+
+            Form Form_보조_차트 = new Form_보조_차트();
+            Form_보조_차트.Show(); // second chart
+
 
             // updated on 20241020 0300
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());
