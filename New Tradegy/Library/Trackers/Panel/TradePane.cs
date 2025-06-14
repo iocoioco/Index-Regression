@@ -17,7 +17,7 @@ namespace New_Tradegy.Library.Trackers
         private readonly DataGridView _view;
         private readonly DataTable _table;
 
-
+        public Control View => _view;
 
         public TradePane(DataGridView dgv, DataTable dtb)
         {

@@ -101,6 +101,38 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             this.WindowState = FormWindowState.Maximized; // this.WindowState
 
+            this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
+
+            g.chart1 = chart1;
+            g.BookBidManager = new BookBidManager();
+            g.ChartManager = new ChartManager();
+            g.ChartManager.SetChart1(chart1);
+
+            g.StockRepository = StockRepository.Instance;
+            g.StockManager = new StockManager(g.StockRepository);
+            g.GroupManager = new GroupManager();
+
+            var controlDgv = new DataGridView();
+            
+            var controlDtb = new DataTable();
+            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
+            this.Controls.Add(controlDgv); // ✅ added to Form
+            controlDgv.BringToFront();
+
+            return;
+
+            var groupDgv = new DataGridView();
+            this.Controls.Add(groupDgv); // ✅ added to Form
+            var groupDtb = new DataTable();
+            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+
+            var tradeDgv = new DataGridView();
+            this.Controls.Add(tradeDgv); // ✅ added to Form
+            var tradeDtb = new DataTable();
+            var tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
+
+           
+
             g.Npts[0] = 0; //
             g.Npts[1] = g.MAX_ROW; //
 
@@ -117,12 +149,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
             var NaverList = FileIn.read_그룹_네이버_업종();
 
-            g.BookBidManager = new BookBidManager();
-            g.ChartManager = new ChartManager();
-            g.ChartManager.SetChart1(chart1);
-
-            g.StockRepository = StockRepository.Instance;
-            g.StockManager = new StockManager(g.StockRepository);
+            
+            
             g.StockManager.AddIfMissing(new[] {
                 "KODEX 레버리지",
                 "KODEX 200선물인버스2X",
@@ -138,7 +166,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             KeyBindingRegistrar.RegisterAll();
 
-            g.chart1 = chart1;
+            
 
             //g.ChartGeneral1 = new ChartGeneral();
             //g.ChartGeneral1.Initialize(g.chart1, this, g.nRow, g.nCol); 
@@ -149,7 +177,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
            
 
-            g.GroupManager = new GroupManager(); 
+            
             var groups = GroupRepository.LoadGroups(); // 상관.txt read
             GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt"); // check 
 
@@ -168,23 +196,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             FileIn.read_파일관심종목(); // duration 0.000 seconds
 
             
-            this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
-
-            var controlDgv = new DataGridView();
-            this.Controls.Add(controlDgv); // ✅ added to Form
-            var controlDtb = new DataTable();
-            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
-
-            var groupDgv = new DataGridView();
-            this.Controls.Add(groupDgv); // ✅ added to Form
-            var groupDtb = new DataTable();
-            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-
-            var tradeDgv = new DataGridView();
-            this.Controls.Add(tradeDgv); // ✅ added to Form
-            var tradeDtb = new DataTable();
-            var tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
-
+           
 
 
             // use Panel in RankLogic

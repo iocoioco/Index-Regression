@@ -1,4 +1,5 @@
-﻿using New_Tradegy.Library.Deals;
+﻿using MathNet.Numerics.Distributions;
+using New_Tradegy.Library.Deals;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,48 +33,51 @@ namespace New_Tradegy.Library.Trackers
         {
             _table = dtb;
             _view = dgv;
-            dgv.DataSource = _table;
-            InitializeDgv(dgv);
-            BindGrid(dgv); // has InitializeSetting()
+
+            InitializeDgv();
+            BindGrid(); // has InitializeSetting()
         }
 
-        private void InitializeDgv(DataGridView dgv)
+        private void InitializeDgv()
         {
             int width = g.screenWidth / g.nCol - 20;
             int height = g.CellHeight * 3;
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
 
-            dgv.Location = new Point(x, y);
-            dgv.Size = new Size(width, height);
+            _view.Location = new Point(x, y);
+            _view.Size = new Size(width, height);
 
-            dgv.ColumnHeadersVisible = false;
-            dgv.RowHeadersVisible = false;
-            dgv.ReadOnly = true;
-            dgv.ScrollBars = ScrollBars.Vertical;
-            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            dgv.AllowUserToResizeColumns = false;
-            dgv.AllowUserToResizeRows = false;
-            dgv.AllowUserToAddRows = false;
-            dgv.AllowUserToDeleteRows = false;
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Dock = DockStyle.Fill;
-            dgv.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.CellHeight;
-            dgv.ForeColor = Color.Black;
-            dgv.TabStop = false;
+            _view.ColumnHeadersVisible = false;
+            _view.RowHeadersVisible = false;
+            _view.ReadOnly = true;
+            _view.ScrollBars = ScrollBars.Vertical;
+            _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            _view.AllowUserToResizeColumns = false;
+            _view.AllowUserToResizeRows = false;
+            _view.AllowUserToAddRows = false;
+            _view.AllowUserToDeleteRows = false;
+            _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _view.Dock = DockStyle.Fill;
+            _view.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            _view.RowTemplate.Height = g.CellHeight;
+            _view.ForeColor = Color.Black;
+            _view.TabStop = false;
 
-            // Optional: You may also want to scroll to top
-            if (dgv.Rows.Count > 0)
-                dgv.FirstDisplayedScrollingRowIndex = 0;
+
         }
 
-        public void BindGrid(DataGridView dgv)
+        public void BindGrid()
         {
             if (Settings.Count == 0)
                 InitializeSettings();
 
+            // Bind to DataGridView
+
+            // _view.Columns.Clear(); // 🧹 important
+            // _view.AutoGenerateColumns = true;
+            _view.DataSource = _table;
 
             int Rows = 15, Columns = 4;
 
@@ -90,11 +94,6 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[0][0] = $"{month}/{day}";
             _table.Rows[0][2] = g.일회거래액;
             _table.Rows[0][3] = g.예치금;
-
-            _table.Rows[1][0] = 0;
-            _table.Rows[1][1] = 0;
-            _table.Rows[1][2] = 0;
-            _table.Rows[1][3] = 0;
 
             // Row 2–13 configuration
             _table.Rows[4][0] = "adv";
@@ -122,33 +121,30 @@ namespace New_Tradegy.Library.Trackers
 
             _table.Rows[13][0] = "선폭"; _table.Rows[13][1] = 2; g.LineWidth = 2;
 
-            // Bind to DataGridView
-            dgv.DataSource = _table;
+            
+            // Optional: You may also want to scroll to top
+            if (_view.Rows.Count > 0)
+                _view.FirstDisplayedScrollingRowIndex = 0;
 
             // Appearance
-            dgv.ReadOnly = true;
-            dgv.ColumnHeadersVisible = false;
-            dgv.RowHeadersVisible = false;
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.AllowUserToResizeRows = false;
-            dgv.AllowUserToResizeColumns = false;
-            dgv.AllowUserToAddRows = false;
-            dgv.AllowUserToDeleteRows = false;
-            dgv.ScrollBars = ScrollBars.Vertical;
+            _view.ReadOnly = true;
+            _view.ColumnHeadersVisible = false;
+            _view.RowHeadersVisible = false;
+            _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _view.AllowUserToResizeRows = false;
+            _view.AllowUserToResizeColumns = false;
+            _view.AllowUserToAddRows = false;
+            _view.AllowUserToDeleteRows = false;
+            _view.ScrollBars = ScrollBars.Vertical;
 
-            dgv.CellMouseClick += CellMouseClick;
+            _view.CellMouseClick += CellMouseClick;
 
-            // Ensure correct column count (if bound from existing table)
-            if (dgv.Columns.Count < Columns)
-            {
-                for (int i = dgv.Columns.Count; i < Columns; i++)
-                    dgv.Columns.Add(i.ToString(), i.ToString());
-            }
+            
 
             // Set column widths
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
             for (int i = 0; i < Columns; i++)
-                dgv.Columns[i].Width = (g.screenWidth / 11 - scrollbarWidth) / Columns;
+                _view.Columns[i].Width = (g.screenWidth / 11 - scrollbarWidth) / Columns;
         }
 
         public void InitializeSettings()
@@ -359,6 +355,17 @@ namespace New_Tradegy.Library.Trackers
                     case 0:
                         switch (e.ColumnIndex)
                         {
+                            case 0:
+                            case 1:
+                            case 2:
+                                bool isControlPaneOnTop =
+                                    _view.Parent.Controls.GetChildIndex(_view) == 0;
+                                if (isControlPaneOnTop)
+                                    _view.BringToFront();
+                                else
+                                    g.tradePane.View.BringToFront();
+
+                                break;
                             case 3:
                                 DealManager.DealDeposit();
                                 break;
