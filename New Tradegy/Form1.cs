@@ -113,24 +113,27 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.GroupManager = new GroupManager();
 
             var controlDgv = new DataGridView();
-            
             var controlDtb = new DataTable();
-            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
             this.Controls.Add(controlDgv); // ✅ added to Form
+            g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
             controlDgv.BringToFront();
 
-            return;
+            var tradeDgv = new DataGridView();
+            var tradeDtb = new DataTable();
+            this.Controls.Add(tradeDgv); // ✅ added to Form
+            var tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
+            tradeDgv.BringToFront();
+
 
             var groupDgv = new DataGridView();
-            this.Controls.Add(groupDgv); // ✅ added to Form
             var groupDtb = new DataTable();
+            this.Controls.Add(groupDgv); // ✅ added to Form
             g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            groupDgv.BringToFront();
+            return;
 
-            var tradeDgv = new DataGridView();
-            this.Controls.Add(tradeDgv); // ✅ added to Form
-            var tradeDtb = new DataTable();
-            var tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
-
+            
+            
            
 
             g.Npts[0] = 0; //

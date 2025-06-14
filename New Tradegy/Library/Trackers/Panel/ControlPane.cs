@@ -40,14 +40,18 @@ namespace New_Tradegy.Library.Trackers
 
         private void InitializeDgv()
         {
-            int width = g.screenWidth / g.nCol - 20;
-            int height = g.CellHeight * 3;
+            
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
-
             _view.Location = new Point(x, y);
+            int width = g.screenWidth / g.nCol - 20;
+            int height = g.CellHeight * 3;
             _view.Size = new Size(width, height);
 
+            
+
+            _view.Visible = true;
+            
             _view.ColumnHeadersVisible = false;
             _view.RowHeadersVisible = false;
             _view.ReadOnly = true;
@@ -58,26 +62,18 @@ namespace New_Tradegy.Library.Trackers
             _view.AllowUserToAddRows = false;
             _view.AllowUserToDeleteRows = false;
             _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _view.Dock = DockStyle.Fill;
+            // _view.Dock = DockStyle.Fill;
             _view.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
             _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
             _view.RowTemplate.Height = g.CellHeight;
             _view.ForeColor = Color.Black;
             _view.TabStop = false;
-
-
         }
 
         public void BindGrid()
         {
             if (Settings.Count == 0)
                 InitializeSettings();
-
-            // Bind to DataGridView
-
-            // _view.Columns.Clear(); // 🧹 important
-            // _view.AutoGenerateColumns = true;
-            _view.DataSource = _table;
 
             int Rows = 15, Columns = 4;
 
@@ -121,7 +117,8 @@ namespace New_Tradegy.Library.Trackers
 
             _table.Rows[13][0] = "선폭"; _table.Rows[13][1] = 2; g.LineWidth = 2;
 
-            
+            _view.DataSource = _table;
+
             // Optional: You may also want to scroll to top
             if (_view.Rows.Count > 0)
                 _view.FirstDisplayedScrollingRowIndex = 0;
@@ -139,9 +136,9 @@ namespace New_Tradegy.Library.Trackers
 
             _view.CellMouseClick += CellMouseClick;
 
-            
 
             // Set column widths
+            _view.AutoGenerateColumns = false;
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
             for (int i = 0; i < Columns; i++)
                 _view.Columns[i].Width = (g.screenWidth / 11 - scrollbarWidth) / Columns;

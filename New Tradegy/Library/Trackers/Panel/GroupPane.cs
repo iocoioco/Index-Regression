@@ -20,53 +20,53 @@ namespace New_Tradegy.Library.Trackers
         {
             _table = dtb;
             _view = dgv;
-            dgv.DataSource = _table;
+  
             _groups = g.GroupManager.GetAll();
-            InitializeDgv(dgv);
-            BindGrid(dgv); // has InitializeSetting()
+
+            InitializeDgv(_view);
+            BindGrid(_view); // has InitializeSetting()
         }
 
 
-        private void InitializeDgv(DataGridView dgv)
+        private void InitializeDgv(DataGridView _view)
         {
-            int width = g.screenWidth / g.nCol - 20;
-            int height = g.CellHeight * 3;
+            
             int x = g.screenWidth / g.nCol + 10;
             int y = g.screenHeight / 3 + 2;
+            _view.Location = new Point(x, y);
+            int width = g.screenWidth / g.nCol +10;
+            int height = g.CellHeight * 3;
+            _view.Size = new Size(width, height);
 
-            dgv.Location = new Point(x, y);
-            dgv.Size = new Size(width, height);
+            _view.ColumnHeadersVisible = false;
+            _view.RowHeadersVisible = false;
+            _view.ReadOnly = true;
 
-            dgv.ColumnHeadersVisible = false;
-            dgv.RowHeadersVisible = false;
-            dgv.ReadOnly = true;
+            _view.ScrollBars = g.test ? ScrollBars.Vertical : ScrollBars.None;
+            _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            _view.AllowUserToResizeColumns = false;
+            _view.AllowUserToResizeRows = false;
+            _view.AllowUserToAddRows = false;
+            _view.AllowUserToDeleteRows = false;
 
-            dgv.ScrollBars = g.test ? ScrollBars.Vertical : ScrollBars.None;
-            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            dgv.AllowUserToResizeColumns = false;
-            dgv.AllowUserToResizeRows = false;
-            dgv.AllowUserToAddRows = false;
-            dgv.AllowUserToDeleteRows = false;
+            _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _view.Dock = DockStyle.Fill;
+            _view.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
+            _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
+            _view.RowTemplate.Height = g.CellHeight;
+            _view.ForeColor = Color.Black;
+            _view.TabStop = false;
 
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Dock = DockStyle.Fill;
-            dgv.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.CellHeight;
-            dgv.ForeColor = Color.Black;
-            dgv.TabStop = false;
-
-            dgv.CellFormatting += CellFormatting;
-            dgv.CellMouseClick += CellMouseClick;
+            _view.CellFormatting += CellFormatting;
+            _view.CellMouseClick += CellMouseClick;
             
 
-            if (dgv.Rows.Count > 0)
-                dgv.FirstDisplayedScrollingRowIndex = 0;
+            if (_view.Rows.Count > 0)
+                _view.FirstDisplayedScrollingRowIndex = 0;
         }
 
-        private void BindGrid(DataGridView dgv)
+        private void BindGrid(DataGridView _view)
         {
-            _table.Clear();
             _table.Columns.Clear();
 
             // Columns: "0", "1", "2"
@@ -80,13 +80,15 @@ namespace New_Tradegy.Library.Trackers
             for (int j = 0; j < rows; j++)
                 _table.Rows.Add("", "", "");
 
+            _view.DataSource = _table;
+
             // Adjust column widths based on test mode
             for (int i = 0; i < 3; i++)
             {
                 if (g.test)
-                    dgv.Columns[i].Width = this._view.Width / 3 - 10;
+                    _view.Columns[i].Width = this._view.Width / 3 - 10;
                 else
-                    dgv.Columns[i].Width = this._view.Width / 3 - 6;
+                    _view.Columns[i].Width = this._view.Width / 3 - 6;
             }
         }
 
@@ -200,8 +202,6 @@ namespace New_Tradegy.Library.Trackers
                 _view.ResumeLayout();
             }
         }
-
-
 
         public void SetCellValue(int row, int col, object value)
         {

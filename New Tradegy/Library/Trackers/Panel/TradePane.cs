@@ -23,51 +23,50 @@ namespace New_Tradegy.Library.Trackers
         {
             _table = dtb;
             _view = dgv;
-            dgv.DataSource = _table;
-            InitializeDgv(dgv);
-            BindGrid(dgv); // has InitializeSetting()
+            
+            InitializeDgv(_view);
+            BindGrid(_view); // has InitializeSetting()
         }
 
-        private void InitializeDgv(DataGridView dgv)
+        private void InitializeDgv(DataGridView _view)
         {
             int fontSize = 10;
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
 
-            dgv.Location = new Point(0, 0);
+            int x = g.screenWidth / g.nCol + 10;
+            int y = g.CellHeight * 15; // + 30 deleted from width
+            _view.Location = new Point(x, y);
             int width = g.screenWidth / 10 - scrollbarWidth;
             int height = g.cellHeight * 9 + 14;
-            dgv.Size = new Size(width, height);
+            _view.Size = new Size(width, height);
 
-             
-            dgv.DataSource = _table;
-            dgv.ColumnHeadersVisible = false;
-            dgv.RowHeadersVisible = false;
+              
+            _view.ColumnHeadersVisible = false;
+            _view.RowHeadersVisible = false;
 
-            dgv.ReadOnly = true;
-            dgv.DefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
-            dgv.RowTemplate.Height = g.cellHeight - 1;
-            dgv.ForeColor = Color.Black;
+            _view.ReadOnly = true;
+            _view.DefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
+            _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
+            _view.RowTemplate.Height = g.cellHeight - 1;
+            _view.ForeColor = Color.Black;
 
-            dgv.ScrollBars = ScrollBars.None;
-            dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
-            dgv.AllowUserToResizeColumns = false;
-            dgv.AllowUserToResizeRows = false;
-            dgv.AllowUserToAddRows = false;
-            dgv.AllowUserToDeleteRows = false;
+            _view.ScrollBars = ScrollBars.None;
+            _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            _view.AllowUserToResizeColumns = false;
+            _view.AllowUserToResizeRows = false;
+            _view.AllowUserToAddRows = false;
+            _view.AllowUserToDeleteRows = false;
 
-            dgv.Dock = DockStyle.Fill;
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.TabIndex = 1;
+            _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _view.TabIndex = 1;
 
-            dgv.CellFormatting += new DataGridViewCellFormattingEventHandler(CellFormatting);
-            dgv.CellMouseClick += new DataGridViewCellMouseEventHandler(CellMouseClick);
+            _view.CellFormatting += CellFormatting;
+            _view.CellMouseClick += CellMouseClick;
         }
 
-        private void BindGrid(DataGridView dgv)
+        private void BindGrid(DataGridView _view)
         {
             // Setup columns
-            _table.Columns.Clear();
             _table.Columns.Add("0"); // stock
             _table.Columns.Add("1"); // 매수/매도
             _table.Columns.Add("2"); // 가격
@@ -79,15 +78,15 @@ namespace New_Tradegy.Library.Trackers
                 _table.Rows.Add("", "", "", "");
 
             // Bind table to DataGridView
-            dgv.DataSource = _table;
+            _view.DataSource = _table;
 
             // Optional: column widths
-            dgv.Columns[0].Width = (int)(dgv.Width * 0.20); // stock
-            dgv.Columns[1].Width = (int)(dgv.Width * 0.20); // 매수/매도
-            dgv.Columns[2].Width = (int)(dgv.Width * 0.25); // 가격
-            dgv.Columns[3].Width = (int)(dgv.Width * 0.35); // 거래진행
+            _view.Columns[0].Width = (int)(_view.Width * 0.20); // stock
+            _view.Columns[1].Width = (int)(_view.Width * 0.20); // 매수/매도
+            _view.Columns[2].Width = (int)(_view.Width * 0.25); // 가격
+            _view.Columns[3].Width = (int)(_view.Width * 0.35); // 거래진행
 
-            dgv.Visible = true;
+            _view.Visible = true;
         }
 
         public void Update()
@@ -202,9 +201,10 @@ namespace New_Tradegy.Library.Trackers
         }
 
 
-        private static void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            g.tradePane._view.Rows[0].DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            _view.Rows[0].DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+
         }
 
         private void FillEmptyRow(int row)
