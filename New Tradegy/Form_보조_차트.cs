@@ -116,8 +116,8 @@ namespace New_Tradegy
 
             DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
-            // Update form title
-            UpdateFormTitle();
+            // Update form title //? No place to display title -> block it
+            //UpdateFormTitle();
 
             // Determine grid layout based on the number of displayList
             SetGridDimensions();
@@ -259,10 +259,10 @@ namespace New_Tradegy
 
 
         // 상관, 보유, 그순, 관심, 닥올, 피올, 절친, 푀손
-        public static void DisplayListGivenDisplayMode(string MainChartDisplayMode, List<string> displayList, string clickedStock, string clickedTitle)
+        public static void DisplayListGivenDisplayMode(string SubChartDisplayMode, List<string> displayList, string clickedStock, string clickedTitle)
         {
             displayList.Clear();
-            switch (MainChartDisplayMode)
+            switch (SubChartDisplayMode)
             {
                 case "지수":
                     for (int i = 0; i < 2; i++)

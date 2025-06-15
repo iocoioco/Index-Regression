@@ -138,6 +138,10 @@ namespace New_Tradegy.Library.Core
                         stock.Misc.oGL_sequence_id = groupIndex;
                         items.Add(Tuple.Create(stock.Statistics.시총, stock.Stock));
                     }
+                    else
+                    {
+                        int a = 1;
+                    }
                 }
 
                 var sorted = items

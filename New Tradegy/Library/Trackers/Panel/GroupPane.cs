@@ -109,7 +109,8 @@ namespace New_Tradegy.Library.Trackers
 
             if (e.Button == MouseButtons.Left)
             {
-                ActionCode.New(true, false, eval: true, draw: 'B').Run(); // 상관 SubChart
+                g.v.SubChartDisplayMode = "상관";
+                ActionCode.New(true, false, eval: true, draw: 's').Run(); // 상관 SubChart
             }
             else if (e.Button == MouseButtons.Right)
             {

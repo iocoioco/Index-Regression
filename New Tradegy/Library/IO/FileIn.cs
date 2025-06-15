@@ -165,6 +165,7 @@ namespace New_Tradegy.Library.IO
                 g.StockManager.IndexList.Add("KODEX 코스닥150선물인버스");
             }
 
+            g.Npts[1] = 0;
             foreach (var t in g.StockRepository.AllDatas)
             {
                 string file = Path.Combine(path, t.Stock + ".txt");
@@ -215,6 +216,9 @@ namespace New_Tradegy.Library.IO
                     else
                         break;
                 }
+
+                if (t.Api.nrow > g.Npts[1]) // set g.Npts[1] the max. of nrow
+                    g.Npts[1] = t.Api.nrow;
 
                 for (int j = t.Api.nrow; j < g.MAX_ROW; j++)
                     for (int m = 0; m < 12; m++)
@@ -281,7 +285,7 @@ namespace New_Tradegy.Library.IO
 
 
         // 업종, 10억이상, 상관, 상관, 통계
-        public static void gen_ogldata_oGLdata()
+        public static void gen_ogl_data()
         {
 
             List<string> tgl_title = new List<string>();
@@ -332,7 +336,7 @@ namespace New_Tradegy.Library.IO
 
             FileIn.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
-            GroupManager.gen_oGL_data(); // generate oGL_data
+            
 
             FileIn.read_write_kodex_magnifier("read"); // duration 0.001 seconds
         }

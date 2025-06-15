@@ -110,8 +110,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.StockRepository = StockRepository.Instance;
             g.StockManager = new StockManager(g.StockRepository);
-            g.GroupManager = new GroupManager();
-
+           
            
             
            
@@ -151,35 +150,38 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             KeyBindingRegistrar.RegisterAll();
 
-            
+
+
 
             
-            var groups = GroupRepository.LoadGroups(); // 상관.txt read
+            
+           
+
+            FileIn.read_변수(); //
+            FileIn.read_무게(); //
+
+            
+            FileIn.gen_ogl_data(); // duration : 1051 stocks : 11.8 seconds
+
+            g.GroupManager = new GroupManager(); // read 상관 inside
+            var groups = g.GroupManager.GetAll();
             GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt"); // check 
 
-            foreach (var group in groups)
-            {
-                g.StockManager.AddIfMissing(group.Stocks);
-            }
+            GroupManager.gen_oGL_data(); // generate oGL_data
+
+            FileIn.read_or_set_stocks(); // duration : 0.36 seconds
+            FileIn.read_파일관심종목(); // duration 0.000 seconds
+
+
+
+
 
             string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
 
-            FileIn.read_변수(); //
-            FileIn.read_무게(); //
-            FileIn.gen_ogldata_oGLdata(); // duration : 1051 stocks : 11.8 seconds
-            FileIn.read_or_set_stocks(); // duration : 0.36 seconds
-            FileIn.read_파일관심종목(); // duration 0.000 seconds
-
-            
-           
 
 
-            
-            
-           
 
-            
 
             if (!g.test) // for market trading
             {

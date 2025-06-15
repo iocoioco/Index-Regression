@@ -29,6 +29,7 @@ namespace New_Tradegy.Library.Trackers
             {
                 area = chart.ChartAreas[areaName];
                 //UpdateSeries(chart, data);
+
             }
             // Generate a new chartarea
             else
@@ -57,7 +58,7 @@ namespace New_Tradegy.Library.Trackers
             if (data.Misc.ShrinkDraw)
                 StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
 
-            if (data.Api.x[EndNpts - 1, 3] == 0)
+            if (data.Api.x[EndNpts - 1, 3] == 0) //?
                 return null;
 
             var area = new ChartArea(areaName);

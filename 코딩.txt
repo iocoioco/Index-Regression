@@ -1,4 +1,10 @@
-﻿shrink
+﻿
+
+
+
+
+
+shrink
 update cycle button
 피올, 닥올 overapping
 selling record 
