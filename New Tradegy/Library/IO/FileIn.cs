@@ -1089,11 +1089,14 @@ namespace New_Tradegy.Library.IO
         {
             string filename = @"C:\병신\data\상관.txt";
 
+
             if (!File.Exists(filename))
             {
                 return;
             }
-            string[] grlines = File.ReadAllLines(filename, Encoding.Default);
+            //string[] grlines = File.ReadAllLines(filename, Encoding.Default);
+            //string[] grlines = File.ReadAllLines(filename);
+            string[] grlines = File.ReadAllLines(filename, Encoding.UTF8);
 
             List<string> temp_gl = new List<string>();
             List<string> temp_Gl = new List<string>();

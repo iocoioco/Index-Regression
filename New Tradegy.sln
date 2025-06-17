@@ -34,16 +34,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time e
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program Reform", "{15289ED6-E810-4931-BC7A-AECA7E419E21}"
-	ProjectSection(SolutionItems) = preProject
-		Event Handler also Check StockData.txt = Event Handler also Check StockData.txt
-		General View of Class.txt = General View of Class.txt
-		ProcessCmdKeyForm1Form2.txt = ProcessCmdKeyForm1Form2.txt
-		Program Tatics Simplified.txt = Program Tatics Simplified.txt
-		Scroll and Curve Height Adjuster.txt = Scroll and Curve Height Adjuster.txt
-		StockData Class and StockManager Class Final.txt = StockData Class and StockManager Class Final.txt
-		StockData Class and StockManager Class.txt = StockData Class and StockManager Class.txt
-		할일.txt = 할일.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
