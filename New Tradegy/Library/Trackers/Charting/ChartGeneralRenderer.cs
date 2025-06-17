@@ -25,7 +25,7 @@ namespace New_Tradegy.Library.Trackers
             Annotation anno = null;
 
             // Update exiting chartarea
-            if (chart.ChartAreas.IndexOf(areaName) >= 0)
+            if (chart.ChartAreas.IndexOf(areaName) >= 0 && !g.test)
             {
                 area = chart.ChartAreas[areaName];
                 //UpdateSeries(chart, data);

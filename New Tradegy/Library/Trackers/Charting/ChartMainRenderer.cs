@@ -67,11 +67,21 @@ namespace New_Tradegy.Library.Trackers.Charting
                 if (g.StockManager.IndexList.Contains(stock))
                 {
                     var area = ChartIndex.UpdateChartArea(chart, data);
+                    if (area == null)
+                    {
+                        Console.WriteLine($"[Warning] Failed to update chart area for stock: {stock}");
+                        continue;
+                    }
                     usedChartAreas.Add(area.Name);
                 }
                 else
                 {
                     var (area, anno) = ChartGeneralRenderer.UpdateChartArea(chart, data);
+                    if (area == null || anno == null)
+                    {
+                        Console.WriteLine($"[Warning] Failed to update chart area for stock: {stock}");
+                        continue;
+                    }
                     usedChartAreas.Add(area.Name);
                     usedAnnotations.Add(anno.Name);
                 }

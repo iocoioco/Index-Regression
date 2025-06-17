@@ -20,26 +20,26 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.DealHalf_TimeFinalKey);
             KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.DealDoubleKey);
             KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.DealConfirmSellKey);
-            KeyBindingManager.Register(Keys.F3, false, false, false,ActionHandlers.DealEmergencySellKey);
+            KeyBindingManager.Register(Keys.F4, false, false, false,ActionHandlers.DealEmergencySellKey);
 
             // Number
             KeyBindingManager.Register('`', false, false, ActionHandlers.피올_닥올);
             KeyBindingManager.Register('1', false, false, ActionHandlers.푀누_종누);
-            KeyBindingManager.Register('2', true, false, ActionHandlers.푀누_종누);
-            KeyBindingManager.Register('3', false, false, ActionHandlers.푀분_총점);
-            KeyBindingManager.Register('4', false, false, ActionHandlers.보조차트_피올_닥올);
-            KeyBindingManager.Register('5', false, false, ActionHandlers.보조차트_순위_관심);
-            KeyBindingManager.Register('6', false, false, ActionHandlers.상순_저순);
-            KeyBindingManager.Register('7', false, false, ActionHandlers.편차_평균);
-            KeyBindingManager.Register('8', false, false, ActionHandlers.배차_분거);
-            KeyBindingManager.Register('9', false, false, ActionHandlers.가격증순);
+            KeyBindingManager.Register('2', false, false, ActionHandlers.푀분_총점);
+            KeyBindingManager.Register('3', false, false, ActionHandlers.보조차트_피올_닥올);
+            KeyBindingManager.Register('4', false, false, ActionHandlers.보조차트_순위_관심);
+            KeyBindingManager.Register('5', false, false, ActionHandlers.상순_저순);
+            KeyBindingManager.Register('6', false, false, ActionHandlers.편차_평균);
+            KeyBindingManager.Register('7', false, false, ActionHandlers.배차_분거);
+            KeyBindingManager.Register('8', false, false, ActionHandlers.가격증순);
+           
 
             // Top
             KeyBindingManager.Register('q', false, false, ActionHandlers.TimeOneForwardsKey);
             KeyBindingManager.Register('Q', false, false, ActionHandlers.TimeOneBackwardsKey);
             KeyBindingManager.Register('w', false, false, ActionHandlers.TimeShortMoveKey);
             KeyBindingManager.Register('W', false, false, ActionHandlers.TimeLongMoveKey);
-            KeyBindingManager.Register('w', false, true, ActionHandlers.WeightControlKey);
+            KeyBindingManager.Register('w', true, false, ActionHandlers.WeightControlKey);
             KeyBindingManager.Register('e', false, false, ActionHandlers.TimeTenForwardsKey);
             KeyBindingManager.Register('E', false, false, ActionHandlers.TimeTenBackwardsKey);
             KeyBindingManager.Register('r', false, false, ActionHandlers.TimeThirtyForwardsKey);

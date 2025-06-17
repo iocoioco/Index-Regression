@@ -251,13 +251,18 @@ namespace New_Tradegy.Library.UI.KeyBindings
         public static readonly Action TimeOneForwardsKey = () =>
         {
             if (g.test) // 시간 앞으로 (테스트)
-
-                g.Npts[1]++;
-            if (g.Npts[1] > g.MAX_ROW)
             {
-                g.Npts[0] = 0;
-                g.Npts[1] = 2;
+                g.Npts[1]++;
+                if (g.Npts[1] > g.MAX_ROW)
+                {
+                    g.Npts[0] = 0;
+                    g.Npts[1] = 2;
+                }
+                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                action.Run();
             }
+
+                
         };
 
         public static readonly Action TimeOneBackwardsKey = () =>
@@ -271,7 +276,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 2;
                 }
+                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                action.Run();
             }
+            
         };
 
         public static readonly Action TimeShortMoveKey = () =>
@@ -282,6 +290,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.q_advance_lines);
                 else
                     TimeUtils.MinuteAdvanceRetreat(0);
+                var action = ActionCode.New(clear: false, post: false, eval: false, draw: 'B');
+                action.Run();
             }
         };
 
@@ -293,6 +303,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                 else
                     TimeUtils.MinuteAdvanceRetreat(0);
+                var action = ActionCode.New(clear: false, post: false, eval: false, draw: 'B');
+                action.Run();
             }
         };
 
@@ -319,7 +331,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
                 else
                     g.npts_fi_dwm += 10;
+                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                action.Run();
             }
+            
         };
 
         public static readonly Action TimeTenBackwardsKey = () =>
@@ -332,7 +347,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
                 else
                     g.npts_fi_dwm -= 10;
+                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                action.Run();
             }
+            
         };
 
         public static readonly Action TimeThirtyForwardsKey = () =>
@@ -346,6 +364,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 30;
                 }
+                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                action.Run();
             }
         };
 
@@ -359,6 +379,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 {
                     g.Npts[1] = g.Npts[0] + 2;
                 }
+                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                action.Run();
             }
         };
 
@@ -366,7 +388,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.InitialDirectory = @"C:\병신\변곡\";
+                dialog.InitialDirectory = @"C:\병신\data\";
                 dialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                 dialog.Multiselect = true;
 
