@@ -24,52 +24,64 @@ namespace New_Tradegy.Library.Trackers.Charting
     {
         private Chart chart => g.ChartManager.Chart1;
 
+
         public void RefreshMainChart()
         {
+            // Reference to the chart
+            var chart = g.ChartManager.Chart1;
+
+            // Constants and major collections (defined clearly at the top)
+            const int MaxChartSlots = 24;
+
             var indexList = g.StockManager.LeverageList;
             var holdings = g.StockManager.HoldingList;
             var interestedWithBid = g.StockManager.InterestedWithBidList;
-            var interestedOnly = interestedWithBid.Except(holdings).ToList();
+            var interestedOnly = g.StockManager.InterestedOnlyList;
             var rankedStocks = g.StockManager.StockRankingList;
+            var excluded = g.StockManager.IndexList;
 
-            const int MaxChartSlots = 24; // Or dynamically from nRow * 8
+            // Step 1: Create withBookBid list (holdings + interestedWithBid - exclude index stocks)
             var withBookBid = holdings
-    .Concat(interestedWithBid)
-    .Distinct()
-    .Where(stock => !g.StockManager.IndexList.Contains(stock)) // Exclude index stocks
-    .Take(MaxChartSlots / 2)
-    .ToList();
+                .Concat(interestedWithBid)
+                .Distinct()
+                .Where(stock => !excluded.Contains(stock))
+                .Take(MaxChartSlots / 2)
+                .ToList();
 
+            // Step 2: Calculate remaining slots and build withoutBookBid from InterestedOnlyList + Ranking
             int usedSlots = withBookBid.Count * 2;
             int remainingSlots = MaxChartSlots - usedSlots;
 
-            var withoutBookBid = rankedStocks
-                .Where(s => !withBookBid.Contains(s))
+            var withoutBookBid = interestedOnly
+                .Concat(rankedStocks)
+                .Where(s => !withBookBid.Contains(s) && !excluded.Contains(s))
                 .Distinct()
                 .Take(remainingSlots)
                 .ToList();
 
-            // Final displayList = index (2 fixed) + others
+            // Step 3: Combine into displayList (index first, then with/without bid)
             var displayList = new List<string>();
-            displayList.AddRange(indexList);        // Always at front
-            displayList.AddRange(withBookBid);
-            displayList.AddRange(withoutBookBid);
+            displayList.AddRange(indexList);      // Fixed index stocks
+            displayList.AddRange(withBookBid);    // Main with bid
+            displayList.AddRange(withoutBookBid); // Main without bid
 
+            // Step 4: Initialize used tracking lists
             var usedChartAreas = new List<string>();
             var usedAnnotations = new List<string>();
             var usedBookbids = new List<string>();
 
+            // Step 5: Render each chart area and prepare book bids
             foreach (var stock in displayList)
             {
                 var data = g.StockRepository.TryGetStockOrNull(stock);
                 if (data == null) continue;
 
-                if (g.StockManager.IndexList.Contains(stock))
+                if (indexList.Contains(stock))
                 {
                     var area = ChartIndex.UpdateChartArea(chart, data);
                     if (area == null)
                     {
-                        Console.WriteLine($"[Warning] Failed to update chart area for stock: {stock}");
+                        Console.WriteLine($"[Warning] Failed to update chart area for index stock: {stock}");
                         continue;
                     }
                     usedChartAreas.Add(area.Name);
@@ -86,16 +98,16 @@ namespace New_Tradegy.Library.Trackers.Charting
                     usedAnnotations.Add(anno.Name);
                 }
 
+                // Add BookBid if stock is from withBookBid or index
                 if (withBookBid.Contains(stock) || indexList.Contains(stock))
                 {
-                    //? does not work ?
                     int row = -1, col = -1;
                     if (stock == indexList[0])
                     {
                         row = 0;
                         col = 0;
                     }
-                    else if (stock == indexList[0])
+                    else if (stock == indexList[1])
                     {
                         row = 0;
                         col = 2;
@@ -107,12 +119,13 @@ namespace New_Tradegy.Library.Trackers.Charting
                         col = index % 3 + 2;
                     }
 
-                    if (row < 0) break;
+                    if (row < 0) continue;
                     g.BookBidManager.GetOrCreate(stock, row, col);
                     usedBookbids.Add(stock);
                 }
             }
 
+            // Step 6: Layout and cleanup
             RelocateChartAreasAndAnnotations(
                 g.StockManager.LeverageList,
                 withBookBid,
@@ -123,6 +136,7 @@ namespace New_Tradegy.Library.Trackers.Charting
 
             chart.Invalidate();
         }
+
 
         private void CleanupUnusedChartObjects(List<string> keepAreas, List<string> keepAnnotations, List<string> keepBookbids)
         {
