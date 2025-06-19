@@ -568,6 +568,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
+       
 
 
 
@@ -585,8 +586,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             // changed selection and xval, yval, percentage, id are returned
             // g.clickedStock defined in this routine also
             // g.date set to the last date(last row and last column) in the drawn chart
-
-            g.clickedStock = ChartClickMapper.CoordinateMapping(chart1, g.nRow, g.nCol, g.dl, e, ref selection, ref col_id, ref row_id);
+            var DisplayList = g.ChartMainRenderer.DisplayList;
+            g.clickedStock = ChartClickMapper.CoordinateMapping(chart1, g.nRow, g.nCol, DisplayList, e, ref selection, ref col_id, ref row_id);
             if (g.clickedStock == null)
             {
                 return;

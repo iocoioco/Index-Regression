@@ -24,7 +24,7 @@ namespace New_Tradegy.Library.Trackers.Charting
     {
         private Chart chart => g.ChartManager.Chart1;
 
-
+        public List<string> DisplayList { get; private set; }
         public void RefreshMainChart()
         {
             // Reference to the chart
@@ -133,6 +133,8 @@ namespace New_Tradegy.Library.Trackers.Charting
             RelocateBookbids(usedBookbids);
 
             CleanupUnusedChartObjects(usedChartAreas, usedAnnotations, usedBookbids);
+
+            DisplayList = GenerateDisplayList(indexList, withBookBid, withoutBookBid, g.nRow, g.nCol);
 
             chart.Invalidate();
         }
@@ -287,6 +289,75 @@ namespace New_Tradegy.Library.Trackers.Charting
                 g.BookBidManager.Relocate(stock); // assumes you have a Relocate method
             }
         }
+
+
+        private List<string> GenerateDisplayList(
+    List<string> indexList,
+    List<string> withBookBid,
+    List<string> withoutBookBid,
+    int nRow,
+    int nCol)
+        {
+            int total = 2 + (nCol - 2) * nRow;
+            // Initialize fixed-size grid
+            var displayList = new List<string>(new string[total]);
+
+            // Step 1: Index stocks at column 0, rows 0 and 1
+            if (indexList.Count > 0)
+                displayList[0] = indexList[0];
+            if (indexList.Count > 1)
+                displayList[1] = indexList[1];
+
+            // Step 2: Place withBookBid stocks and their bookbids in columns 2/3, 4/5, etc.
+            int row = 0;
+            int col = 2;
+
+            foreach (var stock in withBookBid)
+            {
+                // Safety: if there's no room for bookbid column
+                if (col + 1 >= nCol)
+                    break;
+
+                int chartIndex = (col - 2) * nRow + row + 2;
+                int bookbidIndex = (col - 1) * nRow + row + 2;
+
+                displayList[chartIndex] = stock;       // place stock chart
+                displayList[bookbidIndex] = "BookBid";      // reserve bookbid spot
+
+                row++;
+
+                // Move to next chart/bookbid column pair if current column filled
+                if (row == nRow)
+                {
+                    row = 0;
+                    col += 2;
+                }
+            }
+
+
+            // Step 3: Place remaining withoutBookBid stocks into empty cells (excluding column 0)
+
+            foreach (var stock in withoutBookBid)
+            {
+                bool placed = false;
+                for (int i = 0; i < total; i++)
+                {
+                    if (displayList[i] == null)
+                    {
+                        displayList[i] = stock;
+                        placed = true;
+                        break;
+                    }
+                }
+
+                if (!placed) break; // no space left
+            }
+
+            return displayList;
+        }
+
+
+
     }
 
 }
