@@ -80,7 +80,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             if (_cpcybos.IsConnect == 0) // 0 : not connected
             {
                 ChangeMainTitleConnection(); // repeatedly reconnect, but currently double slashed
-            }
+            } 
             else
                 g.connected = true;
 
