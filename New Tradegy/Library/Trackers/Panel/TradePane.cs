@@ -30,14 +30,15 @@ namespace New_Tradegy.Library.Trackers
 
         private void InitializeDgv(DataGridView _view)
         {
+            // x 212
             int fontSize = 10;
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
 
-            int x = g.screenWidth / g.nCol + 10;
-            int y = g.CellHeight * 15; // + 30 deleted from width
+            int x = g.screenWidth / g.nCol + 20;
+            int y = 336 + g.CellHeight * 3 + 3; // + 30 deleted from width
             _view.Location = new Point(x, y);
-            int width = g.screenWidth / 10 - scrollbarWidth;
-            int height = g.cellHeight * 9 + 14;
+            int width = g.screenWidth / 10 - 20;
+            int height = 250;
             _view.Size = new Size(width, height);
 
               
@@ -47,7 +48,7 @@ namespace New_Tradegy.Library.Trackers
             _view.ReadOnly = true;
             _view.DefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
             _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", fontSize, FontStyle.Bold);
-            _view.RowTemplate.Height = g.cellHeight - 1;
+            _view.RowTemplate.Height = g.cellHeight - 3;
             _view.ForeColor = Color.Black;
 
             _view.ScrollBars = ScrollBars.None;

@@ -157,7 +157,7 @@ namespace New_Tradegy.Library.Utils
                 for (int j = start_row; j < end_row; j++)
                 {
                     if (j < 0) continue;
-                    if (t.Api.틱의시간[j] == 0 || t.Api.틱의시간[j] > 152100) break;
+                    if (t.Api.x[j, 0] == 0 || t.Api.x[j, 0] > 152100) break;
 
                     for (int k = 1; k < 12; k++)
                     {

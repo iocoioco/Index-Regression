@@ -99,6 +99,10 @@ namespace New_Tradegy // added for test on 20241020 0300
                 chart1.Location = new Point(0, 0);
             }
 
+
+            this.Controls.Add(this.chart1);
+            this.chart1.SendToBack();
+
             this.WindowState = FormWindowState.Maximized; // this.WindowState
 
             this.Text = g.v.MainChartDisplayMode; // 시초에는 푀분
@@ -181,24 +185,26 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
+            
+
             var controlDgv = new DataGridView();
             var controlDtb = new DataTable();
             this.Controls.Add(controlDgv); // ✅ added to Form
             g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
-            controlDgv.BringToFront();
+     
 
             var tradeDgv = new DataGridView();
             var tradeDtb = new DataTable();
             this.Controls.Add(tradeDgv); // ✅ added to Form
             g.tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
-            tradeDgv.BringToFront();
+         
 
 
             var groupDgv = new DataGridView();
             var groupDtb = new DataTable();
             this.Controls.Add(groupDgv); // ✅ added to Form
             g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-            groupDgv.BringToFront();
+            groupDgv.Hide();
 
 
             if (!g.test) // for market trading
@@ -755,18 +761,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // ProcessCmdKey is first and then
-            // passed to Form1_KeyPress, e.Handled = true : no meaning in the current program
-            if ((short)e.KeyChar > 127)
-            {
-                SoundUtils.Sound("Keys", "Korean");
 
-                // Change input language to US English
-                InputLanguage.CurrentInputLanguage = InputLanguage.FromCulture(
-                    new System.Globalization.CultureInfo("en-US"));
-
-                return;
-            }
         }
     }
 }

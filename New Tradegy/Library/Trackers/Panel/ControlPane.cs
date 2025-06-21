@@ -40,9 +40,10 @@ namespace New_Tradegy.Library.Trackers
 
         private void InitializeDgv()
         {
+            // x 212 y 336 w 172 h 84
 
-            int x = g.screenWidth / g.nCol + 10;
-            int y = g.screenHeight / 3 + 2;
+            int x = g.screenWidth / g.nCol + 20;
+            int y = g.screenHeight / 3 - 6;
             _view.Location = new Point(x, y);
             int width = g.screenWidth / g.nCol - 20;
             int height = g.CellHeight * 3;

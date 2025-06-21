@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +25,7 @@ namespace New_Tradegy.Library.Trackers
              
         }
 
-        public DataGridView GetOrCreate(string stock, int row, int col)
+        public DataGridView GetOrCreate(string stock)
         {
             if (_gridMap.TryGetValue(stock, out var existingGrid))
                 return existingGrid;
@@ -35,11 +37,6 @@ namespace New_Tradegy.Library.Trackers
             if (grid == null) 
                 return null; //?
             _gridMap[stock] = grid;
-
-            grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);
-            grid.Visible = true;
-
-            g.MainForm.Invoke((MethodInvoker)(() => g.MainForm.Controls.Add(grid)));
 
             return grid;
         }
@@ -105,6 +102,65 @@ namespace New_Tradegy.Library.Trackers
 
         public void Relocate(string stock)
         {
+            if (_gridMap.TryGetValue(stock, out var grid) &&
+                g.ChartManager.Chart1.ChartAreas.IndexOf(stock) is int index && index >= 0)
+            {
+                var chartArea = g.ChartManager.Chart1.ChartAreas[index];
+                var chartPos = chartArea.Position;
+
+                int screenW = g.screenWidth;
+                int screenH = g.screenHeight;
+
+                float chartX = chartPos.X / 100f * g.ChartManager.Chart1.Width;
+                float chartY = chartPos.Y / 100f * g.ChartManager.Chart1.Height;
+
+                int newX, newY;
+
+                if (stock == "KODEX 코스닥150레버리지")
+                {
+                    // Move 1 column right and 1 row down
+                    newX = (int)(chartX + screenW / 10);
+                    newY = (int)(screenH / g.nRow * 2 - 14);
+                }
+                else
+                {
+                    // Move 1 column to the right
+                    newX = (int)(chartX + screenW / 10);
+                    newY = (int)(chartY);
+                }
+
+                int xMargin = 20;
+                grid.Location = new Point(newX + xMargin, newY);
+
+
+                // visible
+                grid.Visible = true;
+
+                //// === Log to file ===
+                //string folderPath = @"C:\병신\temp";
+                //string logPath = Path.Combine(folderPath, "grid_locations.txt");
+
+                //try
+                //{
+                //    if (!Directory.Exists(folderPath))
+                //        Directory.CreateDirectory(folderPath);
+
+                //    string logLine = $"{stock,-25} Location=({grid.Location.X,4}, {grid.Location.Y,4}), " +
+                //                     $"Size=({grid.Width,4}, {grid.Height,4})";
+
+                //    File.AppendAllText(logPath, logLine + Environment.NewLine);
+                //}
+                //catch (Exception ex)
+                //{
+                //    Console.WriteLine("Logging failed: " + ex.Message);
+                //}
+            }
+        }
+
+
+
+        public void Relocate_old(string stock)
+        {
             if (_gridMap.TryGetValue(stock, out var grid))
             {
                 // Determine row/col from chart layout
@@ -115,6 +171,7 @@ namespace New_Tradegy.Library.Trackers
                     int col = index % nCol;
 
                     grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);
+                    //grid.BringToFront();
                 }
             }
         }

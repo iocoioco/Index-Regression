@@ -120,7 +120,7 @@ namespace New_Tradegy.Library.Trackers.Charting
                     }
 
                     if (row < 0) continue;
-                    g.BookBidManager.GetOrCreate(stock, row, col);
+                    g.BookBidManager.GetOrCreate(stock);
                     usedBookbids.Add(stock);
                 }
             }
@@ -135,7 +135,7 @@ namespace New_Tradegy.Library.Trackers.Charting
             CleanupUnusedChartObjects(usedChartAreas, usedAnnotations, usedBookbids);
 
             DisplayList = GenerateDisplayList(indexList, withBookBid, withoutBookBid, g.nRow, g.nCol);
-
+        
             chart.Invalidate();
         }
 

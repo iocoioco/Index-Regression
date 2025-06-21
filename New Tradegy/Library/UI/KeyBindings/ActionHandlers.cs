@@ -449,11 +449,16 @@ namespace New_Tradegy.Library.UI.KeyBindings
         #region
         public static readonly Action ShrinkOrNotTenPlusKey = () =>
         {
+            g.ChartManager.Chart1.Hide(); //?
+            return;
             g.NptsForShrinkDraw += 10;
         };
 
         public static readonly Action ShrinkOrNotTenMinusKey = () =>
         {
+            g.ChartManager.Chart1.Show(); //?
+          
+            return;
             g.NptsForShrinkDraw -= 10;
             if (g.NptsForShrinkDraw <= 10)
             {

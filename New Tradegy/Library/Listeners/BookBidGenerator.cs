@@ -20,7 +20,7 @@ namespace New_Tradegy.Library.Listeners
 {
     class BookBidGenerator
     {
-  
+
         private CPUTILLib.CpStockCode _stockCodeService = new CPUTILLib.CpStockCode();
         private DSCBO1Lib.StockJpbid _jpbidPrimary;
         private DSCBO1Lib.StockJpbid2 _jpbidSecondary;
@@ -39,8 +39,9 @@ namespace New_Tradegy.Library.Listeners
             _stock = stock;
 
             int w0 = 61, w1 = 50, w2 = 61;
-            int cellHeight = 27;
+            int cellHeight = 28;
 
+        
             _dataTable = new DataTable();
             _dataTable.Columns.Add("매도");
             _dataTable.Columns.Add("호가");
@@ -49,32 +50,42 @@ namespace New_Tradegy.Library.Listeners
             for (int i = 0; i < 2 * Rows + 2; i++)
                 _dataTable.Rows.Add("", "", "");
 
+            _dataGridView = new DataGridView();
+            //_dataGridView.AutoGenerateColumns = true;
+            _dataGridView.DataSource = _dataTable;
+
             _dataGridView = new DataGridView
             {
-                DataSource = new BindingSource { DataSource = _dataTable },
                 Name = _stock,
-                Location = new Point(120, 0), // temporary location
-                Size = new Size(w0 + w1 + w2, cellHeight * 13),
+                Location = new Point(0, 0), // temporary location
+                Size = new Size(w0 + w1 + w2, cellHeight * 12 ),
                 Dock = DockStyle.None,
-                TabIndex = 1
+                TabIndex = 1,
+                DataSource = _dataTable,
+                ColumnHeadersVisible = false,
+                RowHeadersVisible = false,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                AllowUserToResizeRows = false,
+                AllowUserToResizeColumns = false,
+                ScrollBars = ScrollBars.None,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                DefaultCellStyle = { Font = new Font("Arial", 9, FontStyle.Bold), ForeColor = Color.Black },
+                RowTemplate = { Height = 28 },
+                ColumnHeadersDefaultCellStyle = { Font = new Font("Arial", 9, FontStyle.Bold) },
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
             };
 
-            // Setup grid using utility method
-            GridUtils.SetupBasicGrid(
-                _dataGridView,
-                rowHeight: cellHeight,
-                fontName: "Arial",
-                fontSize: 9,
-                bold: true,
-                showColumnHeaders: false,
-                showRowHeaders: false,
-                columnWidths: new[] { w0, w1, w2 }
-            );
-
-            // Data error handling
-            _dataGridView.DataError += (s, e) => FileOut.DataGridView_DataError(s, e, "jpjd _dataGridView");
+            // Event handlers
+            _dataGridView.DataError += (s, e) => FileOut.DataGridView_DataError(s, e, $"jpjd {_dataGridView.Name}");
             _dataGridView.DataError += new DataGridViewDataErrorEventHandler(OnDataError);
             _dataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(OnCellMouseClick);
+
+            
+
+
 
             // Subscription
             string stockcode = _stockCodeService.NameToCode(_stock);
@@ -89,11 +100,33 @@ namespace New_Tradegy.Library.Listeners
                 return null;
 
             g.BookBidInstances.TryAdd(_stock, _jpbidPrimary);
+            
+            // added after discussing Sensei
+            //_dataGridView.BorderStyle = BorderStyle.Fixed3D;
+            _dataGridView.BackgroundColor = Color.LightYellow;
+
+
+
 
             g.MainForm.Controls.Add(_dataGridView);
-            _dataGridView.BringToFront();
+
+
+            // setting invisible
+            _dataGridView.Visible = false;
+
+
 
             RequestQuote();
+
+            _dataGridView.BringToFront();
+            g.ChartManager.Chart1.SendToBack();
+
+            _dataGridView.Visible = true;
+            //g.MainForm.Controls.SetChildIndex(_dataGridView, 0);
+
+            _dataGridView.Columns[0].Width = w0;
+            _dataGridView.Columns[1].Width = w1;
+            _dataGridView.Columns[2].Width = w2;
 
             return _dataGridView;
         }
@@ -740,7 +773,7 @@ namespace New_Tradegy.Library.Listeners
             return StringUtils.ExtractIntFromString(cellValue);
         }
 
-       
+
 
         #endregion
     }

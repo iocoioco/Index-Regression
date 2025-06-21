@@ -31,7 +31,7 @@ namespace New_Tradegy.Library.Trackers
         private void InitializeDgv(DataGridView _view)
         {
             
-            int x = g.screenWidth / g.nCol + 10;
+            int x = g.screenWidth / g.nCol + 20;
             int y = g.screenHeight / 3 + 2;
             y = 0; //?
             _view.Location = new Point(x, y);
