@@ -120,7 +120,7 @@ namespace New_Tradegy.Library.Listeners
 
             // ✅ Fill the codes using your BatchSelector
             var selected = MarketEyeBatchSelector.Select200Batch(
-                leverage: g.StockManager.LeverageList,
+                leverage: g.StockManager.LeverageList, 
                 holding: g.StockManager.HoldingList,
                 interestedWithBid: g.StockManager.InterestedWithBidList,
                 interestedOnly: g.StockManager.InterestedOnlyList
