@@ -53,7 +53,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 RankLogic.EvalStock();
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
-                g.ChartMainRenderer.RefreshMainChart();
+                g.ChartMain.RefreshMainChart();
 
 
             if (DrawTarget == 's' || DrawTarget == 'B')

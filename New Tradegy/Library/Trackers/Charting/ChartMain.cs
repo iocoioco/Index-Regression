@@ -20,7 +20,7 @@ namespace New_Tradegy.Library.Trackers.Charting
     }
 
 
-    public class ChartMainRenderer
+    public class ChartMain
     {
         private Chart chart => g.ChartManager.Chart1;
 
@@ -88,7 +88,7 @@ namespace New_Tradegy.Library.Trackers.Charting
                 }
                 else
                 {
-                    var (area, anno) = ChartGeneralRenderer.UpdateChartArea(chart, data);
+                    var (area, anno) = ChartGeneral.UpdateChartArea(chart, data);
                     if (area == null || anno == null)
                     {
                         Console.WriteLine($"[Warning] Failed to update chart area for stock: {stock}");
@@ -188,6 +188,12 @@ namespace New_Tradegy.Library.Trackers.Charting
                     var area = chart.ChartAreas[stock];
                     area.Position = new ElementPosition(x, y, cellWidth, 50f);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+
+
+
+
+                    if (!area.Visible)
+                        area.Visible = true;
                 }
             }
 
@@ -217,18 +223,25 @@ namespace New_Tradegy.Library.Trackers.Charting
                     var area = chart.ChartAreas[stock];
                     area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+
+
+                    if (!area.Visible)
+                        area.Visible = true;
                 }
 
                 if (!g.StockManager.IndexList.Contains(stock))
                 {
-                    var annotation = chart.Annotations.FirstOrDefault(a => a.Name == stock);
-                    if (annotation is RectangleAnnotation rect)
+                    var anno = chart.Annotations.FirstOrDefault(a => a.Name == stock);
+                    if (anno is RectangleAnnotation rect)
                     {
                         rect.X = x;
                         rect.Y = y; // + cellHeight;
                         rect.Width = cellWidth;
                         rect.Height = 5.155f + 2f;
                     }
+
+                    if (!anno.Visible)
+                        anno.Visible = true;
                 }
 
                 currentRow++; // Go to next row
@@ -256,18 +269,24 @@ namespace New_Tradegy.Library.Trackers.Charting
                                 var area = chart.ChartAreas[stock];
                                 area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
                                 area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+
+                                if (!area.Visible)
+                                    area.Visible = true;
                             }
 
                             if (!g.StockManager.IndexList.Contains(stock))
                             {
-                                var annotation = chart.Annotations.FirstOrDefault(a => a.Name == stock);
-                                if (annotation is RectangleAnnotation rect)
+                                var anno = chart.Annotations.FirstOrDefault(a => a.Name == stock);
+                                if (anno is RectangleAnnotation rect)
                                 {
                                     rect.X = x;
                                     rect.Y = y; // + cellHeight;
                                     rect.Width = cellWidth;
                                     rect.Height = 5.155f + 2f;
                                 }
+
+                                if (anno != null && !anno.Visible)
+                                    anno.Visible = true;
                             }
 
                             placed = true;

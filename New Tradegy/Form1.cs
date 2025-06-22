@@ -148,8 +148,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
             g.StockManager.AddIfMissing(NaverList);
 
-            g.ChartMainRenderer = new ChartMainRenderer(); // all new, Form_1 start
-            g.ChartMainRenderer.RefreshMainChart();
+            g.ChartMain = new ChartMain(); // all new, Form_1 start
+            g.ChartMain.RefreshMainChart();
 
 
             KeyBindingRegistrar.RegisterAll();
@@ -242,11 +242,11 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 if (Form1.Instance.InvokeRequired)
                 {
-                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartMainRenderer.RefreshMainChart()));
+                    Form1.Instance.Invoke((MethodInvoker)(() => g.ChartMain.RefreshMainChart()));
                 }
                 else
                 {
-                    g.ChartMainRenderer.RefreshMainChart();
+                    g.ChartMain.RefreshMainChart();
                 }
             };
 
@@ -592,7 +592,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             // changed selection and xval, yval, percentage, id are returned
             // g.clickedStock defined in this routine also
             // g.date set to the last date(last row and last column) in the drawn chart
-            var DisplayList = g.ChartMainRenderer.DisplayList;
+            var DisplayList = g.ChartMain.DisplayList;
             g.clickedStock = ChartClickMapper.CoordinateMapping(chart1, g.nRow, g.nCol, DisplayList, e, ref selection, ref col_id, ref row_id);
             if (g.clickedStock == null)
             {

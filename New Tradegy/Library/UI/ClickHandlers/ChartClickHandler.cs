@@ -45,7 +45,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
-                    g.ChartMainRenderer.RefreshMainChart(); // index already has bookbid
+                    g.ChartMain.RefreshMainChart(); // index already has bookbid
 
                      
 
@@ -124,7 +124,8 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     string dirPath = @"C:\병신\data\Stock Memo";
                     string filePath = Path.Combine(dirPath, g.clickedStock + ".txt");
                     if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-                    if (!File.Exists(filePath)) File.Create(filePath).Dispose();
+                    if (!File.Exists(filePath)) 
+                            File.Create(filePath).Dispose();
                     Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
                 }
                 break;
@@ -153,7 +154,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                                 g.StockManager.InterestedOnlyList.Remove(g.clickedStock);
                         }
                     }
-                    ActionCode.New(true, false, eval: true, draw: 'B').Run();
+                    ActionCode.New(true, false, eval: true, draw: 'm').Run();
                 }
                 break;
 
@@ -169,10 +170,11 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         if (g.StockManager.InterestedOnlyList.Contains(g.clickedStock))
                             g.StockManager.InterestedOnlyList.Remove(g.clickedStock);
-                        else g.StockManager.InterestedOnlyList.Add(g.clickedStock);
+                        else 
+                                g.StockManager.InterestedOnlyList.Add(g.clickedStock);
                     }
                 }
-                ActionCode.New(true, false, eval: true, draw: 'B').Run();
+                ActionCode.New(false, false, eval: true, draw: 'm').Run();
 
                 break;
 
@@ -194,7 +196,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                         g.Npts[0] = 0;
                         g.Npts[1] = 2;
                     }
-                    ActionCode.New(true, false, eval: true, draw: 'B').Run();
+                    ActionCode.New(false, false, eval: true, draw: 'B').Run();
                 }
                 break;
 
@@ -282,8 +284,8 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     //Assign g.v.SubChartDisplayMode to key.
                     //❌ Otherwise:
                     //Assign "상관" to key(as a fallback default).
-                    string key = (g.v.SubChartDisplayMode == "상관" || g.v.SubChartDisplayMode == "절친") ? g.v.SubChartDisplayMode : "상관";
-                    ActionCode.New(true, false, eval: true, draw: 'B').Run();
+                 g.v.SubChartDisplayMode = "상관";
+                    ActionCode.New(false, false, eval: true, draw: 's').Run();
                 }
                 break;
             }

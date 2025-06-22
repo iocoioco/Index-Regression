@@ -7,7 +7,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.Trackers
 {
-    internal class ChartBasicRenderer
+    internal class ChartBasic
     {
         public static void RelocateChartArea(ChartArea area, int row, int col, int nRow, int nCol)
         {

@@ -25,7 +25,7 @@ namespace New_Tradegy.Library
         //public static ChartIndex ChartIndex;
 
         public static BookBidManager BookBidManager;
-        public static ChartMainRenderer ChartMainRenderer;
+        public static ChartMain ChartMain;
 
         public static ChartManager ChartManager;
 
@@ -100,7 +100,7 @@ namespace New_Tradegy.Library
         public static int postInterval = 30; // seconds to be interpolated to 1 minutes
 
         // MiscControl
-        public static char PeoridNews = 'w'; // google search 'd' past day, 'w' past month
+        public static char PeoridNews = 'd'; // google search 'd' past day, 'w' past month
 
         // FontAndThemeAndColor
         public static Color[] Colors = new Color[] // five color set for annotation and chartarea based on activity

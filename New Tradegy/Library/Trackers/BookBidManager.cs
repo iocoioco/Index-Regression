@@ -136,24 +136,7 @@ namespace New_Tradegy.Library.Trackers
                 // visible
                 grid.Visible = true;
 
-                //// === Log to file ===
-                //string folderPath = @"C:\병신\temp";
-                //string logPath = Path.Combine(folderPath, "grid_locations.txt");
-
-                //try
-                //{
-                //    if (!Directory.Exists(folderPath))
-                //        Directory.CreateDirectory(folderPath);
-
-                //    string logLine = $"{stock,-25} Location=({grid.Location.X,4}, {grid.Location.Y,4}), " +
-                //                     $"Size=({grid.Width,4}, {grid.Height,4})";
-
-                //    File.AppendAllText(logPath, logLine + Environment.NewLine);
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine("Logging failed: " + ex.Message);
-                //}
+               
             }
         }
 

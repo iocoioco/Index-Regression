@@ -45,11 +45,11 @@ namespace New_Tradegy.Library.PostProcessing
             Form se = (Form)Application.OpenForms["Form1"];
             if (se.InvokeRequired)
             {
-                se.Invoke(new Action(() => g.ChartMainRenderer.RefreshMainChart()));
+                se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
             }
             else
             {
-                g.ChartMainRenderer.RefreshMainChart();
+                g.ChartMain.RefreshMainChart();
             }
         }
         public static void ManageChart2Invoke()

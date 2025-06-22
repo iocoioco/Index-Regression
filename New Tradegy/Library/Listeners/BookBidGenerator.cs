@@ -78,6 +78,11 @@ namespace New_Tradegy.Library.Listeners
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
             };
 
+
+
+            
+
+
             // Event handlers
             _dataGridView.DataError += (s, e) => FileOut.DataGridView_DataError(s, e, $"jpjd {_dataGridView.Name}");
             _dataGridView.DataError += new DataGridViewDataErrorEventHandler(OnDataError);

@@ -47,8 +47,7 @@ namespace New_Tradegy
 
 
             g.ChartManager.SetChart2(chart2);
-            //g.ChartGeneral2 = new ChartGeneral();
-            //g.ChartGeneral2.Initialize(chart2, this, g.nRow / 2, g.nCol);
+           
 
             // Configure DataGridView appearance
             ConfigureDataGridView();
@@ -145,7 +144,7 @@ namespace New_Tradegy
                 // General
                 else
                 {
-                    var (area, anno) = ChartGeneralRenderer.UpdateChartArea(chart2, data);
+                    var (area, anno) = ChartGeneral.UpdateChartArea(chart2, data);
                     if(area != null)
                     {
                         chartAreas.Add(area);
@@ -197,21 +196,32 @@ namespace New_Tradegy
                         continue;
                     area.Position = new ElementPosition(x, y, width, height);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+
+
+
+                    if (!area.Visible)
+                        area.Visible = true;
                 }
 
                 // Move Annotation (only for non-index stocks)
                 if (!g.StockManager.IndexList.Contains(stock))
                 {
-                    var annotation = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
-                    if (annotation == null)
+                    var anno = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
+                    if (anno == null)
                         continue;
-                    if (annotation is RectangleAnnotation rect)
+                    if (anno is RectangleAnnotation rect)
                     {
                         rect.X = x;
                         rect.Y = y; // + height; // directly below chart
                         rect.Width = width;
                         rect.Height = 5.155f + 2f; // standard height
                     }
+
+
+
+
+                    if (!anno.Visible)
+                        anno.Visible = true;
                 }
             }
 

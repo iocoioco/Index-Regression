@@ -111,9 +111,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Library\Trackers\Charting\ChartBasicRenderer.cs" />
-    <Compile Include="Library\Trackers\Charting\ChartGeneralRenderer.cs" />
-    <Compile Include="Library\Trackers\Charting\ChartMainRenderer.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartBasic.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartGeneral.cs" />
+    <Compile Include="Library\Trackers\Charting\ChartMain.cs" />
     <Compile Include="Library\UI\AlertForm.cs">
       <SubType>Form</SubType>
     </Compile>

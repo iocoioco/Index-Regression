@@ -12,7 +12,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.Trackers
 {
-    internal class ChartGeneralRenderer
+    internal class ChartGeneral
     {
         // 0, 1(가격), 2(수급), 3(체강), 4(프로그램), 5(외인), 6(기관)
         private static Color[] colorGeneral = { Color.White, Color.Red, Color.DarkGray,
@@ -25,18 +25,18 @@ namespace New_Tradegy.Library.Trackers
             Annotation anno = null;
 
             // Update exiting chartarea
-            if (chart.ChartAreas.IndexOf(areaName) >= 0 && !g.test)
-            {
-                area = chart.ChartAreas[areaName];
-                //UpdateSeries(chart, data);
+            //if (chart.ChartAreas.IndexOf(areaName) >= 0)
+            //{
+            //    area = chart.ChartAreas[areaName];
+            //    UpdateSeries(chart, data);
 
-            }
-            // Generate a new chartarea
-            else
-            {
-                ChartBasicRenderer.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
+            //}
+            //// Generate a new chartarea
+            //else
+            //{
+                ChartBasic.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
                 area = CreateChartArea(chart, data);
-            }
+            //}
             if(area != null)
             {
                 anno = RedrawAnnotation(chart, data); // existing annotation will be deleted in RedrawAnnotation
@@ -61,8 +61,16 @@ namespace New_Tradegy.Library.Trackers
             if (data.Api.x[EndNpts - 1, 3] == 0) //?
                 return null;
 
+
+
+
+
             var area = new ChartArea(areaName);
             chart.ChartAreas.Add(area);
+            area.Visible = false;
+
+
+
 
             bool success = AddSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts, ref y_min, ref y_max);
             if (!success)
@@ -102,47 +110,100 @@ namespace New_Tradegy.Library.Trackers
             return area;
         }
 
-        public static void UpdateSeries(Chart chart, StockData o)
+
+        // General stock version: incremental update only, minimal redraw
+        public static void UpdateSeries(Chart chart, StockData data)
         {
-            string stock = o.Stock;
-
-            var lineTypes = new List<(int id, string label, Color color, int width)>
-            {
-                (1, "price", colorGeneral[1], g.LineWidth),
-                (2, "amount", colorGeneral[2], 1),
-                (3, "intensity", colorGeneral[3], 1),
-                (4, "program", colorGeneral[4], g.LineWidth),
-                (5, "foreign", colorGeneral[5], g.LineWidth),
-                (6, "institute", colorGeneral[6], g.LineWidth)
-            };
-
-            int last = o.Api.nrow - 1;
-            if (last < 0 || o.Api.x[last, 0] == 0)
+            string stock = data.Stock;
+            int last = data.Api.nrow - 1;
+            if (last < 0 || data.Api.x[last, 0] == 0)
                 return;
 
-            string xLabel = ((int)(o.Api.x[last, 0] / g.HUNDRED)).ToString();
+            string xLabel = ((int)(data.Api.x[last, 0] / g.HUNDRED)).ToString();
+            int[] seriesIds = { 1, 2, 3, 4, 5, 6 };
 
-            foreach (var (typeId, label, color, width) in lineTypes)
+            foreach (int typeId in seriesIds)
             {
-                string sid = $"{stock} {typeId}";
+                string seriesName = stock + " " + typeId;
+                if (chart.Series.IsUniqueName(seriesName)) continue;
 
-                if (!chart.Series.Any(s => s.Name == sid))
-                    continue;
+                var series = chart.Series[seriesName];
+                int value = PointValue(data, last, typeId);
 
-                var series = chart.Series[sid];
-                int value = PointValue(o, last, typeId);
-
-                var lastPoint = series.Points.Last();
-                if (lastPoint.XValue.ToString() == xLabel)
+                if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
                 {
-                    lastPoint.YValues[0] = value; // same minute → update
+                    series.Points.Last().YValues[0] = value;
                 }
                 else
                 {
-                    series.Points.AddXY(xLabel, value); // new minute → append
+                    series.Points.AddXY(xLabel, value);
                 }
+
+                Label(chart, series);
+                Mark(chart, series.Points.Count - 1, series);
+            }
+
+            if (!chart.ChartAreas.IsUniqueName(stock))
+            {
+                var area = chart.ChartAreas[stock];
+
+                string seriesName = stock + " " + "1";
+                var series = chart.Series[seriesName];
+                int totalPoints = series.Points.Count;
+                if (data.Misc.ShrinkDraw)
+                    totalPoints -= g.NptsForShrinkDraw;
+                area.AxisX.Interval = data.Api.nrow - 1;
             }
         }
+
+
+        
+        public static void UpdateSeries_old(Chart chart, StockData data)
+        {
+            string stock = data.Stock;
+            int last = data.Api.nrow - 1;
+
+            if (last < 0 || data.Api.x[last, 0] == 0)
+                return;
+
+            string xLabel = ((int)(data.Api.x[last, 0] / g.HUNDRED)).ToString();
+
+            int[] seriesIds = { 1, 2, 3, 4, 5, 6 };
+
+            foreach (int typeId in seriesIds)
+            {
+                string seriesName = $"{stock} {typeId}";
+
+                // Skip if the series doesn't exist
+                // fater than any because of internal dictionary lookup
+                if (chart.Series.IsUniqueName(seriesName))
+                    continue;
+
+                var series = chart.Series[seriesName];
+                int value = PointValue(data, last, typeId);
+
+                if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
+                {
+                    series.Points.Last().YValues[0] = value;
+                }
+                else
+                {
+                    series.Points.AddXY(xLabel, value);
+                }
+
+
+                Label(chart, series); // ✅ Annotate
+                Mark(chart, series.Points.Count - 1, series); // ✅ Mark position
+            }
+
+            // Adjust X-axis interval if chart area exists
+            if (!chart.ChartAreas.IsUniqueName(stock))
+            {
+                var area = chart.ChartAreas[stock];
+                area.AxisX.Interval = data.Api.nrow - 1;
+            }
+        }
+
 
         private static bool AddSeriesLines(Chart chart, StockData o, string stockName, string area,
                                  int StartNpts, int EndNpts, ref double y_min, ref double y_max)
@@ -210,21 +271,21 @@ namespace New_Tradegy.Library.Trackers
             return true;
         }
 
-        private static int PointValue(StockData o, int k, int id)
+        private static int PointValue(StockData data, int k, int id)
         {
             int value = 0;
             switch (id)
             {
                 case 1:
-                    value = o.Api.x[k, 1];
+                    value = data.Api.x[k, 1];
                     break;
                 case 2:
-                    value = (int)(Math.Sqrt(o.Api.x[k, 2]) * 10);
+                    value = (int)(Math.Sqrt(data.Api.x[k, 2]) * 10);
                     if (value > 500)
                         value = 500;
                     break;
                 case 3:
-                    value = (int)(Math.Sqrt(o.Api.x[k, 3] / (double)g.HUNDRED) * 10);
+                    value = (int)(Math.Sqrt(data.Api.x[k, 3] / (double)g.HUNDRED) * 10);
                     if (value > 500)
                         value = 500;
                     break;
@@ -232,11 +293,11 @@ namespace New_Tradegy.Library.Trackers
                 case 5:
                 case 6:
                     double multiplier = 1;
-                    if (MathUtils.IsSafeToDivide(o.Api.x[o.Api.nrow - 1, 7]))
+                    if (MathUtils.IsSafeToDivide(data.Api.x[data.Api.nrow - 1, 7]))
                     {
-                        multiplier = 100.0 / o.Api.x[o.Api.nrow - 1, 7] * g.v.수급과장배수 * o.Misc.수급과장배수;
+                        multiplier = 100.0 / data.Api.x[data.Api.nrow - 1, 7] * g.v.수급과장배수 * data.Misc.수급과장배수;
                     }
-                    value = (int)(o.Api.x[k, id] * multiplier);
+                    value = (int)(data.Api.x[k, id] * multiplier);
                     break;
             }
             return value;
@@ -460,6 +521,13 @@ namespace New_Tradegy.Library.Trackers
 
             Annotation anno = AnnotationAddRectangleWithText(chart, annotation,
                 new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), annoName, Color.Black, BackColor);
+
+
+
+            anno.Visible = false;
+
+
+
 
             return anno;
         }

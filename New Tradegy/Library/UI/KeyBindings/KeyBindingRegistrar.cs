@@ -20,7 +20,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register(Keys.F1, false, false, false, ActionHandlers.DealHalf_TimeFinalKey);
             KeyBindingManager.Register(Keys.F2, false, false, false, ActionHandlers.DealDoubleKey);
             KeyBindingManager.Register(Keys.F3, false, false, false, ActionHandlers.DealConfirmSellKey);
-            KeyBindingManager.Register(Keys.F4, false, false, false,ActionHandlers.DealEmergencySellKey);
+            KeyBindingManager.Register(Keys.F4, false, false, false,ActionHandlers.ConfirmSellToggle);
 
             // Number
             KeyBindingManager.Register('`', false, false, ActionHandlers.피올_닥올);
@@ -64,11 +64,11 @@ namespace New_Tradegy.Library.UI.KeyBindings
             // Bottom
             KeyBindingManager.Register('z', false, false, ActionHandlers.OptimalTradingToggleKey);
             KeyBindingManager.Register('x', false, false, ActionHandlers.RemoveInterestedOnlyListKey);
-            KeyBindingManager.Register('x', false, false, ActionHandlers.RemoveInterestedWithBidListKey);
+            KeyBindingManager.Register('X', false, false, ActionHandlers.RemoveInterestedWithBidListKey);
             KeyBindingManager.Register('c', false, false, ActionHandlers.KillWebTxtFormKey);
 
-            KeyBindingManager.Register(' ', false, false, ActionHandlers.HistoryDateForwardsKey);
-            KeyBindingManager.Register('n', false, false, ActionHandlers.HistoryDateBackwardsKey);
+            KeyBindingManager.Register(' ', false, false, ActionHandlers.NextPage);
+            KeyBindingManager.Register('n', false, false, ActionHandlers.PreviousPage);
 
           
      

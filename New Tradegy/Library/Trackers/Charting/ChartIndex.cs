@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace New_Tradegy.Library.Trackers
@@ -22,18 +23,17 @@ namespace New_Tradegy.Library.Trackers
             string areaName = data.Stock;
             ChartArea area;
 
-            if (chart.ChartAreas.IndexOf(areaName) >= 0 && !g.test)
-            {
-                area = chart.ChartAreas[areaName];
-                //?UpdateSeries(chart, data);
-            }
-            // Generate a new chartarea
-            else
-            {
-                ChartBasicRenderer.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
-  
+            //if (chart.ChartAreas.IndexOf(areaName) >= 0)
+            //{
+            //    area = chart.ChartAreas[areaName];
+            //    UpdateSeries(chart, data);
+            //}
+            //// Generate a new chartarea
+            //else
+            //{
+                ChartBasic.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
                 area = CreateChartArea(chart, data);
-            }
+            //}
             return area;
         }
 
@@ -52,10 +52,14 @@ namespace New_Tradegy.Library.Trackers
                 start = Math.Max(end - g.NptsForShrinkDraw, g.Npts[0]);
 
 
-            ChartArea area = new ChartArea(stock);
 
 
+            ChartArea area = new ChartArea(stock); 
             chart.ChartAreas.Add(area);
+            area.Visible = false;
+
+
+
 
             int ymin = int.MaxValue, ymax = int.MinValue;
             int[] ids = { 1, 3, 4, 5, 6, 10, 11 };
@@ -153,24 +157,138 @@ namespace New_Tradegy.Library.Trackers
             return area;
         }
 
+        private static int PointValueIndex(StockData data, int k, int id)
+        {
+            double magnifier = 1.0;
+            Magnifier(data.Stock, id, ref magnifier);
+
+            if (id == 10)
+            {
+                return (int)(HandleUSFuture(data, k, data.Api.nrow, 0, id) * magnifier);
+            }
+
+            return (int)(data.Api.x[k, id] * magnifier);
+        }
+
+        // Index stock version: full chart update per call
         public static void UpdateSeries(Chart chart, StockData data)
+        {
+            string stock = data.Stock;
+            int last = data.Api.nrow - 1;
+
+            if (last < 0 || data.Api.x[last, 0] == 0)
+                return;
+
+            string xLabel = ((int)(data.Api.x[last, 0] / g.HUNDRED)).ToString();
+
+            int[] seriesIds = { 1, 3, 4, 5, 6, 10, 11 };
+
+            foreach (int typeId in seriesIds)
+            {
+                string seriesName = $"{stock} {typeId}";
+
+                // Skip if the series doesn't exist
+                // fater than any because of internal dictionary lookup
+                if (chart.Series.IsUniqueName(seriesName))
+                    continue;
+
+                var series = chart.Series[seriesName];
+                int value = PointValueIndex(data, last, typeId);
+
+                if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
+                {
+                    series.Points.Last().YValues[0] = value;
+                }
+                else
+                {
+                    series.Points.AddXY(xLabel, value);
+                }
+
+
+                Label(chart, series); // ✅ Annotate
+                Mark(chart, series.Points.Count - 1, series); // ✅ Mark position
+            }
+
+            if (!chart.ChartAreas.IsUniqueName(stock))
+            {
+                var area = chart.ChartAreas[stock];
+
+
+                string seriesName = stock + " " + "1";
+                var series = chart.Series[seriesName];
+                int totalPoints = series.Points.Count;
+                if (data.Misc.ShrinkDraw)
+                    totalPoints -= g.NptsForShrinkDraw;
+                area.AxisX.Interval = totalPoints - 1;
+            }
+
+            //string stock = data.Stock;
+            //int totalPoints = data.Api.nrow;
+            //if (data.Misc.ShrinkDraw)
+            //    totalPoints -= g.NptsForShrinkDraw;
+
+            //int[] seriesIds = { 1, 3, 4, 5, 6, 10, 11 };
+
+            //foreach (int id in seriesIds)
+            //{
+            //    string seriesName = stock + " " + id;
+            //    if (chart.Series.IsUniqueName(seriesName)) continue;
+
+            //    var series = chart.Series[seriesName];
+            //    double magnifier = 1.0;
+            //    Magnifier(stock, id, ref magnifier);
+
+            //    int seriesCount = series.Points.Count;
+
+            //    if (seriesCount == totalPoints)
+            //    {
+            //        series.Points[totalPoints - 1].SetValueXY(
+            //            (data.Api.x[totalPoints - 1, 0] / g.HUNDRED).ToString(),
+            //            data.Api.x[totalPoints - 1, id] * magnifier);
+            //    }
+            //    else
+            //    {
+            //        for (int i = seriesCount; i < totalPoints; i++)
+            //        {
+            //            if (i > 0 && i - 1 < series.Points.Count)
+            //                series.Points[i - 1].Label = null;
+
+            //            series.Points.AddXY(
+            //                (data.Api.x[i, 0] / g.HUNDRED).ToString(),
+            //                data.Api.x[i, id] * magnifier);
+            //        }
+            //    }
+
+            //    Label(chart, series);
+            //    Mark(chart, totalPoints - 1, series);
+            //}
+
+            //if (!chart.ChartAreas.IsUniqueName(stock))
+            //{
+            //    var area = chart.ChartAreas[stock];
+            //    area.AxisX.Interval = totalPoints - 1;
+            //}
+        }
+
+        public static void UpdateSeries_old(Chart chart, StockData data)
         {
             int totalPoints = data.Api.nrow;
             if (data.Misc.ShrinkDraw)
                 totalPoints -= g.NptsForShrinkDraw;
 
-            string[] seriesIds = { "1", "3", "4", "5", "6", "10", "11" };
+            int[] seriesIds = { 1, 3, 4, 5, 6, 10, 11 };
 
-            foreach (var idStr in seriesIds)
+            foreach (int id in seriesIds)
             {
-                //Skips if the series does not already exist(implies series was not created).
-                string seriesName = data.Stock + " " + idStr;
+                string seriesName = data.Stock + " " + id;
+
+                // Skip if the series doesn't exist
                 if (chart.Series.IsUniqueName(seriesName))
                     continue;
 
                 var series = chart.Series[seriesName];
                 double magnifier = 1.0;
-                Magnifier(data.Stock, int.Parse(idStr), ref magnifier);
+                Magnifier(data.Stock, id, ref magnifier);
 
                 int seriesCount = series.Points.Count;
 
@@ -178,7 +296,7 @@ namespace New_Tradegy.Library.Trackers
                 {
                     series.Points[totalPoints - 1].SetValueXY(
                         (data.Api.x[totalPoints - 1, 0] / g.HUNDRED).ToString(),
-                        data.Api.x[totalPoints - 1, int.Parse(idStr)] * magnifier);
+                        data.Api.x[totalPoints - 1, id] * magnifier);
 
                     Label(chart, series);
                     Mark(chart, totalPoints - 1, series);
@@ -192,7 +310,7 @@ namespace New_Tradegy.Library.Trackers
 
                         series.Points.AddXY(
                             (data.Api.x[i, 0] / g.HUNDRED).ToString(),
-                            data.Api.x[i, int.Parse(idStr)] * magnifier);
+                            data.Api.x[i, id] * magnifier);
 
                         Label(chart, series);
                         Mark(chart, i, series);
@@ -200,13 +318,14 @@ namespace New_Tradegy.Library.Trackers
                 }
             }
 
-            if (chart.ChartAreas.IsUniqueName(data.Stock)) return;
-
-            var area = chart.ChartAreas[data.Stock];
-            area.AxisX.LabelStyle.Enabled = true;
-            area.AxisX.MajorGrid.Enabled = false;
-            area.AxisX.Interval = totalPoints - 1;
-            area.AxisX.IntervalOffset = 1;
+            /// returns true if NO chart area exists with the name data.Stock.
+            /// it's asking if data.Stock is a name that could be used safely for a new chart area
+            /// return early not to throw an error
+            if (!chart.ChartAreas.IsUniqueName(data.Stock))
+            {
+                var area = chart.ChartAreas[data.Stock];
+                area.AxisX.Interval = totalPoints - 1;
+            }
         }
 
         private static double HandleUSFuture(StockData data, int k, int end, int start, int id)

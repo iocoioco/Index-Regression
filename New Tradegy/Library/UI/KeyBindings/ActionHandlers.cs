@@ -116,7 +116,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
 
         // F5
-        public static readonly Action DealEmergencySellKey = () =>
+        public static readonly Action ConfirmSellToggle = () =>
         {
             if (!g.test)
             {
@@ -449,21 +449,19 @@ namespace New_Tradegy.Library.UI.KeyBindings
         #region
         public static readonly Action ShrinkOrNotTenPlusKey = () =>
         {
-            g.ChartManager.Chart1.Hide(); //?
-            return;
             g.NptsForShrinkDraw += 10;
+            ActionCode.New(false, false, eval: true, draw: 'B').Run();
         };
 
         public static readonly Action ShrinkOrNotTenMinusKey = () =>
         {
-            g.ChartManager.Chart1.Show(); //?
-          
-            return;
+            
             g.NptsForShrinkDraw -= 10;
             if (g.NptsForShrinkDraw <= 10)
             {
                 g.NptsForShrinkDraw = 10;
             }
+            ActionCode.New(false, false, eval: true, draw: 'B').Run();
         };
 
         public static readonly Action AddInterestToggle = () =>
@@ -548,19 +546,82 @@ namespace New_Tradegy.Library.UI.KeyBindings
             }
         };
 
-        public static readonly Action HistoryDateBackwardsKey = () =>
+        public static readonly Action PreviousPage = () =>
         {
-            if (g.test)
+            switch (g.q)
             {
-                wk.date_backwards_forwards("backwards");
+                case "o&s":
+                    //case "e&s":
+                    int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count; // 지수종목
+                    if (g.gid - ((g.nCol - 1) * g.nRow - count) >= 0)
+                    {
+                        g.gid -= (g.nCol - 1) * g.nRow - count;
+                    }
+                    else
+                    {
+                        g.gid = 0;
+                    }
+                    ActionCode.New(false, false, eval: false, draw: 'm').Run();
+                    break;
+
+                case "h&s":
+                    for (int jndex = 1; jndex < (g.nCol - 2) * g.nRow; jndex++)
+                    {
+                        int return_date = wk.directory_분전후(g.moving_reference_date, 1); // 거래익일
+                        if (return_date == -1)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            g.moving_reference_date = return_date;
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
             }
         };
 
-        public static readonly Action HistoryDateForwardsKey = () =>
+        public static readonly Action NextPage = () =>
         {
-            if (g.test)
+            switch (g.q)
             {
-                wk.date_backwards_forwards("forwards");
+                case "o&s":
+                    int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count;
+                    if (g.gid + ((g.nCol - 1) * g.nRow - count) < g.sl.Count)
+                    {
+                        g.gid += (g.nCol - 1) * g.nRow - count;
+                    }
+                    else
+                    {
+                        g.gid = 0;
+                    }
+                    ActionCode.New(false, false, eval: false, draw: 'm').Run();
+                    break;
+
+                case "h&s":
+                    for (int jndex = 1; jndex < (g.nCol - 2) * g.nRow; jndex++)
+                    {
+                        int return_date;
+                        if (g.draw_history_forwards)
+                            return_date = wk.directory_분전후(g.moving_reference_date, +1); // 거래익일
+                        else
+                            return_date = wk.directory_분전후(g.moving_reference_date, -1); // 거래전일
+                        if (return_date == -1)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            g.moving_reference_date = return_date;
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
             }
         };
         #endregion
