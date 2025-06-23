@@ -11,6 +11,7 @@ using New_Tradegy.Library.Deals;
 using System.Collections.Generic;
 using New_Tradegy.Library.IO;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace New_Tradegy.Library.UI.KeyBindings
 {
@@ -553,9 +554,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 case "o&s":
                     //case "e&s":
                     int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count; // 지수종목
-                    if (g.gid - ((g.nCol - 1) * g.nRow - count) >= 0)
+                    if (g.gid - ((g.nCol - 2) * g.nRow - count) >= 0)
                     {
-                        g.gid -= (g.nCol - 1) * g.nRow - count;
+                        g.gid -= (g.nCol - 2) * g.nRow - count;
                     }
                     else
                     {
@@ -590,9 +591,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
             {
                 case "o&s":
                     int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count;
-                    if (g.gid + ((g.nCol - 1) * g.nRow - count) < g.sl.Count)
+                    if (g.gid + ((g.nCol - 2) * g.nRow - count) < g.StockRepository.AllDatas.Count())
                     {
-                        g.gid += (g.nCol - 1) * g.nRow - count;
+                        g.gid += (g.nCol - 2) * g.nRow - count;
                     }
                     else
                     {

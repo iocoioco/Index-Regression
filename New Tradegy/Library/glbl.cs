@@ -130,8 +130,8 @@ namespace New_Tradegy.Library
         public static string q; // mode of display (h : history etc.)
 
 
-        public static List<string> sl = new List<string>();   // selected single stock based on ranking
-        public static List<string> dl = new List<string>();   // selected stocks for display on chart1 (main chart)
+        
+         
 
         public static string oGl_data_selection = "총점"; // group ranking calculation ciriterion
 
@@ -231,7 +231,7 @@ namespace New_Tradegy.Library
         public class Variable
         {
             public string MainChartDisplayMode = "푀분";
-            public string SubChartDisplayMode = "그순";
+            public string SubChartDisplayMode = "닥올";
             public string PreviousMainChartDisplayMode = "푀분";
 
             public int 분당거래액이상_천만원; // in setting 10

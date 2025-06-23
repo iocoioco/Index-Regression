@@ -47,7 +47,21 @@ namespace New_Tradegy
 
 
             g.ChartManager.SetChart2(chart2);
-           
+
+            var groupDgv = new DataGridView();
+            var groupDtb = new DataTable();
+            this.Controls.Add(groupDgv); // ✅ added to Form
+            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            var view = g.groupPane.View;
+            view.BringToFront();
+
+            int cellWidth = g.screenWidth / 10;   // width % per column
+            int cellHeight = g.screenHeight / 3;  // height % per row
+            int x = cellWidth * 4;
+            int y = dataGridView1Height;
+            view.Location = new Point(x, y);
+            view.Size = new Size(cellWidth, cellHeight - 5);
+
 
             // Configure DataGridView appearance
             ConfigureDataGridView();
@@ -70,7 +84,8 @@ namespace New_Tradegy
             else
             {
                 this.Location = new Point(g.screenWidth, 0);
-                if (Screen.AllScreens.Count() == 1) this.Location = new Point(g.screenWidth / 2, 0); // one screen
+                if (Screen.AllScreens.Count() == 1)
+                    this.Location = new Point(g.screenWidth / 2, 0); // one screen
             }
             this.Size = new Size(g.screenWidth / 2, g.screenHeight);
             chart2.Size = new Size(this.Width, this.Height);
@@ -138,14 +153,14 @@ namespace New_Tradegy
                 if (g.StockManager.IndexList.Contains(data.Stock))
                 {
                     var area = ChartIndex.UpdateChartArea(chart2, data);
-                    if(area != null)
+                    if (area != null)
                         chartAreas.Add(area);
                 }
                 // General
                 else
                 {
                     var (area, anno) = ChartGeneral.UpdateChartArea(chart2, data);
-                    if(area != null)
+                    if (area != null)
                     {
                         chartAreas.Add(area);
                         annotations.Add(anno);

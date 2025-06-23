@@ -11,54 +11,70 @@ namespace New_Tradegy.Library.Listeners
         private static int repositoryOffset = 0;
 
         public static List<string> Select200Batch(
-            List<string> leverage,             // 2 items
-            List<string> holding,              // 보유종목 (with bids)
-            List<string> interestedWithBid,    // 관심 종목 (with bids)
-            List<string> interestedOnly,       // 관심 종목 (no bids)
-            int fixedCount = 100,
-            int batchSize = 200
-        )
+    List<string> indexList,               // 1. Index stocks (always included)
+    List<string> holding,                 // 2. Holding stocks
+    List<string> interestedWithBid,       // 3. 관심 종목 (with bids)
+    List<string> interestedOnly,          // 4. 관심 종목 (no bids)
+    List<string> rankedStockList,         // 5. Ranked list to fill up to 100
+    int batchSize = 200)
         {
             HashSet<string> selected = new HashSet<string>();
 
-            // ✅ 1. Add leverage first
-            foreach (var s in leverage)
-                selected.Add(s);
+            // ✅ 1. Add index stocks (no duplicates)
+            foreach (var s in indexList)
+            {
+                if (!selected.Contains(s))
+                    selected.Add(s);
+            }
 
-            // ✅ 2. Fill fixed part (up to 100 stocks)
+            // ✅ 2. Add from holding up to 100
             foreach (var s in holding)
             {
-                if (selected.Count >= fixedCount) break;
-                selected.Add(s);
+                if (selected.Count >= 100) break;
+                if (!selected.Contains(s))
+                    selected.Add(s);
             }
 
+            // ✅ 3. Add from interestedWithBid up to 100
             foreach (var s in interestedWithBid)
             {
-                if (selected.Count >= fixedCount) break;
-                selected.Add(s);
+                if (selected.Count >= 100) break;
+                if (!selected.Contains(s))
+                    selected.Add(s);
             }
 
+            // ✅ 4. Add from interestedOnly up to 100
             foreach (var s in interestedOnly)
             {
-                if (selected.Count >= fixedCount) break;
-                selected.Add(s);
+                if (selected.Count >= 100) break;
+                if (!selected.Contains(s))
+                    selected.Add(s);
             }
 
-            // ✅ 3. Fill the rest from repository sequentially
-            var repoList = g.StockRepository.AllDatas
-                .Select(x => x.Stock)
-                .ToList();
+            // ✅ 5. Fill up to 100 with ranked stocks
+            foreach (var s in rankedStockList)
+            {
+                if (selected.Count >= 100) break;
+                if (!selected.Contains(s))
+                    selected.Add(s);
+            }
+
+            // ✅ 6. Fill remaining from AllDatas using rotating offset
+            var repoList = g.StockRepository.AllDatas.Select(x => x.Stock).ToList();
 
             int remaining = batchSize - selected.Count;
-            for (int i = 0; i < remaining && repoList.Count > 0; i++)
+            int i = 0;
+            while (selected.Count < batchSize && repoList.Count > 0 && i < repoList.Count)
             {
                 string stock = repoList[(repositoryOffset + i) % repoList.Count];
-                selected.Add(stock);
+                if (!selected.Contains(stock))
+                    selected.Add(stock);
+                i++;
             }
 
             repositoryOffset = (repositoryOffset + remaining) % repoList.Count;
 
-            return selected.Take(batchSize).ToList();
+            return selected.Take(batchSize).ToList();  // Trim in case it's slightly over 200 due to race condition
         }
     }
 }

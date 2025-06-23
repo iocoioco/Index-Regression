@@ -47,8 +47,16 @@ namespace New_Tradegy.Library.Listeners
                     // Trigger the marketeye alarm task
                     await SoundUtils.MarketTimeAlarmsAsync(HHmm);
 
-                    // Call marketeye logic
+                // Call marketeye logic
+                try
+                {
                     await DownloadBatchAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
+                    // Optionally log or retry
+                }
                 //?}
 
                 // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
@@ -120,11 +128,14 @@ namespace New_Tradegy.Library.Listeners
 
             // ✅ Fill the codes using your BatchSelector
             var selected = MarketEyeBatchSelector.Select200Batch(
-                leverage: g.StockManager.LeverageList, 
-                holding: g.StockManager.HoldingList,
-                interestedWithBid: g.StockManager.InterestedWithBidList,
-                interestedOnly: g.StockManager.InterestedOnlyList
-            );
+    indexList: g.StockManager.IndexList,                  // your "index stocks"
+    holding: g.StockManager.HoldingList,
+    interestedWithBid: g.StockManager.InterestedWithBidList,
+    interestedOnly: g.StockManager.InterestedOnlyList,
+    rankedStockList: g.StockManager.StockRankingList         // required in new method
+);
+
+            
 
             for (int i = 0; i < codes.Length && i < selected.Count; i++)
             {

@@ -54,7 +54,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_all_stocks_for_given_date(List<string> gl)
         {
-            g.sl.Clear();
+
             string path = @"C:\병신\분\" + g.date.ToString();
             if (!Directory.Exists(path))
             {
@@ -322,17 +322,13 @@ namespace New_Tradegy.Library.IO
 
             FileIn.read_절친();
 
-            var sortedList = g.StockRepository
-                .AllDatas
-                .OrderByDescending(x => x.Api.전일거래액_천만원)
-                .ToList();
+            g.StockManager.StockRankingList.Clear();
+            g.StockManager.StockRankingList.AddRange(
+                g.StockRepository.AllDatas
+                    .OrderByDescending(x => x.Api.전일거래액_천만원)
+                    .Select(x => x.Code)
+            );
 
-            g.sl.Clear(); // optional: clear before adding
-
-            foreach (var stock in sortedList)
-            {
-                g.sl.Add(stock.Stock); // `Stock` is the name or code property
-            }
 
             FileIn.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
@@ -1384,27 +1380,7 @@ namespace New_Tradegy.Library.IO
                 }
             }
 
-            //x[nrow, 0] = 0; // used to check the end of data, no need actually
-            //if (x[nrow - 1, 1] == 0 && x[nrow - 1, 2] == 0 && x[nrow - 1, 3] == 0) // maybe trading suspended, 아래 3 라인이 없으면 축 개체 문제 발생
-            //{
-            //    nrow = 0;
-            //}
-
-            if (g.dl.Count == 4) // 코스피혼합 & 코스닥혼합 인버스로 만들기 위해 가격 X -1 & 매수배수 매도배수 
-            {
-                if ((g.dl[0] == "KODEX 200선물인버스2X" && stock == "코스피혼합") ||
-                   (g.dl[2] == "KODEX 코스닥150선물인버스" && stock == "코스닥혼합"))
-                {
-                    for (int i = 0; i < nrow; i++)
-                    {
-                        x[i, 1] *= -1;
-                        StringUtils.SwapValues(ref x[i, 8], ref x[i, 9]);
-                    }
-                }
-            }
-
-
-
+             
             return nrow;
         }
 

@@ -15,12 +15,13 @@ namespace New_Tradegy.Library.Trackers
         private DataGridView _view;
         private DataTable _table;
         private List<GroupData> _groups;
+        public DataGridView View => _view;
 
         public GroupPane(DataGridView dgv, DataTable dtb)
         {
             _table = dtb;
             _view = dgv;
-  
+
             _groups = g.GroupManager.GetAll();
 
             InitializeDgv(_view);
@@ -30,19 +31,13 @@ namespace New_Tradegy.Library.Trackers
 
         private void InitializeDgv(DataGridView _view)
         {
-            
-            int x = g.screenWidth / g.nCol + 20;
-            int y = g.screenHeight / 3 + 2;
-            y = 0; //?
-            _view.Location = new Point(x, y);
-            int width = g.screenWidth / g.nCol +10;
-            int height = g.CellHeight * 10;
-            _view.Size = new Size(width, height);
+
+
 
             _view.ColumnHeadersVisible = false;
             _view.RowHeadersVisible = false;
             _view.ReadOnly = true;
-            
+
             _view.ScrollBars = g.test ? ScrollBars.Vertical : ScrollBars.None;
             _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             _view.AllowUserToResizeColumns = false;
@@ -60,7 +55,7 @@ namespace New_Tradegy.Library.Trackers
 
             _view.CellFormatting += CellFormatting;
             _view.CellMouseClick += CellMouseClick;
-            
+
 
             if (_view.Rows.Count > 0)
                 _view.FirstDisplayedScrollingRowIndex = 0;
@@ -83,13 +78,19 @@ namespace New_Tradegy.Library.Trackers
 
             _view.DataSource = _table;
 
-            // Adjust column widths based on test mode
-            for (int i = 0; i < 3; i++)
+            _view.AutoGenerateColumns = false;
+
+            int visibleWidth = _view.ClientSize.Width;
+            if (!g.test)
+                visibleWidth -= SystemInformation.VerticalScrollBarWidth;
+
+            int columnWidth = visibleWidth / 3;
+
+            // Prevent out-of-range errors
+            int colCount = Math.Min(3, _view.Columns.Count);
+            for (int i = 0; i < colCount; i++)
             {
-                if (g.test)
-                    _view.Columns[i].Width = this._view.Width / 3 - 10;
-                else
-                    _view.Columns[i].Width = this._view.Width / 3 - 6;
+                _view.Columns[i].Width = columnWidth;
             }
         }
 
@@ -138,11 +139,11 @@ namespace New_Tradegy.Library.Trackers
             {
                 if (i == coloring_column)
                 {
-                    g.groupPane._view.Columns[i].DefaultCellStyle.BackColor = Color.FromArgb(175, 255, 255); // cyan
+                    _view.Columns[i].DefaultCellStyle.BackColor = Color.FromArgb(175, 255, 255); // cyan
                 }
                 else
                 {
-                    g.groupPane._view.Columns[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 255);
+                    _view.Columns[i].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 255);
                 }
 
             }

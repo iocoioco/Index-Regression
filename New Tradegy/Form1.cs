@@ -148,9 +148,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
             g.StockManager.AddIfMissing(NaverList);
 
-            g.ChartMain = new ChartMain(); // all new, Form_1 start
-            g.ChartMain.RefreshMainChart();
-
+            
 
             KeyBindingRegistrar.RegisterAll();
 
@@ -200,11 +198,7 @@ namespace New_Tradegy // added for test on 20241020 0300
          
 
 
-            var groupDgv = new DataGridView();
-            var groupDtb = new DataTable();
-            this.Controls.Add(groupDgv); // ✅ added to Form
-            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-            groupDgv.Hide();
+           
 
 
             if (!g.test) // for market trading
@@ -252,7 +246,9 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             
             // use Panel in RankLogic
-            RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
+            // RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
+            g.ChartMain = new ChartMain(); // all new, Form_1 start
+            g.ChartMain.RefreshMainChart();
 
             Form Form_보조_차트 = new Form_보조_차트();
             Form_보조_차트.Show(); // second chart

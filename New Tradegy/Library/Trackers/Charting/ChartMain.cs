@@ -53,7 +53,7 @@ namespace New_Tradegy.Library.Trackers.Charting
             int remainingSlots = MaxChartSlots - usedSlots;
 
             var withoutBookBid = interestedOnly
-                .Concat(rankedStocks)
+                .Concat(rankedStocks.Skip(g.gid))
                 .Where(s => !withBookBid.Contains(s) && !excluded.Contains(s))
                 .Distinct()
                 .Take(remainingSlots)

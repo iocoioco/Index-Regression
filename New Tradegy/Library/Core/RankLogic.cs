@@ -217,10 +217,10 @@ namespace New_Tradegy.Library.Core
             {
                 g.StockManager.StockRankingList.Clear();
 
-                foreach (var (val, code) in resultList)
+                foreach (var (val, stock) in resultList)
                 {
-                    if (!g.StockManager.StockRankingList.Contains(code))
-                        g.StockManager.StockRankingList.Add(code);
+                    if (!g.StockManager.StockRankingList.Contains(stock))
+                        g.StockManager.StockRankingList.Add(stock);
                 }
 
                 string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllDatas.Count()}";
