@@ -54,7 +54,7 @@ namespace New_Tradegy.Library.Listeners
             // ✅ 5. Fill up to 100 with ranked stocks
             foreach (var s in rankedStockList)
             {
-                if (selected.Count >= 100) break;
+                if (selected.Count >= 200) break;
                 if (!selected.Contains(s))
                     selected.Add(s);
             }

@@ -10,7 +10,7 @@ namespace New_Tradegy.Library.Core
         private static readonly object _lock = new object();
 
         private StockRepository() { }
-
+        private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
         public static StockRepository Instance
         {
             get
@@ -34,6 +34,9 @@ namespace New_Tradegy.Library.Core
         public void AddOrUpdate(string stock, StockData data)
         {
             _stockMap[stock] = data;
+            if (data != null && !string.IsNullOrEmpty(data.Stock))
+                data.Code = _cpstockcode.NameToCode(data.Stock);
+
         }
 
         

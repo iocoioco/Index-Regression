@@ -79,18 +79,10 @@ namespace New_Tradegy.Library.Listeners
             };
 
 
-
-            
-
-
             // Event handlers
             _dataGridView.DataError += (s, e) => FileOut.DataGridView_DataError(s, e, $"jpjd {_dataGridView.Name}");
             _dataGridView.DataError += new DataGridViewDataErrorEventHandler(OnDataError);
             _dataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(OnCellMouseClick);
-
-            
-
-
 
             // Subscription
             string stockcode = _stockCodeService.NameToCode(_stock);
@@ -110,16 +102,10 @@ namespace New_Tradegy.Library.Listeners
             //_dataGridView.BorderStyle = BorderStyle.Fixed3D;
             _dataGridView.BackgroundColor = Color.LightYellow;
 
-
-
-
             g.MainForm.Controls.Add(_dataGridView);
-
 
             // setting invisible
             _dataGridView.Visible = false;
-
-
 
             RequestQuote();
 

@@ -631,7 +631,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 MessageBox.Show("대신증권 플러스에 연결되었습니다.");
 
-                // LoadStockCodes();
             }
             else
             {

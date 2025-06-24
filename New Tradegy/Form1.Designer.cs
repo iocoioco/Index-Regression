@@ -22,48 +22,18 @@ namespace New_Tradegy
     base.Dispose(disposing);
     }
 
-    #region Windows Form Designer generated code
-
     // <summary>
-    // Required method for Designer support - do not modify
-    // the contents of this method with the code editor.
     // </summary>
     private void InitializeComponent()
     {
             this.components = new System.ComponentModel.Container();
-            //this.radioButton1 = new System.Windows.Forms.RadioButton();
-            //this.radioButton2 = new System.Windows.Forms.RadioButton();
-            //this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.timer_eval_draw = new System.Windows.Forms.Timer(this.components);
             this.timer_코스피_코스닥 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // radioButton1
-            // 
-            //this.radioButton1.Location = new System.Drawing.Point(0, 0);
-            //this.radioButton1.Name = "radioButton1";
-            //this.radioButton1.Size = new System.Drawing.Size(104, 24);
-            //this.radioButton1.TabIndex = 0;
-            //// 
-            //// radioButton2
-            //// 
-            //this.radioButton2.Location = new System.Drawing.Point(0, 0);
-            //this.radioButton2.Name = "radioButton2";
-            //this.radioButton2.Size = new System.Drawing.Size(104, 24);
-            //this.radioButton2.TabIndex = 0;
-            //// 
-            //// radioButton3
-            //// 
-            //this.radioButton3.Location = new System.Drawing.Point(0, 0);
-            //this.radioButton3.Name = "radioButton3";
-            //this.radioButton3.Size = new System.Drawing.Size(104, 24);
-            //this.radioButton3.TabIndex = 0;
-            // 
-            // timer_코스피_코스닥
-            // 
+
             this.timer_코스피_코스닥.Tick += new System.EventHandler(this.timer_코스피_코스닥_Tick);
             // 
             // contextMenuStrip1
@@ -97,11 +67,6 @@ namespace New_Tradegy
             this.ResumeLayout(false);
 
     }
-
-    #endregion
-    //private System.Windows.Forms.RadioButton radioButton3;
-    //private System.Windows.Forms.RadioButton radioButton2;
-    //private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Timer timer_eval_draw;
         private System.Windows.Forms.Timer timer_코스피_코스닥;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

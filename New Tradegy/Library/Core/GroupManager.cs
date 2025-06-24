@@ -106,7 +106,7 @@ namespace New_Tradegy.Library.Core
             GroupRankingList = _groups.OrderByDescending(selector).ToList();
         }
 
-        public GroupData FindGroupByStock(string stockCode)
+        public GroupData FindGroupByStock(string stockCode) /////
         {
             return _groups.FirstOrDefault(g => g.Stocks.Contains(stockCode));
         }

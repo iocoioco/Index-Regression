@@ -326,7 +326,7 @@ namespace New_Tradegy.Library.IO
             g.StockManager.StockRankingList.AddRange(
                 g.StockRepository.AllDatas
                     .OrderByDescending(x => x.Api.전일거래액_천만원)
-                    .Select(x => x.Code)
+                    .Select(x => x.Stock)
             );
 
 

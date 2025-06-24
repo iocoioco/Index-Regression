@@ -46,7 +46,7 @@ namespace New_Tradegy.Library.Listeners
                 //{
                     // Trigger the marketeye alarm task
                     await SoundUtils.MarketTimeAlarmsAsync(HHmm);
-
+                
                 // Call marketeye logic
                 try
                 {
@@ -54,7 +54,25 @@ namespace New_Tradegy.Library.Listeners
                 }
                 catch (Exception ex)
                 {
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
+                    var check = g.connected;
                     // Optionally log or retry
                 }
                 //?}
