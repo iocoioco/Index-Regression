@@ -377,8 +377,8 @@ namespace New_Tradegy.Library.IO
             List<string> four_index = new List<string>();
 
             four_index.Add("KODEX 레버리지");
-            four_index.Add("KODEX 200선물인버스2X");
             four_index.Add("KODEX 코스닥150레버리지");
+            four_index.Add("KODEX 200선물인버스2X");
             four_index.Add("KODEX 코스닥150선물인버스");
 
             foreach (var item in four_index)

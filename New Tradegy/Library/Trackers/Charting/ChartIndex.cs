@@ -337,24 +337,25 @@ namespace New_Tradegy.Library.Trackers
         private static void Magnifier(string stock, int id, ref double magnifier)
         {
             int i = -1;
-            switch (stock)
+            switch (stock) // "가격", "지수", "기타", "나스닥"
             {
                 case "KODEX 레버리지": i = 0; break;
-                case "KODEX 200선물인버스2X": i = 1; break;
-                case "KODEX 코스닥150레버리지": i = 2; break;
+                case "KODEX 코스닥150레버리지": i = 1; break;
+                case "KODEX 200선물인버스2X": i = 2; break;
+               
                 case "KODEX 코스닥150선물인버스": i = 3; break;
             }
 
             int j = -1;
             switch (id)
             {
-                case 1: j = 0; break;
-                case 3: j = 1; break;
-                case 4:
-                case 5:
-                case 6:
-                case 11: j = 2; break;
-                case 10: j = 3; break;
+                case 1: j = 0; break;  // 가격
+                case 3: j = 1; break;  // 지수(프로 + 외인)
+                case 4:                // 기관
+                case 5:                // 외인
+                case 6:                // 개인
+                case 11: j = 2; break; // 연기
+                case 10: j = 3; break; // 나스닥
             }
 
             if (i >= 0 && j >= 0)

@@ -139,8 +139,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             
             g.StockManager.AddIfMissing(new[] {
                 "KODEX 레버리지",
-                "KODEX 200선물인버스2X",
                 "KODEX 코스닥150레버리지",
+                "KODEX 200선물인버스2X",
                 "KODEX 코스닥150선물인버스"
             });
             

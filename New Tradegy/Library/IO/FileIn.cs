@@ -160,8 +160,8 @@ namespace New_Tradegy.Library.IO
             if (g.StockManager.IndexList.Count == 0)
             {
                 g.StockManager.IndexList.Add("KODEX 레버리지");
-                g.StockManager.IndexList.Add("KODEX 200선물인버스2X");
                 g.StockManager.IndexList.Add("KODEX 코스닥150레버리지");
+                g.StockManager.IndexList.Add("KODEX 200선물인버스2X");
                 g.StockManager.IndexList.Add("KODEX 코스닥150선물인버스");
             }
 

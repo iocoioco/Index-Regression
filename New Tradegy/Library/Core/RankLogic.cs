@@ -32,10 +32,10 @@ namespace New_Tradegy.Library.Core
         {
             var repo = g.StockRepository;
 
-            var list_푀분 = new List<(double value, string code)>();
-            var list_거분 = new List<(double value, string code)>();
-            var list_배차 = new List<(double value, string code)>();
-            var list_배합 = new List<(double value, string code)>();
+            var list_푀분 = new List<(double value, string stock)>();
+            var list_거분 = new List<(double value, string stock)>();
+            var list_배차 = new List<(double value, string stock)>();
+            var list_배합 = new List<(double value, string stock)>();
 
             foreach (var stock in repo.AllDatas)
             {
@@ -56,10 +56,10 @@ namespace New_Tradegy.Library.Core
 
             foreach (var stock in repo.AllDatas)
             {
-                stock.Score.푀분_등수 = list_푀분.FindIndex(x => x.code == stock.Stock);
-                stock.Score.거분_등수 = list_거분.FindIndex(x => x.code == stock.Stock);
-                stock.Score.배차_등수 = list_배차.FindIndex(x => x.code == stock.Stock);
-                stock.Score.배합_등수 = list_배합.FindIndex(x => x.code == stock.Stock);
+                stock.Score.푀분_등수 = list_푀분.FindIndex(x => x.stock == stock.Stock);
+                stock.Score.거분_등수 = list_거분.FindIndex(x => x.stock == stock.Stock);
+                stock.Score.배차_등수 = list_배차.FindIndex(x => x.stock == stock.Stock);
+                stock.Score.배합_등수 = list_배합.FindIndex(x => x.stock == stock.Stock);
             }
 
             // 등합 점수 계산 (가중치 반영 가능)
