@@ -12,7 +12,7 @@ using New_Tradegy.Library.Trackers.Charting;
  *  1차 상승시 접근, 2차 이상 자제
  * 그룹 전체도 동일조건 적용
  * 
- * 순간 엄청난 거분 + 프분
+ * 순간 엄청난 거분 + 푀분
  * 누적 프돈, 거돈
  * 
  * 추가조건 : 간단접근 -> 세밀접근
@@ -130,9 +130,9 @@ namespace New_Tradegy.Library.PostProcessing
                 if (orderIndex < 0)
                     return;
 
-                if (stat.프분_dev > 0)
+                if (stat.푀분_dev > 0)
                 {
-                    sound_indicator = (api.틱프로천[0] + api.틱외인천[0]) / stat.프분_dev;
+                    sound_indicator = (api.틱프로천[0] + api.틱외인천[0]) / stat.푀분_dev;
 
                     if (sound_indicator > 2) sound += "buyest";
                     else if (sound_indicator > 1) sound += "buyer";
@@ -157,9 +157,9 @@ namespace New_Tradegy.Library.PostProcessing
 
             double sending_value;
 
-            if (MathUtils.IsSafeToDivide(stat.프분_dev))
+            if (MathUtils.IsSafeToDivide(stat.푀분_dev))
             {
-                sending_value = (api.분프로천[0] + api.분외인천[0]) / stat.프분_dev;
+                sending_value = (api.분프로천[0] + api.분외인천[0]) / stat.푀분_dev;
                 score.푀분 = sending_value;
                 if (api.분프로천[0] > 5 && api.분외인천[0] > 5)
                 {

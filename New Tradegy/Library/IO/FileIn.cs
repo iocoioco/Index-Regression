@@ -107,9 +107,9 @@ namespace New_Tradegy.Library.IO
 
                 var stat = stockData.Statistics;
 
-                stat.프분_count = string.IsNullOrEmpty(words[5]) ? 0 : Convert.ToInt32(words[5]);
-                stat.프분_avr = string.IsNullOrEmpty(words[6]) ? 0.0 : Convert.ToDouble(words[6]);
-                stat.프분_dev = string.IsNullOrEmpty(words[7]) ? 0.0 : Convert.ToDouble(words[7]);
+                stat.푀분_count = string.IsNullOrEmpty(words[5]) ? 0 : Convert.ToInt32(words[5]);
+                stat.푀분_avr = string.IsNullOrEmpty(words[6]) ? 0.0 : Convert.ToDouble(words[6]);
+                stat.푀분_dev = string.IsNullOrEmpty(words[7]) ? 0.0 : Convert.ToDouble(words[7]);
 
                 stat.거분_avr = string.IsNullOrEmpty(words[8]) ? 0.0 : Convert.ToDouble(words[8]);
                 stat.거분_dev = string.IsNullOrEmpty(words[9]) ? 0.0 : Convert.ToDouble(words[9]);
@@ -121,7 +121,7 @@ namespace New_Tradegy.Library.IO
                 stat.배합_dev = string.IsNullOrEmpty(words[13]) ? 0.0 : Convert.ToDouble(words[13]);
             }
         }
-
+         
 
         public static void read_시간별거래비율(List<List<string>> 누적)
         {

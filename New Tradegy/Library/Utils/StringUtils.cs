@@ -262,8 +262,8 @@ namespace New_Tradegy.Library.Utils
                 str += "\n";
 
                 str +=
-                    "  " + o.Statistics.프분_avr.ToString("F1") + "\t" + o.Statistics.프분_dev.ToString("F1") + "\t" +
-                    o.Statistics.거분_avr.ToString("F1") + "\t" + o.Statistics.거분_dev.ToString("F1") + "\t      프분     거분 (단위 : 천만)\n" +
+                    "  " + o.Statistics.푀분_avr.ToString("F1") + "\t" + o.Statistics.푀분_dev.ToString("F1") + "\t" +
+                    o.Statistics.거분_avr.ToString("F1") + "\t" + o.Statistics.거분_dev.ToString("F1") + "\t      푀분     거분 (단위 : 천만)\n" +
                     "  " + o.Statistics.배차_avr.ToString("F0") + "\t" + o.Statistics.배차_dev.ToString("F0") + "\t" +
                     o.Statistics.배합_avr.ToString("F0") + "\t" + o.Statistics.배합_dev.ToString("F0") + "\t      배차     배합\n\n";
             }
@@ -395,8 +395,8 @@ namespace New_Tradegy.Library.Utils
             }
             str += "\n";
 
-            str += "  " + Math.Round(o.Statistics.프분_avr * 10, 0) + "  " + Math.Round(o.Statistics.프분_dev * 10, 0) + "    " +
-                          Math.Round(o.Statistics.거분_avr * 10, 0) + "  " + Math.Round(o.Statistics.거분_dev * 10, 0) + "      프분     거분\n" +
+            str += "  " + Math.Round(o.Statistics.푀분_avr * 10, 0) + "  " + Math.Round(o.Statistics.푀분_dev * 10, 0) + "    " +
+                          Math.Round(o.Statistics.거분_avr * 10, 0) + "  " + Math.Round(o.Statistics.거분_dev * 10, 0) + "      푀분     거분\n" +
                    "  " + Math.Round(o.Statistics.배차_avr, 0) + "  " + Math.Round(o.Statistics.배차_dev, 0) + "    " +
                           Math.Round(o.Statistics.배합_avr, 0) + "  " + Math.Round(o.Statistics.배합_dev, 0) + "      배차     배합\n\n";
 

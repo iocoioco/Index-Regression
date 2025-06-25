@@ -50,13 +50,18 @@ namespace New_Tradegy.Library.Models
     {
         public double 푀분;
         public double 거분;
-        public double 배차, 배합;
-        public double 급락, 급상;
+        public double 배차;
+        public double 배합;
+        public double 푀누;
+        public double 종누;
+
         public double 총점;
         public int 푀분_등수, 거분_등수;
         public int 배차_등수, 배합_등수;
         public int 그순;
         public double 등합;
+
+        public double 급락, 급상;
     }
 
 
@@ -64,8 +69,8 @@ namespace New_Tradegy.Library.Models
     // public StatData Stat { get; set; } = new StatData();
     public class StatisticsData
     {
-        public int 프분_count;
-        public double 프분_avr, 프분_dev;
+        public int 푀분_count;
+        public double 푀분_avr, 푀분_dev;
         public double 거분_avr, 거분_dev;
         public double 배차_avr, 배차_dev;
         public double 배합_avr, 배합_dev;

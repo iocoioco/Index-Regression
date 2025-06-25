@@ -32,7 +32,6 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register('6', false, false, ActionHandlers.편차_평균);
             KeyBindingManager.Register('7', false, false, ActionHandlers.배차_분거);
             KeyBindingManager.Register('8', false, false, ActionHandlers.가격증순);
-           
 
             // Top
             KeyBindingManager.Register('q', false, false, ActionHandlers.TimeOneForwardsKey);
@@ -56,17 +55,13 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register('a', false, false, ActionHandlers.ShrinkOrNotTenPlusKey);
             KeyBindingManager.Register('A', false, false, ActionHandlers.ShrinkOrNotTenMinusKey);
             KeyBindingManager.Register('a', false, true, ActionHandlers.AddInterestToggle);
-
-
             KeyBindingManager.Register('s', false, false, ActionHandlers.SaveAllStocks);
-
 
             // Bottom
             KeyBindingManager.Register('z', false, false, ActionHandlers.OptimalTradingToggleKey);
             KeyBindingManager.Register('x', false, false, ActionHandlers.RemoveInterestedOnlyListKey);
             KeyBindingManager.Register('X', false, false, ActionHandlers.RemoveInterestedWithBidListKey);
             KeyBindingManager.Register('c', false, false, ActionHandlers.KillWebTxtFormKey);
-
             KeyBindingManager.Register(' ', false, false, ActionHandlers.NextPage);
             KeyBindingManager.Register('n', false, false, ActionHandlers.PreviousPage);
 
