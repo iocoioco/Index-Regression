@@ -74,6 +74,8 @@ namespace New_Tradegy.Library.Models
         public double 거분_avr, 거분_dev;
         public double 배차_avr, 배차_dev;
         public double 배합_avr, 배합_dev;
+        public double 푀누_avr, 푀누_dev;
+        public double 종누_avr, 종누_dev;
 
         public char 시장구분; // P 코스피, D 코스닥
         public double 시총;

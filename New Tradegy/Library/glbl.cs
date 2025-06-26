@@ -231,7 +231,7 @@ namespace New_Tradegy.Library
         public class Variable
         {
             public string MainChartDisplayMode = "푀분";
-            public string SubChartDisplayMode = "닥올";
+            public string SubChartDisplayMode = "피올";
             public string PreviousMainChartDisplayMode = "푀분";
 
             public int 분당거래액이상_천만원; // in setting 10

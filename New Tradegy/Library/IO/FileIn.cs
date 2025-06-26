@@ -119,6 +119,12 @@ namespace New_Tradegy.Library.IO
 
                 stat.배합_avr = string.IsNullOrEmpty(words[12]) ? 0.0 : Convert.ToDouble(words[12]);
                 stat.배합_dev = string.IsNullOrEmpty(words[13]) ? 0.0 : Convert.ToDouble(words[13]);
+
+                stat.푀누_avr = string.IsNullOrEmpty(words[12]) ? 0.0 : Convert.ToDouble(words[12]);
+                stat.푀누_dev = string.IsNullOrEmpty(words[13]) ? 0.0 : Convert.ToDouble(words[13]);
+
+                stat.종누_avr = string.IsNullOrEmpty(words[12]) ? 0.0 : Convert.ToDouble(words[12]);
+                stat.종누_dev = string.IsNullOrEmpty(words[13]) ? 0.0 : Convert.ToDouble(words[13]);
             }
         }
          
