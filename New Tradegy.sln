@@ -10,19 +10,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		Fake Wall Detector.txt = Fake Wall Detector.txt
 		git.txt = git.txt
-		Keys.txt = Keys.txt
 		temp.txt = temp.txt
 		VS usage manual.txt = VS usage manual.txt
 		급락.txt = 급락.txt
 		빨리.txt = 빨리.txt
 		상한_상승_보합_등.cs = 상한_상승_보합_등.cs
-		스타링크.txt = 스타링크.txt
 		여행.txt = 여행.txt
 		전기.txt = 전기.txt
 		캠핑카 출국준비.txt = 캠핑카 출국준비.txt
 		코딩 진행 단순 정리.txt = 코딩 진행 단순 정리.txt
 		코딩.txt = 코딩.txt
-		프외배수.txt = 프외배수.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time etc.", "Program Variable and Time etc.", "{3DF9494C-3D57-4742-9E8E-5D67ABF1093F}"
@@ -30,10 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Variable and Time e
 		keys keyword - eval and draw(test and real).txt = keys keyword - eval and draw(test and real).txt
 		Keys.txt = Keys.txt
 		VS usage manual.txt = VS usage manual.txt
+		WORK.txt = WORK.txt
 		할일.txt = 할일.txt
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Program Reform", "Program Reform", "{15289ED6-E810-4931-BC7A-AECA7E419E21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,7 +47,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3DF9494C-3D57-4742-9E8E-5D67ABF1093F} = {F8C1D470-EFC7-4A19-B359-C02780AD676C}
-		{15289ED6-E810-4931-BC7A-AECA7E419E21} = {F8C1D470-EFC7-4A19-B359-C02780AD676C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47FE268C-54A8-49F2-8493-0B16F0DF5A7E}

@@ -127,7 +127,7 @@ namespace New_Tradegy.Library.IO
                 stat.종누_dev = string.IsNullOrEmpty(words[13]) ? 0.0 : Convert.ToDouble(words[13]);
             }
         }
-         
+
 
         public static void read_시간별거래비율(List<List<string>> 누적)
         {
@@ -297,26 +297,14 @@ namespace New_Tradegy.Library.IO
             List<string> tgl_title = new List<string>();
             List<List<string>> tgl = new List<List<string>>();
 
-
-            //if (!g.shortform)
-            //{
-            //    g.StockManager.AddIfMissing(FileIn.read_그룹_네이버_업종()); // replaces total_stock_list = ...
-            //}
-
-
-
             var 시총Map = new ConcurrentDictionary<string, double>(
-    File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
-        .Select(line => line.Trim().Split(' '))
-        .Where(parts => parts.Length >= 2)
-        .GroupBy(parts => parts[0].Replace("_", " "))
-        .ToDictionary(
-            group => group.Key,
-            group => double.TryParse(group.First()[1], out var v) ? v : -1
-        )
-);
-
-
+                File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
+                .Select(line => line.Trim().Split(' '))
+                .Where(parts => parts.Length >= 2)
+                .GroupBy(parts => parts[0].Replace("_", " "))
+                .ToDictionary(
+                    group => group.Key,
+                    group => double.TryParse(group.First()[1], out var v) ? v : -1));
 
 
             foreach (var stock in g.StockManager.TotalStockList) // StockManager.TotalStockList is used only in this method
@@ -335,10 +323,7 @@ namespace New_Tradegy.Library.IO
                     .Select(x => x.Stock)
             );
 
-
             FileIn.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
-
-            
 
             FileIn.read_write_kodex_magnifier("read"); // duration 0.001 seconds
         }
@@ -990,12 +975,12 @@ namespace New_Tradegy.Library.IO
                             kospi_weight_sum += d;
                             kospi_mixed_stock_count++;
                         }
-                        
+
                     }
                     else
                     {
                         //?
-                        if(kosdaq_mixed_stock_count <= 20)
+                        if (kosdaq_mixed_stock_count <= 20)
 
                         {
                             string stock = words[1];
@@ -1006,7 +991,7 @@ namespace New_Tradegy.Library.IO
                             kosdaq_weight_sum += d;
                             kosdaq_mixed_stock_count++;
                         }
-                        
+
                     }
                 }
             }
@@ -1386,7 +1371,7 @@ namespace New_Tradegy.Library.IO
                 }
             }
 
-             
+
             return nrow;
         }
 

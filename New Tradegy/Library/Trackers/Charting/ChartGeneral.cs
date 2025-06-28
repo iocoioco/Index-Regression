@@ -60,17 +60,10 @@ namespace New_Tradegy.Library.Trackers
 
             if (data.Api.x[EndNpts - 1, 3] == 0) //?
                 return null;
-
-
-
-
-
+            
             var area = new ChartArea(areaName);
             chart.ChartAreas.Add(area);
             area.Visible = false;
-
-
-
 
             bool success = AddSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts, ref y_min, ref y_max);
             if (!success)

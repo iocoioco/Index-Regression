@@ -27,7 +27,7 @@ namespace New_Tradegy
         {
             InitializeComponent();
 
-            this.FormBorderStyle = FormBorderStyle.None; // Remove the default title bar
+            this.FormBorderStyle = FormBorderStyle.Sizable; // Remove the default title bar
             Panel titleBar = new Panel
             {
                 Dock = DockStyle.Top,
@@ -43,9 +43,6 @@ namespace New_Tradegy
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
         {
-            //  g.chart2 = chart2;
-
-
             g.ChartManager.SetChart2(chart2);
 
             var groupDgv = new DataGridView();

@@ -183,22 +183,20 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            
+
 
             var controlDgv = new DataGridView();
             var controlDtb = new DataTable();
             this.Controls.Add(controlDgv); // ✅ added to Form
             g.controlPane = new ControlPane(controlDgv, controlDtb); // logic wrapper
-     
+            controlDgv.BringToFront(); // placed under chart without it
 
             var tradeDgv = new DataGridView();
             var tradeDtb = new DataTable();
             this.Controls.Add(tradeDgv); // ✅ added to Form
             g.tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
-         
+            tradeDgv.BringToFront(); // placed under chart without it
 
-
-           
 
 
             if (!g.test) // for market trading
@@ -245,8 +243,10 @@ namespace New_Tradegy // added for test on 20241020 0300
             };
 
             
+
             // use Panel in RankLogic
             // RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
+
             g.ChartMain = new ChartMain(); // all new, Form_1 start
             g.ChartMain.RefreshMainChart();
 

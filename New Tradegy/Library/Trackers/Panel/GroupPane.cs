@@ -15,7 +15,7 @@ namespace New_Tradegy.Library.Trackers
         private DataGridView _view;
         private DataTable _table;
         private List<GroupData> _groups;
-        public DataGridView View => _view;
+        public DataGridView View => _view; // for easy access
 
         public GroupPane(DataGridView dgv, DataTable dtb)
         {
@@ -31,9 +31,6 @@ namespace New_Tradegy.Library.Trackers
 
         private void InitializeDgv(DataGridView _view)
         {
-
-
-
             _view.ColumnHeadersVisible = false;
             _view.RowHeadersVisible = false;
             _view.ReadOnly = true;

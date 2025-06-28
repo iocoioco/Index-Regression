@@ -450,13 +450,14 @@ namespace New_Tradegy.Library.UI.KeyBindings
         #region
         public static readonly Action ShrinkOrNotTenPlusKey = () =>
         {
+            g.chart1.Hide();
             g.NptsForShrinkDraw += 10;
             ActionCode.New(false, false, eval: true, draw: 'B').Run();
         };
 
         public static readonly Action ShrinkOrNotTenMinusKey = () =>
         {
-            
+            g.chart1.Show();
             g.NptsForShrinkDraw -= 10;
             if (g.NptsForShrinkDraw <= 10)
             {

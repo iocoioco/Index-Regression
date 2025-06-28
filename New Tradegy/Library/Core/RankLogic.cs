@@ -108,10 +108,8 @@ namespace New_Tradegy.Library.Core
                 var interestedOnly = interestedWithBid.Except(holdings).ToList();
                 var rankedStocks = g.StockManager.StockRankingList;
 
-
-                // 레버리지 외 지수관련 모두 제외;
-                if ((
-                    data.Stock.Contains("KODEX") ||
+                //// 레버리지 외 지수관련 모두 제외;
+                if ((data.Stock.Contains("KODEX") ||
                 data.Stock.Contains("KOSEF") ||
                 data.Stock.Contains("HANARO") ||
                 data.Stock.Contains("TIGER") ||
