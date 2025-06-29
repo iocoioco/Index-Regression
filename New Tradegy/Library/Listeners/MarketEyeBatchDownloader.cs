@@ -42,41 +42,18 @@ namespace New_Tradegy.Library.Listeners
                 }
 
 
-                //?if (wk.isWorkingHour())
-                //{
-                    // Trigger the marketeye alarm task
+                if (wk.isWorkingHour())
+                {
                     await SoundUtils.MarketTimeAlarmsAsync(HHmm);
-                
-                // Call marketeye logic
                 try
                 {
                     await DownloadBatchAsync();
                 }
                 catch (Exception ex)
                 {
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
-                    var check = g.connected;
-                    // Optionally log or retry
                 }
-                //?}
-
+                }
                 // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
                 await Task.Delay(300);
             }

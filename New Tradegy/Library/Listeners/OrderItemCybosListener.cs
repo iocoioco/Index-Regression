@@ -28,8 +28,6 @@ namespace New_Tradegy.Library.Listeners
 
         public static void Init_CpConclusion()
         {
-            if (!g.connected)
-                return;
             if (_isSubscribed) return;
 
             _CpConclusion = new DSCBO1Lib.CpConclusion();

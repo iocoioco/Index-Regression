@@ -25,7 +25,7 @@ namespace New_Tradegy.Library.Trackers
             _groups = g.GroupManager.GetAll();
 
             InitializeDgv(_view);
-            BindGrid(_view); // has InitializeSetting()
+            //BindGrid(_view); // has InitializeSetting()
         }
 
 
@@ -35,7 +35,8 @@ namespace New_Tradegy.Library.Trackers
             _view.RowHeadersVisible = false;
             _view.ReadOnly = true;
 
-            _view.ScrollBars = g.test ? ScrollBars.Vertical : ScrollBars.None;
+            _view.ScrollBars = ScrollBars.Vertical;
+         
             _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             _view.AllowUserToResizeColumns = false;
             _view.AllowUserToResizeRows = false;
@@ -58,12 +59,12 @@ namespace New_Tradegy.Library.Trackers
                 _view.FirstDisplayedScrollingRowIndex = 0;
         }
 
-        private void BindGrid(DataGridView _view)
+        public void BindGrid(DataGridView _view)
         {
             _table.Columns.Clear();
 
             // Determine row count based on mode
-            int rows = g.test ? _groups.Count : 10;
+            int rows = _groups.Count;
 
             // Columns: "0", "1", "2"
             for (int i = 0; i < 3; i++)
@@ -78,8 +79,7 @@ namespace New_Tradegy.Library.Trackers
             _view.AutoGenerateColumns = false;
 
             int visibleWidth = _view.ClientSize.Width;
-            if (!g.test)
-                visibleWidth -= SystemInformation.VerticalScrollBarWidth;
+            visibleWidth -= SystemInformation.VerticalScrollBarWidth;
 
             int columnWidth = visibleWidth / 3;
 
@@ -88,6 +88,11 @@ namespace New_Tradegy.Library.Trackers
             for (int i = 0; i < colCount; i++)
             {
                 _view.Columns[i].Width = columnWidth;
+            }
+            Form target = Application.OpenForms["Form_보조_차트"];
+            if (target is Form_보조_차트 form)
+            {
+                form.Form_보조_차트_ResizeEnd(form, EventArgs.Empty);
             }
         }
 
@@ -180,8 +185,8 @@ namespace New_Tradegy.Library.Trackers
 
                     // New values from GroupData
                     string newTitle = group.Title;
-                    string new푀분 = group.푀분.ToString();
-                    string new총점 = group.TotalScore.ToString();
+                    string new푀분 = group.푀분.ToString("F0");
+                    string new총점 = group.TotalScore.ToString("F0");
 
                     // Only update if changed
                     bool changed =

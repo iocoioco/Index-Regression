@@ -70,6 +70,14 @@ namespace New_Tradegy
             // ChartIndex.UpdateChart(chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
             // Draw initial charts
             Form_보조_차트_DRAW();
+
+            // defer the call until after Form_보조_차트_Load completes
+            this.BeginInvoke((Action)(() =>
+            {
+                if (g.groupPane?.View != null)
+                    g.groupPane.BindGrid(g.groupPane.View);
+            }));
+
         }
 
         private void ConfigureChartAndGridSize()
@@ -481,7 +489,7 @@ namespace New_Tradegy
             }
         }
 
-        private void Form_보조_차트_ResizeEnd(object sender, EventArgs e)
+        public void Form_보조_차트_ResizeEnd(object sender, EventArgs e)
         {
             chart2.Size = new Size((int)(this.Width), (int)(this.Height - dataGridView1Height));
             chart2.Location = new Point(0, dataGridView1Height);
@@ -503,6 +511,51 @@ namespace New_Tradegy
                 dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 dataGridView1.Columns[i].Width = this.Width / 8;
             }
+
+            // group pane location and size change w.r.t Form_보조_차트 size change
+            //int col = 4; // Zero-based → 5th column
+            //int row = 1; // Zero-based → 2nd row
+
+            //int totalCols = 5;
+            //int totalRows = 3;
+
+            //int cellWidth = this.ClientSize.Width / totalCols;
+            //int cellHeight = this.ClientSize.Height / totalRows - 6;
+
+            //g.groupPane.View.Location = new Point(col * cellWidth, row * cellHeight);
+            //g.groupPane.View.Size = new Size(cellWidth, cellHeight); // Optional: full cell size
+
+            //int padding = 7;
+
+            //g.groupPane.View.Location = new Point(
+            //    col * cellWidth + 20,
+            //    row * cellHeight + 38
+            //);
+            //g.groupPane.View.Size = new Size(
+            //    cellWidth - 2 * padding,
+            //    cellHeight - 2 * padding
+            //);
+
+            int col = 4; // Zero-based → 5th column
+            int row = 1; // Zero-based → 2nd row
+
+            int totalCols = 5;
+            int totalRows = 3;
+
+            int cellWidth = this.ClientSize.Width / totalCols;
+            int cellHeight = this.ClientSize.Height / totalRows - 6;
+
+            g.groupPane.View.Location = new Point(col * cellWidth + 20, row * cellHeight + 38);
+            g.groupPane.View.Size = new Size(cellWidth - 15, cellHeight - 14);
+           
+
+
+            int scrollBarWidth = SystemInformation.VerticalScrollBarWidth;
+
+            int totalWidth = g.groupPane.View.Width - scrollBarWidth;
+            g.groupPane.View.Columns[0].Width = totalWidth / 2;
+            g.groupPane.View.Columns[1].Width = totalWidth / 4;
+            g.groupPane.View.Columns[2].Width = totalWidth / 4;
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)

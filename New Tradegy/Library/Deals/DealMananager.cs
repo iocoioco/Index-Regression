@@ -37,7 +37,7 @@ namespace New_Tradegy.Library.Deals
 
         public static void TradeInit()
         {
-            if (_checkedTradeInit)
+            if (_checkedTradeInit || !g.connected)
                 return;
 
             if (_cptdutil == null)

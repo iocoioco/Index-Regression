@@ -352,7 +352,7 @@ namespace New_Tradegy.Library.IO
 
                     // Check if the task should be performed based on time and day
                     if (HHmm >= 800 && HHmm < 1521 && date.DayOfWeek != DayOfWeek.Sunday
-                        && date.DayOfWeek != DayOfWeek.Saturday && g.connected)
+                        && date.DayOfWeek != DayOfWeek.Saturday)
                     {
                         run_us_index_append_or_replace();
                     }

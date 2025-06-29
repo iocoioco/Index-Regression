@@ -80,7 +80,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             if (_cpcybos.IsConnect == 0) // 0 : not connected
             {
                 ChangeMainTitleConnection(); // repeatedly reconnect, but currently double slashed
-            } 
+            }
             else
                 g.connected = true;
 
@@ -114,10 +114,10 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.StockRepository = StockRepository.Instance;
             g.StockManager = new StockManager(g.StockRepository);
-           
-           
-            
-           
+
+
+
+
 
             g.Npts[0] = 0; //
             g.Npts[1] = g.MAX_ROW; //
@@ -135,34 +135,34 @@ namespace New_Tradegy // added for test on 20241020 0300
             FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
             var NaverList = FileIn.read_그룹_네이버_업종();
 
-            
-            
+
+
             g.StockManager.AddIfMissing(new[] {
                 "KODEX 레버리지",
                 "KODEX 코스닥150레버리지",
                 "KODEX 200선물인버스2X",
                 "KODEX 코스닥150선물인버스"
             });
-            
+
             g.StockManager.AddIfMissing(g.kospi_mixed.stock);
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
             g.StockManager.AddIfMissing(NaverList);
 
-            
+
 
             KeyBindingRegistrar.RegisterAll();
 
 
 
 
-            
-            
-           
+
+
+
 
             FileIn.read_변수(); //
             FileIn.read_무게(); //
 
-            
+
             FileIn.gen_ogl_data(); // duration : 1051 stocks : 11.8 seconds
 
             g.GroupManager = new GroupManager(); // read 상관 inside
@@ -199,7 +199,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-            if (!g.test) // for market trading
+            if (!g.test && g.connected) // for market trading
             {
                 OrderItemCybosListener.Init_CpConclusion();
 
@@ -242,7 +242,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 }
             };
 
-            
+
 
             // use Panel in RankLogic
             // RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
@@ -570,7 +570,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-       
+
 
 
 

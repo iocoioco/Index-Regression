@@ -13,6 +13,8 @@ namespace New_Tradegy.Library.IO
     {
         private static async Task LogErrorAsync(Exception ex, string dataGridViewName)
         {
+
+            return; // not undedrstanding the mechanism, so block for the time being
             string logDirectory = @"C:\병신\Logs";
             string logFileName = "DataGridErrors_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
             string logFilePath = Path.Combine(logDirectory, logFileName);
@@ -28,18 +30,18 @@ namespace New_Tradegy.Library.IO
                 await writer.WriteLineAsync(ex.StackTrace);
             }
         }
+
         public static void DataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e, string dataGridViewName)
-        {
+        { 
             LogErrorAsync(e.Exception, dataGridViewName).ConfigureAwait(false);
             e.ThrowException = false;
         }
 
-
         // modified by Sensei
         public static async Task SaveAllStocks()
         {
-            if (g.test)
-                return; // ❌ Don't save during test mode
+            if (g.test || !g.connected)
+                return; // ❌ Don't save during test mode or not connected
 
             FileIn.read_write_kodex_magnifier("write");
 
@@ -318,9 +320,6 @@ namespace New_Tradegy.Library.IO
             }
         }
 
-
-
-
         public static void create_empty_temp_file()
         {
             string path = @"C:\병신\temp.txt";
@@ -382,7 +381,6 @@ namespace New_Tradegy.Library.IO
             }
         }
 
-
         public static void w_temp_7221_test(string t)
         {
             lock (g.lockObject)
@@ -394,7 +392,6 @@ namespace New_Tradegy.Library.IO
                 sw.Close();
             }
         }
-
 
         public static void wt_temp_MarketeyeCount(string t)
         {
@@ -408,7 +405,6 @@ namespace New_Tradegy.Library.IO
                 sw.Close();
             }
         }
-
 
         public static void wt_7222_count(string t0, string t1, string t2)
         {
@@ -535,52 +531,5 @@ namespace New_Tradegy.Library.IO
                 sw.Close();
             }
         }
-
-
-
-
-
-
-        //public static void SaveAllStocks()
-        //{
-        //    if (!g.connected) // never save in test
-        //        return;
-
-        //    string path = @"C:\병신\분" + "\\" + g.date.ToString();
-        //    Directory.CreateDirectory(path); //if Exist, will pass
-
-        //    for (int i = 0; i < g.ogl_data.Count; i++)
-        //    {
-        //        g.stock_data t = g.ogl_data[i];
-
-        //        string file = path + "\\" + t.종목 + ".txt";
-        //        if (File.Exists(file)) // if file not exist, create new
-        //        {
-        //            File.Delete(file);
-        //        }
-        //        int lastRow = 381;      // int lastRow = x.GetUpperBound(0);
-        //        int lastColumn = 11;   //  int lastColumn = x.GetUpperBound(1);
-
-        //        string str = "";
-        //        for (int j = 0; j <= lastRow; j++) // bound exist not the size
-        //        {
-        //            if (t.x[j, 0] == 0 || t.x[j, 0] > 152100) // if time is not set then stop writing
-        //                break;
-
-        //            for (int k = 0; k <= lastColumn; k++) // bound exist not the size
-        //            {
-        //                if (k == 0)
-        //                    str += t.x[j, k];
-
-        //                else
-        //                    str += "\t" + t.x[j, k];
-        //            }
-        //            str += "\n";
-        //        }
-        //        File.WriteAllText(file, str);
-        //    }
-
-        //}
-
     }
 }
