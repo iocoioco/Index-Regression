@@ -111,6 +111,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormWeights.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormWeights.Designer.cs">
+      <DependentUpon>FormWeights.cs</DependentUpon>
+    </Compile>
     <Compile Include="Library\Trackers\Charting\ChartBasic.cs" />
     <Compile Include="Library\Trackers\Charting\ChartGeneral.cs" />
     <Compile Include="Library\Trackers\Charting\ChartMain.cs" />
@@ -119,12 +125,6 @@
     </Compile>
     <Compile Include="Library\UI\AlertForm.Designer.cs">
       <DependentUpon>AlertForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_무게.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_무게.Designer.cs">
-      <DependentUpon>Form_무게.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_지수_조정.cs">
       <SubType>Form</SubType>
@@ -210,9 +210,6 @@
     <EmbeddedResource Include="Form_매수_매도.resx">
       <DependentUpon>Form_매수_매도.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_무게.resx">
-      <DependentUpon>Form_무게.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_보조_차트.resx">
       <DependentUpon>Form_보조_차트.cs</DependentUpon>

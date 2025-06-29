@@ -1538,73 +1538,7 @@ namespace New_Tradegy.Library.IO
         }
 
 
-        public static List<string> read_그룹_네이버_업종_old(List<List<string>> Gl, List<List<string>> GL)
-        {
-            _cpstockcode = new CPUTILLib.CpStockCode();
-
-            List<string> gl_list = new List<string>();
-
-            string filepath = @"C:\병신\data\그룹_네이버_업종.txt";
-            if (!File.Exists(filepath))
-            {
-                return gl_list;
-            }
-
-            List<string> 제외 = new List<string>();
-            제외 = read_제외(); // read_그룹_네이버_업종
-
-            string[] grlines = File.ReadAllLines(filepath, Encoding.Default);
-
-            List<string> GL_list = new List<string>();
-
-            int count = 0;
-            foreach (string line in grlines)
-            {
-                List<string> Gl_list = new List<string>();
-
-                string[] words = line.Split('\t');
-
-                if (words[0] != "")
-                {
-                    string stock = words[0].Replace(" *", "");
-                    string code = _cpstockcode.NameToCode(stock);
-                    if (code.Length != 7)
-                    {
-                        continue;
-                    }
-                    if (code[0] != 'A')
-                        continue;
-
-                    char marketKind = read_코스피코스닥시장구분(stock);
-                    if (marketKind == 'S' || marketKind == 'D')
-                    { }
-                    else
-                        continue;
-
-                    if (제외.Contains(stock))
-                        continue;
-
-                    gl_list.Add(stock); // for single
-                    GL_list.Add(stock); // for small group
-                    if (count == grlines.Length - 1) // the last stock added as group
-                    {
-                        GL.Add(GL_list.ToList()); //modified to create a new List when adding
-                        GL_list.Clear();
-                    }
-                }
-                else
-                {
-                    GL.Add(GL_list.ToList()); // to create a new List when adding
-                    GL_list.Clear();
-                }
-                count++;
-
-
-            }
-
-            var uniqueItemsList = gl_list.Distinct().ToList();
-            return uniqueItemsList;
-        }
+      
 
 
         public static List<string> read_그룹_네이버_업종() // this is for single list of stocks in 그룹_네이버_업종

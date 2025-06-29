@@ -311,11 +311,11 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         public static readonly Action WeightControlKey = () =>
         {
-            Form Form_무게 = new Form_무게(); // grup
-            Form_무게.Show();
-            // form to the top
-            Form_무게.TopMost = true;
+            FormWeights formWeights = new FormWeights();
+            formWeights.Show();
+            formWeights.TopMost = true; // bring to front
         };
+
 
         public static readonly Action TimeTenForwardsKey = () =>
         {

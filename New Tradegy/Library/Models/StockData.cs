@@ -54,14 +54,25 @@ namespace New_Tradegy.Library.Models
         public double 배합;
         public double 푀누;
         public double 종누;
+        public double 피로;
+
+        
+        public int 푀분_등수;
+        public int 거분_등수;
+        public int 배차_등수;
+        public int 배합_등수;
+        public int 푀누_등수;
+        public int 종누_등수;
+        public int 피로_등수;
 
         public double 총점;
-        public int 푀분_등수, 거분_등수;
-        public int 배차_등수, 배합_등수;
-        public int 그순;
+   
         public double 등합;
 
-        public double 급락, 급상;
+        public int 그순;
+
+        public double 급락;
+        public double 급상;
     }
 
 
