@@ -108,6 +108,7 @@ namespace New_Tradegy.Library
 
         public static bool isWorkingHour()
         {
+       
             DateTime now = DateTime.Now;
 
             // ⏰ Market date check
@@ -121,7 +122,7 @@ namespace New_Tradegy.Library
 
             // 🕘 Market hours (adjust as needed)
             int HHmm = now.Hour * 100 + now.Minute;
-            if (HHmm < 800 || HHmm > 1530)
+            if (HHmm < 900 || HHmm > 1520)
                 return false;
 
             return true;

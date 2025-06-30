@@ -15,7 +15,8 @@ namespace New_Tradegy.Library.Listeners
     internal class MarketEyeBatchDownloader
     {
         private static CPSYSDIBLib.MarketEye _marketeye;
-        private static CPUTILLib.CpStockCode _cpstockcode;
+        //private static CPUTILLib.CpStockCode _cpstockcode;
+        private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
 
         private static IndexRangeTracker indexRangeTracker = new IndexRangeTracker();
 
@@ -45,14 +46,14 @@ namespace New_Tradegy.Library.Listeners
                 if (wk.isWorkingHour())
                 {
                     await SoundUtils.MarketTimeAlarmsAsync(HHmm);
-                try
-                {
-                    await DownloadBatchAsync();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
-                }
+                    try
+                    {
+                        await DownloadBatchAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
+                    }
                 }
                 // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
                 await Task.Delay(300);
@@ -106,7 +107,7 @@ namespace New_Tradegy.Library.Listeners
 
             if (_marketeye == null)
             {
-                _cpstockcode = new CPUTILLib.CpStockCode();
+                //_cpstockcode = new CPUTILLib.CpStockCode();
                 _marketeye = new CPSYSDIBLib.MarketEye();
                 _marketeye.Received += new CPSYSDIBLib._ISysDibEvents_ReceivedEventHandler(HandleBatchDataAsync);
             }
@@ -130,7 +131,7 @@ namespace New_Tradegy.Library.Listeners
     rankedStockList: g.StockManager.StockRankingList         // required in new method
 );
 
-            
+
 
             for (int i = 0; i < codes.Length && i < selected.Count; i++)
             {
@@ -138,7 +139,7 @@ namespace New_Tradegy.Library.Listeners
                 if (stock == null) continue;
                 codes[i] = stock.Code;
             }
-                
+
 
             _marketeye.SetInputValue(0, fields);
             _marketeye.SetInputValue(1, codes);
@@ -146,7 +147,7 @@ namespace New_Tradegy.Library.Listeners
             int result = _marketeye.BlockRequest();
             if (result != 0)
             {
-                
+
             }
 
             await Task.CompletedTask; // for consistency with async signature
@@ -159,7 +160,7 @@ namespace New_Tradegy.Library.Listeners
             int HHmm = Convert.ToInt32(date.ToString("HHmm"));
             int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
 
-            if (HHmm < 800 || HHmm >= 1521) return;
+            if (!wk.isWorkingHour()) return;
 
             //if (HHmm < 1000 || HHmm >= 1621) // 시작시간 10시인 경우
             //    return;
@@ -169,12 +170,16 @@ namespace New_Tradegy.Library.Listeners
 
             for (int k = 0; k < count; k++)
             {
-                string stock = _marketeye.GetDataValue(0, k);
-                if (!g.StockRepository.Contains(stock)) 
+                string code = _marketeye.GetDataValue(0, k);
+                var stock = _cpstockcode.CodeToName(code);
+            
+
+
+                if (!g.StockRepository.Contains(stock))
                     continue;
 
                 var data = g.StockRepository.TryGetStockOrNull(stock);
-                if(data == null) continue;
+                if (data == null) continue;
                 var api = data.Api;
                 downloadList.Add(data);
 
@@ -337,7 +342,7 @@ namespace New_Tradegy.Library.Listeners
                 api.AppendMinuteIfNeeded(append);
             }
 
-  
+
             PostProcessor.post_real(downloadList);
 
             if (g.StockRepository.Contains("KODEX 레버리지"))

@@ -38,7 +38,6 @@ namespace New_Tradegy
 
 
             titleBar.Controls.Add(dataGridView1); // Add DataGridView to the title bar
-
         }
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
@@ -217,8 +216,6 @@ namespace New_Tradegy
                     area.Position = new ElementPosition(x, y, width, height);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
 
-
-
                     if (!area.Visible)
                         area.Visible = true;
                 }
@@ -236,10 +233,6 @@ namespace New_Tradegy
                         rect.Width = width;
                         rect.Height = 5.155f + 2f; // standard height
                     }
-
-
-
-
                     if (!anno.Visible)
                         anno.Visible = true;
                 }
@@ -358,14 +351,12 @@ namespace New_Tradegy
                     break;
 
                 case "피올":
-                    displayList.Add("KODEX 레버리지");
-                    displayList.Add("KODEX 코스닥150레버리지");
+                    displayList.AddRange(g.StockManager.LeverageList);
                     foreach (string s in g.kospi_mixed.stock) { displayList.Add(s); }
                     break;
 
                 case "닥올":
-                    displayList.Add("KODEX 레버리지");
-                    displayList.Add("KODEX 코스닥150레버리지");
+                    displayList.AddRange(g.StockManager.LeverageList);
                     foreach (string s in g.kosdaq_mixed.stock) { displayList.Add(s); }
                     break;
 
@@ -378,15 +369,8 @@ namespace New_Tradegy
                         {
                             string stock = data.Stock;
 
-                            // Exclude index-related ETFs and already displayed/interested stocks
-                            if (g.StockManager.IndexList.Contains(stock) ||
-                                stock.Contains("KOSEF") ||
-                                stock.Contains("HANARO") ||
-                                stock.Contains("TIGER") ||
-                                stock.Contains("KBSTAR") ||
-                                stock.Contains("혼합") ||
-                                g.StockManager.HoldingList.Contains(stock) ||
-                                g.StockManager.InterestedWithBidList.Contains(stock))
+                            // Exclude index-related 
+                            if (g.StockManager.IndexList.Contains(stock))
                             {
                                 continue;
                             }

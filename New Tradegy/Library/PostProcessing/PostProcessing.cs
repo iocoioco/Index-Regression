@@ -170,8 +170,7 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 score.푀분 = 0.0;
             }
-            score.푀분 *= g.s.푀분_wgt;
-
+            
             if (MathUtils.IsSafeToDivide(stat.배차_dev))
             {
                 sending_value = (api.분배수차[0] - stat.배차_avr) / stat.배차_dev;
@@ -181,8 +180,7 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 score.배차 = 0.0;
             }
-            score.배차 *= g.s.배차_wgt;
-
+            
             if (MathUtils.IsSafeToDivide(stat.배합_dev))
             {
                 sending_value = (api.분배수합[0] - stat.배합_avr) / stat.배합_dev;
@@ -192,8 +190,7 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 score.배합 = 0.0;
             }
-            score.배합 *= g.s.배합_wgt;
-
+            
             return score.푀분 + score.배차 + score.배합;
         }
 

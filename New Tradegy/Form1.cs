@@ -160,7 +160,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
             FileIn.read_변수(); //
-            FileIn.read_무게(); //
+            WeightManager.Load(); // read in "Weight.txt" in data directory
 
 
             FileIn.gen_ogl_data(); // duration : 1051 stocks : 11.8 seconds

@@ -33,7 +33,7 @@ namespace New_Tradegy.Library.Trackers.Charting
             // Constants and major collections (defined clearly at the top)
             const int MaxChartSlots = 24;
 
-            var indexList = g.StockManager.LeverageList;
+            var leverageList = g.StockManager.LeverageList;
             var holdings = g.StockManager.HoldingList;
             var interestedWithBid = g.StockManager.InterestedWithBidList;
             var interestedOnly = g.StockManager.InterestedOnlyList;
@@ -61,7 +61,7 @@ namespace New_Tradegy.Library.Trackers.Charting
 
             // Step 3: Combine into displayList (index first, then with/without bid)
             var displayList = new List<string>();
-            displayList.AddRange(indexList);      // Fixed index stocks
+            displayList.AddRange(leverageList);      // Fixed index stocks
             displayList.AddRange(withBookBid);    // Main with bid
             displayList.AddRange(withoutBookBid); // Main without bid
 
@@ -76,7 +76,7 @@ namespace New_Tradegy.Library.Trackers.Charting
                 var data = g.StockRepository.TryGetStockOrNull(stock);
                 if (data == null) continue;
 
-                if (indexList.Contains(stock))
+                if (leverageList.Contains(stock))
                 {
                     var area = ChartIndex.UpdateChartArea(chart, data);
                     if (area == null)
@@ -99,15 +99,15 @@ namespace New_Tradegy.Library.Trackers.Charting
                 }
 
                 // Add BookBid if stock is from withBookBid or index
-                if (withBookBid.Contains(stock) || indexList.Contains(stock))
+                if (withBookBid.Contains(stock) || leverageList.Contains(stock))
                 {
                     int row = -1, col = -1;
-                    if (stock == indexList[0])
+                    if (stock == leverageList[0])
                     {
                         row = 0;
                         col = 0;
                     }
-                    else if (stock == indexList[1])
+                    else if (stock == leverageList[1])
                     {
                         row = 0;
                         col = 2;
@@ -134,7 +134,7 @@ namespace New_Tradegy.Library.Trackers.Charting
 
             CleanupUnusedChartObjects(usedChartAreas, usedAnnotations, usedBookbids);
 
-            DisplayList = GenerateDisplayList(indexList, withBookBid, withoutBookBid, g.nRow, g.nCol);
+            DisplayList = GenerateDisplayList(leverageList, withBookBid, withoutBookBid, g.nRow, g.nCol);
         
             chart.Invalidate();
         }

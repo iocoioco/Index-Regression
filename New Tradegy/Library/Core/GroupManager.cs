@@ -14,7 +14,7 @@ namespace New_Tradegy.Library.Core
 // Field(private)	_camelCase
 // Local variable/Parameter camelCase
         private List<GroupData> _groups;
-        public List<GroupData> RawGroups => _groups;
+        public List<GroupData> Groups => _groups;
         public List<GroupData> GroupRankingList { get; private set; } = new List<GroupData>();
 
         public List<string> GetTopStocksFromTopGroups(int groupLimit = 5, int stockPerGroup = 3, List<string> existing = null)
@@ -123,7 +123,7 @@ namespace New_Tradegy.Library.Core
 
             int groupIndex = 0;
 
-            foreach (var groupData in g.GroupManager.RawGroups)
+            foreach (var groupData in g.GroupManager.Groups)
             {
                 if (groupData.Stocks.Count < 2)
                     continue;

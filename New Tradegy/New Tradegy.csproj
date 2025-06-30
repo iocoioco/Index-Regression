@@ -193,6 +193,7 @@
     <Compile Include="Library\Utils\StringUtils.cs" />
     <Compile Include="Library\Utils\TimeUtils.cs" />
     <Compile Include="Library\Utils\WinApiUtils.cs" />
+    <Compile Include="Library\WeightManager.cs" />
     <Compile Include="Library\work.cs" />
     <Compile Include="Memo.cs">
       <SubType>Form</SubType>

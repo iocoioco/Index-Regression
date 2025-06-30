@@ -613,26 +613,7 @@ namespace New_Tradegy.Library.IO
             }
         }
 
-        public static void read_무게()
-        {
-            string filePath = @"C:\병신\data\무게.txt";
-
-            if (File.Exists(filePath))
-            {
-                string[] values = File.ReadAllLines(filePath);
-                if (values.Length >= 7)
-                {
-                    // Convert values to double
-                    g.s.푀분_wgt = Convert.ToDouble(values[0]);
-                    g.s.거분_wgt = Convert.ToDouble(values[1]);
-                    g.s.배차_wgt = Convert.ToDouble(values[2]);
-                    g.s.배합_wgt = Convert.ToDouble(values[3]);
-                    g.s.그룹_wgt = Convert.ToDouble(values[4]);
-                    g.s.피로_wgt = Convert.ToDouble(values[5]); // New text box
-                    g.s.기타_wgt = Convert.ToDouble(values[6]); // New text box
-                }
-            }
-        }
+        
 
         public static void ReadBestFriends()
         {

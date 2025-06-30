@@ -11,13 +11,6 @@ namespace New_Tradegy.Library.Core
 
     public class RankLogic
     {
-        private readonly FormWeights _formWeights;
-        // usage : double score1 = _formWeights._푀분;
-        public RankLogic(FormWeights weightsForm)
-        {
-            _formWeights = weightsForm;
-        }
-
         public static List<StockData> RankByTotalScore(IEnumerable<StockData> stocks)
         {
             return stocks
@@ -35,7 +28,7 @@ namespace New_Tradegy.Library.Core
         }
 
         // Add more strategies as needed
-        public static void EvalStock_등합()
+        public void EvalStock_등합()
         {
             var repo = g.StockRepository;
 
@@ -49,6 +42,8 @@ namespace New_Tradegy.Library.Core
 
             foreach (var data in repo.AllDatas)
             {
+                if (g.StockManager.IndexList.Contains(data.Stock))
+                    continue;
                 list_푀분.Add((data.Score.푀분, data.Stock));
                 list_거분.Add((data.Score.거분, data.Stock));
                 list_배차.Add((data.Score.배차, data.Stock));
@@ -68,6 +63,8 @@ namespace New_Tradegy.Library.Core
 
             foreach (var data in repo.AllDatas)
             {
+                if (g.StockManager.IndexList.Contains(data.Stock))
+                    continue;
                 data.Score.푀분_등수 = list_푀분.FindIndex(x => x.stock == data.Stock);
                 data.Score.거분_등수 = list_거분.FindIndex(x => x.stock == data.Stock);
                 data.Score.배차_등수 = list_배차.FindIndex(x => x.stock == data.Stock);
@@ -80,14 +77,12 @@ namespace New_Tradegy.Library.Core
             // 등합 점수 계산 (가중치 반영 가능)
             foreach (var data in repo.AllDatas)
             {
+                if (g.StockManager.IndexList.Contains(data.Stock))
+                    continue;
                 data.Score.등합 =
-                    data.Score.푀분_등수 +
-                    // data.Score.거분_등수 +
-                    data.Score.배차_등수 +
-                    data.Score.배합_등수;
-
-                // 향후: 그룹별 가중치 적용 가능
-                // data.Score.등합 += data.Score.그순 * g.s.그룹_wgt;
+                    data.Score.푀분_등수 * WeightManager.Weights["푀분"] +
+                    data.Score.배차_등수 * WeightManager.Weights["배차"] +
+                    data.Score.배합_등수 * WeightManager.Weights["배합"];
             }
         }
 
@@ -112,29 +107,12 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-
-
             var specialGroupKeys = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
             foreach (var data in repo.AllDatas)
             {
-                var holdings = g.StockManager.HoldingList;
-                var interestedWithBid = g.StockManager.InterestedWithBidList;
-                var interestedOnly = interestedWithBid.Except(holdings).ToList();
-                var rankedStocks = g.StockManager.StockRankingList;
-
-                //// 레버리지 외 지수관련 모두 제외;
-                if ((data.Stock.Contains("KODEX") ||
-                data.Stock.Contains("KOSEF") ||
-                data.Stock.Contains("HANARO") ||
-                data.Stock.Contains("TIGER") ||
-                data.Stock.Contains("KBSTAR") ||
-                data.Stock.Contains("혼합") ||
-                g.StockManager.HoldingList.Contains(data.Stock) ||
-                g.StockManager.InterestedWithBidList.Contains(data.Stock)))
-                {
+                if (g.StockManager.IndexList.Contains(data.Stock))
                     continue;
-                }
 
                 var stat = data.Statistics;
                 string mode = g.v.MainChartDisplayMode;

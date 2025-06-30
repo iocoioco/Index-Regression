@@ -215,15 +215,6 @@ namespace New_Tradegy.Library
             public List<List<double>> 급락 = new List<List<double>>();
             public List<List<double>> 잔잔 = new List<List<double>>();
             public List<List<double>> 그룹 = new List<List<double>>();
-
-            public double 푀분_wgt;
-            public double 거분_wgt;
-            public double 배차_wgt;
-            public double 배합_wgt;
-            public double 그룹_wgt;
-            public double 피로_wgt;
-            public double 기타_wgt;
-
         }
         public static Score s = new Score();
 
