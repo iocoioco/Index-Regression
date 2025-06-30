@@ -42,7 +42,6 @@ namespace New_Tradegy.Library.Listeners
                     }
                 }
 
-
                 if (wk.isWorkingHour())
                 {
                     await SoundUtils.MarketTimeAlarmsAsync(HHmm);
@@ -55,7 +54,7 @@ namespace New_Tradegy.Library.Listeners
                         Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
                     }
                 }
-                // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
+                // Wait 300 milliseconds (non-blocking) Block Request 60times/ 15 Secs
                 await Task.Delay(300);
             }
         }

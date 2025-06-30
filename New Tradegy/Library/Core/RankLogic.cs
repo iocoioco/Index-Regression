@@ -28,7 +28,7 @@ namespace New_Tradegy.Library.Core
         }
 
         // Add more strategies as needed
-        public void EvalStock_등합()
+        public static void EvalStock_등합()
         {
             var repo = g.StockRepository;
 
@@ -39,9 +39,12 @@ namespace New_Tradegy.Library.Core
             var list_푀누 = new List<(double value, string stock)>();
             var list_종누 = new List<(double value, string stock)>();
             var list_피로 = new List<(double value, string stock)>();
+            var list_등합 = new List<(double value, string stock)>();
 
             foreach (var data in repo.AllGeneralDatas)
             {
+                if (!EvalInclusion(data)) 
+                    continue;
                 list_푀분.Add((data.Score.푀분, data.Stock));
                 list_거분.Add((data.Score.거분, data.Stock));
                 list_배차.Add((data.Score.배차, data.Stock));
@@ -77,7 +80,30 @@ namespace New_Tradegy.Library.Core
                     data.Score.푀분_등수 * WeightManager.Weights["푀분"] +
                     data.Score.배차_등수 * WeightManager.Weights["배차"] +
                     data.Score.배합_등수 * WeightManager.Weights["배합"];
+
+                list_등합.Add((data.Score.등합, data.Stock));
             }
+
+            
+            list_등합 = list_등합.OrderBy(x => x.value).ToList(); // Ascending
+
+            lock (g.lockObject)
+            {
+                g.StockManager.StockRankingList.Clear();
+
+                foreach (var (val, stock) in list_등합)
+                {
+                    if (!g.StockManager.StockRankingList.Contains(stock))
+                        g.StockManager.StockRankingList.Add(stock);
+                }
+
+                string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllGeneralDatas.Count()}";
+
+                if (g.controlPane.GetCellValue(1, 1) != newValue)
+                    g.controlPane.SetCellValue(1, 1, newValue);
+            }
+
+            EvalGroup(); // re-evaluate groups after stock ranking
         }
 
 

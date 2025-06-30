@@ -76,7 +76,7 @@ namespace New_Tradegy.Library.PostProcessing
 
             if (g.MarketeyeCount % g.MarketeyeCountDivicer == 1)
             {
-                RankLogic.EvalStock();
+                RankLogic.EvalStock_등합();
             }
 
             foreach (var data in downloadedList)
@@ -96,9 +96,9 @@ namespace New_Tradegy.Library.PostProcessing
         // done by Sensei
         public static void post_test()
         {
-            foreach (var stock in g.StockRepository.AllDatas)
+            foreach (var data in g.StockRepository.AllDatas)
             {
-                post(stock);
+                post(data);
             }
         }
 
