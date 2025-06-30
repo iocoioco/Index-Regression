@@ -365,15 +365,9 @@ namespace New_Tradegy
                     {
                         var a_tuple = new List<Tuple<double, string>>();
 
-                        foreach (var data in g.StockRepository.AllDatas)
+                        foreach (var data in g.StockRepository.AllGeneralDatas)
                         {
                             string stock = data.Stock;
-
-                            // Exclude index-related 
-                            if (g.StockManager.IndexList.Contains(stock))
-                            {
-                                continue;
-                            }
 
                             int check_row = 0;
                             int nrow = data.Api.nrow;

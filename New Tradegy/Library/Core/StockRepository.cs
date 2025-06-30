@@ -59,8 +59,8 @@ namespace New_Tradegy.Library.Core
         public IEnumerable<StockData> AllDatas => _stockMap.Values; // datas in sequence
 
         public IEnumerable<StockData> AllGeneralDatas =>
-    g.StockRepository.AllDatas
-        .Where(data => !g.StockManager.IndexList.Contains(data.Stock));
+            g.StockRepository.AllDatas
+            .Where(data => !g.StockManager.IndexList.Contains(data.Stock));
 
         public bool Contains(string stock)
         {

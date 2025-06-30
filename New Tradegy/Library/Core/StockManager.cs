@@ -52,12 +52,8 @@ namespace New_Tradegy.Library.Core
 
         public void UpdateRankingByTotalScore()
         {
-            var all = _repository.AllDatas
-    .Where(data => !g.StockManager.IndexList.Contains(data.Stock))
-    .ToList();
-
             StockRankingList = RankLogic
-                .RankByTotalScore(all)
+                .RankByTotalScore(g.StockRepository.AllGeneralDatas)
                 .Select(s => s.Stock)
                 .ToList();
         }

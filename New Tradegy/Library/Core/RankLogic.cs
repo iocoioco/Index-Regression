@@ -40,10 +40,8 @@ namespace New_Tradegy.Library.Core
             var list_종누 = new List<(double value, string stock)>();
             var list_피로 = new List<(double value, string stock)>();
 
-            foreach (var data in repo.AllDatas)
+            foreach (var data in repo.AllGeneralDatas)
             {
-                if (g.StockManager.IndexList.Contains(data.Stock))
-                    continue;
                 list_푀분.Add((data.Score.푀분, data.Stock));
                 list_거분.Add((data.Score.거분, data.Stock));
                 list_배차.Add((data.Score.배차, data.Stock));
@@ -61,10 +59,8 @@ namespace New_Tradegy.Library.Core
             list_종누 = list_종누.OrderByDescending(x => x.value).ToList();
             list_피로 = list_피로.OrderByDescending(x => x.value).ToList();
 
-            foreach (var data in repo.AllDatas)
+            foreach (var data in repo.AllGeneralDatas)
             {
-                if (g.StockManager.IndexList.Contains(data.Stock))
-                    continue;
                 data.Score.푀분_등수 = list_푀분.FindIndex(x => x.stock == data.Stock);
                 data.Score.거분_등수 = list_거분.FindIndex(x => x.stock == data.Stock);
                 data.Score.배차_등수 = list_배차.FindIndex(x => x.stock == data.Stock);
@@ -75,10 +71,8 @@ namespace New_Tradegy.Library.Core
             }
 
             // 등합 점수 계산 (가중치 반영 가능)
-            foreach (var data in repo.AllDatas)
+            foreach (var data in repo.AllGeneralDatas)
             {
-                if (g.StockManager.IndexList.Contains(data.Stock))
-                    continue;
                 data.Score.등합 =
                     data.Score.푀분_등수 * WeightManager.Weights["푀분"] +
                     data.Score.배차_등수 * WeightManager.Weights["배차"] +
@@ -109,7 +103,7 @@ namespace New_Tradegy.Library.Core
 
             var specialGroupKeys = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
-            foreach (var data in repo.AllDatas)
+            foreach (var data in repo.AllGeneralDatas)
             {
                 if (g.StockManager.IndexList.Contains(data.Stock))
                     continue;
@@ -214,7 +208,7 @@ namespace New_Tradegy.Library.Core
                         g.StockManager.StockRankingList.Add(stock);
                 }
 
-                string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllDatas.Count()}";
+                string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllGeneralDatas.Count()}";
 
                 if (g.controlPane.GetCellValue(1, 1) != newValue)
                     g.controlPane.SetCellValue(1, 1, newValue);

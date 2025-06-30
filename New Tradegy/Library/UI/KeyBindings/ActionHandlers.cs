@@ -590,7 +590,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             {
                 case "o&s":
                     int count = g.StockManager.HoldingList.Count + g.StockManager.InterestedWithBidList.Count;
-                    if (g.gid + ((g.nCol - 2) * g.nRow - count) < g.StockRepository.AllDatas.Count())
+                    if (g.gid + ((g.nCol - 2) * g.nRow - count) < g.StockRepository.AllGeneralDatas.Count())
                     {
                         g.gid += (g.nCol - 2) * g.nRow - count;
                     }

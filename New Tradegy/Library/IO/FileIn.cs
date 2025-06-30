@@ -318,7 +318,7 @@ namespace New_Tradegy.Library.IO
 
             g.StockManager.StockRankingList.Clear();
             g.StockManager.StockRankingList.AddRange(
-                g.StockRepository.AllDatas
+                g.StockRepository.AllGeneralDatas
                     .OrderByDescending(x => x.Api.전일거래액_천만원)
                     .Select(x => x.Stock)
             );

@@ -59,8 +59,8 @@ namespace New_Tradegy.Library.Listeners
                     selected.Add(s);
             }
 
-            // ✅ 6. Fill remaining from AllDatas using rotating offset
-            var repoList = g.StockRepository.AllDatas.Select(x => x.Stock).ToList();
+            // ✅ 6. Fill remaining from AllGeneralDatas using rotating offset
+            var repoList = g.StockRepository.AllGeneralDatas.Select(x => x.Stock).ToList();
 
             int remaining = batchSize - selected.Count;
             int i = 0;
