@@ -50,7 +50,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
 
             if (Eval)
-                RankLogic.EvalStock_등합();
+                RankLogic.RankByMode();
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
                 g.ChartMain.RefreshMainChart();

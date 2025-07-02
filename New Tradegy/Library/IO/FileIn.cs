@@ -91,7 +91,7 @@ namespace New_Tradegy.Library.IO
             foreach (string line in grlines)
             {
                 string[] words = line.Split('\t');
-                if (words.Length != 14)
+                if (words.Length != 18)
                     continue;
 
                 var stockData = g.StockRepository.TryGetStockOrNull(words[0]);

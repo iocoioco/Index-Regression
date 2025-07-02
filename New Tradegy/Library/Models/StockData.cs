@@ -48,28 +48,27 @@ namespace New_Tradegy.Library.Models
     // public ScoreData Score { get; set; } = new ScoreData();
     public class ScoreData
     {
-        public double 푀분;
-        public double 거분;
-        public double 배차;
-        public double 배합;
-        public double 푀누;
-        public double 종누;
-        public double 피로;
+        public int 푀올_등수;
+        public int 닥올_등수;
 
-        
-        public int 푀분_등수;
-        public int 거분_등수;
-        public int 배차_등수;
-        public int 배합_등수;
-        public int 푀누_등수;
-        public int 종누_등수;
-        public int 피로_등수;
+        public int 푀누_등수; public double 푀누;
+        public int 종누_등수; public double 종누;
 
-        public double 총점;
-   
-        public double 등합;
+        public int 푀분_등수; public double 푀분;
+        public int 등합_등수; public double 등합;
 
-        public int 그순;
+        public int 배차_등수; public double 배차;
+        public int 배합_등수; public double 배합;
+
+        public int 상순_등수; public double 상순;
+        public int 저순_등수; public double 저순;
+
+        public int 편차_등수; public double 편차;
+        public int 평균_등수; public double 평균;
+
+        public int 피로_등수; public double 피로;
+
+        public int 그룹_등수; 
 
         public double 급락;
         public double 급상;

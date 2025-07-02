@@ -36,7 +36,7 @@ namespace New_Tradegy.Library.Trackers
             _view.ReadOnly = true;
 
             _view.ScrollBars = ScrollBars.Vertical;
-         
+
             _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             _view.AllowUserToResizeColumns = false;
             _view.AllowUserToResizeRows = false;
@@ -178,28 +178,9 @@ namespace New_Tradegy.Library.Trackers
                 {
                     var group = updatedGroups[i];
 
-                    // Current values in DataTable
-                    string currentTitle = _table.Rows[i][0].ToString();
-                    string current푀분 = _table.Rows[i][1].ToString();
-                    string current총점 = _table.Rows[i][2].ToString();
-
-                    // New values from GroupData
-                    string newTitle = group.Title;
-                    string new푀분 = group.푀분.ToString("F0");
-                    string new총점 = group.TotalScore.ToString("F0");
-
-                    // Only update if changed
-                    bool changed =
-                        currentTitle != newTitle ||
-                        current푀분 != new푀분 ||
-                        current총점 != new총점;
-
-                    if (changed)
-                    {
-                        _table.Rows[i][0] = newTitle;
-                        _table.Rows[i][1] = new푀분;
-                        _table.Rows[i][2] = new총점;
-                    }
+                    _table.Rows[i][0] = group.Title;
+                    _table.Rows[i][1] = group.푀분.ToString("F0");
+                    _table.Rows[i][2] = group.TotalScore.ToString("F0");
                 }
             }
             finally

@@ -197,8 +197,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.tradePane = new TradePane(tradeDgv, tradeDtb); // logic wrapper
             tradeDgv.BringToFront(); // placed under chart without it
 
-
-
             if (!g.test && g.connected) // for market trading
             {
                 OrderItemCybosListener.Init_CpConclusion();
@@ -209,19 +207,10 @@ namespace New_Tradegy // added for test on 20241020 0300
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
                 // updated on 20241020 0300
-                Task Task_marketeye = Task.Run(async () => await MarketEyeBatchDownloader.StartDownloaderAsync());
+                Task.Run(() => MarketEyeBatchDownloader.RunDownloaderLoop());
 
-                // updated on 20241020 0300
-                Task task_us_indices_futures = Task.Run(async () =>
-                {
-                    await Scraper.task_us_indices_futures();
-                });
-
-                // updated on 20241020 0300
-                Task Task_major_indices = Task.Run(async () =>
-                {
-                    await Scraper.task_major_indices();
-                });
+                Task task_us_indices_futures = Task.Run(Scraper.task_us_indices_futures);
+                Task task_major_indices = Task.Run(Scraper.task_major_indices);
 
                 // updated on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
@@ -242,10 +231,8 @@ namespace New_Tradegy // added for test on 20241020 0300
                 }
             };
 
-
-
             // use Panel in RankLogic
-            // RankLogic.EvalStock(); // duration : 0.025 ~ 0.054 seconds
+            // RankLogic.RankByModeExcept등합(); // duration : 0.025 ~ 0.054 seconds
 
             g.ChartMain = new ChartMain(); // all new, Form_1 start
             g.ChartMain.RefreshMainChart();

@@ -76,7 +76,7 @@ namespace New_Tradegy.Library.PostProcessing
 
             if (g.MarketeyeCount % g.MarketeyeCountDivicer == 1)
             {
-                RankLogic.EvalStock_등합();
+                RankLogic.RankByMode();
             }
 
             foreach (var data in downloadedList)
@@ -149,7 +149,7 @@ namespace New_Tradegy.Library.PostProcessing
         }
 
         // done by Sensei
-        public static double post_score(StockData data, int check_row)
+        public static void post_score(StockData data, int check_row)
         {
             var stat = data.Statistics;
             var score = data.Score;
@@ -190,8 +190,6 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 score.배합 = 0.0;
             }
-            
-            return score.푀분 + score.배차 + score.배합;
         }
 
         // done by Sensei
@@ -285,14 +283,7 @@ namespace New_Tradegy.Library.PostProcessing
         {
             string stock = data.Stock;
 
-            if ((stock.Contains("KODEX") && !stock.Contains("레버리지")) ||
-                stock.Contains("KODSEF") ||
-                stock.Contains("TIGER") ||
-                stock.Contains("KBSTAR") ||
-                stock.Contains("HANARO"))
-            {
-                return;
-            }
+            
 
             int check_row = g.test
                 ? Math.Min(g.Npts[1] - 1, data.Api.nrow - 1)
@@ -300,7 +291,7 @@ namespace New_Tradegy.Library.PostProcessing
 
             post_minute(data, check_row);
 
-            data.Score.총점 = post_score(data, check_row);
+            post_score(data, check_row);
 
             PostPassing(data, check_row, true);
         }

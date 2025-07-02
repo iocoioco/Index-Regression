@@ -101,11 +101,16 @@ namespace New_Tradegy.Library.Core
 
         public int Count => _groups.Count;
 
-        public void SortBy(Func<GroupData, double> selector)
+        public void SortByDescending(Func<GroupData, double> selector)
         {
             GroupRankingList = _groups.OrderByDescending(selector).ToList();
         }
 
+        public void SortByAscending(Func<GroupData, double> selector)
+        {
+            GroupRankingList = _groups.OrderBy(selector).ToList();
+
+        }
         public GroupData FindGroupByStock(string stockCode) /////
         {
             return _groups.FirstOrDefault(g => g.Stocks.Contains(stockCode));

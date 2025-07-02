@@ -90,9 +90,9 @@ namespace New_Tradegy.Library.Trackers
             area.AxisX.LabelStyle.Font = new Font("Arial", 7);
             area.AxisY.LabelStyle.Font = new Font("Arial", 7);
 
-            if (g.q == "o&s" && data.Score.그순 < 5)
+            if (g.q == "o&s" && data.Score.그룹_등수 < 5)
             {
-                area.BackColor = g.Colors[data.Score.그순];
+                area.BackColor = g.Colors[data.Score.그룹_등수];
             }
 
             if (data.Api.분프로천[0] > 5 && data.Api.분외인천[0] > 5 && data.Api.분배수차[0] > 0)
@@ -500,15 +500,9 @@ namespace New_Tradegy.Library.Trackers
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 
             Color BackColor = Color.White;
-            int[] thresholds = { 90, 70, 50, 30, 10 };
-            for (int i = 0; i < thresholds.Length; i++)
-            {
-                if (data.Score.총점 > thresholds[i])
-                {
-                    BackColor = g.Colors[i];
-                    break;
-                }
-            }
+            if(data.Score.그룹_등수 < 5)
+                BackColor = g.Colors[data.Score.그룹_등수];
+            
             // Adjust vertical offset depending on chart
             float yOffset = chart.Name == "chart1" ? 0f : 3f;
 
@@ -572,7 +566,7 @@ namespace New_Tradegy.Library.Trackers
                 stock_title += o.Score.배차.ToString("F0");
                 stock_title += o.Score.배합 >= 0 ? "+" : "";
                 stock_title += o.Score.배합.ToString("F0");
-                stock_title += "+" + o.Score.그순.ToString("F0");
+                stock_title += "+" + o.Score.그룹_등수.ToString("F0");
 
 
                 stock_title += " (" + o.Api.x[EndNpts - 1, 1].ToString() + " / " + o.Api.현재가.ToString("#,##0") + ")";

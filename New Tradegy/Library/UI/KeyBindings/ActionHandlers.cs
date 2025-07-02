@@ -142,7 +142,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             Form se = (Form)Application.OpenForms["Form1"];
             se.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -155,7 +155,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -168,7 +168,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -204,7 +204,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -217,7 +217,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -230,7 +230,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
 
@@ -242,7 +242,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'm');
+            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
             action.Run();
         };
         #endregion
@@ -259,7 +259,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 2;
                 }
-                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
 
@@ -277,7 +277,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 2;
                 }
-                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
             
@@ -291,7 +291,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.q_advance_lines);
                 else
                     TimeUtils.MinuteAdvanceRetreat(0);
-                var action = ActionCode.New(clear: false, post: false, eval: false, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: false, draw: 'B');
                 action.Run();
             }
         };
@@ -304,7 +304,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                 else
                     TimeUtils.MinuteAdvanceRetreat(0);
-                var action = ActionCode.New(clear: false, post: false, eval: false, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: false, draw: 'B');
                 action.Run();
             }
         };

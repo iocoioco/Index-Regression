@@ -35,10 +35,10 @@ namespace New_Tradegy.Library.Core
             IndexList = LeverageList.Concat(InverseList).ToList();
         }
 
-        public double GetTotalScore(string stock)
+        public double GetTotal등합(string stock)
         {
             var data = _repository.TryGetStockOrNull(stock);
-            return data?.Score.총점 ?? 0.0;
+            return data?.Score.등합 ?? 0.0;
         }
 
         public void AddIfMissing(IEnumerable<string> stocks)
@@ -50,13 +50,7 @@ namespace New_Tradegy.Library.Core
             }
         }
 
-        public void UpdateRankingByTotalScore()
-        {
-            StockRankingList = RankLogic
-                .RankByTotalScore(g.StockRepository.AllGeneralDatas)
-                .Select(s => s.Stock)
-                .ToList();
-        }
+         
 
         // ✅ Right-click zone 4 toggle
         public void ToggleInterestedOnly(string stock)

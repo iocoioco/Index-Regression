@@ -9,6 +9,7 @@ using New_Tradegy.Library.IO;
 using New_Tradegy.Library.PostProcessing;
 using System.Collections;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -19,9 +20,14 @@ namespace New_Tradegy.Library.Listeners
         private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
 
         private static IndexRangeTracker indexRangeTracker = new IndexRangeTracker();
-
-        public static async Task StartDownloaderAsync()
+  
+        public static void RunDownloaderLoop()
         {
+            if (!g.connected)
+                return;
+
+            int minuteSaveAll = -1;
+
             while (true)
             {
                 DateTime date = DateTime.Now;
@@ -31,35 +37,39 @@ namespace New_Tradegy.Library.Listeners
                 // 시작시간 09:00
                 // Trigger at 10:00, 11:00, 12:00, 13:00, 14:00, or 15:21 only once per minute
                 if ((HHmm == 1000 || HHmm == 1100 || HHmm == 1200 || HHmm == 1300
-                    || HHmm == 1400 || HHmm == 1521) &&
-                g.minuteSaveAll != HHmm)
+                    || HHmm == 1400 || HHmm == 1521) && minuteSaveAll != HHmm)
+
+                //시작시간 10:00
+                //    if ((HHmm == 1100 || HHmm == 1200 || HHmm == 1300 ||
+                // HHmm == 1400 || HHmm == 1500 || HHmm == 1621) &&
+                // minuteSaveAll != HHmm)
                 {
                     if (wk.isWorkingHour())
                     {
-                        // Save all stocks once at the mentioned times
-                        await FileOut.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
-                        g.minuteSaveAll = HHmm;  // Mark this minute as saved
+                        FileOut.SaveAllStocks();  // Use Task.Run for potentially long-running synchronous work
+                        minuteSaveAll = HHmm;  // Mark this minute as saved
                     }
                 }
 
                 if (wk.isWorkingHour())
                 {
-                    await SoundUtils.MarketTimeAlarmsAsync(HHmm);
+                    SoundUtils.MarketTimeAlarmsAsync(HHmm);
                     try
                     {
-                        await DownloadBatchAsync();
+                        DownloadBatch();
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
                     }
                 }
-                // Wait 300 milliseconds (non-blocking) Block Request 60times/ 15 Secs
-                await Task.Delay(300);
+
+                // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
+                Thread.Sleep(250);
             }
         }
 
-        private static async Task DownloadBatchAsync()
+        private static void DownloadBatch()
         {
             /*
 			0 code string
@@ -106,31 +116,28 @@ namespace New_Tradegy.Library.Listeners
 
             if (_marketeye == null)
             {
-                //_cpstockcode = new CPUTILLib.CpStockCode();
                 _marketeye = new CPSYSDIBLib.MarketEye();
-                _marketeye.Received += new CPSYSDIBLib._ISysDibEvents_ReceivedEventHandler(HandleBatchDataAsync);
+                _marketeye.Received += new CPSYSDIBLib._ISysDibEvents_ReceivedEventHandler(HandleBatchData);
             }
 
             object[] fields = new object[]
             {
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        10, 11, 12, 13, 14, 15, 16, 22, 23, 24,
-        28, 31, 36, 37, 38, 45, 116, 118, 120, 121,
-        122, 127
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                10, 11, 12, 13, 14, 15, 16, 22, 23, 24,
+                28, 31, 36, 37, 38, 45, 116, 118, 120, 121,
+                122, 127
             };
 
             string[] codes = new string[g.stocks_per_marketeye];
 
             // ✅ Fill the codes using your BatchSelector
             var selected = MarketEyeBatchSelector.Select200Batch(
-    indexList: g.StockManager.IndexList,                  // your "index stocks"
-    holding: g.StockManager.HoldingList,
-    interestedWithBid: g.StockManager.InterestedWithBidList,
-    interestedOnly: g.StockManager.InterestedOnlyList,
-    rankedStockList: g.StockManager.StockRankingList         // required in new method
-);
-
-
+                indexList: g.StockManager.IndexList,                   
+                holding: g.StockManager.HoldingList,
+                interestedWithBid: g.StockManager.InterestedWithBidList,
+                interestedOnly: g.StockManager.InterestedOnlyList,
+                rankedStockList: g.StockManager.StockRankingList          
+            );
 
             for (int i = 0; i < codes.Length && i < selected.Count; i++)
             {
@@ -138,7 +145,6 @@ namespace New_Tradegy.Library.Listeners
                 if (stock == null) continue;
                 codes[i] = stock.Code;
             }
-
 
             _marketeye.SetInputValue(0, fields);
             _marketeye.SetInputValue(1, codes);
@@ -148,12 +154,10 @@ namespace New_Tradegy.Library.Listeners
             {
 
             }
-
-            await Task.CompletedTask; // for consistency with async signature
         }
 
         // CONTINUED REFACTORED _marketeye_received()
-        private static async void HandleBatchDataAsync()
+        private static async void HandleBatchData()
         {
             DateTime date = DateTime.Now;
             int HHmm = Convert.ToInt32(date.ToString("HHmm"));
@@ -172,8 +176,6 @@ namespace New_Tradegy.Library.Listeners
                 string code = _marketeye.GetDataValue(0, k);
                 var stock = _cpstockcode.CodeToName(code);
             
-
-
                 if (!g.StockRepository.Contains(stock))
                     continue;
 

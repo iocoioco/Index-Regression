@@ -31,7 +31,7 @@ namespace New_Tradegy.Library.Trackers
         private void InitializeDgv(DataGridView _view)
         {
             // x 212
-            int fontSize = 10;
+            int fontSize = 8; 
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
 
             int x = g.screenWidth / g.nCol + 20;

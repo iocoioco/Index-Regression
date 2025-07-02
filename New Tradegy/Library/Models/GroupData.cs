@@ -27,6 +27,7 @@ namespace New_Tradegy.Library.Models
         public double 분거 { get; set; }
         public double 상순 { get; set; }
         public double 저순 { get; set; }
+        public double 등합_등수 { get; set; }
 
         // Optional: Constructor
         public GroupData(string title)

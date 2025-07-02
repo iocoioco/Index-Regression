@@ -102,7 +102,7 @@ namespace New_Tradegy.Library
             if(g.controlPane.GetCellValue(0, 0) != date)
                 g.controlPane.SetCellValue(0, 0, date);
 
-            RankLogic.EvalStock_등합(); // date backwards forwards
+            RankLogic.RankByMode(); // date backwards forwards
             ActionCode.New(true, false, eval: true, draw: 'B').Run();
         }
 
@@ -198,7 +198,7 @@ namespace New_Tradegy.Library
             data.Api.전일거래액_천만원 = 전일거래액_천만원;
 
             // 📌 Set default Score
-            data.Score.그순 = 1000;
+            data.Score.그룹_등수 = 1000;
 
             // 🗃️ Save to repository
             g.StockRepository.AddOrUpdate(stock, data);
