@@ -134,8 +134,8 @@ namespace New_Tradegy
 
             DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
-            // Update form title //? No place to display title -> block it
-            //UpdateFormTitle();
+            // Update form title 
+            UpdateFormTitle();
 
             // Determine grid layout based on the number of displayList
             SetGridDimensions();

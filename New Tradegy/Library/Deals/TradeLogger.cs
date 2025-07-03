@@ -10,7 +10,7 @@ namespace New_Tradegy.Library.Trackers
     public static class TradeLogger
     {
         private static readonly object _fileLock = new object();
-        private static readonly string logDir = @"C:\병신\data\매매\";
+        private static readonly string logDir = @"C:\병신\data work\매매\";
 
         static TradeLogger()
         {

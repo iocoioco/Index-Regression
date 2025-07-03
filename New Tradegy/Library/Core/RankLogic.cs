@@ -21,16 +21,16 @@ namespace New_Tradegy.Library.Core
 
         public static void RankByMode()
         {
-            if (g.test) // 실제 run 에서는 post() 에서 합산됨
-            {
-                foreach (var data in g.StockRepository.AllDatas)
-                {
-                    string stock = data.Stock;
-                    if (data.Api.nrow < 2)
-                        continue;
-                    PostProcessor.post(data);
-                }
-            }
+            //if (g.test) // 실제 run 에서는 post() 에서 합산됨
+            //{
+            //    foreach (var data in g.StockRepository.AllDatas)
+            //    {
+            //        string stock = data.Stock;
+            //        if (data.Api.nrow < 2)
+            //            continue;
+            //        PostProcessor.post(data);
+            //    }
+            //}
 
             if (g.v.MainChartDisplayMode == "등합") RankBy등합();
             else RankByModeExcept등합();
@@ -124,8 +124,6 @@ namespace New_Tradegy.Library.Core
             var resultList = new List<(double value, string code)>();
             double value = 0.0;
 
-
-
             var specialGroupKeys = new HashSet<string> { "닥올", "피올", "편차", "평균" };
 
             foreach (var data in repo.AllGeneralDatas)
@@ -158,17 +156,14 @@ namespace New_Tradegy.Library.Core
                 }
                 else
                 {
-                    PostProcessor.post(data); // ensure Post values are updated
-
-                    int nrow = data.Api.nrow;
-                    //?if (!EvalInclusion(data) || nrow < 2)
-                    //?    continue;
+                    //PostProcessor.post(data); // ensure Post values are updated
 
                     int checkRow = g.test
-                        ? Math.Min(g.Npts[1] - 1, nrow - 1)
-                        : nrow - 1;
+                        ? Math.Min(g.Npts[1] - 1, data.Api.nrow - 1)
+                        : data.Api.nrow - 1;
+                    if (!EvalInclusion(data) || checkRow < 1)
+                        continue;
 
-                    var score = data.Score;
                     var post = data.Post;
                     var api = data.Api;
 

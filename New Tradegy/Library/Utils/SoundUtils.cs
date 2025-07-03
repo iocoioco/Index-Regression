@@ -135,9 +135,9 @@ namespace New_Tradegy.Library.Utils
 
             string sound_file;
             if (sub_directory == "")
-                sound_file = @"C:\병신\data\소\" + sound + ".wav";
+                sound_file = @"C:\병신\data work\소\" + sound + ".wav";
             else
-                sound_file = @"C:\병신\data\소\" + sub_directory + "\\" + sound + ".wav";
+                sound_file = @"C:\병신\data work\소\" + sub_directory + "\\" + sound + ".wav";
 
             if (!File.Exists(sound_file))
             {

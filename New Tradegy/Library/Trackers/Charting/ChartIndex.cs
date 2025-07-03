@@ -31,7 +31,7 @@ namespace New_Tradegy.Library.Trackers
             //// Generate a new chartarea
             //else
             //{
-                ChartBasic.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
+                ChartBasic.RemoveChartBlock(chart, data.Stock); 
                 area = CreateChartArea(chart, data);
             //}
             return area;

@@ -63,7 +63,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         {
             networkMonitor = new PingAndSpeedMonitor(
             host: "daishin.co.kr",
-            logFilePath: "@\"C:\\병신\\ping_log.txt",
+            logFilePath: @"C:\병신\ping_log.txt",
             wavFilePath: @"Resources\alert.wav",
             logIntervalSeconds: 600,         // log every 10 min
             pingThresholdMs: 300,            // warn if ping > 300ms
@@ -167,7 +167,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             g.GroupManager = new GroupManager(); // read 상관 inside
             var groups = g.GroupManager.GetAll();
-            GroupRepository.SaveFilteredGroups(groups, "C:\\병신\\data\\상관_결과.txt"); // check 
+            GroupRepository.SaveFilteredGroups(groups, @"C:\병신\data work\상관_결과.txt"); // check 
 
             GroupManager.gen_oGL_data(); // generate oGL_data
 

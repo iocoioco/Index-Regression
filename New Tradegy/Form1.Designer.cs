@@ -49,6 +49,11 @@ namespace New_Tradegy
             this.chart1.Size = new System.Drawing.Size(300, 300);
             this.chart1.TabIndex = 1;
             this.chart1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseClick);
+
+            // ✅ Fix: Add a chart area
+            var chartArea = new ChartArea("MainArea");
+            this.chart1.ChartAreas.Add(chartArea);
+
             // 
             // Form1
             // 

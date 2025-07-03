@@ -29,7 +29,7 @@ namespace New_Tradegy
         // richTextBox1.SelectionBackColor = Color.Yellow;
 
         string text;
-        string directory = @"C:\병신\data\";
+        string directory = @"C:\병신\data work\";
         string lastOpendFileName = "";
         int startIndex = 0;
 

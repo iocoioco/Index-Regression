@@ -13,7 +13,7 @@ namespace New_Tradegy.Library
             new Dictionary<string, double>();
         public static IReadOnlyDictionary<string, double> Weights => _weights;
 
-        private static readonly string _path = @"C:\병신\data\Weights.txt";
+        private static readonly string _path = @"C:\병신\data work\Weights.txt";
 
         public static void Load()
         {

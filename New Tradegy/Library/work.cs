@@ -214,7 +214,7 @@ namespace New_Tradegy.Library
             int days = 20;
             foreach (var stock in tsl)
             {
-                string path = @"C:\병신\data\일\" + stock + ".txt";
+                string path = @"C:\병신\data work\일\" + stock + ".txt";
                 if (!File.Exists(path))
                     continue;
 
@@ -275,7 +275,7 @@ namespace New_Tradegy.Library
             int days = 20;
             foreach (var stock in tsl)
             {
-                string path = @"C:\병신\data\일\" + stock + ".txt";
+                string path = @"C:\병신\data work\일\" + stock + ".txt";
                 if (!File.Exists(path))
                     continue;
 
@@ -375,7 +375,7 @@ namespace New_Tradegy.Library
         // 개량 // 16거래일 개인거래량
         //*/
 
-        //         string path = @"C:\병신\data\매\" + stockname + ".txt";
+        //         string path = @"C:\병신\data work\매\" + stockname + ".txt";
         //         // 16일 데이터만 있는 데 신규는 적을 수 있음
         //         if (!File.Exists(path))
         //         {
@@ -473,7 +473,7 @@ namespace New_Tradegy.Library
             일평균거래량 = 0;
             일간변동평균편차 = "";
 
-            string path = $@"C:\병신\data\일\{stock}.txt";
+            string path = $@"C:\병신\data work\일\{stock}.txt";
             if (!File.Exists(path)) return false;
 
             var lines = File.ReadLines(path).Reverse().Take(days).ToList();
@@ -546,7 +546,7 @@ namespace New_Tradegy.Library
         //    일평균거래량 = 0;
         //    일간변동평균편차 = "";
 
-        //    string path = $@"C:\병신\data\일\{stock}.txt";
+        //    string path = $@"C:\병신\data work\일\{stock}.txt";
         //    if (!File.Exists(path)) return false;
 
         //    var lines = File.ReadLines(path).Reverse().Take(days).ToList();
@@ -601,7 +601,7 @@ namespace New_Tradegy.Library
             //return Math.Sqrt(values.Average(v => Math.Pow(v - avg, 2)));
 
 
-            string path = @"C:\병신\data\일\" + stock + ".txt";
+            string path = @"C:\병신\data work\일\" + stock + ".txt";
             if (!File.Exists(path))
                 return "";
 

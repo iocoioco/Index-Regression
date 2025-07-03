@@ -133,7 +133,7 @@ namespace New_Tradegy.Library
         
          
 
-        public static string oGl_data_selection = "총점"; // group ranking calculation ciriterion
+        public static string oGl_data_selection = "등합"; // group ranking calculation ciriterion
 
 
 

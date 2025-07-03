@@ -42,28 +42,17 @@ namespace New_Tradegy.Library.UI.KeyBindings
             {
             }
 
-            if (Post)
-            {
-                if (g.test)
-                    PostProcessor.post_test();
-            }
-
+            if (Post && g.test)
+                PostProcessor.post_test();
 
             if (Eval)
                 RankLogic.RankByMode();
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
-                g.ChartMain.RefreshMainChart();
-
+                PostProcessor.ManageChart1Invoke();
 
             if (DrawTarget == 's' || DrawTarget == 'B')
-            {
-                Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-                if (Form_보조_차트 != null)
-                {
-                    Form_보조_차트.Form_보조_차트_DRAW();
-                }
-            }
+                PostProcessor.ManageChart2Invoke();
         }
     }
 }

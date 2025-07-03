@@ -120,7 +120,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
                 case "l3":
                 {
-                    string dirPath = @"C:\병신\data\Stock Memo";
+                    string dirPath = @"C:\병신\data work\Stock Memo";
                     string filePath = Path.Combine(dirPath, g.clickedStock + ".txt");
                     if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
                     if (!File.Exists(filePath)) 

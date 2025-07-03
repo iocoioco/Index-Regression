@@ -87,7 +87,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_통계()
         {
-            string[] grlines = File.ReadAllLines(@"C:\병신\data\통계.txt");
+            string[] grlines = File.ReadAllLines(@"C:\병신\data work\통계.txt");
             foreach (string line in grlines)
             {
                 string[] words = line.Split('\t');
@@ -131,7 +131,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_시간별거래비율(List<List<string>> 누적)
         {
-            string[] grlines = File.ReadAllLines(@"C:\병신\data\누적.txt", Encoding.Default);
+            string[] grlines = File.ReadAllLines(@"C:\병신\data work\누적.txt", Encoding.Default);
             foreach (string line in grlines)
             {
                 List<string> alist = new List<string>();
@@ -149,7 +149,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_누적(double[] 누적)
         {
-            string[] grlines = File.ReadAllLines(@"C:\병신\data\누적.txt", Encoding.Default);
+            string[] grlines = File.ReadAllLines(@"C:\병신\data work\누적.txt", Encoding.Default);
             int count = 0;
             foreach (string line in grlines)
             {
@@ -224,7 +224,11 @@ namespace New_Tradegy.Library.IO
                 }
 
                 if (t.Api.nrow > g.Npts[1]) // set g.Npts[1] the max. of nrow
+                {
                     g.Npts[1] = t.Api.nrow;
+                    g.MAX_ROW = t.Api.nrow;
+                }
+                    
 
                 for (int j = t.Api.nrow; j < g.MAX_ROW; j++)
                     for (int m = 0; m < 12; m++)
@@ -280,11 +284,7 @@ namespace New_Tradegy.Library.IO
                     PostProcessor.PostPassing(t, j, false);
             }
 
-            var data = g.StockRepository.TryGetStockOrNull("KODEX 레버리지");
-            if (data != null && data.Api.x[0, 3] > 1000)
-            {
-                PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
-            }
+            PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
         }
 
 
@@ -298,7 +298,7 @@ namespace New_Tradegy.Library.IO
             List<List<string>> tgl = new List<List<string>>();
 
             var 시총Map = new ConcurrentDictionary<string, double>(
-                File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default)
+                File.ReadAllLines(@"C:\병신\data work\시총.txt", Encoding.Default)
                 .Select(line => line.Trim().Split(' '))
                 .Where(parts => parts.Length >= 2)
                 .GroupBy(parts => parts[0].Replace("_", " "))
@@ -331,7 +331,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_파일관심종목()
         {
-            string filename = @"C:\병신\data\관심.txt";
+            string filename = @"C:\병신\data work\관심.txt";
 
             g.StockManager.InterestedInFile.Clear();
 
@@ -460,7 +460,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_변수()
         {
-            string filename = @"C:\병신\data\변수.txt";
+            string filename = @"C:\병신\data work\변수.txt";
 
             if (!File.Exists(filename)) return;
             string[] grlines = System.IO.File.ReadAllLines(filename, Encoding.Default);
@@ -613,11 +613,11 @@ namespace New_Tradegy.Library.IO
             }
         }
 
-        
+
 
         public static void ReadBestFriends()
         {
-            string filePath = @"C:\병신\data\Correlation.txt";
+            string filePath = @"C:\병신\data work\Correlation.txt";
 
             if (!File.Exists(filePath))
                 return;
@@ -649,7 +649,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_절친()
         {
-            string filename = @"C:\병신\data\Correlation.txt";
+            string filename = @"C:\병신\data work\Correlation.txt";
             if (!File.Exists(filename)) return;
 
             string[] grlines = File.ReadAllLines(filename, Encoding.Default);
@@ -822,7 +822,7 @@ namespace New_Tradegy.Library.IO
 
         //public static double read_시총(string stock)
         //{
-        //    string[] grlines = File.ReadAllLines(@"C:\병신\data\시총.txt", Encoding.Default);
+        //    string[] grlines = File.ReadAllLines(@"C:\병신\data work\시총.txt", Encoding.Default);
         //    foreach (string line in grlines)
         //    {
         //        string[] words = line.Split(' ');
@@ -839,7 +839,7 @@ namespace New_Tradegy.Library.IO
         {
             List<string> gl_list = new List<string>();
 
-            string filename = @"C:\병신\data\제외.txt"; ;
+            string filename = @"C:\병신\data work\제외.txt"; ;
 
             string[] grlines = File.ReadAllLines(filename);
 
@@ -862,7 +862,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_write_kodex_magnifier(string to_do)
         {
-            string filename = @"C:\병신\data\kodex_magnifier.txt";
+            string filename = @"C:\병신\data work\kodex_magnifier.txt";
 
             if (to_do == "read")
             {
@@ -920,7 +920,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_삼성_코스피_코스닥_전체종목()
         {
-            string filename = @"C:\병신\data\삼성_코스피_코스닥_전체종목.txt";
+            string filename = @"C:\병신\data work\삼성_코스피_코스닥_전체종목.txt";
 
             if (!File.Exists(filename))
             {
@@ -1024,7 +1024,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_그룹_네이버_테마(List<string> tsl, List<string> tsl_그룹_상관, List<string> GL_title, List<List<string>> GL)
         {
-            string filepath = @"C:\병신\data\그룹_네이버_테마.txt"; // QQQ
+            string filepath = @"C:\병신\data work\그룹_네이버_테마.txt"; // QQQ
             if (!File.Exists(filepath))
                 return;
 
@@ -1055,7 +1055,7 @@ namespace New_Tradegy.Library.IO
 
         public static void read_상관(List<string> GL_title, List<List<string>> GL, List<string> stocks_over_deal_per_day)
         {
-            string filename = @"C:\병신\data\상관.txt";
+            string filename = @"C:\병신\data work\상관.txt";
 
 
             if (!File.Exists(filename))
@@ -1432,13 +1432,13 @@ namespace New_Tradegy.Library.IO
             switch (dwm)
             {
                 case "일":
-                    file = @"C:\병신\data\일\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
+                    file = @"C:\병신\data work\일\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
                     break;
                 case "주":
-                    file = @"C:\병신\data\주\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
+                    file = @"C:\병신\data work\주\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
                     break;
                 case "월":
-                    file = @"C:\병신\data\월\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
+                    file = @"C:\병신\data work\월\" + stock + ".txt"; ;   // 틱,분,일,주,월 단위 데이터
                     break;
                 default:
                     break;
@@ -1465,7 +1465,7 @@ namespace New_Tradegy.Library.IO
 
         public static int read_전일종가_전일거래액_천만원(string stock)
         {
-            string path = @"C:\병신\data\일\" + stock + ".txt";
+            string path = @"C:\병신\data work\일\" + stock + ".txt";
             if (!File.Exists(path))
             {
                 return -1;
@@ -1482,7 +1482,7 @@ namespace New_Tradegy.Library.IO
         public static int read_전일종가_GivenDate(string stock, int date)
         {
 
-            string path = @"C:\병신\data\일\" + stock + ".txt";
+            string path = @"C:\병신\data work\일\" + stock + ".txt";
             if (!File.Exists(path))
             {
                 return -1;
@@ -1506,7 +1506,7 @@ namespace New_Tradegy.Library.IO
         public static int read_전일종가(string stock)
         {
 
-            string path = @"C:\병신\data\일\" + stock + ".txt";
+            string path = @"C:\병신\data work\일\" + stock + ".txt";
             if (!File.Exists(path))
             {
                 return -1;
@@ -1519,7 +1519,7 @@ namespace New_Tradegy.Library.IO
         }
 
 
-      
+
 
 
         public static List<string> read_그룹_네이버_업종() // this is for single list of stocks in 그룹_네이버_업종
@@ -1528,7 +1528,7 @@ namespace New_Tradegy.Library.IO
 
             List<string> gl_list = new List<string>();
 
-            string filepath = @"C:\병신\data\그룹_네이버_업종.txt";
+            string filepath = @"C:\병신\data work\그룹_네이버_업종.txt";
             if (!File.Exists(filepath))
             {
                 return gl_list;

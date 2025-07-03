@@ -127,7 +127,7 @@ namespace New_Tradegy.Library.Trackers
             int coloring_column = 0;
             switch (g.oGl_data_selection)
             {
-                case "총점":
+                case "등합":
                     coloring_column = 0;
                     break;
                 case "푀분":

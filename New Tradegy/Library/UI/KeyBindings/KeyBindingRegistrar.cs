@@ -24,7 +24,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             // Number
             KeyBindingManager.Register('`', false, false, ActionHandlers.피올_닥올);
             KeyBindingManager.Register('1', false, false, ActionHandlers.푀누_종누);
-            KeyBindingManager.Register('2', false, false, ActionHandlers.푀분_총점);
+            KeyBindingManager.Register('2', false, false, ActionHandlers.푀분_등합);
             KeyBindingManager.Register('3', false, false, ActionHandlers.보조차트_피올_닥올);
             KeyBindingManager.Register('4', false, false, ActionHandlers.보조차트_순위_관심);
             KeyBindingManager.Register('5', false, false, ActionHandlers.상순_저순);

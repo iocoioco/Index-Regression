@@ -10,6 +10,7 @@ using New_Tradegy.Library.PostProcessing;
 using System.Collections;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using System.Linq;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -182,7 +183,12 @@ namespace New_Tradegy.Library.Listeners
                 var data = g.StockRepository.TryGetStockOrNull(stock);
                 if (data == null) continue;
                 var api = data.Api;
-                downloadList.Add(data);
+
+                if (g.StockRepository.AllGeneralDatas.Any(x => x.Stock == data.Stock))
+                {
+                    downloadList.Add(data);
+                }
+
 
 
                 api.매도1호가 = _marketeye.GetDataValue(8, k);

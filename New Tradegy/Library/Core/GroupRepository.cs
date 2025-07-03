@@ -13,7 +13,7 @@ namespace New_Tradegy.Library.Core
         public static List<GroupData> LoadGroups()
         {
             var groups = new List<GroupData>();
-            string[] lines = File.ReadAllLines("C:\\병신\\data\\상관.txt", Encoding.UTF8);
+            string[] lines = File.ReadAllLines(@"C:\병신\data work\상관.txt", Encoding.UTF8);
 
             GroupData currentGroup = null;
 

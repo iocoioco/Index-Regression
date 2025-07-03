@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using New_Tradegy.Library.IO;
 using System.Threading.Tasks;
 using System.Linq;
+using New_Tradegy.Library.PostProcessing;
 
 namespace New_Tradegy.Library.UI.KeyBindings
 {
@@ -53,8 +54,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.일회거래액 = 0;
 
                 SoundUtils.Sound_돈(g.일회거래액);
-              
-                if(g.controlPane.GetCellValue(0, 2) != g.일회거래액.ToString())
+
+                if (g.controlPane.GetCellValue(0, 2) != g.일회거래액.ToString())
                 {
                     g.controlPane.SetCellValue(0, 2, g.일회거래액);
 
@@ -91,7 +92,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                         g.일회거래액 /= 2;
                 }
 
-         
+
                 if (g.controlPane.GetCellValue(0, 2) != g.일회거래액.ToString())
                 {
                     g.controlPane.SetCellValue(0, 2, g.일회거래액);
@@ -99,7 +100,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
             }
         };
-        
+
 
         // F3
         public static readonly Action DealConfirmSellKey = () =>
@@ -159,9 +160,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
             action.Run();
         };
 
-        public static readonly Action 푀분_총점 = () =>
+        public static readonly Action 푀분_등합 = () =>
         {
-            var list = new List<string> { "푀분", "총점" };
+            var list = new List<string> { "푀분", "등합" };
             g.v.MainChartDisplayMode = StringUtils.CycleStrings(g.v.MainChartDisplayMode, list);
             g.q = "o&s";
             g.gid = 0;
@@ -174,25 +175,18 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         public static readonly Action 보조차트_피올_닥올 = () =>
         {
-            Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-            if (Form_보조_차트 != null)
-            {
-                var list = new List<string> { "피올", "닥올" };
-                g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
-                Form_보조_차트.Form_보조_차트_DRAW();
-            }
-                
+            var list = new List<string> { "피올", "닥올" };
+            g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
+
+            PostProcessor.ManageChart2Invoke();
         };
 
         public static readonly Action 보조차트_순위_관심 = () =>
         {
-            Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-            if (Form_보조_차트 != null)
-            {
-                List<string> list = new List<string> { "그순", "관심" };
-                g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
-                Form_보조_차트.Form_보조_차트_DRAW();
-            }
+            List<string> list = new List<string> { "그순", "관심" };
+            g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
+
+            PostProcessor.ManageChart2Invoke();
         };
 
         public static readonly Action 상순_저순 = () =>
@@ -263,7 +257,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 action.Run();
             }
 
-                
+
         };
 
         public static readonly Action TimeOneBackwardsKey = () =>
@@ -280,7 +274,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
-            
+
         };
 
         public static readonly Action TimeShortMoveKey = () =>
@@ -332,10 +326,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
                 else
                     g.npts_fi_dwm += 10;
-                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
-            
+
         };
 
         public static readonly Action TimeTenBackwardsKey = () =>
@@ -348,10 +342,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
                 else
                     g.npts_fi_dwm -= 10;
-                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
-            
+
         };
 
         public static readonly Action TimeThirtyForwardsKey = () =>
@@ -365,7 +359,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 30;
                 }
-                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
         };
@@ -380,7 +374,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 {
                     g.Npts[1] = g.Npts[0] + 2;
                 }
-                var action = ActionCode.New(clear: false, post: false, eval: true, draw: 'B');
+                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
                 action.Run();
             }
         };
@@ -389,7 +383,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.InitialDirectory = @"C:\병신\data\";
+                dialog.InitialDirectory = @"C:\병신\data work\";
                 dialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                 dialog.Multiselect = true;
 
@@ -406,7 +400,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
 
         public static readonly Action OpenMemoKey = () => // 제어, 상관, 관심 등
         {
-            
+
         };
 
         public static readonly Action NewsPeoridKey = () =>
@@ -486,7 +480,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 string result = StringUtils.message(caption, message, default_option);
 
                 if (result == "Yes")
-                     await FileOut.SaveAllStocks();
+                    await FileOut.SaveAllStocks();
             }
         };
         #endregion
