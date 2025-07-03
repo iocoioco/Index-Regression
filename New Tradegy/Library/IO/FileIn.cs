@@ -284,7 +284,7 @@ namespace New_Tradegy.Library.IO
                     PostProcessor.PostPassing(t, j, false);
             }
 
-            PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
+            // PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
         }
 
 

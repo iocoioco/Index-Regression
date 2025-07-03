@@ -17,8 +17,8 @@ namespace New_Tradegy.Library.Models
         public const int MinuteArraySize = 15; // const static implicitly
 
         // KOSPI
-        public long KospiBuyPower { get; set; }
-        public long KospiSellPower { get; set; }
+        public double KospiBuyPower { get; set; }
+        public double KospiSellPower { get; set; }
         public long KospiProgramNetBuy { get; set; }
         public long KospiRetailNetBuy { get; set; }
         public long KospiForeignNetBuy { get; set; }
@@ -29,8 +29,8 @@ namespace New_Tradegy.Library.Models
         public double[] KospiTickSellPower { get; } = new double[TickArraySize];
 
         // KOSDAQ
-        public long KosdaqBuyPower { get; set; }
-        public long KosdaqSellPower { get; set; }
+        public double KosdaqBuyPower { get; set; }
+        public double KosdaqSellPower { get; set; }
         public long KosdaqProgramNetBuy { get; set; }
         public long KosdaqRetailNetBuy { get; set; }
         public long KosdaqForeignNetBuy { get; set; }

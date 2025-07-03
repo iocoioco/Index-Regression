@@ -17,6 +17,16 @@ namespace New_Tradegy
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(g.MainForm = new Form1());
-     }
-  }
+
+            //try
+            //{
+            //    Application.Run(g.MainForm = new Form1());
+            //}
+            //catch (Exception ex)
+            //{
+            //    // MessageBox.Show(ex.ToString(), "Startup Error");
+            //}
+
+        }
+    }
 }

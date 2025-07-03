@@ -92,7 +92,7 @@ namespace New_Tradegy.Library.Trackers
 
             if (g.q == "o&s" && data.Score.그룹_등수 < 5)
             {
-                area.BackColor = g.Colors[data.Score.그룹_등수];
+               // area.BackColor = g.Colors[data.Score.그룹_등수];
             }
 
             if (data.Api.분프로천[0] > 5 && data.Api.분외인천[0] > 5 && data.Api.분배수차[0] > 0)
@@ -495,8 +495,6 @@ namespace New_Tradegy.Library.Trackers
 
             string annotation = AnnotationText(chart, data, data.Api.x, StartNpts, EndNpts, data.Api.nrow);
 
-     
-
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 
             Color BackColor = Color.White;
@@ -509,12 +507,12 @@ namespace New_Tradegy.Library.Trackers
             Annotation anno = AnnotationAddRectangleWithText(chart, annotation,
                 new RectangleF(0, yOffset, 100 / g.nCol, (int)annotationHeight + 2f), annoName, Color.Black, BackColor);
 
-
-
             anno.Visible = false;
 
-
-
+            if (g.q == "o&s" && data.Score.그룹_등수 < 5)
+            {
+                anno.BackColor = g.Colors[data.Score.그룹_등수];
+            }
 
             return anno;
         }

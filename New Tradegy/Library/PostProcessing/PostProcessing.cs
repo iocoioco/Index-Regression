@@ -54,7 +54,7 @@ namespace New_Tradegy.Library.PostProcessing
         }
         public static void ManageChart2Invoke()
         {
-        
+
             Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
             if (Form_보조_차트.InvokeRequired)
             {
@@ -73,6 +73,7 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 post(data);
             }
+            post_코스닥_코스피_프외_순매수_배차_합산();
 
             if (g.MarketeyeCount % g.MarketeyeCountDivicer == 1)
             {
@@ -83,7 +84,6 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 if (g.StockManager.HoldingList.Contains(data.Stock)) // Stock is the name
                 {
-             
                     g.tradePane?.Update(); // update DGV for holding stock
                     marketeye_received_보유종목_푀분의매수매도_소리내기(data); // renamed to match new structure
                 }
@@ -100,6 +100,7 @@ namespace New_Tradegy.Library.PostProcessing
             {
                 post(data);
             }
+            // post_코스닥_코스피_프외_순매수_배차_합산();
         }
 
         // done by Sensei
@@ -155,50 +156,31 @@ namespace New_Tradegy.Library.PostProcessing
             var score = data.Score;
             var api = data.Api;
 
-            double sending_value;
+            score.푀분 = 0.0;
+            score.배차 = 0.0;
+            score.배합 = 0.0;
 
-            if (MathUtils.IsSafeToDivide(stat.푀분_dev))
-            {
-                sending_value = (api.분프로천[0] + api.분외인천[0]) / stat.푀분_dev;
-                score.푀분 = sending_value;
-                if (api.분프로천[0] > 5 && api.분외인천[0] > 5)
-                {
-                    score.푀분 *= 1.5;
-                }
-            }
-            else
-            {
-                score.푀분 = 0.0;
-            }
-            
-            if (MathUtils.IsSafeToDivide(stat.배차_dev))
-            {
-                sending_value = (api.분배수차[0] - stat.배차_avr) / stat.배차_dev;
-                score.배차 = sending_value;
-            }
-            else
-            {
-                score.배차 = 0.0;
-            }
-            
-            if (MathUtils.IsSafeToDivide(stat.배합_dev))
-            {
-                sending_value = (api.분배수합[0] - stat.배합_avr) / stat.배합_dev;
-                score.배합 = sending_value;
-            }
-            else
-            {
-                score.배합 = 0.0;
-            }
+            score.푀분 = api.분프로천[0] + api.분외인천[0];
+            score.배차 = api.분배수차[0] - stat.배차_avr;
+            score.배합 = api.분배수합[0] - stat.배합_avr;
+
+            //if (MathUtils.IsSafeToDivide(stat.푀분_dev))
+            //    score.푀분 = (api.분프로천[0] + api.분외인천[0]);
+
+            //if (MathUtils.IsSafeToDivide(stat.배차_dev))
+            //    score.배차 = (api.분배수차[0] - stat.배차_avr) / stat.배차_dev;
+
+            //if (MathUtils.IsSafeToDivide(stat.배합_dev))
+            //    score.배합 = (api.분배수합[0] - stat.배합_avr) / stat.배합_dev;
         }
 
-        // done by Sensei
+        // not used : done by Sensei
         public static void post_코스닥_코스피_프외_순매수_배차_합산_382()
         {
             int index;
 
             var repo = g.StockRepository;
-            var kospi_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[0]);
+            var kospi_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[0]); // 
             var kosdaq_leverage = repo.TryGetStockOrNull(g.StockManager.IndexList[1]);
             var kospi_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[2]);
             var kosdaq_inverse = repo.TryGetStockOrNull(g.StockManager.IndexList[3]);
@@ -240,6 +222,8 @@ namespace New_Tradegy.Library.PostProcessing
             MajorIndex.Instance.KospiProgramNetBuy = 0;
             MajorIndex.Instance.KospiForeignNetBuy = 0;
 
+
+
             for (int i = 0; i < g.kospi_mixed.stock.Count; i++)
             {
                 string stock = g.kospi_mixed.stock[i];
@@ -249,11 +233,16 @@ namespace New_Tradegy.Library.PostProcessing
                 var api = data.Api;
                 double money_factor = api.전일종가 / g.억원;
 
-                int row = api.nrow - 1;
+                int row = 0;
+                if (g.test)
+                    row = g.Npts[1] - 1;
+                else
+                    row = api.nrow;
+
                 MajorIndex.Instance.KospiProgramNetBuy += (int)(api.x[row, 4] * money_factor);
                 MajorIndex.Instance.KospiForeignNetBuy += (int)(api.x[row, 5] * money_factor);
-                MajorIndex.Instance.KospiBuyPower = (int)(api.x[row, 8] * g.kospi_mixed.weight[i]);
-                MajorIndex.Instance.KospiSellPower = (int)(api.x[row, 9] * g.kospi_mixed.weight[i]);
+                MajorIndex.Instance.KospiBuyPower = api.x[row, 8] * g.kospi_mixed.weight[i]; // double
+                MajorIndex.Instance.KospiSellPower = api.x[row, 9] * g.kospi_mixed.weight[i]; // double
             }
 
             MajorIndex.Instance.KosdaqBuyPower = 0;
@@ -270,11 +259,16 @@ namespace New_Tradegy.Library.PostProcessing
                 var api = data.Api;
                 double money_factor = api.전일종가 / g.억원;
 
-                int row = api.nrow - 1;
+                int row = 0;
+                if (g.test)
+                    row = g.Npts[1] - 1;
+                else
+                    row = api.nrow;
+
                 MajorIndex.Instance.KosdaqProgramNetBuy += (int)(api.x[row, 4] * money_factor);
                 MajorIndex.Instance.KosdaqForeignNetBuy += (int)(api.x[row, 5] * money_factor);
-                MajorIndex.Instance.KosdaqBuyPower = (int)(api.x[row, 8] * g.kosdaq_mixed.weight[i]);
-                MajorIndex.Instance.KosdaqSellPower = (int)(api.x[row, 9] * g.kosdaq_mixed.weight[i]);
+                MajorIndex.Instance.KosdaqBuyPower = api.x[row, 8] * g.kosdaq_mixed.weight[i];
+                MajorIndex.Instance.KosdaqSellPower = api.x[row, 9] * g.kosdaq_mixed.weight[i];
             }
         }
 
@@ -282,8 +276,6 @@ namespace New_Tradegy.Library.PostProcessing
         public static void post(StockData data)
         {
             string stock = data.Stock;
-
-            
 
             int check_row = g.test
                 ? Math.Min(g.Npts[1] - 1, data.Api.nrow - 1)

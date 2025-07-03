@@ -38,11 +38,11 @@ namespace New_Tradegy.Library.Listeners
                 // 시작시간 09:00
                 // Trigger at 10:00, 11:00, 12:00, 13:00, 14:00, or 15:21 only once per minute
                 if ((HHmm == 1000 || HHmm == 1100 || HHmm == 1200 || HHmm == 1300
-                    || HHmm == 1400 || HHmm == 1521) && minuteSaveAll != HHmm)
+                    || HHmm == 1400 || HHmm == 1520) && minuteSaveAll != HHmm)
 
                 //시작시간 10:00
                 //    if ((HHmm == 1100 || HHmm == 1200 || HHmm == 1300 ||
-                // HHmm == 1400 || HHmm == 1500 || HHmm == 1621) &&
+                // HHmm == 1400 || HHmm == 1500 || HHmm == 1620) &&
                 // minuteSaveAll != HHmm)
                 {
                     if (wk.isWorkingHour())
@@ -368,7 +368,7 @@ namespace New_Tradegy.Library.Listeners
                 indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
             }
 
-            PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산();
+            
             g.MarketeyeCount++;
         }
 

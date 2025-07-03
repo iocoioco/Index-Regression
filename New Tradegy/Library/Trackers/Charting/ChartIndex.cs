@@ -12,7 +12,7 @@ namespace New_Tradegy.Library.Trackers
     public static class ChartIndex
     {
         private static Color[] colorKODEX = { Color.White, Color.Red,
-        Color.White, Color.Black, Color.Brown, Color.Magenta, Color.Green,
+        Color.White, Color.Black, Color.Cyan, Color.Magenta, Color.Green,
         Color.White, Color.White, Color.White, Color.Blue, Color.Brown };
 
         //How to call
@@ -221,53 +221,6 @@ namespace New_Tradegy.Library.Trackers
                     totalPoints -= g.NptsForShrinkDraw;
                 area.AxisX.Interval = totalPoints - 1;
             }
-
-            //string stock = data.Stock;
-            //int totalPoints = data.Api.nrow;
-            //if (data.Misc.ShrinkDraw)
-            //    totalPoints -= g.NptsForShrinkDraw;
-
-            //int[] seriesIds = { 1, 3, 4, 5, 6, 10, 11 };
-
-            //foreach (int id in seriesIds)
-            //{
-            //    string seriesName = stock + " " + id;
-            //    if (chart.Series.IsUniqueName(seriesName)) continue;
-
-            //    var series = chart.Series[seriesName];
-            //    double magnifier = 1.0;
-            //    Magnifier(stock, id, ref magnifier);
-
-            //    int seriesCount = series.Points.Count;
-
-            //    if (seriesCount == totalPoints)
-            //    {
-            //        series.Points[totalPoints - 1].SetValueXY(
-            //            (data.Api.x[totalPoints - 1, 0] / g.HUNDRED).ToString(),
-            //            data.Api.x[totalPoints - 1, id] * magnifier);
-            //    }
-            //    else
-            //    {
-            //        for (int i = seriesCount; i < totalPoints; i++)
-            //        {
-            //            if (i > 0 && i - 1 < series.Points.Count)
-            //                series.Points[i - 1].Label = null;
-
-            //            series.Points.AddXY(
-            //                (data.Api.x[i, 0] / g.HUNDRED).ToString(),
-            //                data.Api.x[i, id] * magnifier);
-            //        }
-            //    }
-
-            //    Label(chart, series);
-            //    Mark(chart, totalPoints - 1, series);
-            //}
-
-            //if (!chart.ChartAreas.IsUniqueName(stock))
-            //{
-            //    var area = chart.ChartAreas[stock];
-            //    area.AxisX.Interval = totalPoints - 1;
-            //}
         }
 
         public static void UpdateSeries_old(Chart chart, StockData data)
@@ -342,7 +295,6 @@ namespace New_Tradegy.Library.Trackers
                 case "KODEX 레버리지": i = 0; break;
                 case "KODEX 코스닥150레버리지": i = 1; break;
                 case "KODEX 200선물인버스2X": i = 2; break;
-               
                 case "KODEX 코스닥150선물인버스": i = 3; break;
             }
 
