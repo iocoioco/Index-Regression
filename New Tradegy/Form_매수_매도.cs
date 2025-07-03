@@ -212,22 +212,12 @@ namespace New_Tradegy
         
         private void 시장_Click(object sender, EventArgs e)
         {
-    
-            DealManager.DealExec(_isSell ? "매도" : "매수", _stock, _amount, _price, "03");
-            this.BeginInvoke(new Action(() =>
-            {
-                this.Close();  // Ensures form closes properly before reopening
-            }));
+            ExecuteDeal("03");
         }
 
         private void 지정_Click(object sender, EventArgs e)
         {
-            DealManager.DealExec(_isSell ? "매도" : "매수", _stock, _amount, _price, "01");
-            // StopFlashingButton(지정);
-            this.BeginInvoke(new Action(() =>
-            {
-                this.Close();  // Ensures form closes properly before reopening
-            }));
+            ExecuteDeal("01");
         }
 
         private void 저장_Click(object sender, EventArgs e)
@@ -272,6 +262,34 @@ namespace New_Tradegy
             _flashTimer?.Stop();
             button.BackColor = SystemColors.Control;
             _isFlashing = false;
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+
+            if (keyData == Keys.F5) // or your custom key
+            {
+                ExecuteDeal("01"); // 지정
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        
+        private void ExecuteDeal(string orderTypeCode)
+        {
+            string orderType = _isSell ? "매도" : "매수";
+            DealManager.DealExec(orderType, _stock, _amount, _price, orderTypeCode);
+
+            this.BeginInvoke(new Action(() =>
+            {
+                this.Close(); // clean close
+            }));
         }
 
     }
