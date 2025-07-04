@@ -148,16 +148,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockManager.AddIfMissing(g.kosdaq_mixed.stock);
             g.StockManager.AddIfMissing(NaverList);
 
-
-
             KeyBindingRegistrar.RegisterAll();
-
-
-
-
-
-
-
 
             FileIn.read_변수(); //
             WeightManager.Load(); // read in "Weight.txt" in data directory
@@ -174,16 +165,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             FileIn.read_or_set_stocks(); // duration : 0.36 seconds
             FileIn.read_파일관심종목(); // duration 0.000 seconds
 
-
-
-
-
             string newdirectory = @"C:\병신\변곡\" + g.date.ToString(); // for writing 변곡 not used in marketeye_received
             Directory.CreateDirectory(newdirectory); // testing
-
-
-
-
 
             var controlDgv = new DataGridView();
             var controlDtb = new DataTable();

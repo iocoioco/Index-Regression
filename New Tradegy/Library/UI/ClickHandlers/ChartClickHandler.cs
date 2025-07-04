@@ -124,7 +124,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (g.test)
                     {
                         ActionHandlers.TimeShortMoveKey?.Invoke();
-                        ActionCode.New(true, false, eval: true, draw: 'B').Run();
+                        ActionCode.New(true, true, eval: false, draw: 'B').Run();
                     }
                     break;
 
@@ -143,7 +143,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                                     g.StockManager.InterestedOnlyList.Remove(g.clickedStock);
                             }
                         }
-                        ActionCode.New(true, false, eval: true, draw: 'm').Run();
+                        ActionCode.New(false, post: false, eval: false, draw: 'm').Run();
                     }
                     break;
 
