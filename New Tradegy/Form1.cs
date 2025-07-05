@@ -87,11 +87,38 @@ namespace New_Tradegy // added for test on 20241020 0300
             else
                 g.connected = true;
 
-            System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
-            g.screenWidth = workingRectangle.Width;
-            g.screenHeight = workingRectangle.Height;
+            // client area excluding taskbar docked toolbars borders
+            // working area excluding taskbar docked toolbars (screen level)
+            Rectangle clientRect = this.ClientRectangle;
+            int clientWidth = clientRect.Width;       // 1924
+            int clientHeight = clientRect.Height;     // 1061
 
-            chart1.Size = new Size(workingRectangle.Width, (int)(workingRectangle.Height) - 20);
+            System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
+            g.screenWidth = workingRectangle.Width;   // 1920
+            g.screenHeight = workingRectangle.Height; // 1032
+
+            Rectangle formBounds = this.Bounds;       // 1940, 1100
+
+            var size = this.Size;                     // 1940, 1100
+
+
+
+            // Form Location and Size 
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = workingRectangle.Location;
+            this.Size = workingRectangle.Size;
+            this.Padding = new Padding(0);
+            this.AutoScroll = false;
+
+            // chart Location and Size
+            chart1.Location = new Point(0, 0);
+            chart1.Size = this.ClientSize;
+            chart1.Dock = DockStyle.Fill;
+            chart1.Margin = new Padding(0);
+
+
+
             if (Environment.MachineName == "HP")
             {
                 this.Location = new Point(0, 0);

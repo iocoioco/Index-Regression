@@ -221,9 +221,9 @@ namespace New_Tradegy.Library
         // variables : chart1 control, stock selection, font etc
         public class Variable
         {
-            public string MainChartDisplayMode = "푀분";
+            public string MainChartDisplayMode = "등합";
             public string SubChartDisplayMode = "피올";
-            public string PreviousMainChartDisplayMode = "푀분";
+            public string PreviousMainChartDisplayMode = "등합";
 
             public int 분당거래액이상_천만원; // in setting 10
             public int 호가거래액_백만원; // in setting 10

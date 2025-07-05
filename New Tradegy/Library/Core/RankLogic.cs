@@ -49,7 +49,10 @@ namespace New_Tradegy.Library.Core
             double sec = sw.Elapsed.TotalSeconds;
         }
 
-        // Add more strategies as needed
+        // 푀분 : chart는 푀분 r3_display는 프분 only
+        // 푀분, 배차 양이라도 가격 하락의 경우는 하락이 많음 : 이유 ?
+        // 지수 영향
+        // 피로
         public static void RankBy등합()
         {
             var repo = g.StockRepository;

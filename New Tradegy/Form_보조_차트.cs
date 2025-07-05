@@ -15,7 +15,7 @@ namespace New_Tradegy
 {
     public partial class Form_보조_차트 : Form
     {
-        private int dataGridView1Height = 22;
+        private int dataGridView1Height = 25;
         public int nRow;
         public int nCol;
 
@@ -28,17 +28,18 @@ namespace New_Tradegy
         {
             InitializeComponent();
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // Remove the default title bar
-            Panel titleBar = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 50,
-                BackColor = Color.LightGray // Customize appearance
-            };
-            this.Controls.Add(titleBar);
+            //this.FormBorderStyle = FormBorderStyle.Sizable; // Remove the default title bar
+            //Panel titleBar = new Panel
+            //{
+            //    Dock = DockStyle.Top,
+            //    Height = 50,
+            //    BackColor = Color.LightGray // Customize appearance
+            //};
+            //this.Controls.Add(titleBar);
 
 
-            titleBar.Controls.Add(dataGridView1); // Add DataGridView to the title bar
+            //titleBar.Controls.Add(dataGridView1); // Add DataGridView to the title bar
+            this.Controls.Add(dataGridView1); // Add DataGridView to the title bar
         }
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
@@ -82,21 +83,45 @@ namespace New_Tradegy
 
         private void ConfigureChartAndGridSize()
         {
+            
+       
+
+            
+            
+
+
+            Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
+
+            // Form Location and Size 
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.StartPosition = FormStartPosition.Manual;
             if (Environment.MachineName == "HP")
             {
-                this.Location = new Point(-g.screenWidth / 2, 0);
+                this.Location = new Point(-workingRectangle.Width / 2, 0);
             }
             else
             {
-                this.Location = new Point(g.screenWidth, 0);
+                this.Location = new Point(workingRectangle.Width / 2, 0);
                 if (Screen.AllScreens.Count() == 1)
-                    this.Location = new Point(g.screenWidth / 2, 0); // one screen
+                    this.Location = new Point(workingRectangle.Width / 2, 0); // one screen
             }
-            this.Size = new Size(g.screenWidth / 2, g.screenHeight);
-            chart2.Size = new Size(this.Width, this.Height);
-            chart2.Location = new Point(0, dataGridView1Height);
-            dataGridView1.Size = new Size(this.Width, dataGridView1Height);
+            this.Width = workingRectangle.Width / 2;
+            this.Height = workingRectangle.Height;
+            this.Padding = new Padding(0);
+            this.AutoScroll = false;
+
+            // chart Location and Size
+            var clientSize = this.ClientSize;
+            dataGridView1.Size = new Size(clientSize.Width, dataGridView1Height);
             dataGridView1.Location = new Point(0, 0);
+
+            chart2.Size = new Size(clientSize.Width, clientSize.Height - dataGridView1Height);
+            chart2.Location = new Point(0, dataGridView1Height);
+
+            //chart2.Dock = DockStyle.Fill;
+            //chart2.Margin = new Padding(0);
+
+
         }
 
         private void ConfigureDataGridView()

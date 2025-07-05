@@ -15,8 +15,6 @@ namespace New_Tradegy.Library.Utils
             int width = ScreenWidth / ChartCols;
             int height = ScreenHeight / ChartRows;
 
-            
-        
             return new Size(width, height);
         }
 
