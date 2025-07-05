@@ -276,7 +276,7 @@ namespace New_Tradegy.Library.Utils
             if (!g.StockRepository.Contains(stock))
                 return;
 
-            StockData data = g.StockRepository.TryGetStockOrNull(stock); // or .TryGetStockOrNull(stock)
+            StockData data = g.StockRepository.TryGetDataOrNull(stock); // or .TryGetDataOrNull(stock)
             if (data == null)
                 return;
 

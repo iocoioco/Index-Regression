@@ -115,7 +115,7 @@ namespace New_Tradegy.Library.Trackers
                 int 순서 = 0;
                 foreach (var stock in g.StockManager.HoldingList.ToList())
                 {
-                    var data = g.StockRepository.TryGetStockOrNull(stock);
+                    var data = g.StockRepository.TryGetDataOrNull(stock);
                     if (data == null) return;
 
                     if (data.Api.매수1호가 > 0)

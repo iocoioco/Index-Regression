@@ -323,7 +323,7 @@ namespace New_Tradegy.Library.Trackers
 
             ChartHandler.SeriesInfomation(series, ref stockName, ref chartArea, ref columnIndex, ref endPoint);
 
-            var stockData = g.StockRepository.TryGetStockOrNull(stockName);
+            var stockData = g.StockRepository.TryGetDataOrNull(stockName);
             if (stockData == null) return;
 
             var o = stockData.Api;
@@ -357,7 +357,7 @@ namespace New_Tradegy.Library.Trackers
 
             ChartHandler.SeriesInfomation(series, ref stock, ref area, ref columnIndex, ref endPoint);
 
-            var data = g.StockRepository.TryGetStockOrNull(stock);
+            var data = g.StockRepository.TryGetDataOrNull(stock);
             if (data == null) return;
 
             int totalPoints = g.test ? Math.Min(g.Npts[1], data.Api.nrow) : data.Api.nrow;

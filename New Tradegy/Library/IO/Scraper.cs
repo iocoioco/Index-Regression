@@ -383,7 +383,7 @@ namespace New_Tradegy.Library.IO
 
             foreach (var item in four_index)
             {
-                var data = g.StockRepository.TryGetStockOrNull(item);
+                var data = g.StockRepository.TryGetDataOrNull(item);
                 if (data == null)
                 {
                     continue;

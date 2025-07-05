@@ -13,6 +13,7 @@ namespace New_Tradegy.Library.Core
 
         public List<string> TotalStockList { get; } = new List<string>();
         public List<string> StockRankingList { get; private set; } = new List<string>();
+        public List<string> StockRankingByModesList { get; private set; } = new List<string>();
         public List<string> HoldingList { get; private set; } = new List<string>();
 
         public List<string> LeverageList { get; private set; } = new List<string>();
@@ -37,7 +38,7 @@ namespace New_Tradegy.Library.Core
 
         public double GetTotal등합(string stock)
         {
-            var data = _repository.TryGetStockOrNull(stock);
+            var data = _repository.TryGetDataOrNull(stock);
             return data?.Score.등합 ?? 0.0;
         }
 

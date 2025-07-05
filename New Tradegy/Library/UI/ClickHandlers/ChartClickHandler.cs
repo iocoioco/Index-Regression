@@ -25,11 +25,11 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
 
 
-        private static int GetPriceFromGivenStock(string stockName)
+        private static int GetAskPriceFromGivenStock(string stockName)
         {
             var dgv = Utils.FormUtils.FindDataGridViewByName(Form1.Instance, stockName);
 
-            var cellValue = dgv.Rows[5].Cells[1].Value?.ToString();
+            var cellValue = dgv.Rows[4].Cells[1].Value?.ToString();
 
             if (int.TryParse(cellValue?.Replace(",", ""), out int price))
                 return price;
@@ -48,7 +48,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     }
                     g.ChartMain.RefreshMainChart(); // index already has bookbid
 
-                    int price = GetPriceFromGivenStock(g.clickedStock);
+                    int price = GetAskPriceFromGivenStock(g.clickedStock);
                     if (price < 0) return;
 
                     int quantity = g.일회거래액 * 10000 / price;
@@ -59,7 +59,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     string info = g.clickedStock + " : " + price + " X " + quantity +
                                   " = " + (price * quantity / 10000) + "만원";
 
-                    var stockData = g.StockRepository.TryGetStockOrNull(g.clickedStock);
+                    var stockData = g.StockRepository.TryGetDataOrNull(g.clickedStock);
                     if (stockData == null) return;
 
                     info += "\n" + Utils.StringUtils.r3_display_매수_매도(stockData);
@@ -78,7 +78,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
         public static void HandleClick(Chart chart, string selection, int row_id, int col_id)
         {
-            var data = g.StockRepository.TryGetStockOrNull(g.clickedStock);
+            var data = g.StockRepository.TryGetDataOrNull(g.clickedStock);
             if (data == null) return;
 
             switch (selection)
@@ -124,7 +124,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (g.test)
                     {
                         ActionHandlers.TimeShortMoveKey?.Invoke();
-                        ActionCode.New(true, true, eval: false, draw: 'B').Run();
+                        ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
                     }
                     break;
 
@@ -168,7 +168,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     break;
 
                 case "l7":
-                    wk.call_네이버(g.clickedStock, "main");
+                    wk.CallNaverChart(g.clickedStock, "main");
                     break;
 
                 case "l8":
@@ -204,19 +204,21 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     break;
 
                 case "r1":
-                    string t = "http://google.com/search?q=" + g.clickedStock + " 뉴스 주식&tbs=qdr:" + g.PeoridNews;
-                    Process.Start(t);
+                    string keyword = $"{g.clickedStock} 뉴스 주식";
+                    string encodedQuery = Uri.EscapeDataString(keyword);
+                    string url = $"https://www.google.com/search?q={encodedQuery}&tbs=qdr:{g.PeoridNews}";
+                    Process.Start("chrome.exe", $"--new-tab {url}");
                     break;
 
                 case "r2":
-                    wk.call_네이버(g.clickedStock, "fchart");
+                    wk.CallNaverChart(g.clickedStock, "fchart");
                     break;
 
                 case "r3":
                     string query = g.clickedStock + " 기업정보";
-                    string encodedQuery = Uri.EscapeDataString(query);
-                    t = "http://google.com/search?q=" + encodedQuery;
-                    Process.Start("chrome.exe", t);
+                    encodedQuery = Uri.EscapeDataString(query);
+                    url = $"https://www.google.com/search?q={encodedQuery}";
+                    Process.Start("chrome.exe", $"--new-tab {url}");
                     break;
 
                 case "r4":
@@ -269,7 +271,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     break;
 
                 case "r8":
-                    wk.call_네이버(g.clickedStock, "frgn");
+                    wk.CallNaverChart(g.clickedStock, "frgn");
                     break;
 
                 case "r9":

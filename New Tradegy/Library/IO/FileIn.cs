@@ -94,7 +94,7 @@ namespace New_Tradegy.Library.IO
                 if (words.Length != 18)
                     continue;
 
-                var stockData = g.StockRepository.TryGetStockOrNull(words[0]);
+                var stockData = g.StockRepository.TryGetDataOrNull(words[0]);
                 if (stockData == null || stockData.Api.전일종가 <= 0)
                     continue;
 
@@ -322,6 +322,8 @@ namespace New_Tradegy.Library.IO
                     .OrderByDescending(x => x.Api.전일거래액_천만원)
                     .Select(x => x.Stock)
             );
+            g.StockManager.StockRankingByModesList.Clear();
+            g.StockManager.StockRankingByModesList.AddRange(g.StockManager.StockRankingList);
 
             FileIn.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
@@ -632,7 +634,7 @@ namespace New_Tradegy.Library.IO
                 if (parts.Length == 1)
                 {
                     string stock = parts[0];
-                    data = g.StockRepository.TryGetStockOrNull(stock);  // e.g., "삼성전자"
+                    data = g.StockRepository.TryGetDataOrNull(stock);  // e.g., "삼성전자"
 
                     if (data == null)
                         continue;
@@ -662,7 +664,7 @@ namespace New_Tradegy.Library.IO
 
                 if (words.Length == 1)
                 {
-                    data = g.StockRepository.TryGetStockOrNull(words[0]);
+                    data = g.StockRepository.TryGetDataOrNull(words[0]);
                 }
                 else if (words.Length == 2 && data != null)
                 {

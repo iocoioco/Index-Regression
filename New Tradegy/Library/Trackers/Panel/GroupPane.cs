@@ -117,9 +117,11 @@ namespace New_Tradegy.Library.Trackers
             }
             else if (e.Button == MouseButtons.Right)
             {
-                string url = $"http://google.com/search?q={title} 주식 뉴스 &tbs=qdr:d";
-                Process.Start(url);
+                string query = Uri.EscapeDataString($"{title} 주식 뉴스");
+                string url = $"https://www.google.com/search?q={query}&tbs=qdr:d"; // past 24h news
+                Process.Start("chrome.exe", $"--new-tab {url}");
             }
+
         }
 
         private void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

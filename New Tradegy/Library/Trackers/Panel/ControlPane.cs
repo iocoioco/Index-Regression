@@ -392,7 +392,7 @@ namespace New_Tradegy.Library.Trackers
                                 Process.Start("chrome.exe", "https://kr.investing.com/currencies/usd-krw");
                                 break;
                             case 2:
-                                Process.Start("https://www.investing.com/indices/nq-100-futures?cid=1175151");
+                                Process.Start("chrome.exe", "https://www.investing.com/indices/nq-100-futures?cid=1175151");
                                 break;
                             case 3:
                                 Process.Start("chrome.exe", "https://finviz.com/map.ashx?t=sec");
@@ -405,13 +405,8 @@ namespace New_Tradegy.Library.Trackers
                         break;
 
                     case 3:
-                        switch (e.ColumnIndex)
-                        {
-                            case 0:
-                            case 1:
-                                Process.Start("chrome.exe", "https://www.investing.com/crypto/bitcoin/chart");
-                                break;
-                        }
+                        if (e.ColumnIndex == 0 || e.ColumnIndex == 1)
+                            Process.Start("chrome.exe", "https://www.investing.com/crypto/bitcoin/chart");
                         break;
 
                     case 4:

@@ -142,7 +142,7 @@ namespace New_Tradegy.Library.Listeners
 
             for (int i = 0; i < codes.Length && i < selected.Count; i++)
             {
-                var stock = g.StockManager.Repository.TryGetStockOrNull(selected[i]);
+                var stock = g.StockManager.Repository.TryGetDataOrNull(selected[i]);
                 if (stock == null) continue;
                 codes[i] = stock.Code;
             }
@@ -180,7 +180,7 @@ namespace New_Tradegy.Library.Listeners
                 if (!g.StockRepository.Contains(stock))
                     continue;
 
-                var data = g.StockRepository.TryGetStockOrNull(stock);
+                var data = g.StockRepository.TryGetDataOrNull(stock);
                 if (data == null) continue;
                 var api = data.Api;
 
@@ -354,7 +354,7 @@ namespace New_Tradegy.Library.Listeners
 
             if (g.StockRepository.Contains("KODEX 레버리지"))
             {
-                var kospi = g.StockRepository.TryGetStockOrNull("KODEX 레버리지");
+                var kospi = g.StockRepository.TryGetDataOrNull("KODEX 레버리지");
                 int kospiIndex = kospi.Api.x[kospi.Api.nrow - 1, 1];
                 MajorIndex.Instance.KospiIndex = kospiIndex;
                 indexRangeTracker.CheckIndexAndSound(kospiIndex, "Kospi");
@@ -362,7 +362,7 @@ namespace New_Tradegy.Library.Listeners
 
             if (g.StockRepository.Contains("KODEX 코스닥150레버리지"))
             {
-                var kosdaq = g.StockRepository.TryGetStockOrNull("KODEX 코스닥150레버리지");
+                var kosdaq = g.StockRepository.TryGetDataOrNull("KODEX 코스닥150레버리지");
                 int kosdaqIndex = kosdaq.Api.x[kosdaq.Api.nrow - 1, 1];
                 MajorIndex.Instance.KosdaqIndex = kosdaqIndex;
                 indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
@@ -384,7 +384,7 @@ namespace New_Tradegy.Library.Listeners
             {
                 string[] items = line.Split('\t');
 
-                var data = g.StockRepository.TryGetStockOrNull(items[0]).Api;
+                var data = g.StockRepository.TryGetDataOrNull(items[0]).Api;
 
                 double weight = Convert.ToDouble(items[1]);
 
@@ -408,7 +408,7 @@ namespace New_Tradegy.Library.Listeners
             if (!!g.StockRepository.Contains(mixed_stock))
                 return;
 
-            var v = g.StockRepository.TryGetStockOrNull(mixed_stock);
+            var v = g.StockRepository.TryGetDataOrNull(mixed_stock);
 
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
             int time_bef_4int = v.Api.x[v.Api.nrow - 1, 0] / 100;

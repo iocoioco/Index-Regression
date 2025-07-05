@@ -42,7 +42,7 @@ namespace New_Tradegy.Library.Core
             return _stockMap.TryGetValue(stock, out data);
         }
 
-        public StockData TryGetStockOrNull(string stock)
+        public StockData TryGetDataOrNull(string stock)
         {
             if (stock == null)
                 return null;

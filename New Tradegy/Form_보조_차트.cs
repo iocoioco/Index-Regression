@@ -1,4 +1,5 @@
 ﻿using New_Tradegy.Library;
+using New_Tradegy.Library.Core;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.UI.ChartClickHandlers;
@@ -148,7 +149,7 @@ namespace New_Tradegy
                     break;
                 string stock = displayList[i];
 
-                var data = g.StockRepository.TryGetStockOrNull(stock);
+                var data = g.StockRepository.TryGetDataOrNull(stock);
                 if (data == null)
                 {
                     continue;
@@ -307,6 +308,7 @@ namespace New_Tradegy
                     break;
 
                 case "그순":
+                    RankLogic.RankByMode();
                     if (g.GroupManager.GroupRankingList.Count > 0)
                     {
                         var topStocks = g.GroupManager.GetTopStocksFromTopGroups(existing: displayList);
@@ -319,7 +321,7 @@ namespace New_Tradegy
                     break;
 
                 case "절친":
-                    var stockData = g.StockManager.Repository.TryGetStockOrNull(g.clickedStock);
+                    var stockData = g.StockManager.Repository.TryGetDataOrNull(g.clickedStock);
                     if (stockData != null && stockData.Misc.Friends.Count > 0)
                     {
                         displayList.Add(g.clickedStock);

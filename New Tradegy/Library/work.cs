@@ -64,7 +64,7 @@ namespace New_Tradegy.Library
         {
             if (backwards_or_forwards == "backwards")
             {
-                int return_date = wk.directory_분전후(g.date, -1); // 거래전일
+                int return_date = wk.GetAdjacentDateFolder(g.date, -1); // 거래전일
                 if (return_date == -1)
                 {
                     return;
@@ -79,7 +79,7 @@ namespace New_Tradegy.Library
 
             else
             {
-                int return_date = wk.directory_분전후(g.date, 1); // 거래익일
+                int return_date = wk.GetAdjacentDateFolder(g.date, 1); // 거래익일
                 if (return_date == -1)
                 {
                     return;
@@ -92,14 +92,14 @@ namespace New_Tradegy.Library
                 Utils.SoundUtils.Sound("time", "date forwards");
             }
             FileIn.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
-            
+
             // MOD info date modification
             int month_1 = g.date % 10000 / 100;
             int day_1 = g.date % 10000 % 100;
             string date = month_1.ToString() + "/" + day_1.ToString();
 
-         
-            if(g.controlPane.GetCellValue(0, 0) != date)
+
+            if (g.controlPane.GetCellValue(0, 0) != date)
                 g.controlPane.SetCellValue(0, 0, date);
 
             RankLogic.RankByMode(); // date backwards forwards
@@ -108,7 +108,7 @@ namespace New_Tradegy.Library
 
         public static bool isWorkingHour()
         {
-       
+
             DateTime now = DateTime.Now;
 
             // ⏰ Market date check
@@ -143,7 +143,7 @@ namespace New_Tradegy.Library
                 return false;
         }
 
-       
+
 
         public static bool gen_ogl_data(string stock, ConcurrentDictionary<string, double> map)
         {
@@ -206,7 +206,7 @@ namespace New_Tradegy.Library
             return true;
         }
 
-        
+
         public static void 일평균거래액일정액이상종목선택(List<string> tsl, int 최소거래액이상_억원)
         {
             var tuple = new List<Tuple<ulong, string>> { };
@@ -325,8 +325,8 @@ namespace New_Tradegy.Library
         {
             stocks.Sort((a, b) =>
             {
-                var sa = g.StockRepository.TryGetStockOrNull(a);
-                var sb = g.StockRepository.TryGetStockOrNull(b);
+                var sa = g.StockRepository.TryGetDataOrNull(a);
+                var sb = g.StockRepository.TryGetDataOrNull(b);
 
                 if (sa == null && sb == null) return 0;
                 if (sa == null) return 1;
@@ -613,7 +613,7 @@ namespace New_Tradegy.Library
             List<Double> day_list = new List<Double>();
             List<Double> long_day_list = new List<Double>();
 
-      
+
 
             avr_dealt = 0;
             max_dealt = 0;
@@ -643,14 +643,14 @@ namespace New_Tradegy.Library
                 일평균거래량 += Convert.ToUInt64(words[5]); // 
 
 
-       
-                int day_dealt = 
+
+                int day_dealt =
                     (int)((ulong)(Convert.ToDouble(words[4]) * Convert.ToUInt64(words[5]) / g.억원)); // 종가 * 당일거래량
-           
 
 
 
-                 // 일거래량 X 종가 / 억원
+
+                // 일거래량 X 종가 / 억원
                 avr_dealt += day_dealt;
                 if (day_dealt > max_dealt)
                     max_dealt = day_dealt;
@@ -846,146 +846,62 @@ namespace New_Tradegy.Library
         /// <param name="date_int"></param>
         /// <param name="updn"></param>
         /// <returns></returns>
-        public static int directory_분전후(int date_int, int updn)
+        /// 
+        public static int GetAdjacentDateFolder(int dateInt, int direction)
         {
+            // 1. Get subdirectories with only 8-digit folder names
             var subdirs = Directory.GetDirectories(@"C:\병신\분")
-                    .Select(Path.GetFileName).ToList();
+                .Select(Path.GetFileName)
+                .Where(name => name?.Length == 8 && name.All(char.IsDigit))
+                .ToList();
 
-            List<string> selected_subdirs = new List<string>();   // changing single list
+            // 2. Sort subdirs just in case they’re not ordered
+            subdirs.Sort();
 
-            foreach (var item in subdirs)
-            {
-                if (item.Length == 8)
-                    selected_subdirs.Add(item);
-            }
+            string currentDate = dateInt.ToString();
+            int index = subdirs.IndexOf(currentDate);
 
-            string date_string = date_int.ToString();
-            int index = selected_subdirs.IndexOf(date_string);
+            if (index == -1) return -1; // date not found
 
-            if (updn == 1)
-            {
-                if (index == selected_subdirs.Count - 1)
-                    return -1;
-                date_string = selected_subdirs[++index];
-            }
-            if (updn == -1)
-            {
-                if (index == 0)
-                    return -1;
-                date_string = selected_subdirs[--index];
-            }
+            int nextIndex = index + direction;
 
-            return Convert.ToInt32(date_string);
+            // 3. Bounds check
+            if (nextIndex < 0 || nextIndex >= subdirs.Count)
+                return -1;
+
+            return Convert.ToInt32(subdirs[nextIndex]);
         }
 
 
-
-
-     
-
-
-
-
-
-        internal struct RECT
+        public static void CallNaverChart(string stock, string selection)
         {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        }
-
-        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-        internal static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, ExactSpelling = true, SetLastError = true)]
-        internal static extern bool GetWindowRect(IntPtr hWnd, ref RECT rect);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, ExactSpelling = true, SetLastError = true)]
-        internal static extern void MoveWindow(IntPtr hwnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        public static void BringToFront()
-        {
-            return;
-            Process[] AllBrowsers = Process.GetProcesses();
-            foreach (var process in AllBrowsers)
+            if (string.IsNullOrEmpty(stock))
             {
-                if (process.MainWindowTitle != "")
-                {
-                    string s = process.ProcessName.ToLower();
-                    if (s.Contains("new tradegy"))
-                        SetForegroundWindow(process.MainWindowHandle);
-                }
+                Process.Start("chrome.exe", "--new-tab https://finance.naver.com/");
+                return;
             }
-        }
 
-        public static void call_네이버(string stock, string selection)
-        {
-            CPUTILLib.CpStockCode _cd = new CPUTILLib.CpStockCode();
+            var cd = new CPUTILLib.CpStockCode();
+            string code = cd.NameToCode(stock);
+            code = new string(code.Where(Char.IsDigit).ToArray());
 
-            if (stock == null)
-                Process.Start("chrome.exe", "https://finance.naver.com/");
-            //Process.Start("microsoft-edge:https://finance.naver.com/");
+            string url;
+            if (selection == "main")
+            {
+                url = "https://finance.naver.com/item/main.nhn?code="; // 종합정보 or foreign 매매동향
+            }
+            else if (selection == "fchart")
+            {
+                url = "https://finance.naver.com/item/fchart.nhn?code="; // 차트
+            }
             else
             {
-                string basestring;
-                if (selection == "fchart") // fchart
-                {
-                    basestring = "https://finance.naver.com/item/fchart.nhn?code=";
-                    //basestring = "microsoft-edge:https://finance.naver.com/item/fchart.nhn?code=";
-                }
-                else if (selection == "main") // main
-                {
-                    basestring = "https://finance.naver.com/item/main.naver?code="; // 투자자별 매매동향
-                    //basestring = "microsoft-edge:https://finance.naver.com/item/main.nhn?code="; // 종합정보
-                    //basestring = "microsoft-edge:https://finance.naver.com/item/main.nhn?code=";
-                }
-                else // foreign & institute buying history
-                {
-                    basestring = "https://finance.naver.com/item/frgn.naver?code=";
-                }
-
-                string code = _cd.NameToCode(stock);
-                code = new String(code.Where(Char.IsDigit).ToArray());
-                basestring += code;
-                //OpenTabBySelenium(basestring);
-                Process.Start("chrome.exe", basestring);
+                url = "https://finance.naver.com/item/main.nhn?code="; // fallback
             }
+
+            Process.Start("chrome.exe", $"--new-tab {url}{code}");
         }
 
-  
-
-        public static void call_네이버_차트(string stock, int selection, double xval)
-        {
-            CPUTILLib.CpStockCode _cd = new CPUTILLib.CpStockCode();
-
-            if (stock == null)
-                Process.Start("https://finance.naver.com/");
-            //Process.Start("microsoft-edge:https://finance.naver.com/");
-            else
-            {
-                string basestring;
-                if (selection == 0)
-                {
-                    //basestring = "https://finance.naver.com/item/frgn.nhn?code="; // 투자자별 매매동향
-                    basestring = "https://finance.naver.com/item/main.nhn?code="; // 종합정보
-                                                                                  //basestring = "microsoft-edge:https://finance.naver.com/item/main.nhn?code=";
-                }
-                else
-                {
-                    //basestring = "https://finance.naver.com/item/fchart.nhn?code=";
-                    basestring = "microsoft-edge:https://finance.naver.com/item/fchart.nhn?code=";
-                }
-
-                string code = _cd.NameToCode(stock);
-                code = new String(code.Where(Char.IsDigit).ToArray());
-                basestring += code;
-                Process.Start(basestring);
-            }
-        }
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.PostProcessing;
@@ -21,21 +22,31 @@ namespace New_Tradegy.Library.Core
 
         public static void RankByMode()
         {
-            //if (g.test) // 실제 run 에서는 post() 에서 합산됨
-            //{
-            //    foreach (var data in g.StockRepository.AllDatas)
-            //    {
-            //        string stock = data.Stock;
-            //        if (data.Api.nrow < 2)
-            //            continue;
-            //        PostProcessor.post(data);
-            //    }
-            //}
+            Stopwatch sw = Stopwatch.StartNew();
+            
+            
 
-            if (g.v.MainChartDisplayMode == "등합") RankBy등합();
-            else RankByModeExcept등합();
+            if (g.test) // 실제 run 에서는 post() 에서 합산됨
+            {
+                foreach (var data in g.StockRepository.AllDatas)
+                {
+                    string stock = data.Stock;
+                    if (data.Api.nrow < 2)
+                        continue;
+                    PostProcessor.post(data);
+                }
+            }
 
+
+            RankBy등합();
             RankGroup(); // re-evaluate groups after stock ranking
+            
+
+            RankByModes();
+
+            sw.Stop();
+
+            double sec = sw.Elapsed.TotalSeconds;
         }
 
         // Add more strategies as needed
@@ -52,10 +63,13 @@ namespace New_Tradegy.Library.Core
             var list_피로 = new List<(double value, string stock)>();
             var list_등합 = new List<(double value, string stock)>();
 
+            var selectedDatas = new List<StockData>();
+
             foreach (var data in repo.AllGeneralDatas)
             {
                 if (!EvalInclusion(data))
                     continue;
+                selectedDatas.Add(data);
                 list_푀분.Add((data.Score.푀분, data.Stock));
                 list_배차.Add((data.Score.배차, data.Stock));
                 list_배합.Add((data.Score.배합, data.Stock));
@@ -72,7 +86,7 @@ namespace New_Tradegy.Library.Core
             list_종누 = list_종누.OrderByDescending(x => x.value).ToList();
             list_피로 = list_피로.OrderByDescending(x => x.value).ToList();
 
-            foreach (var data in repo.AllGeneralDatas)
+            foreach (var data in selectedDatas)
             {
                 data.Score.푀분_등수 = list_푀분.FindIndex(x => x.stock == data.Stock);
 
@@ -84,7 +98,7 @@ namespace New_Tradegy.Library.Core
             }
 
             // 등합 점수 계산 (가중치 반영 가능)
-            foreach (var data in repo.AllGeneralDatas)
+            foreach (var data in selectedDatas)
             {
                 data.Score.등합 =
                     data.Score.푀분_등수 * WeightManager.Weights["푀분"] +
@@ -94,17 +108,19 @@ namespace New_Tradegy.Library.Core
                 list_등합.Add((data.Score.등합, data.Stock));
             }
 
-
             list_등합 = list_등합.OrderBy(x => x.value).ToList(); // Ascending
 
             lock (g.lockObject)
             {
                 g.StockManager.StockRankingList.Clear();
 
+                int rank = 0;
                 foreach (var (val, stock) in list_등합)
                 {
                     if (!g.StockManager.StockRankingList.Contains(stock))
                         g.StockManager.StockRankingList.Add(stock);
+                    var data = g.StockRepository.TryGetDataOrNull(stock);
+                    data.Score.등합_등수 = rank++;
                 }
 
                 string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllGeneralDatas.Count()}";
@@ -112,13 +128,11 @@ namespace New_Tradegy.Library.Core
                 if (g.controlPane.GetCellValue(1, 1) != newValue)
                     g.controlPane.SetCellValue(1, 1, newValue);
             }
-
-
         }
 
 
         // called by post_real, click, keys, history
-        public static void RankByModeExcept등합()
+        public static void RankByModes()
         {
             var repo = g.StockRepository;
             var resultList = new List<(double value, string code)>();
@@ -213,15 +227,15 @@ namespace New_Tradegy.Library.Core
 
             lock (g.lockObject)
             {
-                g.StockManager.StockRankingList.Clear();
+                g.StockManager.StockRankingByModesList.Clear();
 
                 foreach (var (val, stock) in resultList)
                 {
-                    if (!g.StockManager.StockRankingList.Contains(stock))
-                        g.StockManager.StockRankingList.Add(stock);
+                    if (!g.StockManager.StockRankingByModesList.Contains(stock))
+                        g.StockManager.StockRankingByModesList.Add(stock);
                 }
 
-                string newValue = $"{g.StockManager.StockRankingList.Count}/{repo.AllGeneralDatas.Count()}";
+                string newValue = $"{g.StockManager.StockRankingByModesList.Count}/{repo.AllGeneralDatas.Count()}";
 
                 if (g.controlPane.GetCellValue(1, 1) != newValue)
                     g.controlPane.SetCellValue(1, 1, newValue);
@@ -323,11 +337,14 @@ namespace New_Tradegy.Library.Core
                 int count = 0;
                 foreach (var stock in group.Stocks)
                 {
+                    if (!g.StockManager.StockRankingList.Contains(stock))
+                        continue;
+
                     if (count == 3) break;
 
-                    var data = repo.TryGetStockOrNull(stock);
+                    var data = repo.TryGetDataOrNull(stock);
 
-                    if (data == null || data.Api.nrow < 2 || data.Api.nrow >= 382)
+                    if (data == null || data.Api.nrow < 2 || data.Api.nrow > 382)
                         continue;
 
                     int row = g.test
@@ -352,7 +369,7 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-            groupManager.SortByAscending(g => g.등합_등수);
+            groupManager.OrderBy(g => g.등합_등수);
             var rankedGroups = groupManager.GroupRankingList;
 
             // Store group rank index into each stock
@@ -360,7 +377,7 @@ namespace New_Tradegy.Library.Core
             {
                 foreach (var stock in rankedGroups[i].Stocks)
                 {
-                    var data = repo.TryGetStockOrNull(stock);
+                    var data = repo.TryGetDataOrNull(stock);
                     if (data != null)
                         data.Score.그룹_등수 = i;
                 }

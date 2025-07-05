@@ -305,7 +305,7 @@ namespace New_Tradegy.Library.Trackers
             int endPoint = 0;
             ChartHandler.SeriesInfomation(series, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
 
-            var data = g.StockRepository.TryGetStockOrNull(stock);
+            var data = g.StockRepository.TryGetDataOrNull(stock);
             if (data == null) return;
 
             var x = data.Api.x;
@@ -406,7 +406,7 @@ namespace New_Tradegy.Library.Trackers
 
             ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
 
-            var data = g.StockRepository.TryGetStockOrNull(stock);
+            var data = g.StockRepository.TryGetDataOrNull(stock);
             if (data == null) return;
 
             var api = data.Api;

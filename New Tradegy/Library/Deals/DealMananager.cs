@@ -227,7 +227,7 @@ namespace New_Tradegy.Library.Deals
 
         public static bool CheckPreviousLoss(string stock)
         {
-            var data = g.StockRepository.TryGetStockOrNull(stock);
+            var data = g.StockRepository.TryGetDataOrNull(stock);
             if (data == null) return false; // Stock not found
 
             // Ensure valid purchase price exists and at least 1 share is held
@@ -288,7 +288,7 @@ namespace New_Tradegy.Library.Deals
                 if (!g.StockRepository.Contains(stock))
                     continue;
 
-                var data = g.StockRepository.TryGetStockOrNull(stock);
+                var data = g.StockRepository.TryGetDataOrNull(stock);
                 if (data == null) continue;
                 var api = data.Api;
                 var deal = data.Deal;
@@ -325,7 +325,7 @@ namespace New_Tradegy.Library.Deals
                 if (!repo.Contains(stock))
                     continue;
 
-                var data = repo.TryGetStockOrNull(stock);
+                var data = repo.TryGetDataOrNull(stock);
                 if (data == null) continue;
                 long holdingValue = data.Deal.보유량 * data.Api.현재가;
 

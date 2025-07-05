@@ -37,7 +37,13 @@ namespace New_Tradegy.Library.Trackers.Charting
             var holdings = g.StockManager.HoldingList;
             var interestedWithBid = g.StockManager.InterestedWithBidList;
             var interestedOnly = g.StockManager.InterestedOnlyList;
-            var rankedStocks = g.StockManager.StockRankingList;
+
+            List<string> rankedStocks;
+            if(g.v.MainChartDisplayMode == "등합")
+                rankedStocks = g.StockManager.StockRankingList;
+           else
+                rankedStocks = g.StockManager.StockRankingByModesList;
+
             var excluded = g.StockManager.IndexList;
 
             // Step 1: Create withBookBid list (holdings + interestedWithBid - exclude index stocks)
@@ -73,7 +79,7 @@ namespace New_Tradegy.Library.Trackers.Charting
             // Step 5: Render each chart area and prepare book bids
             foreach (var stock in displayList)
             {
-                var data = g.StockRepository.TryGetStockOrNull(stock);
+                var data = g.StockRepository.TryGetDataOrNull(stock);
                 if (data == null) continue;
 
                 if (leverageList.Contains(stock))

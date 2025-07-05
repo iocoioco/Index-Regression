@@ -106,7 +106,7 @@ namespace New_Tradegy.Library.Core
             GroupRankingList = _groups.OrderByDescending(selector).ToList();
         }
 
-        public void SortByAscending(Func<GroupData, double> selector)
+        public void OrderBy(Func<GroupData, double> selector)
         {
             GroupRankingList = _groups.OrderBy(selector).ToList();
 
@@ -137,7 +137,7 @@ namespace New_Tradegy.Library.Core
 
                 foreach (var stockName in groupData.Stocks)
                 {
-                    var stock = g.StockRepository.TryGetStockOrNull(stockName);
+                    var stock = g.StockRepository.TryGetDataOrNull(stockName);
                     if (stock != null)
                     {
                         stock.Misc.oGL_sequence_id = groupIndex;

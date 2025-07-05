@@ -52,7 +52,7 @@ namespace New_Tradegy.Library.Deals
             {
                 if (order.Stock == stock && order.Price == sellHogaPrice)
                 {
-                    var data = g.StockRepository.TryGetStockOrNull(stock);
+                    var data = g.StockRepository.TryGetDataOrNull(stock);
                     if (data == null)
                         return;
 
@@ -71,7 +71,7 @@ namespace New_Tradegy.Library.Deals
             {
                 if (order.Stock == stock && order.Price == buyHogaPrice)
                 {
-                    var data = g.StockRepository.TryGetStockOrNull(stock);
+                    var data = g.StockRepository.TryGetDataOrNull(stock);
                     if (data == null)
                         return;
 

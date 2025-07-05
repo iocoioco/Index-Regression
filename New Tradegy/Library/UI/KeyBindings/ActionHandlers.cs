@@ -143,8 +143,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             Form se = (Form)Application.OpenForms["Form1"];
             se.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
 
         public static readonly Action 푀누_종누 = () =>
@@ -156,8 +155,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
 
         public static readonly Action 푀분_등합 = () =>
@@ -169,8 +167,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
 
         public static readonly Action 보조차트_피올_닥올 = () =>
@@ -198,8 +195,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
 
         public static readonly Action 편차_평균 = () =>
@@ -211,8 +207,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
 
         public static readonly Action 배차_분거 = () =>
@@ -224,8 +219,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
 
         public static readonly Action 가격증순 = () =>
@@ -236,8 +230,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var form = (Form)Application.OpenForms["Form1"];
             form.Text = g.v.MainChartDisplayMode;
 
-            var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'm');
-            action.Run();
+            ActionCode.New(true, post: false, eval: true, draw: 'm').Run();
         };
         #endregion
 
@@ -253,11 +246,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 2;
                 }
-                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
-                action.Run();
+
+                ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
             }
-
-
         };
 
         public static readonly Action TimeOneBackwardsKey = () =>
@@ -271,8 +262,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 2;
                 }
-                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
-                action.Run();
+                ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
             }
 
         };
@@ -285,8 +275,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.q_advance_lines);
                 else
                     TimeUtils.MinuteAdvanceRetreat(0);
-                var action = ActionCode.New(clear: false, post: true, eval: false, draw: 'B');
-                action.Run();
+                ActionCode.New(true, post: true, eval: false, draw: 'B').Run();
             }
         };
 
@@ -298,8 +287,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                 else
                     TimeUtils.MinuteAdvanceRetreat(0);
-                var action = ActionCode.New(clear: false, post: true, eval: false, draw: 'B');
-                action.Run();
+
+                ActionCode.New(true, post: true, eval: false, draw: 'B').Run();
             }
         };
 
@@ -326,8 +315,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
                 else
                     g.npts_fi_dwm += 10;
-                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
-                action.Run();
+
+                ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
             }
 
         };
@@ -342,8 +331,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 }
                 else
                     g.npts_fi_dwm -= 10;
-                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
-                action.Run();
+
+                ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
             }
 
         };
@@ -359,8 +348,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     g.Npts[0] = 0;
                     g.Npts[1] = 30;
                 }
-                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
-                action.Run();
+
+                ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
             }
         };
 
@@ -374,8 +363,8 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 {
                     g.Npts[1] = g.Npts[0] + 2;
                 }
-                var action = ActionCode.New(clear: false, post: true, eval: true, draw: 'B');
-                action.Run();
+
+                ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
             }
         };
 
@@ -445,7 +434,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
         public static readonly Action ShrinkOrNotTenPlusKey = () =>
         {
             g.NptsForShrinkDraw += 10;
-            ActionCode.New(false, false, eval: true, draw: 'B').Run();
+            ActionCode.New(false, false, eval: false, draw: 'B').Run();
         };
 
         public static readonly Action ShrinkOrNotTenMinusKey = () =>
@@ -455,7 +444,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             {
                 g.NptsForShrinkDraw = 10;
             }
-            ActionCode.New(false, false, eval: true, draw: 'B').Run();
+            ActionCode.New(false, false, eval: false, draw: 'B').Run();
         };
 
         public static readonly Action AddInterestToggle = () =>
@@ -561,7 +550,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 case "h&s":
                     for (int jndex = 1; jndex < (g.nCol - 2) * g.nRow; jndex++)
                     {
-                        int return_date = wk.directory_분전후(g.moving_reference_date, 1); // 거래익일
+                        int return_date = wk.GetAdjacentDateFolder(g.moving_reference_date, 1); // 거래익일
                         if (return_date == -1)
                         {
                             return;
@@ -600,9 +589,9 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     {
                         int return_date;
                         if (g.draw_history_forwards)
-                            return_date = wk.directory_분전후(g.moving_reference_date, +1); // 거래익일
+                            return_date = wk.GetAdjacentDateFolder(g.moving_reference_date, +1); // 거래익일
                         else
-                            return_date = wk.directory_분전후(g.moving_reference_date, -1); // 거래전일
+                            return_date = wk.GetAdjacentDateFolder(g.moving_reference_date, -1); // 거래전일
                         if (return_date == -1)
                         {
                             return;

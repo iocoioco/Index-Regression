@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Trackers.Charting;
 using System.Data;
+using New_Tradegy.Library.PostProcessing;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
@@ -38,6 +39,8 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private PingAndSpeedMonitor networkMonitor;
         public static Form1 Instance { get; private set; } // Form1.Instance.SomeMethod();
+
+        public static int marketeyeCountIncrementCheck = 0;
 
         public Form1()
         {
@@ -198,6 +201,12 @@ namespace New_Tradegy // added for test on 20241020 0300
                 // updated on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
+
+                var evalDrawTimer = new System.Windows.Forms.Timer();
+                evalDrawTimer.Interval = 750; // like before
+                evalDrawTimer.Tick += (s, f) => EvalAndDrawTick();
+                evalDrawTimer.Start();
+
             }
 
             // how to call // 🔔 Notify listeners
@@ -215,7 +224,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             };
 
             // use Panel in RankLogic
-            // RankLogic.RankByModeExcept등합(); // duration : 0.025 ~ 0.054 seconds
+            // RankLogic.RankByModes(); // duration : 0.025 ~ 0.054 seconds
 
             g.ChartMain = new ChartMain(); // all new, Form_1 start
             g.ChartMain.RefreshMainChart();
@@ -231,6 +240,22 @@ namespace New_Tradegy // added for test on 20241020 0300
             return;
         }
 
+        private void EvalAndDrawTick()
+        {
+            int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
+            string day = DateTime.Today.DayOfWeek.ToString();
+
+            if (g.MarketeyeCount > marketeyeCountIncrementCheck &&
+                wk.isWorkingHour())
+            {
+                if (g.MarketeyeCount % 20 == 1) // 
+                    RankLogic.RankByMode(); // or your new eval method
+
+                PostProcessor.ManageChart1Invoke();
+                PostProcessor.ManageChart2Invoke();
+                marketeyeCountIncrementCheck = g.MarketeyeCount;
+            }
+        }
 
 
         // it runs automatically, when keys in
@@ -551,13 +576,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
             int row_id = 0, col_id = 0;
-            //double row_percentage_below_xlabel_line = 0.0;
-
-            // from cliccked (either left or right) setting_d
-            // and xval, yval ->
-            // changed selection and xval, yval, percentage, id are returned
-            // g.clickedStock defined in this routine also
-            // g.date set to the last date(last row and last column) in the drawn chart
+           
             var DisplayList = g.ChartMain.DisplayList;
             g.clickedStock = ChartClickMapper.CoordinateMapping(chart1, g.nRow, g.nCol, DisplayList, e, ref selection, ref col_id, ref row_id);
             if (g.clickedStock == null)
