@@ -610,7 +610,7 @@ namespace New_Tradegy.Library.Trackers
             // Retrieve the chart area safely
             var chartArea = chart.ChartAreas.FirstOrDefault(area => area.Name == chartAreaName);
             if (chartArea == null)
-                throw new ArgumentException($"ChartArea '{chartAreaName}' does not exist.");
+                throw new ArgumentException($"ChartArea '{chartAreaName}' does not exist."); //??
 
             // Calculate relative position within the ChartArea
             double relativeX = chartArea.Position.X + (rect.X * chartArea.Position.Width / 100.0);

@@ -271,11 +271,19 @@ namespace New_Tradegy.Library.UI.KeyBindings
         {
             if (g.test) // 짧은 시간 앞으로 in draw
             {
-                if (g.EndNptsBeforeExtend == 0) // time extension
+                if (g.EndNptsBeforeExtend == 0) // time extensionw
+                {
                     TimeUtils.MinuteAdvanceRetreat(g.v.q_advance_lines);
+                    ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
+                }
+                    
                 else
+                {
                     TimeUtils.MinuteAdvanceRetreat(0);
-                ActionCode.New(true, post: true, eval: false, draw: 'B').Run();
+                    ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
+                }
+                    
+                
             }
         };
 
@@ -284,11 +292,16 @@ namespace New_Tradegy.Library.UI.KeyBindings
             if (g.test) // 긴 시간 앞으로 in draw
             {
                 if (g.EndNptsBeforeExtend == 0) // time extension
+                {
                     TimeUtils.MinuteAdvanceRetreat(g.v.Q_advance_lines);
+                    ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
+                }
+                    
                 else
+                {
                     TimeUtils.MinuteAdvanceRetreat(0);
-
-                ActionCode.New(true, post: true, eval: false, draw: 'B').Run();
+                    ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
+                }
             }
         };
 
@@ -477,22 +490,26 @@ namespace New_Tradegy.Library.UI.KeyBindings
         {
             if (g.nRow > 2)
                 g.nRow--;
+            ActionCode.New(false, false, eval: false, draw: 'm').Run();
         };
 
         public static readonly Func<Task> nRowIncrease = async () =>
         {
-                g.nRow++;
+            g.nRow++;
+            ActionCode.New(false, false, eval: false, draw: 'm').Run();
         };
 
         public static readonly Func<Task> nColDecrease = async () =>
         {
             if (g.nCol > 2)
                 g.nCol--;
+            ActionCode.New(false, false, eval: false, draw: 'm').Run();
         };
 
         public static readonly Func<Task> nColIncrease = async () =>
         {
-                g.nCol++;
+            g.nCol++;
+            ActionCode.New(false, false, eval: false, draw: 'm').Run();
         };
 
         #endregion

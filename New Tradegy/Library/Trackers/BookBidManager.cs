@@ -142,21 +142,7 @@ namespace New_Tradegy.Library.Trackers
 
 
 
-        public void Relocate_old(string stock)
-        {
-            if (_gridMap.TryGetValue(stock, out var grid))
-            {
-                // Determine row/col from chart layout
-                if (g.ChartManager.Chart1.ChartAreas.IndexOf(stock) is int index && index >= 0)
-                {
-                    int nCol = g.nCol;
-                    int row = index / nCol;
-                    int col = index % nCol;
-
-                    grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);
-                }
-            }
-        }
+        
     }
 }
 

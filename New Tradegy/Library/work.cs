@@ -49,7 +49,10 @@ namespace New_Tradegy.Library
                     chartName.Series.Remove(series);
                     //Console.WriteLine($"Removed series: {series.Name}");
                 }
-                chartName.ChartAreas.Remove(chartArea);
+                if (chartArea == null)
+                    return; //??
+                else
+                    chartName.ChartAreas.Remove(chartArea);
             }
 
             else

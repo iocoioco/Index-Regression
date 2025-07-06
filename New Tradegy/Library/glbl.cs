@@ -235,7 +235,7 @@ namespace New_Tradegy.Library
             public int 푀플 = 1;
             public int 배플 = 1;
             public int 수급과장배수 = 20; // 수급 과장하여 표시하는 배수
-            public int 배수과장배수 = 20;
+            public int 배수과장배수 = 2;
 
             public int q_advance_lines = 15;
             public int Q_advance_lines = 150;

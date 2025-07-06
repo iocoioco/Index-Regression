@@ -151,13 +151,23 @@ namespace New_Tradegy.Library.Trackers.Charting
             foreach (var area in chart.ChartAreas.ToList())
             {
                 if (!keepAreas.Contains(area.Name))
+                {
+                    if (area == null)
+                        return; //??
                     chart.ChartAreas.Remove(area);
+                }
+                    
             }
 
             foreach (var anno in chart.Annotations.ToList())
             {
                 if (!keepAnnotations.Contains(anno.Name))
+                {
+                    if (anno == null)
+                        return; //??
                     chart.Annotations.Remove(anno);
+                }
+                    
             }
 
             g.BookBidManager.CleanupAllExcept(keepBookbids);

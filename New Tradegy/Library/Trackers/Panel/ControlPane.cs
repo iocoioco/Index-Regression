@@ -1,5 +1,6 @@
 ﻿using MathNet.Numerics.Distributions;
 using New_Tradegy.Library.Deals;
+using New_Tradegy.Library.UI.KeyBindings;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -98,7 +99,7 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[4][0] = "adv";
             _table.Rows[4][1] = g.v.q_advance_lines;
 
-            _table.Rows[5][0] = "종거"; _table.Rows[5][1] = 100; g.v.종가기준추정거래액이상_천만원 = 100;
+            _table.Rows[5][0] = "종거"; _table.Rows[5][1] = 1000; g.v.종가기준추정거래액이상_천만원 = 1000;
             _table.Rows[5][2] = "분거"; _table.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
 
             _table.Rows[6][0] = "호가"; _table.Rows[6][1] = 10; g.v.호가거래액_백만원 = 10;
@@ -113,7 +114,7 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
             _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30; g.postInterval = 30;
 
-            _table.Rows[10][0] = "Main"; _table.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0f;
+            _table.Rows[10][0] = "Font"; _table.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0f;
 
             _table.Rows[12][0] = "푀플"; _table.Rows[12][1] = "1"; g.v.푀플 = 1;
             _table.Rows[12][2] = "배플"; _table.Rows[12][3] = "1"; g.v.배플 = 1;
@@ -149,26 +150,16 @@ namespace New_Tradegy.Library.Trackers
 
         public void InitializeSettings()
         {
-            Settings["adv"] = new ControlSetting
-            {
-                Name = "adv",
-                Values = new[] { 0, 50, 100, 200, 500, 1000, 1500, 2000 },
-                Get = () => g.v.q_advance_lines,
-                Set = val =>
-                {
-                    g.v.종가기준추정거래액이상_천만원 = val * 10;
-                    _table.Rows[5][1] = val;
-                }
-            };
+
 
             Settings["종거"] = new ControlSetting
             {
                 Name = "종거",
-                Values = new[] { 0, 50, 100, 200, 500, 1000, 1500, 2000 },
-                Get = () => (int)(g.v.종가기준추정거래액이상_천만원 / 10),
+                Values = new[] { 0, 500, 1000, 2000, 5000, 10000, 15000, 20000 },
+                Get = () => (int)(g.v.종가기준추정거래액이상_천만원),
                 Set = val =>
                 {
-                    g.v.종가기준추정거래액이상_천만원 = val * 10;
+                    g.v.종가기준추정거래액이상_천만원 = val;
                     _table.Rows[5][1] = val;
                 }
             };
@@ -224,7 +215,7 @@ namespace New_Tradegy.Library.Trackers
             Settings["시총"] = new ControlSetting
             {
                 Name = "시총",
-                Values = new[] { 0, 10, 30, 50, 100, 200 },
+                Values = new[] { 0, 10, 30, 50, 100, 200, 500, 1000 },
                 Get = () => g.v.시총이상,
                 Set = val =>
                 {
@@ -249,7 +240,7 @@ namespace New_Tradegy.Library.Trackers
             {
                 Name = "배과",
                 Values = new[] { 1, 2, 3, 4, 5, 7, 10 },
-                Get = () => (int)(1.0 / g.v.배수과장배수),
+                Get = () => (int)(g.v.배수과장배수),
                 Set = val =>
                 {
                     g.v.배수과장배수 = val;
@@ -281,9 +272,9 @@ namespace New_Tradegy.Library.Trackers
                 }
             };
 
-            Settings["Main"] = new ControlSetting
+            Settings["Font"] = new ControlSetting
             {
-                Name = "Main",
+                Name = "Font",
                 Values = new[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 },
                 Get = () => (int)(g.v.font * 2),
                 Set = val =>
@@ -391,30 +382,33 @@ namespace New_Tradegy.Library.Trackers
                                 DealManager.DealProfit();
                                 break;
                             case 1:
-                                Process.Start("chrome.exe", "https://kr.investing.com/currencies/usd-krw");
+                                Process.Start("chrome.exe", "--new-tab https://kr.investing.com/currencies/usd-krw");
                                 break;
                             case 2:
-                                Process.Start("chrome.exe", "https://www.investing.com/indices/nq-100-futures?cid=1175151");
+                                Process.Start("chrome.exe", "--new-tab https://www.investing.com/indices/nq-100-futures?cid=1175151");
                                 break;
                             case 3:
-                                Process.Start("chrome.exe", "https://finviz.com/map.ashx?t=sec");
+                                Process.Start("chrome.exe", "--new-tab https://finviz.com/map.ashx?t=sec");
                                 break;
                         }
                         break;
 
                     case 2:
-                        Process.Start("chrome.exe", "https://www.investing.com/indices/major-indices");
+                        Process.Start("chrome.exe", "--new-tab https://www.investing.com/indices/major-indices");
                         break;
 
                     case 3:
                         if (e.ColumnIndex == 0 || e.ColumnIndex == 1)
-                            Process.Start("chrome.exe", "https://www.investing.com/crypto/bitcoin/chart");
+                            Process.Start("chrome.exe", "--new-tab https://www.investing.com/crypto/bitcoin/chart");
                         break;
+
 
                     case 4:
                         if (e.ColumnIndex == 0)
                         {
                             g.v.q_advance_lines -= 5;
+                            if (g.v.q_advance_lines < 5)
+                                g.v.q_advance_lines = 5;
                         }
                         if (e.ColumnIndex == 1)
                         {
@@ -427,9 +421,9 @@ namespace New_Tradegy.Library.Trackers
             else
             {
                 int selecteddColumnIndex = 0;
-                if (e.ColumnIndex > 1)
+                if (e.ColumnIndex >= 2)
                 {
-                    selecteddColumnIndex = 1;
+                    selecteddColumnIndex = 2;
                 }
                 string key = _view.Rows[e.RowIndex].Cells[selecteddColumnIndex].Value?.ToString();
                 if (string.IsNullOrWhiteSpace(key) || !Settings.ContainsKey(key)) return;
@@ -437,21 +431,28 @@ namespace New_Tradegy.Library.Trackers
 
                 var setting = Settings[key];
                 int current = setting.Get();
-                bool increase = (e.ColumnIndex == 1);
+                bool increase = (e.ColumnIndex % 2 == 1);
                 int next = GetNextValue(setting.Values, current, increase);
 
                 if (next != current)
                 {
                     setting.Set(next);
 
+                    if(e.ColumnIndex < 2)
+                        _table.Rows[e.RowIndex][1] = next;
+                    else
+                        _table.Rows[e.RowIndex][3] = next;
 
-                    _table.Rows[e.RowIndex][1] = next;
-                    _view.Refresh();
+                    var evalDrawKeys = new HashSet<string> { "종거", "분거", "호가", "편차", "배차", "시총"};
+                    var postEvalDrawkeys = new HashSet<string> { "초간" };
+                    var drawKeys = new HashSet<string> { "수과", "배과", "Font" };
 
-                    //g.ChartManager.ClearAll();
-                    //ev.eval_stock();
-                    //mm.ManageChart1();
-                    //mm.ManageChart2();
+                    if(evalDrawKeys.Contains(key))
+                        ActionCode.New(false, false, eval: true, draw: 'B').Run();
+                    if (postEvalDrawkeys.Contains(key))
+                        ActionCode.New(false, true, eval: true, draw: 'B').Run();
+                    if (drawKeys.Contains(key))
+                        ActionCode.New(false, false, eval: false, draw: 'B').Run();
                 }
             }
 

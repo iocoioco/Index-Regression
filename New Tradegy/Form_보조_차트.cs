@@ -238,7 +238,7 @@ namespace New_Tradegy
                 {
                     var area = chart2.ChartAreas[areaName];
                     if (area == null)
-                        continue;
+                        continue; //??
                     area.Position = new ElementPosition(x, y, width, height);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
 
@@ -278,7 +278,12 @@ namespace New_Tradegy
                 .ToList();
 
             foreach (var area in areasToRemove)
+            {
+                if (area == null)
+                    return; //??
                 g.ChartManager.Chart2.ChartAreas.Remove(area);
+            }
+                
 
             // Remove unnecessary annotations (name == stock)
             var annotationsToRemove = g.ChartManager.Chart2.Annotations
@@ -286,7 +291,12 @@ namespace New_Tradegy
                 .ToList();
 
             foreach (var anno in annotationsToRemove)
+            {
+                if (anno == null) 
+                    return; //??
                 g.ChartManager.Chart2.Annotations.Remove(anno);
+            }
+                
 
             // Remove unnecessary series (name starts with stockName but stockName not in displayList)
             var seriesToRemove = g.ChartManager.Chart2.Series
@@ -302,7 +312,12 @@ namespace New_Tradegy
                 .ToList();
 
             foreach (var s in seriesToRemove)
+            {
+                if (s == null)
+                    return; //??
                 g.ChartManager.Chart2.Series.Remove(s);
+            }
+                
         }
 
 

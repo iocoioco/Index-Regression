@@ -300,14 +300,10 @@ namespace New_Tradegy.Library.Core
             // ❌ Exclude by 시총 filtering (supports negative logic)
             if (g.v.시총이상 >= 0)
             {
-                if (stat.시총 < g.v.시총이상 - 0.01)
+                if (stat.시총  < g.v.시총이상 - 0.01) // 시총 1조는 stat.시총 100으로 preprocessed
                     return false;
             }
-            else
-            {
-                if (stat.시총 > (-1.0) * (g.v.시총이상 - 0.01))
-                    return false;
-            }
+            
 
             return true;
         }
