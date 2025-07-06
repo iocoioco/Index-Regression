@@ -55,6 +55,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register('A', false, false, ActionHandlers.ShrinkOrNotTenMinusKey);
             KeyBindingManager.Register('a', false, true, ActionHandlers.AddInterestToggle);
             KeyBindingManager.Register('s', false, false, ActionHandlers.SaveAllStocks);
+            KeyBindingManager.Register('j', false, false, ActionHandlers.nRowDecrease);
+            KeyBindingManager.Register('J', false, false, ActionHandlers.nRowIncrease);
+            KeyBindingManager.Register('k', false, false, ActionHandlers.nColDecrease);
+            KeyBindingManager.Register('K', false, false, ActionHandlers.nColIncrease);
 
             // Bottom
             KeyBindingManager.Register('z', false, false, ActionHandlers.OptimalTradingToggleKey);

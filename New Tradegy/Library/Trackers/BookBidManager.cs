@@ -154,7 +154,6 @@ namespace New_Tradegy.Library.Trackers
                     int col = index % nCol;
 
                     grid.Location = ChartLayoutUtils.GetBookBidLocation(row, col);
-                    //grid.BringToFront();
                 }
             }
         }

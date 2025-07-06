@@ -101,8 +101,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             var size = this.Size;                     // 1940, 1100
 
-
-
             // Form Location and Size 
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.StartPosition = FormStartPosition.Manual;

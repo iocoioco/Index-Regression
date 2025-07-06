@@ -42,30 +42,32 @@ namespace New_Tradegy.Library.Trackers
         {
             // x 212 y 336 w 172 h 84
 
-            int x = g.screenWidth / g.nCol + 20;
+            int x = g.screenWidth / g.nCol + 30;
             int y = g.screenHeight / 3 - 6;
             _view.Location = new Point(x, y);
-            int width = g.screenWidth / g.nCol - 20;
+
+            int width = g.screenWidth / g.nCol - 30;
             int height = g.CellHeight * 3;
             _view.Size = new Size(width, height);
 
 
 
-            _view.Visible = true;
+     
 
             _view.ColumnHeadersVisible = false;
             _view.RowHeadersVisible = false;
+
             _view.ReadOnly = true;
-            _view.ScrollBars = ScrollBars.Vertical;
+            _view.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            _view.ScrollBars = ScrollBars.None;
             _view.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             _view.AllowUserToResizeColumns = false;
             _view.AllowUserToResizeRows = false;
             _view.AllowUserToAddRows = false;
             _view.AllowUserToDeleteRows = false;
             _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            // _view.Dock = DockStyle.Fill;
-            _view.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
-            _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+            
             _view.RowTemplate.Height = g.CellHeight;
             _view.ForeColor = Color.Black;
             _view.TabStop = false;
@@ -133,16 +135,16 @@ namespace New_Tradegy.Library.Trackers
             _view.AllowUserToResizeColumns = false;
             _view.AllowUserToAddRows = false;
             _view.AllowUserToDeleteRows = false;
-            _view.ScrollBars = ScrollBars.Vertical;
+            _view.ScrollBars = ScrollBars.None;
 
             _view.CellMouseClick += CellMouseClick;
 
 
             // Set column widths
             _view.AutoGenerateColumns = false;
-            int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
+      
             for (int i = 0; i < Columns; i++)
-                _view.Columns[i].Width = (g.screenWidth / 11 - scrollbarWidth) / Columns;
+                _view.Columns[i].Width = _view.Width / Columns;
         }
 
         public void InitializeSettings()

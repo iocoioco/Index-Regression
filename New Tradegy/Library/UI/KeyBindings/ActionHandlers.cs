@@ -472,6 +472,29 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     await FileOut.SaveAllStocks();
             }
         };
+
+        public static readonly Func<Task> nRowDecrease = async () =>
+        {
+            if (g.nRow > 2)
+                g.nRow--;
+        };
+
+        public static readonly Func<Task> nRowIncrease = async () =>
+        {
+                g.nRow++;
+        };
+
+        public static readonly Func<Task> nColDecrease = async () =>
+        {
+            if (g.nCol > 2)
+                g.nCol--;
+        };
+
+        public static readonly Func<Task> nColIncrease = async () =>
+        {
+                g.nCol++;
+        };
+
         #endregion
 
 

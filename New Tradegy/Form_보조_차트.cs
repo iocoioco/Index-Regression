@@ -24,43 +24,50 @@ namespace New_Tradegy
 
         private int _maxSpace = 15;
 
+        private void Form_보조_차트_Shown(object sender, EventArgs e)
+        {
+            int dataGridView1Height = 25; // Your actual value
+
+            dataGridView1.Dock = DockStyle.Top;
+            dataGridView1.Height = dataGridView1Height;
+
+            chart2.Dock = DockStyle.Fill;
+            chart2.Margin = new Padding(0);
+
+            this.Padding = new Padding(0);
+            this.AutoScroll = false;
+
+            // 🔥 groupPane layout after chart2 is docked and measured
+            if (g.groupPane?.View != null)
+            {
+                var view = g.groupPane.View;
+
+                int cellWidth = chart2.Width / 5;
+                int cellHeight = chart2.Height / 3;
+                int x = cellWidth * 4;
+                int y = cellHeight;
+
+                view.Location = new Point(x, y);
+                view.Size = new Size(cellWidth, cellHeight);
+                view.BringToFront();  // Optional, depending on layer
+            }
+
+            // 🔥 This forces WinForms to recalculate layout
+            this.PerformLayout();
+        }
+
+
         public Form_보조_차트()
         {
             InitializeComponent();
-
-            //this.FormBorderStyle = FormBorderStyle.Sizable; // Remove the default title bar
-            //Panel titleBar = new Panel
-            //{
-            //    Dock = DockStyle.Top,
-            //    Height = 50,
-            //    BackColor = Color.LightGray // Customize appearance
-            //};
-            //this.Controls.Add(titleBar);
-
-
-            //titleBar.Controls.Add(dataGridView1); // Add DataGridView to the title bar
-            this.Controls.Add(dataGridView1); // Add DataGridView to the title bar
+            this.Shown += Form_보조_차트_Shown;
         }
 
         private void Form_보조_차트_Load(object sender, EventArgs e)
         {
             g.ChartManager.SetChart2(chart2);
 
-            var groupDgv = new DataGridView();
-            var groupDtb = new DataTable();
-            this.Controls.Add(groupDgv); // ✅ added to Form
-            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-            var view = g.groupPane.View;
-            view.BringToFront();
-
-            int cellWidth = g.screenWidth / 10;   // width % per column
-            int cellHeight = g.screenHeight / 3;  // height % per row
-            int x = cellWidth * 4;
-            int y = dataGridView1Height;
-            view.Location = new Point(x, y);
-            view.Size = new Size(cellWidth, cellHeight - 5);
-
-
+            
             // Configure DataGridView appearance
             ConfigureDataGridView();
             ConfigureChartAndGridSize();
@@ -68,8 +75,6 @@ namespace New_Tradegy
             // Initialize DataTable
             InitializeDataTable();
 
-            // ChartIndex.UpdateChart(chart2, isChart1: false, includeIndex: true); // includeIndex: true for Kospi and Kosdaq 
-            // Draw initial charts
             Form_보조_차트_DRAW();
 
             // defer the call until after Form_보조_차트_Load completes
@@ -78,22 +83,19 @@ namespace New_Tradegy
                 if (g.groupPane?.View != null)
                     g.groupPane.BindGrid(g.groupPane.View);
             }));
-
         }
 
         private void ConfigureChartAndGridSize()
         {
-            
-       
-
-            
-            
-
-
             Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
+            
+            this.Size = workingRectangle.Size;
+            this.Width /= 2;
+            this.Width += 10;
+            this.Height += 10;
+            this.Padding = new Padding(0);
+            this.AutoScroll = false;
 
-            // Form Location and Size 
-            this.FormBorderStyle = FormBorderStyle.Sizable;
             this.StartPosition = FormStartPosition.Manual;
             if (Environment.MachineName == "HP")
             {
@@ -101,27 +103,25 @@ namespace New_Tradegy
             }
             else
             {
-                this.Location = new Point(workingRectangle.Width / 2, 0);
+                this.Location = new Point(-workingRectangle.Width / 2, 0);
                 if (Screen.AllScreens.Count() == 1)
                     this.Location = new Point(workingRectangle.Width / 2, 0); // one screen
             }
-            this.Width = workingRectangle.Width / 2;
-            this.Height = workingRectangle.Height;
-            this.Padding = new Padding(0);
-            this.AutoScroll = false;
 
-            // chart Location and Size
-            var clientSize = this.ClientSize;
-            dataGridView1.Size = new Size(clientSize.Width, dataGridView1Height);
-            dataGridView1.Location = new Point(0, 0);
+            // groupPane setting
+            var groupDgv = new DataGridView();
+            var groupDtb = new DataTable();
+            this.Controls.Add(groupDgv); // ✅ added to Form
+            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            var view = g.groupPane.View;
+            view.BringToFront();
 
-            chart2.Size = new Size(clientSize.Width, clientSize.Height - dataGridView1Height);
-            chart2.Location = new Point(0, dataGridView1Height);
-
-            //chart2.Dock = DockStyle.Fill;
-            //chart2.Margin = new Padding(0);
-
-
+            //int cellWidth = chart2.Width / 5;   // width % per column
+            //int cellHeight = chart2.Height / 3;  // height % per row
+            //int x = cellWidth * 4;
+            //int y = cellHeight;
+            //view.Location = new Point(x, y);
+            //view.Size = new Size(cellWidth, cellHeight);
         }
 
         private void ConfigureDataGridView()
