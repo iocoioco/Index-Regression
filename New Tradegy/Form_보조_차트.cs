@@ -110,13 +110,13 @@ namespace New_Tradegy
                     this.Location = new Point(workingRectangle.Width / 2, 0); // one screen
             }
 
-            // groupPane setting
-            var groupDgv = new DataGridView();
-            var groupDtb = new DataTable();
-            this.Controls.Add(groupDgv); // ✅ added to Form
-            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-            var view = g.groupPane.View;
-            view.BringToFront();
+            // groupPane setting //??
+            //var groupDgv = new DataGridView();
+            //var groupDtb = new DataTable();
+            //this.Controls.Add(groupDgv); // ✅ added to Form
+            //g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            //var view = g.groupPane.View;
+            //view.BringToFront();
 
             //int cellWidth = chart2.Width / 5;   // width % per column
             //int cellHeight = chart2.Height / 3;  // height % per row

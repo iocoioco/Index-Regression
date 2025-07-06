@@ -39,7 +39,7 @@ namespace New_Tradegy.Library.Core
 
 
             RankBy등합();
-            RankGroup(); // re-evaluate groups after stock ranking
+           // RankGroup(); // re-evaluate groups after stock ranking
             
 
             RankByModes();
