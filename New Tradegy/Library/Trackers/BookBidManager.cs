@@ -91,14 +91,22 @@ namespace New_Tradegy.Library.Trackers
 
         public void CleanupAllExcept(IEnumerable<string> keepStocks)
         {
-            var keepSet = new HashSet<string>(keepStocks);
+            var keepSet = new HashSet<string>(keepStocks.Where(s => !string.IsNullOrEmpty(s)));
 
             foreach (var stock in _gridMap.Keys.ToList())
             {
+                if (string.IsNullOrEmpty(stock))
+                {
+                    Console.WriteLine("[Warning] Empty or null stock key in _gridMap during cleanup");
+                    Remove(stock);
+                    continue;
+                }
+
                 if (!keepSet.Contains(stock))
                     Remove(stock);
             }
         }
+
 
         public void Relocate(string stock)
         {

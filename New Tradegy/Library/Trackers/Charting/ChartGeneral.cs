@@ -150,54 +150,7 @@ namespace New_Tradegy.Library.Trackers
         }
 
 
-        
-        public static void UpdateSeries_old(Chart chart, StockData data)
-        {
-            string stock = data.Stock;
-            int last = data.Api.nrow - 1;
-
-            if (last < 0 || data.Api.x[last, 0] == 0)
-                return;
-
-            string xLabel = ((int)(data.Api.x[last, 0] / g.HUNDRED)).ToString();
-
-            int[] seriesIds = { 1, 2, 3, 4, 5, 6 };
-
-            foreach (int typeId in seriesIds)
-            {
-                string seriesName = $"{stock} {typeId}";
-
-                // Skip if the series doesn't exist
-                // fater than any because of internal dictionary lookup
-                if (chart.Series.IsUniqueName(seriesName))
-                    continue;
-
-                var series = chart.Series[seriesName];
-                int value = PointValue(data, last, typeId);
-
-                if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
-                {
-                    series.Points.Last().YValues[0] = value;
-                }
-                else
-                {
-                    series.Points.AddXY(xLabel, value);
-                }
-
-
-                Label(chart, series); // ✅ Annotate
-                Mark(chart, series.Points.Count - 1, series); // ✅ Mark position
-            }
-
-            // Adjust X-axis interval if chart area exists
-            if (!chart.ChartAreas.IsUniqueName(stock))
-            {
-                var area = chart.ChartAreas[stock];
-                area.AxisX.Interval = data.Api.nrow - 1;
-            }
-        }
-
-
+      
         private static bool AddSeriesLines(Chart chart, StockData o, string stockName, string area,
                                  int StartNpts, int EndNpts, ref double y_min, ref double y_max)
         {

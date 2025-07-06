@@ -132,13 +132,13 @@ namespace New_Tradegy.Library.Trackers.Charting
             }
 
             // Step 6: Layout and cleanup
-            RelocateChartAreasAndAnnotations(
+            RelocateChartAreasAndAnnotations( // done
                 g.StockManager.LeverageList,
                 withBookBid,
                 withoutBookBid);
-            RelocateBookbids(usedBookbids);
+            RelocateBookbids(usedBookbids); // done
 
-            CleanupUnusedChartObjects(usedChartAreas, usedAnnotations, usedBookbids);
+            CleanupUnusedChartObjects(usedChartAreas, usedAnnotations, usedBookbids); // done
 
             DisplayList = GenerateDisplayList(leverageList, withBookBid, withoutBookBid, g.nRow, g.nCol);
         
@@ -146,37 +146,47 @@ namespace New_Tradegy.Library.Trackers.Charting
         }
 
 
-        private void CleanupUnusedChartObjects(List<string> keepAreas, List<string> keepAnnotations, List<string> keepBookbids)
+        private void CleanupUnusedChartObjects(
+    List<string> keepAreas,
+    List<string> keepAnnotations,
+    List<string> keepBookbids)
         {
             foreach (var area in chart.ChartAreas.ToList())
             {
+                if (area == null || string.IsNullOrEmpty(area.Name))
+                {
+                    Console.WriteLine("[Warning] Null or unnamed ChartArea encountered during cleanup");
+                    continue;
+                }
+
                 if (!keepAreas.Contains(area.Name))
                 {
-                    if (area == null)
-                        return; //??
                     chart.ChartAreas.Remove(area);
                 }
-                    
             }
 
             foreach (var anno in chart.Annotations.ToList())
             {
+                if (anno == null || string.IsNullOrEmpty(anno.Name))
+                {
+                    Console.WriteLine("[Warning] Null or unnamed Annotation encountered during cleanup");
+                    continue;
+                }
+
                 if (!keepAnnotations.Contains(anno.Name))
                 {
-                    if (anno == null)
-                        return; //??
                     chart.Annotations.Remove(anno);
                 }
-                    
             }
 
             g.BookBidManager.CleanupAllExcept(keepBookbids);
         }
 
+
         private void RelocateChartAreasAndAnnotations(
-    List<string> leverageStocks,
-    List<string> withBookBid,
-    List<string> withoutBookBid)
+     List<string> leverageStocks,
+     List<string> withBookBid,
+     List<string> withoutBookBid)
         {
             var chart = g.ChartManager.Chart1;
 
@@ -191,6 +201,8 @@ namespace New_Tradegy.Library.Trackers.Charting
             for (int i = 0; i < leverageStocks.Count && i < 2; i++)
             {
                 string stock = leverageStocks[i];
+                if (string.IsNullOrEmpty(stock)) continue;
+
                 int row = i;
                 int col = 0;
                 float x = col * cellWidth;
@@ -205,9 +217,6 @@ namespace New_Tradegy.Library.Trackers.Charting
                     area.Position = new ElementPosition(x, y, cellWidth, 50f);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
 
-
-
-
                     if (!area.Visible)
                         area.Visible = true;
                 }
@@ -219,27 +228,28 @@ namespace New_Tradegy.Library.Trackers.Charting
 
             foreach (var stock in withBookBid)
             {
-                if (currentRow + 1 > nRow) // If row is full, move to next chart/bookbid column pair
+                if (string.IsNullOrEmpty(stock)) continue;
+
+                if (currentRow + 1 > nRow)
                 {
                     currentCol += 2;
                     currentRow = 0;
                 }
 
-                if (currentCol + 1 >= nCol) // Safety: no space left
+                if (currentCol + 1 >= nCol)
                     break;
 
                 float x = currentCol * cellWidth;
                 float y = currentRow * cellHeight;
 
-                occupied[currentCol, currentRow] = true;     // chart
-                occupied[currentCol + 1, currentRow] = true; // reserve for bookbid
+                occupied[currentCol, currentRow] = true;
+                occupied[currentCol + 1, currentRow] = true;
 
                 if (chart.ChartAreas.IndexOf(stock) >= 0)
                 {
                     var area = chart.ChartAreas[stock];
                     area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
-
 
                     if (!area.Visible)
                         area.Visible = true;
@@ -251,28 +261,28 @@ namespace New_Tradegy.Library.Trackers.Charting
                     if (anno is RectangleAnnotation rect)
                     {
                         rect.X = x;
-                        rect.Y = y; // + cellHeight;
+                        rect.Y = y;
                         rect.Width = cellWidth;
                         rect.Height = 5.155f + 2f;
                     }
 
-                    if (!anno.Visible)
+                    if (anno != null && !anno.Visible)
                         anno.Visible = true;
                 }
 
-                currentRow++; // Go to next row
+                currentRow++;
             }
-
 
             // === 3. WithoutBookBid: place in any unoccupied cell ===
             foreach (var stock in withoutBookBid)
             {
+                if (string.IsNullOrEmpty(stock)) continue;
+
                 bool placed = false;
-                for (int col = 2; col < nCol && !placed; col++) // skip col 0, 1
+                for (int col = 2; col < nCol && !placed; col++)
                 {
                     for (int row = 0; row < nRow && !placed; row++)
                     {
-
                         if (!occupied[col, row])
                         {
                             float x = col * cellWidth;
@@ -296,7 +306,7 @@ namespace New_Tradegy.Library.Trackers.Charting
                                 if (anno is RectangleAnnotation rect)
                                 {
                                     rect.X = x;
-                                    rect.Y = y; // + cellHeight;
+                                    rect.Y = y;
                                     rect.Width = cellWidth;
                                     rect.Height = 5.155f + 2f;
                                 }
@@ -318,12 +328,18 @@ namespace New_Tradegy.Library.Trackers.Charting
 
         private void RelocateBookbids(List<string> stockList)
         {
-            // Position bookbids below or beside their corresponding chart area
             foreach (var stock in stockList)
             {
-                g.BookBidManager.Relocate(stock); // assumes you have a Relocate method
+                if (string.IsNullOrEmpty(stock))
+                {
+                    Console.WriteLine("[Warning] Empty or null stock name in RelocateBookbids");
+                    continue;
+                }
+
+                g.BookBidManager.Relocate(stock);
             }
         }
+
 
 
         private List<string> GenerateDisplayList(

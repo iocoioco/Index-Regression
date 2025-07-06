@@ -173,6 +173,11 @@ namespace New_Tradegy
                 if (i >= _maxSpace)
                     break;
                 string stock = displayList[i];
+                if (string.IsNullOrEmpty(stock))
+                {
+                    Console.WriteLine($"[Warning] Skipping null or empty stock name at index {i}");
+                    continue;
+                }
 
                 var data = g.StockRepository.TryGetDataOrNull(stock);
                 if (data == null)
@@ -190,7 +195,7 @@ namespace New_Tradegy
                 else
                 {
                     var (area, anno) = ChartGeneral.UpdateChartArea(chart2, data);
-                    if (area != null)
+                    if (area != null && anno != null)
                     {
                         chartAreas.Add(area);
                         annotations.Add(anno);
@@ -198,7 +203,7 @@ namespace New_Tradegy
                 }
             }
 
-            RelocateChart2AreasAndAnnotations();
+            RelocateChart2AreasAndAnnotations(); // done
 
             CleanupChart2();
 
@@ -214,8 +219,8 @@ namespace New_Tradegy
 
         public void RelocateChart2AreasAndAnnotations()
         {
-            float cellWidth = 100f / nCol;   // width % per column
-            float cellHeight = 100f / nRow;  // height % per row
+            float cellWidth = 100f / nCol;
+            float cellHeight = 100f / nRow;
 
             for (int i = 0; i < displayList.Count; i++)
             {
@@ -223,6 +228,12 @@ namespace New_Tradegy
                     break;
 
                 string stock = displayList[i];
+                if (string.IsNullOrEmpty(stock))
+                {
+                    Console.WriteLine($"[Warning] Empty or null stock in SubChart displayList at index {i}");
+                    continue;
+                }
+
                 string areaName = stock;
 
                 int row = i % nRow;
@@ -230,94 +241,82 @@ namespace New_Tradegy
 
                 float x = col * cellWidth;
                 float y = row * cellHeight;
-                float width = cellWidth;
-                float height = cellHeight;
 
-                // Move ChartArea (always)
                 if (chart2.ChartAreas.IndexOf(areaName) >= 0)
                 {
                     var area = chart2.ChartAreas[areaName];
-                    if (area == null)
-                        continue; //??
-                    area.Position = new ElementPosition(x, y, width, height);
+                    area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
                     area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
 
                     if (!area.Visible)
                         area.Visible = true;
                 }
 
-                // Move Annotation (only for non-index stocks)
                 if (!g.StockManager.IndexList.Contains(stock))
                 {
                     var anno = chart2.Annotations.FirstOrDefault(a => a.Name == areaName);
-                    if (anno == null)
-                        continue;
                     if (anno is RectangleAnnotation rect)
                     {
                         rect.X = x;
-                        rect.Y = y; // + height; // directly below chart
-                        rect.Width = width;
-                        rect.Height = 5.155f + 2f; // standard height
+                        rect.Y = y;
+                        rect.Width = cellWidth;
+                        rect.Height = 5.155f + 2f;
                     }
-                    if (!anno.Visible)
+
+                    if (anno != null && !anno.Visible)
                         anno.Visible = true;
                 }
             }
 
-            chart2.Invalidate(); // Redraw the chart
+            chart2.Invalidate();
         }
 
 
         private void CleanupChart2()
         {
-            var validStocks = new HashSet<string>(displayList.Take(_maxSpace));
+            var validStocks = new HashSet<string>(displayList.Where(s => !string.IsNullOrEmpty(s)).Take(_maxSpace));
 
-            // Remove unnecessary chart areas (name == stock)
+            // === Remove ChartAreas ===
             var areasToRemove = g.ChartManager.Chart2.ChartAreas
-                .Where(area => !validStocks.Contains(area.Name))
+                .Where(area => string.IsNullOrEmpty(area.Name) || !validStocks.Contains(area.Name))
                 .ToList();
 
             foreach (var area in areasToRemove)
             {
-                if (area == null)
-                    return; //??
+                if (area == null) continue;
+
                 g.ChartManager.Chart2.ChartAreas.Remove(area);
             }
-                
 
-            // Remove unnecessary annotations (name == stock)
+            // === Remove Annotations ===
             var annotationsToRemove = g.ChartManager.Chart2.Annotations
-                .Where(anno => !validStocks.Contains(anno.Name))
+                .Where(anno => string.IsNullOrEmpty(anno.Name) || !validStocks.Contains(anno.Name))
                 .ToList();
 
             foreach (var anno in annotationsToRemove)
             {
-                if (anno == null) 
-                    return; //??
+                if (anno == null) continue;
+
                 g.ChartManager.Chart2.Annotations.Remove(anno);
             }
-                
 
-            // Remove unnecessary series (name starts with stockName but stockName not in displayList)
+            // === Remove Series ===
             var seriesToRemove = g.ChartManager.Chart2.Series
                 .Where(series =>
                 {
-                    foreach (var stock in validStocks)
-                    {
-                        if (series.Name.StartsWith(stock))
-                            return false;
-                    }
-                    return true;
+                    if (string.IsNullOrEmpty(series.Name)) return true;
+
+                    // Keep only if it starts with a valid stock name
+                    return !validStocks.Any(stock => series.Name.StartsWith(stock));
                 })
                 .ToList();
 
             foreach (var s in seriesToRemove)
             {
-                if (s == null)
-                    return; //??
+                if (s == null) continue;
+
                 g.ChartManager.Chart2.Series.Remove(s);
             }
-                
         }
 
 
@@ -326,24 +325,23 @@ namespace New_Tradegy
         public static void DisplayListGivenDisplayMode(string SubChartDisplayMode, List<string> displayList, string clickedStock, string clickedTitle)
         {
             displayList.Clear();
+
             switch (SubChartDisplayMode)
             {
                 case "지수":
                     for (int i = 0; i < 2; i++)
                     {
-                        if (!displayList.Contains(g.StockManager.IndexList[i]))
-                        {
-                            displayList.Add(g.StockManager.IndexList[i]);
-                        }
+                        string s = g.StockManager.IndexList[i];
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                            displayList.Add(s);
                     }
                     break;
+
                 case "보유":
                     foreach (string s in g.StockManager.HoldingList)
                     {
-                        if (!displayList.Contains(s))
-                        {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
                             displayList.Add(s);
-                        }
                     }
                     break;
 
@@ -352,19 +350,29 @@ namespace New_Tradegy
                     if (g.GroupManager.GroupRankingList.Count > 0)
                     {
                         var topStocks = g.GroupManager.GetTopStocksFromTopGroups(existing: displayList);
-                        displayList.AddRange(topStocks);
+                        foreach (var s in topStocks)
+                        {
+                            if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                                displayList.Add(s);
+                        }
                     }
                     break;
 
                 case "상관":
-                    displayList.AddRange(g.GroupManager.GetStocksByTitle(clickedTitle, displayList));
+                    var relatedStocks = g.GroupManager.GetStocksByTitle(clickedTitle, displayList);
+                    foreach (var s in relatedStocks)
+                    {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                            displayList.Add(s);
+                    }
                     break;
 
                 case "절친":
                     var stockData = g.StockManager.Repository.TryGetDataOrNull(g.clickedStock);
                     if (stockData != null && stockData.Misc.Friends.Count > 0)
                     {
-                        displayList.Add(g.clickedStock);
+                        if (!string.IsNullOrWhiteSpace(g.clickedStock) && !displayList.Contains(g.clickedStock))
+                            displayList.Add(g.clickedStock);
 
                         foreach (var line in stockData.Misc.Friends)
                         {
@@ -372,36 +380,47 @@ namespace New_Tradegy
                             if (words.Length == 2)
                             {
                                 string friendStock = words[1];
-
-                                if (!displayList.Contains(friendStock))
+                                if (!string.IsNullOrWhiteSpace(friendStock) && !displayList.Contains(friendStock))
                                     displayList.Add(friendStock);
                             }
                         }
                     }
                     break;
 
-
                 case "관심":
                     FileIn.read_파일관심종목();
                     foreach (string s in g.StockManager.InterestedInFile)
                     {
-                        if (!displayList.Contains(s))
-                        {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
                             displayList.Add(s);
-                        }
                     }
                     break;
 
                 case "피올":
-                    displayList.AddRange(g.StockManager.LeverageList);
-                    foreach (string s in g.kospi_mixed.stock) { displayList.Add(s); }
+                    foreach (string s in g.StockManager.LeverageList)
+                    {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                            displayList.Add(s);
+                    }
+                    foreach (string s in g.kospi_mixed.stock)
+                    {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                            displayList.Add(s);
+                    }
                     break;
 
                 case "닥올":
-                    displayList.AddRange(g.StockManager.LeverageList);
-                    foreach (string s in g.kosdaq_mixed.stock) { displayList.Add(s); }
+                    foreach (string s in g.StockManager.LeverageList)
+                    {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                            displayList.Add(s);
+                    }
+                    foreach (string s in g.kosdaq_mixed.stock)
+                    {
+                        if (!string.IsNullOrWhiteSpace(s) && !displayList.Contains(s))
+                            displayList.Add(s);
+                    }
                     break;
-
 
                 case "푀손":
                     {
@@ -411,22 +430,16 @@ namespace New_Tradegy
                         {
                             string stock = data.Stock;
 
+                            if (string.IsNullOrWhiteSpace(stock))
+                                continue;
+
                             int check_row = 0;
                             int nrow = data.Api.nrow;
 
                             if (nrow < 2)
                                 continue;
 
-                            if (g.connected)
-                            {
-                                check_row = nrow - 1;
-                            }
-                            else
-                            {
-                                check_row = g.Npts[1] - 1;
-                                if (check_row > nrow - 1)
-                                    check_row = nrow - 1;
-                            }
+                            check_row = g.connected ? nrow - 1 : Math.Min(g.Npts[1] - 1, nrow - 1);
 
                             if (data.Api.x[check_row, 4] < 0)
                                 continue;
@@ -448,14 +461,15 @@ namespace New_Tradegy
 
                         foreach (var t in a_tuple)
                         {
-                            if (!displayList.Contains(t.Item2))
-                                displayList.Add(t.Item2);
+                            string stock = t.Item2;
+                            if (!string.IsNullOrWhiteSpace(stock) && !displayList.Contains(stock))
+                                displayList.Add(stock);
                         }
                         break;
                     }
-
             }
         }
+
 
         private void UpdateFormTitle()
         {
