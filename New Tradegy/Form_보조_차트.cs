@@ -24,6 +24,8 @@ namespace New_Tradegy
 
         private int _maxSpace = 15;
 
+
+        private Chart chart => g.ChartManager.Chart2;
         private void Form_보조_차트_Shown(object sender, EventArgs e)
         {
             int dataGridView1Height = 25; // Your actual value
@@ -166,6 +168,18 @@ namespace New_Tradegy
             // Determine grid layout based on the number of displayList
             SetGridDimensions();
 
+            int areasCount = g.ChartManager.Chart2.ChartAreas.Count;
+            int annotationsCount = g.ChartManager.Chart2.Annotations.Count;
+            int seriesCount = g.ChartManager.Chart2.Series.Count;
+
+            chart.Series.Clear();
+            chart.ChartAreas.Clear();
+            chart.Annotations.Clear();
+
+            areasCount = g.ChartManager.Chart2.ChartAreas.Count;
+            annotationsCount = g.ChartManager.Chart2.Annotations.Count;
+            seriesCount = g.ChartManager.Chart2.Series.Count;
+
             var chartAreas = new List<ChartArea>();
             var annotations = new List<Annotation>();
             for (int i = 0; i < displayList.Count; i++)
@@ -211,9 +225,9 @@ namespace New_Tradegy
 
             g.ChartManager.Chart2.Invalidate();
 
-            int areasCount = g.ChartManager.Chart2.ChartAreas.Count;
-            int annotationsCount = g.ChartManager.Chart2.Annotations.Count;
-            int seriesCount = g.ChartManager.Chart2.Series.Count;
+            areasCount = g.ChartManager.Chart2.ChartAreas.Count;
+            annotationsCount = g.ChartManager.Chart2.Annotations.Count;
+            seriesCount = g.ChartManager.Chart2.Series.Count;
 
         }
 

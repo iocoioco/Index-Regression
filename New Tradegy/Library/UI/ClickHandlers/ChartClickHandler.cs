@@ -124,7 +124,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (g.test)
                     {
                         ActionHandlers.TimeShortMoveKey?.Invoke();
-                        ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
+                        //ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
                     }
                     break;
 

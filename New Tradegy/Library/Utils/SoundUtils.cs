@@ -147,7 +147,7 @@ namespace New_Tradegy.Library.Utils
             System.Media.SoundPlayer player = new System.Media.SoundPlayer();
             player.SoundLocation = sound_file;
 
-            player.Play();
+            player.PlaySync(); // instead of Play()
         }
 
     }

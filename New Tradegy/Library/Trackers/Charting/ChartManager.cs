@@ -46,7 +46,7 @@ namespace New_Tradegy.Library.Trackers
         }
 
         // not used
-        private void SetupChart(Chart chart)
+        public void SetupChart(Chart chart)
         {
             chart.Series.Clear();
             chart.ChartAreas.Clear();

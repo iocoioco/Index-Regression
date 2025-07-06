@@ -76,6 +76,15 @@ namespace New_Tradegy.Library.Trackers.Charting
             var usedAnnotations = new List<string>();
             var usedBookbids = new List<string>();
 
+            chart.Series.Clear();
+            chart.ChartAreas.Clear();
+            chart.Annotations.Clear();
+
+            int areasCount = g.ChartManager.Chart1.ChartAreas.Count;
+            int annotationsCount = g.ChartManager.Chart1.Annotations.Count;
+            int seriesCount = g.ChartManager.Chart1.Series.Count;
+
+            
             // Step 5: Render each chart area and prepare book bids
             foreach (var stock in displayList)
             {
@@ -131,6 +140,10 @@ namespace New_Tradegy.Library.Trackers.Charting
                 }
             }
 
+            areasCount = g.ChartManager.Chart1.ChartAreas.Count;
+            annotationsCount = g.ChartManager.Chart1.Annotations.Count;
+            seriesCount = g.ChartManager.Chart1.Series.Count;
+
             // Step 6: Layout and cleanup
             RelocateChartAreasAndAnnotations( // done
                 g.StockManager.LeverageList,
@@ -143,6 +156,10 @@ namespace New_Tradegy.Library.Trackers.Charting
             DisplayList = GenerateDisplayList(leverageList, withBookBid, withoutBookBid, g.nRow, g.nCol);
         
             chart.Invalidate();
+
+            areasCount = g.ChartManager.Chart1.ChartAreas.Count;
+            annotationsCount = g.ChartManager.Chart1.Annotations.Count;
+            seriesCount = g.ChartManager.Chart1.Series.Count;
         }
 
 
