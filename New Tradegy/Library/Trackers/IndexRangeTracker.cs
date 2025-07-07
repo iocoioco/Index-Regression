@@ -20,7 +20,7 @@ namespace New_Tradegy.Library.Trackers
 
             if (steps > 0)
             {
-                string sound = delta > 0 ? "up" : "down";
+                string sound = delta > 0 ? "up" : "dn";
 
                 for (int i = 0; i < steps; i++)
                 {

@@ -22,10 +22,8 @@ namespace New_Tradegy.Library.Core
 
         public static void RankByMode()
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            // Stopwatch sw = Stopwatch.StartNew();
             
-            
-
             if (g.test) // 실제 run 에서는 post() 에서 합산됨
             {
                 foreach (var data in g.StockRepository.AllDatas)
@@ -37,16 +35,13 @@ namespace New_Tradegy.Library.Core
                 }
             }
 
-
             RankBy등합();
-           // RankGroup(); // re-evaluate groups after stock ranking
-            
+            RankGroup(); // re-evaluate groups after stock ranking
 
             RankByModes();
 
-            sw.Stop();
-
-            double sec = sw.Elapsed.TotalSeconds;
+            //sw.Stop();
+            //double sec = sw.Elapsed.TotalSeconds;
         }
 
         // 푀분 : chart는 푀분 r3_display는 프분 only
@@ -365,6 +360,10 @@ namespace New_Tradegy.Library.Core
                     group.등합_등수 /= count;
                     group.푀분 /= count;
                     group.배차 /= count;
+                }
+                else
+                {
+                    group.등합_등수 = 10000.0;
                 }
             }
 

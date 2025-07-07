@@ -38,7 +38,7 @@ namespace New_Tradegy.Library.Listeners
             _stock = stock;
 
             int w0 = 61, w1 = 50, w2 = 61;
-            int cellHeight = 28;
+            
 
             // 1. DataTable 생성 및 초기화
             _dataTable = new DataTable();
@@ -54,7 +54,7 @@ namespace New_Tradegy.Library.Listeners
             {
                 Name = _stock,
                 Location = new Point(0, 0), // temporary location
-                Size = new Size(w0 + w1 + w2, cellHeight * 12),
+                Size = new Size(w0 + w1 + w2, g.cellHeight * 12 - 10),
                 Dock = DockStyle.None,
                 TabIndex = 1,
                 DataSource = _dataTable, // ✅ DataSource 포함
@@ -68,7 +68,7 @@ namespace New_Tradegy.Library.Listeners
                 ScrollBars = ScrollBars.None,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 DefaultCellStyle = { Font = new Font("Arial", 9, FontStyle.Bold), ForeColor = Color.Black },
-                RowTemplate = { Height = 28 },
+                RowTemplate = { Height = 27 },
                 ColumnHeadersDefaultCellStyle = { Font = new Font("Arial", 9, FontStyle.Bold) },
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,

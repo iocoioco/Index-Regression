@@ -239,7 +239,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
                 case "r6":
                     // this is not implemented correctly, thus return for the time being
-                    return;
+                    
                     if (g.q == "h&s")
                     {
                         g.Gid = g.saved_Gid;

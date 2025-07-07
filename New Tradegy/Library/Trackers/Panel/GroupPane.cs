@@ -47,7 +47,7 @@ namespace New_Tradegy.Library.Trackers
             // _view.Dock = DockStyle.Fill;
             _view.DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             _view.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            _view.RowTemplate.Height = g.CellHeight;
+            _view.RowTemplate.Height = g.cellHeight;
             _view.ForeColor = Color.Black;
             _view.TabStop = false;
 
@@ -99,12 +99,16 @@ namespace New_Tradegy.Library.Trackers
 
         private void CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            var groups = g.GroupManager.GroupRankingList;
+
             if (e.RowIndex < 0 || e.RowIndex >= _groups.Count) return;
 
-            string title = _groups[e.RowIndex].Title;
+            
+            string title = groups[e.RowIndex].Title;
             g.clickedTitle = title;
 
             var group = _groups[e.RowIndex];
+            
             if (group.Stocks.Count == 0) return;
 
             string firstStock = group.Stocks[0];

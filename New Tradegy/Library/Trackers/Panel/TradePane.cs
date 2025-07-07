@@ -34,11 +34,16 @@ namespace New_Tradegy.Library.Trackers
             int fontSize = 8; 
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
 
-            int x = g.screenWidth / g.nCol + 30;
-            int y = 336 + g.CellHeight * 3 + 3; // + 30 deleted from width
+
+
+
+
+
+            int x = g.screenWidth / g.nCol + 20;
+            int y = 336 + g.cellHeight * 3; // + 30 deleted from width
             _view.Location = new Point(x, y);
 
-            int width = g.screenWidth / g.nCol - 30;
+            int width = 172; ;
             int height = 250;
             _view.Size = new Size(width, height);
 

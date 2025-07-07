@@ -68,7 +68,7 @@ namespace New_Tradegy.Library
         public static double 억원 = 100000000.0; // unit for division
         public static double HUNDRED = 100.0;
         public static double THOUSAND = 1000.0;
-        public static int CellHeight = 28;
+
 
         // InputControl
         public static bool shortform; // shortform includes less number of stocks for test purpose 
@@ -241,7 +241,7 @@ namespace New_Tradegy.Library
             public int Q_advance_lines = 150;
             public int r3_display_lines = 20;
 
-            public float font = 16.0F;
+            public float font = 17.0F;
         }
         public static Variable v = new Variable();
 

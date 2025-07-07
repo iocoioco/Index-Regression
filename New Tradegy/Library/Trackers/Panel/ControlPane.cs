@@ -43,12 +43,12 @@ namespace New_Tradegy.Library.Trackers
         {
             // x 212 y 336 w 172 h 84
 
-            int x = g.screenWidth / g.nCol + 30;
-            int y = g.screenHeight / 3 - 6;
+            int x = g.screenWidth / g.nCol + 20;
+            int y = g.screenHeight / g.nRow - 12;
             _view.Location = new Point(x, y);
 
-            int width = g.screenWidth / g.nCol - 30;
-            int height = g.CellHeight * 3;
+            int width = 172;
+            int height = g.cellHeight * 3;
             _view.Size = new Size(width, height);
 
 
@@ -69,7 +69,7 @@ namespace New_Tradegy.Library.Trackers
             _view.AllowUserToDeleteRows = false;
             _view.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             
-            _view.RowTemplate.Height = g.CellHeight;
+            _view.RowTemplate.Height = g.cellHeight;
             _view.ForeColor = Color.Black;
             _view.TabStop = false;
         }
@@ -114,7 +114,7 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
             _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30; g.postInterval = 30;
 
-            _table.Rows[10][0] = "Font"; _table.Rows[10][1] = g.v.font = 16; g.v.font /= 2.0f;
+            _table.Rows[10][0] = "Font"; _table.Rows[10][1] = g.v.font = 17; g.v.font /= 2.0f;
 
             _table.Rows[12][0] = "푀플"; _table.Rows[12][1] = "1"; g.v.푀플 = 1;
             _table.Rows[12][2] = "배플"; _table.Rows[12][3] = "1"; g.v.배플 = 1;
@@ -355,14 +355,14 @@ namespace New_Tradegy.Library.Trackers
                                 int height;
                                 if (isControlPaneOnTop)
                                 {
-                                    height = g.CellHeight * 3;
+                                    height = g.cellHeight * 3;
                                     _view.Height = height;
                                     g.tradePane.View.BringToFront();
                                 }
 
                                 else
                                 {
-                                    height = g.CellHeight * 15;
+                                    height = g.cellHeight * 15;
                                     _view.Height = height;
                                     _view.BringToFront();
                                 }

@@ -24,8 +24,12 @@ namespace New_Tradegy
 
         private int _maxSpace = 15;
 
+        private Point _location = new Point();
+
+        private Size _size = new Size();
 
         private Chart chart => g.ChartManager.Chart2;
+
         private void Form_보조_차트_Shown(object sender, EventArgs e)
         {
             int dataGridView1Height = 25; // Your actual value
@@ -40,17 +44,17 @@ namespace New_Tradegy
             this.AutoScroll = false;
 
             // 🔥 groupPane layout after chart2 is docked and measured
+
+            _location.X = chart2.Width / 5 * 4;
+            _location.Y = chart2.Height / 3 + 18;
+            _size.Width = chart2.Width / 5;
+            _size.Height = g.cellHeight * 11;
             if (g.groupPane?.View != null)
             {
                 var view = g.groupPane.View;
 
-                int cellWidth = chart2.Width / 5;
-                int cellHeight = chart2.Height / 3;
-                int x = cellWidth * 4;
-                int y = cellHeight;
-
-                view.Location = new Point(x, y);
-                view.Size = new Size(cellWidth, cellHeight);
+                view.Location = _location;
+                view.Size = _size;
                 view.BringToFront();  // Optional, depending on layer
             }
 
@@ -111,19 +115,14 @@ namespace New_Tradegy
             }
 
             // groupPane setting //??
-            //var groupDgv = new DataGridView();
-            //var groupDtb = new DataTable();
-            //this.Controls.Add(groupDgv); // ✅ added to Form
-            //g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
-            //var view = g.groupPane.View;
-            //view.BringToFront();
+            var groupDgv = new DataGridView();
+            var groupDtb = new DataTable();
+            this.Controls.Add(groupDgv); // ✅ added to Form
+            g.groupPane = new GroupPane(groupDgv, groupDtb); // logic wrapper
+            var view = g.groupPane.View;
+            view.BringToFront();
 
-            //int cellWidth = chart2.Width / 5;   // width % per column
-            //int cellHeight = chart2.Height / 3;  // height % per row
-            //int x = cellWidth * 4;
-            //int y = cellHeight;
-            //view.Location = new Point(x, y);
-            //view.Size = new Size(cellWidth, cellHeight);
+           
         }
 
         private void ConfigureDataGridView()
@@ -131,7 +130,7 @@ namespace New_Tradegy
             dataGridView1.DataError += (s, f) => FileOut.DataGridView_DataError(s, f, "보조차트 dgv");
             dataGridView1.DefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 9, FontStyle.Bold);
-            dataGridView1.RowTemplate.Height = dataGridView1Height;
+            dataGridView1.RowTemplate.Height = g.cellHeight;
             dataGridView1.ForeColor = Color.Black;
             dataGridView1.ScrollBars = ScrollBars.None;
         }
@@ -561,29 +560,7 @@ namespace New_Tradegy
                 dataGridView1.Columns[i].Width = this.Width / 8;
             }
 
-            // group pane location and size change w.r.t Form_보조_차트 size change
-            //int col = 4; // Zero-based → 5th column
-            //int row = 1; // Zero-based → 2nd row
-
-            //int totalCols = 5;
-            //int totalRows = 3;
-
-            //int cellWidth = this.ClientSize.Width / totalCols;
-            //int cellHeight = this.ClientSize.Height / totalRows - 6;
-
-            //g.groupPane.View.Location = new Point(col * cellWidth, row * cellHeight);
-            //g.groupPane.View.Size = new Size(cellWidth, cellHeight); // Optional: full cell size
-
-            //int padding = 7;
-
-            //g.groupPane.View.Location = new Point(
-            //    col * cellWidth + 20,
-            //    row * cellHeight + 38
-            //);
-            //g.groupPane.View.Size = new Size(
-            //    cellWidth - 2 * padding,
-            //    cellHeight - 2 * padding
-            //);
+            
 
             int col = 4; // Zero-based → 5th column
             int row = 1; // Zero-based → 2nd row
@@ -592,11 +569,23 @@ namespace New_Tradegy
             int totalRows = 3;
 
             int cellWidth = this.ClientSize.Width / totalCols;
-            int cellHeight = this.ClientSize.Height / totalRows - 6;
+            int cellHeight = this.ClientSize.Height / totalRows;
 
-            g.groupPane.View.Location = new Point(col * cellWidth + 20, row * cellHeight + 38);
-            g.groupPane.View.Size = new Size(cellWidth - 15, cellHeight - 14);
-           
+
+            _location.X = chart2.Width / 5 * 4;
+            _location.Y = chart2.Height / 3 + 18;
+            _size.Width = chart2.Width / 5;
+            _size.Height = g.cellHeight * 11;
+            if (g.groupPane?.View != null)
+            {
+                var view = g.groupPane.View;
+
+                view.Location = _location;
+                view.Size = _size;
+                view.BringToFront();  // Optional, depending on layer
+            }
+
+            
 
 
             int scrollBarWidth = SystemInformation.VerticalScrollBarWidth;
