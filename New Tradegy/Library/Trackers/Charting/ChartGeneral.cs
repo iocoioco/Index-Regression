@@ -76,7 +76,11 @@ namespace New_Tradegy.Library.Trackers
             area.AxisY.MinorGrid.Enabled = false;
 
             //area.Position = new ElementPosition(20, 5, 55, 60); // outer chart area
-            area.InnerPlotPosition = new ElementPosition(20, 5, 55, 80);
+            var cellWidth = 100f / g.nCol;
+            var cellHeight = 100f / g.nRow;
+
+            area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight);  
+                                     //new ElementPosition(20, 5, 55, 80);
             double padding = (y_max - y_min) * 0.1; // was 0.05
             area.AxisY.Minimum = y_min - 0.0 * padding; // was 1.0
             area.AxisY.Maximum = y_max + 2.5 * padding; // was 1.5

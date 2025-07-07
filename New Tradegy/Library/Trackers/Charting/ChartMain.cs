@@ -232,7 +232,10 @@ namespace New_Tradegy.Library.Trackers.Charting
                 {
                     var area = chart.ChartAreas[stock];
                     area.Position = new ElementPosition(x, y, cellWidth, 50f);
-                    area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+                    // area.InnerPlotPosition = new ElementPosition(10, 10, 80, 80); //(5, 10, 90, 80);
+
+
+                    area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, 50f);
 
                     if (!area.Visible)
                         area.Visible = true;
@@ -266,7 +269,10 @@ namespace New_Tradegy.Library.Trackers.Charting
                 {
                     var area = chart.ChartAreas[stock];
                     area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
-                    area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+                    
+                    area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight);
+
+                    // area.InnerPlotPosition = new ElementPosition(20, 10, 60, 80); //(5, 10, 90, 80);
 
                     if (!area.Visible)
                         area.Visible = true;
@@ -311,8 +317,8 @@ namespace New_Tradegy.Library.Trackers.Charting
                             {
                                 var area = chart.ChartAreas[stock];
                                 area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
-                                area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
-
+                                // area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+                                area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight);
                                 if (!area.Visible)
                                     area.Visible = true;
                             }

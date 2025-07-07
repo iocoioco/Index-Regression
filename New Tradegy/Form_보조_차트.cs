@@ -260,7 +260,8 @@ namespace New_Tradegy
                 {
                     var area = chart2.ChartAreas[areaName];
                     area.Position = new ElementPosition(x, y, cellWidth, cellHeight);
-                    area.InnerPlotPosition = new ElementPosition(5, 10, 90, 80);
+                    area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight); //
+                                                                                                           //new ElementPosition(5, 10, 90, 80);
 
                     if (!area.Visible)
                         area.Visible = true;

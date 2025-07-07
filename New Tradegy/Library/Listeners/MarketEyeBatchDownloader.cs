@@ -207,7 +207,7 @@ namespace New_Tradegy.Library.Listeners
                 api.전일종가 = _marketeye.GetDataValue(18, k);
                 api.체강 = (double)_marketeye.GetDataValue(19, k);
 
-                if (api.전일종가 > 100)
+                if (api.전일종가 > 100) // zero devider protection
                 {
                     api.가격 = (int)((api.매수1호가 - (int)api.전일종가) * 10000.0 / api.전일종가);
                     double differ = (api.매도1호가 - api.매수1호가) * 10000.0 / api.전일종가;
@@ -274,7 +274,8 @@ namespace New_Tradegy.Library.Listeners
                 // ⏩ Next: build "t" array, append/replace api.x[nrow], shift tick arrays, update continuity
 
 
-
+                // 0, 시간, 1, 가격, 2 수급, 3 체강 * 100, 4 프로그램 매수액(억), 5 외인 매수액(억), 6 기관 매수액(억)
+                // 7 거래량, 8 매수배, 9 매도배, 10 수급연속횟수, 11 체강연속횟수
                 int[] t = new int[12];
                 t[0] = HHmmss;
                 t[1] = api.가격;
@@ -302,7 +303,7 @@ namespace New_Tradegy.Library.Listeners
                     t[10] = (int)(MajorIndex.Instance.NasdaqIndex * g.THOUSAND);
                     t[11] = (int)MajorIndex.Instance.KosdaqPensionNetBuy;
                 }
-                else
+                else // General
                 {
                     t[4] = (int)api.당일프로그램순매수량;
                     t[5] = (int)api.당일외인순매수량;
@@ -316,17 +317,21 @@ namespace New_Tradegy.Library.Listeners
                 {
                     api.x[append_or_replace_row, i] = t[i];
                 }
+
                 api.nrow = append_or_replace_row + 1;
 
                 if (!(g.StockManager.IndexList.Contains(data.Stock) && api.nrow >= 2))
                 {
+                    // Continuity of amount ratio
                     if (api.x[api.nrow - 1, 7] == api.x[api.nrow - 2, 7])
                         api.x[api.nrow - 1, 10] = api.x[api.nrow - 2, 10];
                     else if (api.x[api.nrow - 1, 2] > api.x[api.nrow - 2, 2])
                         api.x[api.nrow - 1, 10] = api.x[api.nrow - 2, 10] + 1;
-                    else
+                    else // decrease of amount ratio
                         api.x[api.nrow - 1, 10] = 0;
 
+                    // Continuity of intensity : the intensity was multiplied by g.HUNDRED ->
+                    // too many cyan ? -> divided by g.HUNDRED again, let's see
                     if (api.x[api.nrow - 1, 7] == api.x[api.nrow - 2, 7])
                         api.x[api.nrow - 1, 11] = api.x[api.nrow - 2, 11];
                     else if (api.x[api.nrow - 1, 3] / g.HUNDRED > api.x[api.nrow - 2, 3] / g.HUNDRED)
@@ -335,18 +340,37 @@ namespace New_Tradegy.Library.Listeners
                         api.x[api.nrow - 1, 11] = 0;
                 }
 
+
+
+
+
+                totalSeconds = Utils.TimeUtils.total_Seconds(api.틱의시간[0], HHmmss); // second can be zero, oops
+                double 틱매수체결배수 = 0.0;
+                double 틱매도체결배수 = 0.0;
+                if (MathUtils.IsSafeToDivide(totalSeconds)) 
+                {
+                    multiple_factor = 0.0;
+                    if (data.Statistics.일평균거래량 > 100)
+                        multiple_factor = 60.0 / totalSeconds * 380.0 / data.Statistics.일평균거래량 * 10.0; 
+                    틱매수체결배수 = (현누적매수체결거래량 - api.틱매수량[0]) * multiple_factor; 
+                    틱매도체결배수 = (현누적매도체결거래량 - api.틱매도량[0]) * multiple_factor; 
+                }
+
+
+
+                
                 // ⏩ Optional next: tick + minute shifting + post_real + index sync
                 api.AppendTick(
                     t,
                     HHmmss,
                     현누적매수체결거래량,
                     현누적매도체결거래량,
-                    api.틱매수량[0],
-                    api.틱매도량[0],
+                    틱매수체결배수,
+                    틱매도체결배수,
                     multiple_factor,
-                    api.전일종가 / g.천만원
+                    api.전일종가 / g.천만원 // used as money_factor
                 );
-                api.AppendMinuteIfNeeded(append);
+                api.AppendMinuteIfNeeded(append); // if append == false, just return 
             }
 
 

@@ -226,7 +226,7 @@ namespace New_Tradegy.Library.IO
                 if (t.Api.nrow > g.Npts[1]) // set g.Npts[1] the max. of nrow
                 {
                     g.Npts[1] = t.Api.nrow;
-                    g.MAX_ROW = t.Api.nrow;
+                   // g.MAX_ROW = t.Api.nrow;
                 }
                     
 

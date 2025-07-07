@@ -193,7 +193,8 @@ namespace New_Tradegy.Library.Models
         public int 매도배;
 
 
-        public void AppendTick(int[] t, int HHmmss, double currBuyVol, double currSellVol, long prevBuyVol, long prevSellVol, double multipleFactor, double moneyFactor)
+        public void AppendTick(int[] t, int HHmmss, double 현누적매수체결거래량, double 현누적매도체결거래량,
+            double 틱매수체결배수, double 틱매도체결배수, double multipleFactor, double moneyFactor)
         {
             for (int i = MajorIndex.TickArraySize - 1; i >= 1; i--)
             {
@@ -205,14 +206,17 @@ namespace New_Tradegy.Library.Models
                 틱매도량[i] = 틱매도량[i - 1];
                 틱매수배[i] = 틱매수배[i - 1];
                 틱매도배[i] = 틱매도배[i - 1];
+
                 틱배수차[i] = 틱배수차[i - 1];
                 틱배수합[i] = 틱배수합[i - 1];
+
                 틱프로량[i] = 틱프로량[i - 1];
                 틱프로천[i] = 틱프로천[i - 1];
                 틱외인량[i] = 틱외인량[i - 1];
                 틱외인천[i] = 틱외인천[i - 1];
                 틱거래천[i] = 틱거래천[i - 1];
                 틱프외퍼[i] = 틱프외퍼[i - 1];
+
                 틱매도잔[i] = 틱매도잔[i - 1];
                 틱매수잔[i] = 틱매수잔[i - 1];
             }
@@ -221,11 +225,11 @@ namespace New_Tradegy.Library.Models
             틱의가격[0] = 가격;
             틱의수급[0] = 수급;
             틱의체강[0] = (int)(체강 * g.HUNDRED);
-            틱매수량[0] = (int)currBuyVol;
-            틱매도량[0] = (int)currSellVol;
+            틱매수량[0] = (int)현누적매수체결거래량;
+            틱매도량[0] = (int)현누적매도체결거래량;
 
-            틱매수배[0] = (int)((currBuyVol - prevBuyVol) * multipleFactor);
-            틱매도배[0] = (int)((currSellVol - prevSellVol) * multipleFactor);
+            틱매수배[0] = (int)틱매수체결배수; //??
+            틱매도배[0] = (int)틱매도체결배수;
             틱배수차[0] = 틱매수배[0] - 틱매도배[1];
             틱배수합[0] = 틱매수배[0] + 틱매도배[1];
 
@@ -251,8 +255,10 @@ namespace New_Tradegy.Library.Models
                 분프로천[i] = 분프로천[i - 1];
                 분외인천[i] = 분외인천[i - 1];
                 분거래천[i] = 분거래천[i - 1];
+
                 분매수배[i] = 분매수배[i - 1];
                 분매도배[i] = 분매도배[i - 1];
+
                 분배수차[i] = 분배수차[i - 1];
                 분배수합[i] = 분배수합[i - 1];
             }

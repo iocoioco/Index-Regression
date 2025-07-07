@@ -18,9 +18,8 @@ using New_Tradegy.Library.Core;
 
 namespace New_Tradegy.Library.Listeners
 {
-    class BookBidGenerator
+    public class BookBidGenerator
     {
-
         private CPUTILLib.CpStockCode _stockCodeService = new CPUTILLib.CpStockCode();
         private DSCBO1Lib.StockJpbid _jpbidPrimary;
         private DSCBO1Lib.StockJpbid2 _jpbidSecondary;
@@ -41,7 +40,7 @@ namespace New_Tradegy.Library.Listeners
             int w0 = 61, w1 = 50, w2 = 61;
             int cellHeight = 28;
 
-        
+            // 1. DataTable 생성 및 초기화
             _dataTable = new DataTable();
             _dataTable.Columns.Add("매도");
             _dataTable.Columns.Add("호가");
@@ -50,18 +49,15 @@ namespace New_Tradegy.Library.Listeners
             for (int i = 0; i < 2 * Rows + 2; i++)
                 _dataTable.Rows.Add("", "", "");
 
-            _dataGridView = new DataGridView();
-            //_dataGridView.AutoGenerateColumns = true;
-            _dataGridView.DataSource = _dataTable;
-
+            // 2. DataGridView 생성 및 설정 (단 한 번만)
             _dataGridView = new DataGridView
             {
                 Name = _stock,
                 Location = new Point(0, 0), // temporary location
-                Size = new Size(w0 + w1 + w2, cellHeight * 12 ),
+                Size = new Size(w0 + w1 + w2, cellHeight * 12),
                 Dock = DockStyle.None,
                 TabIndex = 1,
-                DataSource = _dataTable,
+                DataSource = _dataTable, // ✅ DataSource 포함
                 ColumnHeadersVisible = false,
                 RowHeadersVisible = false,
                 ReadOnly = true,
@@ -75,45 +71,38 @@ namespace New_Tradegy.Library.Listeners
                 RowTemplate = { Height = 28 },
                 ColumnHeadersDefaultCellStyle = { Font = new Font("Arial", 9, FontStyle.Bold) },
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
+                BackgroundColor = Color.LightYellow
             };
 
-
-            // Event handlers
+            // 3. 이벤트 핸들러 등록
             _dataGridView.DataError += (s, e) => FileOut.DataGridView_DataError(s, e, $"jpjd {_dataGridView.Name}");
             _dataGridView.DataError += new DataGridViewDataErrorEventHandler(OnDataError);
             _dataGridView.CellMouseClick += new DataGridViewCellMouseEventHandler(OnCellMouseClick);
 
-            // Subscription
+            // 4. 호가 데이터 구독 설정
             string stockcode = _stockCodeService.NameToCode(_stock);
             _jpbidPrimary = new DSCBO1Lib.StockJpbid();
             _jpbidPrimary.SetInputValue(0, stockcode);
             _jpbidPrimary.Received += new DSCBO1Lib._IDibEvents_ReceivedEventHandler(OnBookBidReceived);
 
-            bool a = g.connected; //?
-            _jpbidPrimary.Subscribe();
-
             if (g.BookBidInstances.ContainsKey(_stock))
                 return null;
 
             g.BookBidInstances.TryAdd(_stock, _jpbidPrimary);
-            
-            // added after discussing Sensei
-            //_dataGridView.BorderStyle = BorderStyle.Fixed3D;
-            _dataGridView.BackgroundColor = Color.LightYellow;
+            _jpbidPrimary.Subscribe();
 
+            // 5. Form에 추가
             g.MainForm.Controls.Add(_dataGridView);
-
-            // setting invisible
             _dataGridView.Visible = false;
 
+            // 6. 데이터 요청 및 정렬
             RequestQuote();
 
             _dataGridView.BringToFront();
             g.ChartManager.Chart1.SendToBack();
 
             _dataGridView.Visible = true;
-            //g.MainForm.Controls.SetChildIndex(_dataGridView, 0);
 
             _dataGridView.Columns[0].Width = w0;
             _dataGridView.Columns[1].Width = w1;
@@ -121,6 +110,8 @@ namespace New_Tradegy.Library.Listeners
 
             return _dataGridView;
         }
+
+
 
         /// <summary>
         /// Open the Form_매수_매도 to confirm a deal
@@ -160,9 +151,11 @@ namespace New_Tradegy.Library.Listeners
         {
             foreach (Form form in Application.OpenForms)
             {
-                if (form is Form_매수_매도 tradeForm && tradeForm._stock == stockName)
+                if (form is Form_매수_매도 tradeForm &&
+                    !string.IsNullOrEmpty(tradeForm._stock) &&
+                    tradeForm._stock.Trim() == stockName.Trim())
                 {
-                    return tradeForm; // Found an open form for the stock
+                    return tradeForm;
                 }
             }
             return null; // No open form found
@@ -300,8 +293,12 @@ namespace New_Tradegy.Library.Listeners
             // Step 3: Dispose of DataGridView safely
             if (_dataGridView != null)
             {
+                var parent = _dataGridView.Parent;
+                if (parent != null)
+                    parent.Controls.Remove(_dataGridView); // ✅ 폼에서 제거
+
                 _dataGridView.Dispose();
-                _dataGridView = null; // Ensure reference is cleared
+                _dataGridView = null;
             }
 
             // Step 4: Nullify _jpbidPrimary for garbage collection
@@ -313,6 +310,30 @@ namespace New_Tradegy.Library.Listeners
         {
             lock (g.lockObject)
             {
+                //                (int row, int col, int header)[] mapping = new[]
+                //{
+                //    (4, 1, 3), (5, 1, 4), (4, 0, 5), (5, 2, 6),
+                //    (3, 1, 7), (6, 1, 8), (3, 0, 9), (6, 2, 10),
+                //    ...
+                //};
+
+                //                foreach (var (row, col, header) in mapping)
+                //                    _dataTable.Rows[row][col] = _jpbidPrimary.GetHeaderValue(header).ToString();
+
+                //string GetValue(int index)
+                //{
+                //    try { return _jpbidPrimary.GetHeaderValue(index).ToString(); }
+                //    catch { return ""; } // 또는 기본값 "0"
+                //}
+
+
+                //int SafeParse(object obj)
+                //{
+                //    return int.TryParse(obj?.ToString(), out int val) ? val : 0;
+                //}
+
+
+
                 // Begin batch update to minimize UI refreshes
                 _dataGridView.SuspendLayout();
 
@@ -427,6 +448,21 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         private void RequestQuote()
         {
+
+            //int TryParseSafe(object obj)
+            //{
+            //    return int.TryParse(obj?.ToString(), out int val) ? val : 0;
+            //}
+
+            //if (Rows == 5)
+            //    FillFiveRowBookBid();
+            //else
+            //    FillTenRowBookBid();
+
+
+
+
+
             if (!g.StockRepository.TryGet(_stock, out var data))
                 return;
 
@@ -519,6 +555,12 @@ namespace New_Tradegy.Library.Listeners
         // Sensei 20250420
         private void RequestQuoteExtra()
         {
+            // Convert.ToInt32(...)는 예외 발생 위험
+            //int.TryParse(_dataTable.Rows[Rows - 1][1]?.ToString(), out data.Api.매도1호가);
+            //int.TryParse(_dataTable.Rows[Rows][1]?.ToString(), out data.Api.매수1호가);
+
+
+
             if (!g.StockRepository.TryGet(_stock, out var data))
                 return;
 
@@ -552,8 +594,7 @@ namespace New_Tradegy.Library.Listeners
             }
 
 
-
-
+            //??
             double factor = 0.0;
             double differ = 0.0;
             if (data.Api.전일종가 > 0)
@@ -564,7 +605,7 @@ namespace New_Tradegy.Library.Listeners
             data.Api.가격 = data.Api.틱의가격[0];
 
             data.Api.틱매도잔[0] = data.Api.최우선매도호가잔량;
-            data.Api.틱매수잔[0] = data.Api.최우선매도호가잔량;
+            data.Api.틱매수잔[0] = data.Api.최우선매수호가잔량; //??
 
             // 푀누억
             if (_stock.Contains("KODEX"))
@@ -601,9 +642,23 @@ namespace New_Tradegy.Library.Listeners
             _dataTable.Rows[2 * Rows + 1][2] = data.Deal.보유량.ToString() + "/" + data.Deal.수익률.ToString("F2");
 
 
+
+
+
+            //for (int i = 0; i < _dataGridView.Rows.Count; i++)
+            //{
+            //    for (int j = 0; j < _dataGridView.Columns.Count; j++)
+            //    {
+            //        _dataGridView.Rows[i].Cells[j].Style.BackColor = Color.White;
+            //    }
+            //}
+
             for (int i = 0; i < 2 * Rows - 2; i++)
             {
-                _dataGridView.Rows[i].Cells[1].Style.BackColor = Color.White; // red
+                if (_dataGridView.Rows.Count > 0 && _dataGridView.Rows[0].Cells.Count > 1)
+                {
+                    _dataGridView.Rows[0].Cells[1].Style.BackColor = Color.White;
+                }
             }
 
 
@@ -738,10 +793,18 @@ namespace New_Tradegy.Library.Listeners
         {
             // Example logging to a text file
             string filePath = @"C:\병신\LogFile.txt";
-            using (StreamWriter writer = new StreamWriter(filePath, true))
+
+            try
             {
-                writer.WriteLine($"[{DateTime.Now}] An error occurred: {ex.Message}");
-                writer.WriteLine(ex.StackTrace);
+                using (StreamWriter writer = new StreamWriter(filePath, true))
+                {
+                    writer.WriteLine($"[{DateTime.Now}] An error occurred: {ex.Message}");
+                    writer.WriteLine(ex.StackTrace);
+                }
+            }
+            catch
+            {
+                // 로그 실패 시 아무 것도 하지 않음 (또는 Debug.WriteLine 정도만)
             }
         }
 
@@ -769,78 +832,3 @@ namespace New_Tradegy.Library.Listeners
         #endregion
     }
 }
-
-
-// updated on 20241020, lock, BeginLoadData, EndLoadData added
-//private void OnBookBidReceived_new()
-//{
-//    lock (g.lockObject)
-//    {
-//        // Begin batch update to minimize UI refreshes
-//        _dataGridView.SuspendLayout();
-
-//        try
-//        {
-
-//            if (Rows == 5)
-//            {
-//                for (int i = 0; i < 5; i++) // Loop for 5 rows
-//                {
-//                    int headerIndex = 3 + (i * 4); // Dynamically calculate header index
-//                    _dataTable.Rows[4 - i][1] = _jpbidPrimary.GetHeaderValue(headerIndex).ToString();       // Middle column (prices for selling)
-//                    _dataTable.Rows[5 + i][1] = _jpbidPrimary.GetHeaderValue(headerIndex + 1).ToString(); // Middle column (prices for buying)
-//                    _dataTable.Rows[4 - i][0] = _jpbidPrimary.GetHeaderValue(headerIndex + 2).ToString(); // Left column (selling amounts)
-//                    _dataTable.Rows[5 + i][2] = _jpbidPrimary.GetHeaderValue(headerIndex + 3).ToString(); // Right column (buying amounts)
-//                }
-
-//                // Handling the last row for the 10th price (if applicable)
-//                _dataTable.Rows[10][0] = _jpbidPrimary.GetHeaderValue(23).ToString(); // Last selling amount
-//                _dataTable.Rows[10][2] = _jpbidPrimary.GetHeaderValue(24).ToString(); // Last buying amount
-//            }
-
-//            else
-//            {
-//                for (int i = 0; i < 5; i++) // Selling Side
-//                {
-//                    int headerIndex = 19 - (i * 2); // Adjusting the header index dynamically
-//                    int rowIndex = 9 - i; // Adjusting the DataTable row index for the top 5 rows
-
-//                    // Setting the selling price and divided amounts
-//                    _dataTable.Rows[rowIndex][1] = _jpbidPrimary.GetHeaderValue(headerIndex).ToString();
-//                    _dataTable.Rows[rowIndex][0] = (_jpbidPrimary.GetHeaderValue(headerIndex - 1).ToString()) + "/" +
-//                                            (_jpbidPrimary.GetHeaderValue(headerIndex - 1).ToString());
-//                    _dataTable.Rows[rowIndex][2] = ""; // Placeholder for extra data (can be updated with magenta "0")
-//                }
-
-//                for (int i = 0; i < 5; i++) // Buying Side
-//                {
-//                    int headerIndex = 20 + (i * 2); // Adjusting the header index dynamically
-//                    int rowIndex = 9 + i; // Adjusting the DataTable row index for the bottom 5 rows
-
-//                    // Setting the buying price and divided amounts
-//                    _dataTable.Rows[rowIndex][1] = _jpbidPrimary.GetHeaderValue(headerIndex).ToString();
-//                    _dataTable.Rows[rowIndex][0] = ""; // Placeholder for selling amounts
-//                    _dataTable.Rows[rowIndex][2] = (_jpbidPrimary.GetHeaderValue(headerIndex + 1).ToString()) + "/" +
-//                                            (_jpbidPrimary.GetHeaderValue(headerIndex + 1).ToString());
-//                }
-//            }
-
-//            // Additional logic for monitoring prices, for example
-//            string code = _jpbidPrimary.GetHeaderValue(0).ToString();
-//            string stock = _stockCodeService.CodeToName(code).ToString();
-
-//            StockExchange.Instance.MonitorPrices(stock,
-//                Convert.ToInt32(_dataTable.Rows[Rows - 1][0]),
-//                Convert.ToInt32(_dataTable.Rows[Rows - 1][1]),
-//                Convert.ToInt32(_dataTable.Rows[Rows][2]),
-//                Convert.ToInt32(_dataTable.Rows[Rows][1]));
-
-//            RequestQuoteExtra();
-//        }
-//        finally
-//        {
-//            // End batch update
-//            _dataGridView.ResumeLayout();
-//        }
-//    }
-//}

@@ -40,6 +40,8 @@ namespace New_Tradegy.Library.IO
         // modified by Sensei
         public static async Task SaveAllStocks()
         {
+            return; //??
+
             if (g.test || !g.connected)
                 return; // ❌ Don't save during test mode or not connected
 
