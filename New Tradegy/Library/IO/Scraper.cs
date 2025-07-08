@@ -14,6 +14,7 @@ using System.Collections;
 using New_Tradegy.Library.Trackers;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net.Http;
 
 namespace New_Tradegy.Library.IO
 {
@@ -380,14 +381,7 @@ namespace New_Tradegy.Library.IO
         {
             int time_now_6int = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
 
-            List<string> four_index = new List<string>();
-
-            four_index.Add("KODEX 레버리지");
-            four_index.Add("KODEX 코스닥150레버리지");
-            four_index.Add("KODEX 200선물인버스2X");
-            four_index.Add("KODEX 코스닥150선물인버스");
-
-            foreach (var item in four_index)
+            foreach (var item in g.StockManager.IndexList)
             {
                 var data = g.StockRepository.TryGetDataOrNull(item);
                 if (data == null)
@@ -440,7 +434,13 @@ namespace New_Tradegy.Library.IO
                 try
                 {
                     // Load the page asynchronously
-                    doc = web.Load(url);  // HtmlAgilityPack does not support async loading directly, so this remains synchronous
+                    // old doc = web.Load(url);  // HtmlAgilityPack does not support async loading directly, so this remains synchronous
+                    using (var client = new HttpClient())
+                    {
+                        string html = await client.GetStringAsync(url);
+                        doc = new HtmlDocument();
+                        doc.LoadHtml(html);
+                    }
                 }
                 catch (Exception e)
                 {

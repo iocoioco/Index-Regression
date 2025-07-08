@@ -360,7 +360,7 @@ namespace New_Tradegy
                     break;
 
                 case "그순":
-                    RankLogic.RankByMode();
+                    RankLogic.RankProcedure();
                     if (g.GroupManager.GroupRankingList.Count > 0)
                     {
                         var topStocks = g.GroupManager.GetTopStocksFromTopGroups(existing: displayList);

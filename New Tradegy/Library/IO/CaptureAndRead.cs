@@ -10,13 +10,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Tesseract;
+using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.IO
 {
     internal class CaptureAndRead
     {
 
-        public static async void CaptureAndReadNasdaqIndex()
+        public static async Task NasdaqIndex()
         {
             while (true)
             {
@@ -60,8 +61,23 @@ namespace New_Tradegy.Library.IO
                 // 3. Convert to double
                 double.TryParse(firstFive, out double currentNasdaq);
 
-                double change = (currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis;
-                
+                double NasdaqIndex = (currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis;
+                // Update the global data table
+
+                if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
+                    g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString());
+
+                // update the Nasdaq Index value
+                DateTime date = DateTime.Now;
+                int HHmm = Convert.ToInt32(date.ToString("HHmm"));
+
+                // Check if the task should be performed based on time and day
+                if (wk.isWorkingHour())
+                {
+                    AppendOrReplaceNasdaqIndex();
+                }
+
+                Thread.Sleep(1500);
 
                 //stopwatch.Stop();
                 //double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
@@ -191,6 +207,40 @@ namespace New_Tradegy.Library.IO
                 }
             }
             return result;
+        }
+
+        public static void AppendOrReplaceNasdaqIndex()
+        {
+            int time_now_6int = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
+
+            foreach (var item in g.StockManager.IndexList)
+            {
+                var data = g.StockRepository.TryGetDataOrNull(item);
+                if (data == null)
+                {
+                    continue;
+                }
+
+                int time_befr_6int = data.Api.x[data.Api.nrow - 1, 0];
+                bool append;
+
+                // 초는 포함하지 않는 시간 비교
+                if (time_now_6int / 100 != time_befr_6int / 100) // times differ or time is 859, append
+                    append = true;
+                else
+                    append = false;
+
+                int append_or_replace_row;
+                if (append)
+                    append_or_replace_row = data.Api.nrow;
+                else
+                    append_or_replace_row = data.Api.nrow - 1;
+
+                if (append_or_replace_row >= g.MAX_ROW)
+                    return;
+
+                data.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
+            }
         }
     }
 }

@@ -46,7 +46,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 PostProcessor.post_test();
 
             if (Eval)
-                RankLogic.RankByMode();
+                RankLogic.RankProcedure();
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
                 PostProcessor.ManageChart1Invoke();

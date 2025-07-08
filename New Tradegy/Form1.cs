@@ -218,13 +218,12 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                
                 Task.Run(() => MarketEyeBatchDownloader.RunDownloaderLoop());
+                Task.Run(() => CaptureAndRead.NasdaqIndex());
 
-                Task task_us_indices_futures = Task.Run(Scraper.task_us_indices_futures);
-                Task task_major_indices = Task.Run(Scraper.task_major_indices);
+                _= Task.Run(Scraper.task_major_indices); // ✅ fire-and-forget, clean
+                _ = Task.Run(runKOSPIUpdater);
+                _ = Task.Run(runKOSDAQUpdater);
 
-                // updated on 20241020 0300
-                Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
-                Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
 
                 //var evalDrawTimer = new System.Windows.Forms.Timer();
                 //evalDrawTimer.Interval = 750; // like before
@@ -248,7 +247,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             };
 
             // use Panel in RankLogic
-            // RankLogic.RankByModes(); // duration : 0.025 ~ 0.054 seconds
+            // RankLogic.RankByMode(); // duration : 0.025 ~ 0.054 seconds
 
             g.ChartMain = new ChartMain(); // all new, Form_1 start
             g.ChartMain.RefreshMainChart();
@@ -273,7 +272,7 @@ namespace New_Tradegy // added for test on 20241020 0300
         //        wk.isWorkingHour())
         //    {
         //        if (g.MarketeyeCount % 20 == 1) // 
-        //            RankLogic.RankByMode(); // or your new eval method
+        //            RankLogic.RankProcedure(); // or your new eval method
 
         //        PostProcessor.ManageChart1Invoke();
         //        PostProcessor.ManageChart2Invoke();
@@ -339,7 +338,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 {
                     int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
 
-                    if (HHmm >= 0700 && HHmm <= 1530)
+                    if (wk.isWorkingHour())
                     {
                         //Logger.Info("Attempting to fetch KOSPI data...");
 
@@ -385,7 +384,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     }
 
                     // Wait for 15 seconds before the next iteration
-                    await Task.Delay(15000, cancellationToken);
+                    await Task.Delay(1500, cancellationToken);
                 }
             }
         }
@@ -423,7 +422,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     {
                         int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
 
-                        if (HHmm >= 0700 && HHmm <= 1530)
+                        if (wk.isWorkingHour())
                         {
                             //Logger.Info("Attempting to fetch KOSDAQ data...");
 
@@ -478,7 +477,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     }
 
                     // Wait for 15 seconds before the next iteration
-                    await Task.Delay(15000, cancellationToken);
+                    await Task.Delay(1500, cancellationToken);
                 }
             }
         }

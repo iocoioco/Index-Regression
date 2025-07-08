@@ -105,7 +105,7 @@ namespace New_Tradegy.Library
             if (g.controlPane.GetCellValue(0, 0) != date)
                 g.controlPane.SetCellValue(0, 0, date);
 
-            RankLogic.RankByMode(); // date backwards forwards
+            RankLogic.RankProcedure(); // date backwards forwards
             ActionCode.New(true, false, eval: true, draw: 'B').Run();
         }
 

@@ -61,7 +61,7 @@ namespace New_Tradegy.Library.Listeners
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"❗DownloadBatchAsync failed: {ex.Message}");
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❗DownloadBatch failed: {ex.Message}");
                     }
                 }
 

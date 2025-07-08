@@ -77,7 +77,7 @@ namespace New_Tradegy.Library.PostProcessing
 
             if (g.MarketeyeCount % g.MarketeyeCountDivider == 1)
             {
-                RankLogic.RankByMode();
+                RankLogic.RankProcedure();
             }
 
             foreach (var data in downloadedList)

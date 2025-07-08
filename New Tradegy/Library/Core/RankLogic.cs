@@ -20,7 +20,7 @@ namespace New_Tradegy.Library.Core
                 .ToList();
         }
 
-        public static void RankByMode()
+        public static void RankProcedure()
         {
             // Stopwatch sw = Stopwatch.StartNew();
             
@@ -38,7 +38,7 @@ namespace New_Tradegy.Library.Core
             RankBy등합();
             RankGroup(); // re-evaluate groups after stock ranking
 
-            RankByModes();
+            RankByMode();
 
             //sw.Stop();
             //double sec = sw.Elapsed.TotalSeconds;
@@ -98,6 +98,7 @@ namespace New_Tradegy.Library.Core
             // 등합 점수 계산 (가중치 반영 가능)
             foreach (var data in selectedDatas)
             {
+                // double percentile = (double)rank / list.Count; normalized 0.0 ~ 1.0
                 data.Score.등합 =
                     data.Score.푀분_등수 * WeightManager.Weights["푀분"] +
                     data.Score.배차_등수 * WeightManager.Weights["배차"] +
@@ -130,7 +131,7 @@ namespace New_Tradegy.Library.Core
 
 
         // called by post_real, click, keys, history
-        public static void RankByModes()
+        public static void RankByMode()
         {
             var repo = g.StockRepository;
             var resultList = new List<(double value, string code)>();
