@@ -98,7 +98,7 @@ namespace New_Tradegy.Library
 
         // PostControl
         public static int postIntervalTime = 30 * 1000; // seconds to be interpolated to 1 minutes
-
+        public static double NasdaqBasis;
         // MiscControl
         public static char PeoridNews = 'd'; // google search 'd' past day, 'w' past month
 

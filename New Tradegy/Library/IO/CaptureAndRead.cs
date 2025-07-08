@@ -9,17 +9,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Tesseract;
 
 namespace New_Tradegy.Library.IO
 {
     internal class CaptureAndRead
     {
+
         public static async void CaptureAndReadNasdaqIndex()
         {
             while (true)
             {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
+                //Stopwatch stopwatch = new Stopwatch();
+                //stopwatch.Start();
 
                 // 1920 1080 vs 3840 2160
                 // Define the area to capture (adjust as needed)
@@ -56,13 +58,13 @@ namespace New_Tradegy.Library.IO
                 string firstFive = cleaned.Length >= 5 ? cleaned.Substring(0, 5) : cleaned;
 
                 // 3. Convert to double
-                double.TryParse(firstFive, out double result);
+                double.TryParse(firstFive, out double currentNasdaq);
 
-
+                double change = (currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis;
                 
 
-                stopwatch.Stop();
-                double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+                //stopwatch.Stop();
+                //double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
             }
         }
 

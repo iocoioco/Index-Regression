@@ -445,6 +445,13 @@ namespace New_Tradegy.Library.IO
 
             strs = grlines[3].Split(' ');
             g.date = Convert.ToInt32(strs[0]);
+
+            strs = grlines[4].Split(' ');
+            double.TryParse(strs[0], out double currentNasdaqValue);
+            double.TryParse(strs[1], out double percentage);
+
+            g.NasdaqBasis = currentNasdaqValue / (1.0 + percentage);
+
             //if (strs[1] == "w" || strs[1] == "W")
             //{
             //    g.workingday = true;
