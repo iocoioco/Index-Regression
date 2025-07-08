@@ -186,7 +186,7 @@ namespace New_Tradegy.Library.Trackers
 
                     _table.Rows[i][0] = group.Title;
                     _table.Rows[i][1] = group.푀분.ToString("F0");
-                    _table.Rows[i][2] = group.TotalScore.ToString("F0");
+                    _table.Rows[i][2] = group.배차.ToString("F0");
                 }
             }
             finally

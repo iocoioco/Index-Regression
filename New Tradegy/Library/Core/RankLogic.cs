@@ -355,7 +355,7 @@ namespace New_Tradegy.Library.Core
                     count++;
                 }
 
-                if (count > 0)
+                if (count > 1)
                 {
                     group.등합_등수 /= count;
                     group.푀분 /= count;

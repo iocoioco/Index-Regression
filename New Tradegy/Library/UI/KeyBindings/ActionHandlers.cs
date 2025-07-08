@@ -479,7 +479,16 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 string caption = "Save all stocks ?";
                 string message = "모든 파일 현재 시간 기준 저장";
                 string default_option = "No";
+
+
+                //Form1.Instance.BringToFront();
+                //Form1.Instance.Activate();
+                //Form1.Instance.Focus();
+
+                // string result = StringUtils.message(Form1.Instance, caption, message, default_option);
+
                 string result = StringUtils.message(caption, message, default_option);
+
 
                 if (result == "Yes")
                     await FileOut.SaveAllStocks();

@@ -495,8 +495,8 @@ namespace New_Tradegy.Library.PostProcessing
                         selected = i - 1;
                         break;
                     }
-                    double elapsed = Utils.TimeUtils.total_Seconds(api.틱의시간[i], api.틱의시간[0]);
-                    if (elapsed > g.postInterval)
+                    double elapsedMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[i], api.틱의시간[0]);
+                    if (elapsedMilliSeconds > g.postIntervalTime)
                     {
                         selected = i;
                         break;
@@ -508,25 +508,27 @@ namespace New_Tradegy.Library.PostProcessing
 
                 if (selected > 0)
                 {
-                    double totalSeconds = Utils.TimeUtils.total_Seconds(api.틱의시간[selected], api.틱의시간[0]);
-                    if (totalSeconds == 0) return;
+                    double totalMilliSeconds = 
+                        Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[selected], api.틱의시간[0]);
+                    if (totalMilliSeconds == 0) return;
 
                     int amount = api.틱매수량[0] - api.틱매수량[selected] + api.틱매도량[0] - api.틱매도량[selected];
                     int progAmount = api.틱프로량[0] - api.틱프로량[selected];
                     int foreignAmount = api.틱외인량[0] - api.틱외인량[selected];
 
-                    double tmFactor = api.전일종가 / g.천만원 / totalSeconds * 60;
-                    double multiFactor = 60.0 / totalSeconds * 380.0 / data.Statistics.일평균거래량;
+                    double moneyFactor = api.전일종가 / g.천만원 / totalMilliSeconds * 60 * 1000;
+                    double multiFactor = 60.0 / totalMilliSeconds * 380.0 * 1000 / data.Statistics.일평균거래량;
 
-                    api.분프로천[0] = (int)(progAmount * tmFactor);
-                    api.분외인천[0] = (int)(foreignAmount * tmFactor);
-                    api.분거래천[0] = (int)(amount * tmFactor);
+                    api.분프로천[0] = (int)(progAmount * moneyFactor);
+                    api.분외인천[0] = (int)(foreignAmount * moneyFactor);
+                    api.분거래천[0] = (int)(amount * moneyFactor);
                     api.분매수배[0] = (int)((api.틱매수량[0] - api.틱매수량[selected]) * multiFactor);
                     api.분매도배[0] = (int)((api.틱매도량[0] - api.틱매도량[selected]) * multiFactor);
                     api.분배수차[0] = api.분매수배[0] - api.분매도배[0];
                     api.분배수합[0] = api.분매수배[0] + api.분매도배[0];
 
-                    post.분당가격차 = (int)((api.틱의가격[0] - api.틱의가격[selected]) / totalSeconds * 60);
+                    post.분당가격차 = (int)((api.틱의가격[0] - api.틱의가격[selected]) / 
+                        totalMilliSeconds * 60 * 1000);
                 }
             }
 

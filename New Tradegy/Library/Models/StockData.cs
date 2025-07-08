@@ -155,7 +155,7 @@ namespace New_Tradegy.Library.Models
         public int[,] x = new int[382, 12];
 
         // 틱 데이터
-        public int[] 틱의시간 = new int[MajorIndex.TickArraySize]; // 틱의시간    // 호가창 tT
+        public long[] 틱의시간 = new long[MajorIndex.TickArraySize]; // 틱의시간    // 호가창 tT
         public int[] 틱의가격 = new int[MajorIndex.TickArraySize]; // 틱의가격    // 호가창
         public int[] 틱의수급 = new int[MajorIndex.TickArraySize]; // 틱의수급
         public int[] 틱의체강 = new int[MajorIndex.TickArraySize]; // 틱의체강
@@ -193,7 +193,7 @@ namespace New_Tradegy.Library.Models
         public int 매도배;
 
 
-        public void AppendTick(int[] t, int HHmmss, double 현누적매수체결거래량, double 현누적매도체결거래량,
+        public void AppendTick(int[] t, int HHmmssfff, double 현누적매수체결거래량, double 현누적매도체결거래량,
             double 틱매수체결배수, double 틱매도체결배수, double multipleFactor, double moneyFactor)
         {
             for (int i = MajorIndex.TickArraySize - 1; i >= 1; i--)
@@ -221,7 +221,7 @@ namespace New_Tradegy.Library.Models
                 틱매수잔[i] = 틱매수잔[i - 1];
             }
 
-            틱의시간[0] = HHmmss;
+            틱의시간[0] = HHmmssfff;
             틱의가격[0] = 가격;
             틱의수급[0] = 수급;
             틱의체강[0] = (int)(체강 * g.HUNDRED);

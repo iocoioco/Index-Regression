@@ -158,11 +158,12 @@ namespace New_Tradegy.Library.Listeners
         }
 
         // CONTINUED REFACTORED _marketeye_received()
-        private static async void HandleBatchData()
+        private static void HandleBatchData()
         {
             DateTime date = DateTime.Now;
             int HHmm = Convert.ToInt32(date.ToString("HHmm"));
             int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
+            int HHmmssfff = Convert.ToInt32(date.ToString("HHmmssfff"));
 
             if (!wk.isWorkingHour()) return;
 
@@ -170,6 +171,8 @@ namespace New_Tradegy.Library.Listeners
             //    return;
 
             int count = (int)_marketeye.GetHeaderValue(2); // number of stocks downloaded
+            if (count != 200)
+                return;
             var downloadList = new List<StockData>();
 
             for (int k = 0; k < count; k++)
@@ -177,7 +180,7 @@ namespace New_Tradegy.Library.Listeners
                 string code = _marketeye.GetDataValue(0, k);
                 var stock = _cpstockcode.CodeToName(code);
             
-                if (!g.StockRepository.Contains(stock))
+                if (!g.StockRepository.Contains(stock)) 
                     continue;
 
                 var data = g.StockRepository.TryGetDataOrNull(stock);
@@ -207,19 +210,22 @@ namespace New_Tradegy.Library.Listeners
                 api.전일종가 = _marketeye.GetDataValue(18, k);
                 api.체강 = (double)_marketeye.GetDataValue(19, k);
 
-                if (api.전일종가 > 100) // zero devider protection
+                if (api.전일종가 > 100 && api.매수1호가 > 100 && api.매도1호가 > 100 && 
+                    api.시초가 > 100 && api.전저가 > 100) // zero devider protection
                 {
                     api.가격 = (int)((api.매수1호가 - (int)api.전일종가) * 10000.0 / api.전일종가);
                     double differ = (api.매도1호가 - api.매수1호가) * 10000.0 / api.전일종가;
                     double factor = 0.0;
                     if (api.최우선매도호가잔량 + api.최우선매수호가잔량 > 0)
                     {
-                        factor = (double)api.최우선매도호가잔량 / (api.최우선매도호가잔량 + api.최우선매수호가잔량);
+                        factor = (double)api.최우선매수호가잔량 / (api.최우선매도호가잔량 + api.최우선매수호가잔량);
                     }
                     api.가격 += (int)(differ * factor);
                     api.시초 = (int)((api.시초가 - (int)api.전일종가) * 10000.0 / api.전일종가);
                     api.전저 = (int)((api.전저가 - (int)api.전일종가) * 10000.0 / api.전일종가);
                 }
+                else
+                    continue;
 
                 if (!g.StockManager.IndexList.Contains(data.Stock))
                 {
@@ -262,11 +268,11 @@ namespace New_Tradegy.Library.Listeners
                     전누적매도체결거래량 = 전거래량 * 100.0 / (100.0 + 전체강);
                 }
 
-                double totalSeconds = Utils.TimeUtils.total_Seconds(api.x[comparison_row, 0], HHmmss);
+                double totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.x[comparison_row, 0], HHmmssfff);
                 double multiple_factor = 0.0;
-                if (MathUtils.IsSafeToDivide(totalSeconds) && data.Statistics.일평균거래량 > 100)
+                if (MathUtils.IsSafeToDivide(totalMilliSeconds) && data.Statistics.일평균거래량 > 100)
                 {
-                    multiple_factor = 60.0 / totalSeconds * 380.0 / data.Statistics.일평균거래량 * 10.0;
+                    multiple_factor = 60.0 / totalMilliSeconds * 380.0 * 1000 / data.Statistics.일평균거래량 * 10.0;
                     api.매수배 = (int)((현누적매수체결거래량 - 전누적매수체결거래량) * multiple_factor);
                     api.매도배 = (int)((현누적매도체결거래량 - 전누적매도체결거래량) * multiple_factor);
                 }
@@ -279,6 +285,8 @@ namespace New_Tradegy.Library.Listeners
                 int[] t = new int[12];
                 t[0] = HHmmss;
                 t[1] = api.가격;
+                if (t[1] > 3000 || t[1] < -3000)
+                    continue;
                 t[2] = api.수급;
                 t[3] = (int)(api.체강 * g.HUNDRED);
                 t[7] = (int)api.거래량;
@@ -344,14 +352,17 @@ namespace New_Tradegy.Library.Listeners
 
 
 
-                totalSeconds = Utils.TimeUtils.total_Seconds(api.틱의시간[0], HHmmss); // second can be zero, oops
+                totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[0], HHmmssfff); // second can be zero, oops
+                if (totalMilliSeconds <= 0)
+                    continue;
+
                 double 틱매수체결배수 = 0.0;
                 double 틱매도체결배수 = 0.0;
-                if (MathUtils.IsSafeToDivide(totalSeconds)) 
+                if (MathUtils.IsSafeToDivide(totalMilliSeconds)) 
                 {
                     multiple_factor = 0.0;
                     if (data.Statistics.일평균거래량 > 100)
-                        multiple_factor = 60.0 / totalSeconds * 380.0 / data.Statistics.일평균거래량 * 10.0; 
+                        multiple_factor = 60.0 / totalMilliSeconds * 380.0  * 1000 / data.Statistics.일평균거래량 * 10.0; 
                     틱매수체결배수 = (현누적매수체결거래량 - api.틱매수량[0]) * multiple_factor; 
                     틱매도체결배수 = (현누적매도체결거래량 - api.틱매도량[0]) * multiple_factor; 
                 }
@@ -362,7 +373,7 @@ namespace New_Tradegy.Library.Listeners
                 // ⏩ Optional next: tick + minute shifting + post_real + index sync
                 api.AppendTick(
                     t,
-                    HHmmss,
+                    HHmmssfff,
                     현누적매수체결거래량,
                     현누적매도체결거래량,
                     틱매수체결배수,
@@ -371,26 +382,28 @@ namespace New_Tradegy.Library.Listeners
                     api.전일종가 / g.천만원 // used as money_factor
                 );
                 api.AppendMinuteIfNeeded(append); // if append == false, just return 
+
+                if (g.StockRepository.Contains("KODEX 레버리지"))
+                {
+                    var kospi = g.StockRepository.TryGetDataOrNull("KODEX 레버리지");
+                    int kospiIndex = kospi.Api.x[kospi.Api.nrow - 1, 1];
+                    MajorIndex.Instance.KospiIndex = kospiIndex;
+                    indexRangeTracker.CheckIndexAndSound(kospiIndex, "Kospi");
+                }
+
+                if (g.StockRepository.Contains("KODEX 코스닥150레버리지"))
+                {
+                    var kosdaq = g.StockRepository.TryGetDataOrNull("KODEX 코스닥150레버리지");
+                    int kosdaqIndex = kosdaq.Api.x[kosdaq.Api.nrow - 1, 1];
+                    MajorIndex.Instance.KosdaqIndex = kosdaqIndex;
+                    indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
+                }
             }
 
 
             PostProcessor.post_real(downloadList);
 
-            if (g.StockRepository.Contains("KODEX 레버리지"))
-            {
-                var kospi = g.StockRepository.TryGetDataOrNull("KODEX 레버리지");
-                int kospiIndex = kospi.Api.x[kospi.Api.nrow - 1, 1];
-                MajorIndex.Instance.KospiIndex = kospiIndex;
-                indexRangeTracker.CheckIndexAndSound(kospiIndex, "Kospi");
-            }
-
-            if (g.StockRepository.Contains("KODEX 코스닥150레버리지"))
-            {
-                var kosdaq = g.StockRepository.TryGetDataOrNull("KODEX 코스닥150레버리지");
-                int kosdaqIndex = kosdaq.Api.x[kosdaq.Api.nrow - 1, 1];
-                MajorIndex.Instance.KosdaqIndex = kosdaqIndex;
-                indexRangeTracker.CheckIndexAndSound(kosdaqIndex, "Kosdaq");
-            }
+            
 
             
             g.MarketeyeCount++;

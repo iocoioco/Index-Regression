@@ -10,6 +10,8 @@ namespace New_Tradegy.Library.Listeners
     {
         private static int repositoryOffset = 0;
 
+        
+
         public static List<string> Select200Batch(
             List<string> indexList,               // 1. Index stocks (always included)
             List<string> holding,                 // 2. Holding stocks
@@ -20,59 +22,56 @@ namespace New_Tradegy.Library.Listeners
         {
             HashSet<string> selected = new HashSet<string>();
 
+            // 🔽 Define IsValid inside so it can access 'selected'
+            bool IsValid(string s) => s != "" && !selected.Contains(s);
+
             // ✅ 1. Add index stocks (no duplicates)
             foreach (var s in indexList)
             {
-                if (!selected.Contains(s))
-                    selected.Add(s);
+                if (IsValid(s)) selected.Add(s);
             }
 
             // ✅ 2. Add from holding up to 100
             foreach (var s in holding)
             {
                 if (selected.Count >= 100) break;
-                if (!selected.Contains(s))
-                    selected.Add(s);
+                if (IsValid(s)) selected.Add(s);
             }
 
             // ✅ 3. Add from interestedWithBid up to 100
             foreach (var s in interestedWithBid)
             {
                 if (selected.Count >= 100) break;
-                if (!selected.Contains(s))
-                    selected.Add(s);
+                if (IsValid(s)) selected.Add(s);
             }
 
             // ✅ 4. Add from interestedOnly up to 100
             foreach (var s in interestedOnly)
             {
                 if (selected.Count >= 100) break;
-                if (!selected.Contains(s))
-                    selected.Add(s);
+                if (IsValid(s)) selected.Add(s);
             }
 
             // ✅ 5. Fill up to 100 with ranked stocks
             foreach (var s in rankedStockList)
             {
                 if (selected.Count >= 100) break;
-                if (!selected.Contains(s))
-                    selected.Add(s);
+                if (IsValid(s)) selected.Add(s);
             }
 
             // ✅ 6. Fill remaining from AllGeneralDatas using rotating offset
-            var repoStockList = g.StockRepository.AllGeneralDatas.Select(x => x.Stock).ToList();
+            var repoAllGeneralStockList = g.StockRepository.AllGeneralDatas.Select(x => x.Stock).ToList();
 
             int remaining = batchSize - selected.Count;
             int i = 0;
-            while (selected.Count < batchSize && repoStockList.Count > 0 && i < repoStockList.Count)
+            while (selected.Count < batchSize && repoAllGeneralStockList.Count > 0 && i < repoAllGeneralStockList.Count)
             {
-                string stock = repoStockList[(repositoryOffset + i) % repoStockList.Count];
-                if (!selected.Contains(stock))
-                    selected.Add(stock);
+                string s = repoAllGeneralStockList[(repositoryOffset + i) % repoAllGeneralStockList.Count];
+                if (IsValid(s)) selected.Add(s);
                 i++;
             }
 
-            repositoryOffset = (repositoryOffset + remaining) % repoStockList.Count;
+            repositoryOffset = (repositoryOffset + remaining) % repoAllGeneralStockList.Count;
 
             return selected.Take(batchSize).ToList();  // Trim in case it's slightly over 200 due to race condition
         }

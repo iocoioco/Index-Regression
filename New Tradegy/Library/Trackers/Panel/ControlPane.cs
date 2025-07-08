@@ -112,7 +112,7 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[8][2] = "배과"; _table.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
             _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
-            _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30; g.postInterval = 30;
+            _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30; g.postIntervalTime = 30;
 
             _table.Rows[10][0] = "Font"; _table.Rows[10][1] = g.v.font = 17; g.v.font /= 2.0f;
 

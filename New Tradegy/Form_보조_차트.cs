@@ -73,7 +73,7 @@ namespace New_Tradegy
         {
             g.ChartManager.SetChart2(chart2);
 
-            
+
             // Configure DataGridView appearance
             ConfigureDataGridView();
             ConfigureChartAndGridSize();
@@ -94,7 +94,7 @@ namespace New_Tradegy
         private void ConfigureChartAndGridSize()
         {
             Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
-            
+
             this.Size = workingRectangle.Size;
             this.Width /= 2;
             this.Width += 10;
@@ -122,7 +122,7 @@ namespace New_Tradegy
             var view = g.groupPane.View;
             view.BringToFront();
 
-           
+
         }
 
         private void ConfigureDataGridView()
@@ -158,8 +158,8 @@ namespace New_Tradegy
 
         public void Form_보조_차트_DRAW()
         {
-
-            DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
+            if (g.EndNptsBeforeExtend == 0) // if not zero, ShortMove or LongMove test
+                DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title 
             UpdateFormTitle();
@@ -560,7 +560,7 @@ namespace New_Tradegy
                 dataGridView1.Columns[i].Width = this.Width / 8;
             }
 
-            
+
 
             int col = 4; // Zero-based → 5th column
             int row = 1; // Zero-based → 2nd row
@@ -585,7 +585,7 @@ namespace New_Tradegy
                 view.BringToFront();  // Optional, depending on layer
             }
 
-            
+
 
 
             int scrollBarWidth = SystemInformation.VerticalScrollBarWidth;

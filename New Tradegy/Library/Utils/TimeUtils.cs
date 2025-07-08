@@ -10,34 +10,53 @@ namespace New_Tradegy.Library.Utils
 {
     internal class TimeUtils
     {
-        public static string six_digit_integer_time_to_string_time(int value)
+        public static int ElapsedMillisecondsInteger(long t1, long t2)
         {
-            int sec = value % 100;
-            int min = value % 10000 / 100;
-            int hour = value / 10000;
-            return hour + ":" + min + ":" + sec;
+            // Parse long time (HHmmssfff) to DateTime
+            DateTime Parse(long t)
+            {
+                int hour = (int)(t / 10000000);
+                int minute = (int)((t / 100000) % 100);
+                int second = (int)((t / 1000) % 100);
+                int millisecond = (int)(t % 1000);
+                return new DateTime(1, 1, 1, hour, minute, second, millisecond);
+            }
+
+            var dt1 = Parse(t1);
+            var dt2 = Parse(t2);
+
+            return (int)Math.Abs((dt2 - dt1).TotalMilliseconds);
+        }
+
+        public static double ElapsedMillisecondsDouble(long t1, long t2)
+        {
+            int h1 = (int)(t1 / 1000000);
+            int m1 = (int)((t1 / 10000) % 100);
+            int s1 = (int)((t1 / 100) % 100);
+            int f1 = (int)(t1 % 1000);
+
+            int h2 = (int)(t2 / 1000000);
+            int m2 = (int)((t2 / 10000) % 100);
+            int s2 = (int)((t2 / 100) % 100);
+            int f2 = (int)(t2 % 1000);
+
+            TimeSpan time1 = new TimeSpan(0, h1, m1, s1, f1);
+            TimeSpan time2 = new TimeSpan(0, h2, m2, s2, f2);
+
+            return (time1 - time2).TotalMilliseconds;
         }
 
 
-        public static int time_to_int(string value)
+
+        public static int TimeToInt(string value)
         {
             string[] words = value.Split(':');
             return Convert.ToInt32(words[0]) * 10000 +
                 Convert.ToInt32(words[1]) * 100 +
                 Convert.ToInt32(words[2]);
         }
-        public static double total_Seconds(int from, int to)
-        {
-            string string_type_from = six_digit_integer_time_to_string_time(from);
-            string string_type_to = six_digit_integer_time_to_string_time(to);
-            double total_seconds = DateTime.Parse(string_type_to).Subtract(DateTime.Parse(string_type_from)).TotalSeconds;
-            return total_seconds;
-        }
-        public static double total_Seconds(string from, string to)
-        {
-            return DateTime.Parse(to).Subtract(DateTime.Parse(from)).TotalSeconds;
-        }
 
+        
         public static void MinuteAdvanceRetreat(int advance_lines)
         {
             if (advance_lines == 0)

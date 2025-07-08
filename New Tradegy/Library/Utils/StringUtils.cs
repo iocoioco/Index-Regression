@@ -526,6 +526,16 @@ namespace New_Tradegy.Library.Utils
                 : options[index + 1];
         }
 
+
+        //public static string message(Form owner, string caption, string message, string defaultOption)
+        //{
+        //    var result = MessageBox.Show(owner, message, caption, MessageBoxButtons.YesNo,
+        //                                 MessageBoxIcon.Question,
+        //                                 defaultOption == "Yes" ? MessageBoxDefaultButton.Button1 : MessageBoxDefaultButton.Button2);
+        //    return result == DialogResult.Yes ? "Yes" : "No";
+        //}
+
+        // replaced by the above method
         public static string message(string caption, string message, string button_selection)
         {
             DialogResult result;
@@ -541,6 +551,7 @@ namespace New_Tradegy.Library.Utils
                 return "No";
             else
                 return "Yes";
+
         }
 
         public static void message(string message)

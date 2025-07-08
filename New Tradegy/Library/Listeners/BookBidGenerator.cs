@@ -580,7 +580,7 @@ namespace New_Tradegy.Library.Listeners
                                         data.Api.틱거래천[i].ToString("F0");
             }
 
-            data.Api.틱의시간[0] = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
+            data.Api.틱의시간[0] = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff"));
 
             data.Api.매도1호가 = Convert.ToInt32(_dataTable.Rows[Rows - 1][1]);
             data.Api.매수1호가 = Convert.ToInt32(_dataTable.Rows[Rows][1]);

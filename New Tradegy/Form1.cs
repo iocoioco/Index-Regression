@@ -24,6 +24,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using New_Tradegy.Library.Trackers.Charting;
 using System.Data;
 using New_Tradegy.Library.PostProcessing;
+using New_Tradegy.Library.Utils;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
@@ -77,6 +78,8 @@ namespace New_Tradegy // added for test on 20241020 0300
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //SoundUtils.Sound("코스피 코스닥", "dn");
+
             _cpcybos = new CPUTILLib.CpCybos();
             _cpcybos.OnDisconnect += CpCybos_OnDisconnect;
 
@@ -86,6 +89,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             }
             else
                 g.connected = true;
+
+            if (!g.connected)
+                g.test = true;
 
             // client area excluding taskbar docked toolbars borders
             // working area excluding taskbar docked toolbars (screen level)
@@ -115,8 +121,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             chart1.Dock = DockStyle.Fill;
             chart1.Margin = new Padding(0);
 
-
-
             if (Environment.MachineName == "HP")
             {
                 this.Location = new Point(0, 0);
@@ -126,7 +130,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             {
                 chart1.Location = new Point(0, 0);
             }
-
 
             this.Controls.Add(this.chart1);
             this.chart1.SendToBack();
@@ -143,10 +146,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockRepository = StockRepository.Instance;
             g.StockManager = new StockManager(g.StockRepository);
 
-
-
-
-
             g.Npts[0] = 0; //
             g.Npts[1] = g.MAX_ROW; //
 
@@ -158,7 +157,7 @@ namespace New_Tradegy // added for test on 20241020 0300
             FileIn.read_제어();
 
             this.FormClosing += Form1_FormClosing;
-            StartNetworkMonitor();
+            // block for the time being and test duration : StartNetworkMonitor();
 
             FileIn.read_삼성_코스피_코스닥_전체종목();  // duration 0.001 seconds
             var NaverList = FileIn.read_그룹_네이버_업종();
@@ -217,7 +216,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                 DealManager.DealDeposit(); // button1 tr(1)
                 // subscribe_8091S(); 회원사별 종목 매수현황
 
-                // updated on 20241020 0300
+               
                 Task.Run(() => MarketEyeBatchDownloader.RunDownloaderLoop());
 
                 Task task_us_indices_futures = Task.Run(Scraper.task_us_indices_futures);

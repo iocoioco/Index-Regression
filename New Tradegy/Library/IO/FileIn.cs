@@ -207,7 +207,7 @@ namespace New_Tradegy.Library.IO
                     if (words.Length < 12) continue;
 
                     int time = words[0].Contains(":")
-                        ? Utils.TimeUtils.time_to_int(words[0])
+                        ? Utils.TimeUtils.TimeToInt(words[0])
                         : Convert.ToInt32(words[0]);
 
                     if (time >= 85959 && time < 152100)
@@ -248,7 +248,7 @@ namespace New_Tradegy.Library.IO
                 t.Api.당일외인순매수량 = last[5];
                 t.Api.당일기관순매수량 = last[6];
 
-                t.Api.틱의시간[0] = last[0];
+                t.Api.틱의시간[0] = last[0] * 1000;
                 t.Api.틱의가격[0] = last[1];
                 t.Api.틱의수급[0] = last[2];
                 t.Api.틱의체강[0] = last[3];

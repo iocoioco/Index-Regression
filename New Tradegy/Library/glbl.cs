@@ -97,7 +97,7 @@ namespace New_Tradegy.Library
         public static bool connected = false; // Daishin API connected or not
 
         // PostControl
-        public static int postInterval = 30; // seconds to be interpolated to 1 minutes
+        public static int postIntervalTime = 30; // seconds to be interpolated to 1 minutes
 
         // MiscControl
         public static char PeoridNews = 'd'; // google search 'd' past day, 'w' past month
