@@ -111,8 +111,8 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[8][0] = "수과"; _table.Rows[8][1] = 20; g.v.수급과장배수 = 20;
             _table.Rows[8][2] = "배과"; _table.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
-            _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivicer = 20;
-            _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30; g.postIntervalTime = 30;
+            _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivider = 20;
+            _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30 * 1000; g.postIntervalTime = 30 * 1000;
 
             _table.Rows[10][0] = "Font"; _table.Rows[10][1] = g.v.font = 17; g.v.font /= 2.0f;
 
@@ -252,10 +252,10 @@ namespace New_Tradegy.Library.Trackers
             {
                 Name = "평가",
                 Values = new[] { 2, 5, 7, 10, 15, 20, 25, 40, 60 },
-                Get = () => g.MarketeyeCountDivicer,
+                Get = () => g.MarketeyeCountDivider,
                 Set = val =>
                 {
-                    g.MarketeyeCountDivicer = val;
+                    g.MarketeyeCountDivider = val;
                     _table.Rows[9][1] = val;
                 }
             };
@@ -263,11 +263,12 @@ namespace New_Tradegy.Library.Trackers
             Settings["초간"] = new ControlSetting
             {
                 Name = "초간",
-                Values = new[] { 10, 15, 20, 25, 30, 40, 50, 60, 70 },
-                Get = () => g.MarketeyeCountDivicer,
+                Values = new[] { 10 * 1000, 15 * 1000, 20 * 1000, 25 * 1000, 
+                    30 * 1000, 40 * 1000, 50 * 1000, 60 * 1000},
+                Get = () => g.MarketeyeCountDivider,
                 Set = val =>
                 {
-                    g.MarketeyeCountDivicer = val;
+                    g.MarketeyeCountDivider = val;
                     _table.Rows[9][3] = val;
                 }
             };

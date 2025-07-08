@@ -12,12 +12,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections;
 using New_Tradegy.Library.Trackers;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace New_Tradegy.Library.IO
 {
     internal class Scraper
     {
         // krw not resolved
+       
+        
+
+
         public static async Task ScrapeUSDKRW()
         {
             string url = "https://kr.investing.com/currencies/usd-krw";

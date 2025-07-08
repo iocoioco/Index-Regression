@@ -117,6 +117,7 @@
     <Compile Include="FormWeights.Designer.cs">
       <DependentUpon>FormWeights.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\IO\CaptureAndRead.cs" />
     <Compile Include="Library\Trackers\Charting\ChartBasic.cs" />
     <Compile Include="Library\Trackers\Charting\ChartGeneral.cs" />
     <Compile Include="Library\Trackers\Charting\ChartMain.cs" />

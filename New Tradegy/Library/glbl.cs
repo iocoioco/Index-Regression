@@ -97,7 +97,7 @@ namespace New_Tradegy.Library
         public static bool connected = false; // Daishin API connected or not
 
         // PostControl
-        public static int postIntervalTime = 30; // seconds to be interpolated to 1 minutes
+        public static int postIntervalTime = 30 * 1000; // seconds to be interpolated to 1 minutes
 
         // MiscControl
         public static char PeoridNews = 'd'; // google search 'd' past day, 'w' past month
@@ -157,7 +157,7 @@ namespace New_Tradegy.Library
 
 
         public static int MarketeyeCount = 0; // total count of API download from start of market
-        public static int MarketeyeCountDivicer = 10; // evaluation of stocks after how many MarketeyeCount increases
+        public static int MarketeyeCountDivider = 10; // evaluation of stocks after how many MarketeyeCount increases
         
         public static int AlarmedHHmm = 0; // to bock alarm repeated like "Taiwan market open"
 

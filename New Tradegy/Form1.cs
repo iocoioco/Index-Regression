@@ -226,10 +226,10 @@ namespace New_Tradegy // added for test on 20241020 0300
                 Task taskKOSPIUpdater = Task.Run(async () => await runKOSPIUpdater());
                 Task taskKOSDAQUpdater = Task.Run(async () => await runKOSDAQUpdater());
 
-                var evalDrawTimer = new System.Windows.Forms.Timer();
-                evalDrawTimer.Interval = 750; // like before
-                evalDrawTimer.Tick += (s, f) => EvalAndDrawTick();
-                evalDrawTimer.Start();
+                //var evalDrawTimer = new System.Windows.Forms.Timer();
+                //evalDrawTimer.Interval = 750; // like before
+                //evalDrawTimer.Tick += (s, f) => EvalAndDrawTick();
+                //evalDrawTimer.Start();
 
             }
 
@@ -264,22 +264,22 @@ namespace New_Tradegy // added for test on 20241020 0300
             return;
         }
 
-        private void EvalAndDrawTick()
-        {
-            int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
-            string day = DateTime.Today.DayOfWeek.ToString();
+        //private void EvalAndDrawTick()
+        //{
+        //    int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
+        //    string day = DateTime.Today.DayOfWeek.ToString();
 
-            if (g.MarketeyeCount > marketeyeCountIncrementCheck &&
-                wk.isWorkingHour())
-            {
-                if (g.MarketeyeCount % 20 == 1) // 
-                    RankLogic.RankByMode(); // or your new eval method
+        //    if (g.MarketeyeCount > marketeyeCountIncrementCheck &&
+        //        wk.isWorkingHour())
+        //    {
+        //        if (g.MarketeyeCount % 20 == 1) // 
+        //            RankLogic.RankByMode(); // or your new eval method
 
-                PostProcessor.ManageChart1Invoke();
-                PostProcessor.ManageChart2Invoke();
-                marketeyeCountIncrementCheck = g.MarketeyeCount;
-            }
-        }
+        //        PostProcessor.ManageChart1Invoke();
+        //        PostProcessor.ManageChart2Invoke();
+        //        marketeyeCountIncrementCheck = g.MarketeyeCount;
+        //    }
+        //}
 
 
         // it runs automatically, when keys in

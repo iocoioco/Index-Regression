@@ -75,7 +75,7 @@ namespace New_Tradegy.Library.PostProcessing
             }
             post_코스닥_코스피_프외_순매수_배차_합산();
 
-            if (g.MarketeyeCount % g.MarketeyeCountDivicer == 1)
+            if (g.MarketeyeCount % g.MarketeyeCountDivider == 1)
             {
                 RankLogic.RankByMode();
             }
@@ -517,13 +517,13 @@ namespace New_Tradegy.Library.PostProcessing
                     int foreignAmount = api.틱외인량[0] - api.틱외인량[selected];
 
                     double moneyFactor = api.전일종가 / g.천만원 / totalMilliSeconds * 60 * 1000;
-                    double multiFactor = 60.0 / totalMilliSeconds * 380.0 * 1000 / data.Statistics.일평균거래량;
+                    double multipleFactor = 60.0 / totalMilliSeconds * 380.0 * 1000 / data.Statistics.일평균거래량;
 
                     api.분프로천[0] = (int)(progAmount * moneyFactor);
                     api.분외인천[0] = (int)(foreignAmount * moneyFactor);
                     api.분거래천[0] = (int)(amount * moneyFactor);
-                    api.분매수배[0] = (int)((api.틱매수량[0] - api.틱매수량[selected]) * multiFactor);
-                    api.분매도배[0] = (int)((api.틱매도량[0] - api.틱매도량[selected]) * multiFactor);
+                    api.분매수배[0] = (int)((api.틱매수량[0] - api.틱매수량[selected]) * multipleFactor);
+                    api.분매도배[0] = (int)((api.틱매도량[0] - api.틱매도량[selected]) * multipleFactor);
                     api.분배수차[0] = api.분매수배[0] - api.분매도배[0];
                     api.분배수합[0] = api.분매수배[0] + api.분매도배[0];
 

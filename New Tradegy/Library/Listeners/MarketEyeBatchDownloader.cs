@@ -400,12 +400,7 @@ namespace New_Tradegy.Library.Listeners
                 }
             }
 
-
             PostProcessor.post_real(downloadList);
-
-            
-
-            
             g.MarketeyeCount++;
         }
 
