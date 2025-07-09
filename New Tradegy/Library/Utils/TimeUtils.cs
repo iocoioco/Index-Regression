@@ -30,14 +30,14 @@ namespace New_Tradegy.Library.Utils
 
         public static double ElapsedMillisecondsDouble(long t1, long t2)
         {
-            int h1 = (int)(t1 / 1000000);
-            int m1 = (int)((t1 / 10000) % 100);
-            int s1 = (int)((t1 / 100) % 100);
+            int h1 = (int)(t1 / 10000000);
+            int m1 = (int)((t1 / 100000) % 100);
+            int s1 = (int)((t1 / 1000) % 100);
             int f1 = (int)(t1 % 1000);
 
-            int h2 = (int)(t2 / 1000000);
-            int m2 = (int)((t2 / 10000) % 100);
-            int s2 = (int)((t2 / 100) % 100);
+            int h2 = (int)(t2 / 10000000);
+            int m2 = (int)((t2 / 100000) % 100);
+            int s2 = (int)((t2 / 1000) % 100);
             int f2 = (int)(t2 % 1000);
 
             TimeSpan time1 = new TimeSpan(0, h1, m1, s1, f1);

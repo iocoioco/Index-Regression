@@ -23,7 +23,9 @@ namespace New_Tradegy.Library.Deals
         private readonly CPTRADELib.CpTd0313 _cptd0313; // 주문관리 (가격 정정 주문) 데이터를 요청
         private readonly CPTRADELib.CpTd0732 _cptd0732; // 주식 결제예정 예수금 가계산 데이터를 요청
         private static CPTRADELib.CpTd0314 _cptd0314; // 주문관리 (취소 주문) 데이터를 요청
-        private static CPTRADELib.CpTdNew5331A _depositQuery; // 계좌별 매수주문 가능 금액/수량 데이터를 요청
+
+        private static CPTRADELib.CpTdNew5331A _cptdnew5331a; //계좌별 매수주문 가능 금액/수량 데이터를 요청;
+
         private readonly CPTRADELib.CpTdNew5331B _cptdnew5331b; // 계좌별 매도주문 가능 수량 데이터를 요청
         private static CPTRADELib.CpTd5339 _cptd5339; // 계좌별 미체가장 잔량 데이터를 요청
         private readonly CPTRADELib.CpTd5341 _cptd5341; // 금일 계좌별 주문/체가 내역 조회 데이터를 요청폗
@@ -134,26 +136,28 @@ namespace New_Tradegy.Library.Deals
             if (_checkedTradeInit == false)
                 return;
 
-            _depositQuery = new CpTdNew5331A();
+            _cptdnew5331a = new CpTdNew5331A();
 
-            if (_depositQuery.GetDibStatus() == 1)
+            if (_cptdnew5331a.GetDibStatus() == 1)
             {
                 Trace.TraceInformation("DibRq 요청 수신대기 중 입니다. 수신이 완료된 후 다시 호출 하십시오.");
                 return;
             }
 
-            _depositQuery.SetInputValue(0, g.Account);  // 계좌번호
-            _depositQuery.SetInputValue(1, "01");       // 상품관리구분코드 : 거래소
-            _depositQuery.SetInputValue(5, "Y");        // Y: Deposit 100 기준
-            _depositQuery.SetInputValue(6, "1");         // '1': 금액조회
+            _cptdnew5331a.SetInputValue(0, g.Account);  // 계좌번호
+            //_cptdnew5331a.SetInputValue(2, ""); // 종목코드
+                                                //_cptdnew5331a.SetInputValue(3, "01"); // 주문호가구분
+            _cptdnew5331a.SetInputValue(1, "01");       // 상품관리구분코드 : 거래소
+            _cptdnew5331a.SetInputValue(5, "Y");        // Y: Deposit 100 기준
+            _cptdnew5331a.SetInputValue(6, '1');         // '1': 금액조회
 
-            int result = _depositQuery.BlockRequest();
+            int result = _cptdnew5331a.BlockRequest();
 
-            string message = _depositQuery.GetDibMsg1();
-            long cashAvailable = 0;
+            string message = _cptdnew5331a.GetDibMsg1();
+        
             try
             {
-                cashAvailable = Convert.ToInt64(_depositQuery.GetHeaderValue(10));
+                g.예치금 = (int)Convert.ToInt64(_cptdnew5331a.GetHeaderValue(10) / 10000);
             }
             catch
             {
@@ -161,10 +165,6 @@ namespace New_Tradegy.Library.Deals
                 return;
             }
 
-            g.예치금 = (int)(cashAvailable / 10000); // 현금주문가능금액 단위변환
-
-           
-      
             if (g.controlPane.GetCellValue(0, 3) != g.예치금.ToString())
             {
                 g.controlPane.SetCellValue(0, 3, g.예치금.ToString());

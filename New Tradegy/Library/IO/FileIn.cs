@@ -450,7 +450,7 @@ namespace New_Tradegy.Library.IO
             double.TryParse(strs[0], out double currentNasdaqValue);
             double.TryParse(strs[1], out double percentage);
 
-            g.NasdaqBasis = currentNasdaqValue / (1.0 + percentage);
+            g.NasdaqBasis = currentNasdaqValue / (1.0 + percentage); // 0 % : g.NasdaqBasis
 
             //if (strs[1] == "w" || strs[1] == "W")
             //{

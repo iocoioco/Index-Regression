@@ -237,7 +237,7 @@ namespace New_Tradegy.Library.PostProcessing
                 if (g.test)
                     row = g.Npts[1] - 1;
                 else
-                    row = api.nrow;
+                    row = api.nrow - 1;
 
                 MajorIndex.Instance.KospiProgramNetBuy += (int)(api.x[row, 4] * money_factor);
                 MajorIndex.Instance.KospiForeignNetBuy += (int)(api.x[row, 5] * money_factor);
@@ -263,7 +263,7 @@ namespace New_Tradegy.Library.PostProcessing
                 if (g.test)
                     row = g.Npts[1] - 1;
                 else
-                    row = api.nrow;
+                    row = api.nrow - 1;
 
                 MajorIndex.Instance.KosdaqProgramNetBuy += (int)(api.x[row, 4] * money_factor);
                 MajorIndex.Instance.KosdaqForeignNetBuy += (int)(api.x[row, 5] * money_factor);
@@ -495,7 +495,10 @@ namespace New_Tradegy.Library.PostProcessing
                         selected = i - 1;
                         break;
                     }
-                    double elapsedMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[i], api.틱의시간[0]);
+                    double elapsedMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[0], api.틱의시간[i]);
+                    //?? negative ? why
+                    if (elapsedMilliSeconds <= 0)
+                        break;
                     if (elapsedMilliSeconds > g.postIntervalTime)
                     {
                         selected = i;
@@ -509,8 +512,8 @@ namespace New_Tradegy.Library.PostProcessing
                 if (selected > 0)
                 {
                     double totalMilliSeconds = 
-                        Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[selected], api.틱의시간[0]);
-                    if (totalMilliSeconds == 0) return;
+                        Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[0], api.틱의시간[selected]);
+                    if (totalMilliSeconds <= 0) return;
 
                     int amount = api.틱매수량[0] - api.틱매수량[selected] + api.틱매도량[0] - api.틱매도량[selected];
                     int progAmount = api.틱프로량[0] - api.틱프로량[selected];

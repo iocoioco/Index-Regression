@@ -268,7 +268,9 @@ namespace New_Tradegy.Library.Listeners
                     전누적매도체결거래량 = 전거래량 * 100.0 / (100.0 + 전체강);
                 }
 
-                double totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.x[comparison_row, 0], HHmmssfff);
+                double totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(HHmmssfff, api.x[comparison_row, 0] * 1000);
+                if (totalMilliSeconds <= 0)
+                    continue;
                 double multiple_factor = 0.0;
                 if (MathUtils.IsSafeToDivide(totalMilliSeconds) && data.Statistics.일평균거래량 > 100)
                 {
@@ -352,7 +354,7 @@ namespace New_Tradegy.Library.Listeners
 
 
 
-                totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[0], HHmmssfff); // second can be zero, oops
+                totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(HHmmssfff, api.틱의시간[0]); // second can be zero, oops
                 if (totalMilliSeconds <= 0)
                     continue;
 

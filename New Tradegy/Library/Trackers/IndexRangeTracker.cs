@@ -26,6 +26,7 @@ namespace New_Tradegy.Library.Trackers
                 for (int i = 0; i < steps; i++)
                 {
                     Utils.SoundUtils.Sound("코스피 코스닥", sound);
+                    break;
                 }
             }
 

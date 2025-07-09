@@ -61,7 +61,7 @@ namespace New_Tradegy.Library.IO
                 // 3. Convert to double
                 double.TryParse(firstFive, out double currentNasdaq);
 
-                double NasdaqIndex = (currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis;
+                MajorIndex.Instance.NasdaqIndex = (float)((currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis * 100);
                 // Update the global data table
 
                 if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
