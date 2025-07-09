@@ -16,7 +16,7 @@ namespace New_Tradegy.Library.IO
 {
     internal class CaptureAndRead
     {
-
+        private static double lastIndex = g.NasdaqBasis;
         public static async Task NasdaqIndex()
         {
             while (true)
@@ -61,6 +61,13 @@ namespace New_Tradegy.Library.IO
                 // 3. Convert to double
                 double.TryParse(firstFive, out double currentNasdaq);
 
+                if(Math.Abs(currentNasdaq - lastIndex) > 50)
+                {
+                    Thread.Sleep(1500);
+                    continue;
+                }
+                lastIndex = currentNasdaq;
+                
                 MajorIndex.Instance.NasdaqIndex = (float)((currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis * 
                     g.HUNDRED * g.HUNDRED);
                 // Update the global data table

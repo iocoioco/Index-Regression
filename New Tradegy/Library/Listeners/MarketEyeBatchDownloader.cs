@@ -1,4 +1,5 @@
 ﻿
+using New_Tradegy.Library.Core;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.Models;
 using New_Tradegy.Library.PostProcessing;
@@ -18,6 +19,9 @@ namespace New_Tradegy.Library.Listeners
         private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
 
         private static IndexRangeTracker indexRangeTracker = new IndexRangeTracker();
+
+        private static Dictionary<string, int> lastPrices = new Dictionary<string, int>();
+
 
         public static void RunDownloaderLoop()
         {
@@ -189,8 +193,6 @@ namespace New_Tradegy.Library.Listeners
                     downloadList.Add(data);
                 }
 
-
-
                 api.매도1호가 = _marketeye.GetDataValue(8, k);
                 api.매수1호가 = _marketeye.GetDataValue(9, k);
 
@@ -281,11 +283,30 @@ namespace New_Tradegy.Library.Listeners
 
                 // 0, 시간, 1, 가격, 2 수급, 3 체강 * 100, 4 프로그램 매수액(억), 5 외인 매수액(억), 6 기관 매수액(억)
                 // 7 거래량, 8 매수배, 9 매도배, 10 수급연속횟수, 11 체강연속횟수
+
+                int currentPrice = api.가격;       // or your t[1] value
+                if (g.StockManager.IndexList.Contains(data.Stock))
+                {
+                    if (lastPrices.ContainsKey(data.Stock))
+                    {
+                        int lastPrice = lastPrices[data.Stock];
+                        int priceDelta = Math.Abs(currentPrice - lastPrice);
+
+                        if (priceDelta > 50)      // spike threshold (adjust as needed)
+                        {
+                            // skip this record
+                            Console.WriteLine($"[Spike] {data.Stock} {lastPrice} → {currentPrice}");
+                            continue;
+                        }
+                    }
+
+                    // Save this price for next check
+                    lastPrices[data.Stock] = currentPrice;
+                }
+
                 int[] t = new int[12];
                 t[0] = HHmmss;
                 t[1] = api.가격;
-                if (t[1] > 3000 || t[1] < -3000)
-                    continue;
                 t[2] = api.수급;
                 t[3] = (int)(api.체강 * g.HUNDRED);
                 t[7] = (int)api.거래량;
@@ -347,10 +368,6 @@ namespace New_Tradegy.Library.Listeners
                         api.x[api.nrow - 1, 11] = 0;
                 }
 
-
-
-
-
                 totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(HHmmssfff, api.틱의시간[0]); // second can be zero, oops
                 if (totalMilliSeconds <= 0)
                     continue;
@@ -365,9 +382,6 @@ namespace New_Tradegy.Library.Listeners
                     틱매수체결배수 = (현누적매수체결거래량 - api.틱매수량[0]) * multiple_factor;
                     틱매도체결배수 = (현누적매도체결거래량 - api.틱매도량[0]) * multiple_factor;
                 }
-
-
-
 
                 // ⏩ Optional next: tick + minute shifting + post_real + index sync
                 api.AppendTick(
@@ -401,11 +415,16 @@ namespace New_Tradegy.Library.Listeners
 
             PostProcessor.post_real(downloadList);
             g.MarketeyeCount++;
-        }
 
 
-        // no reference
-        public static void marketeye_received_혼합종목(string mixed_stock, List<string> list)
+        //    private static int marketeyeCount = 0;
+        //public static int MarketeyeCount => marketeyeCount; // read-only accessor (optional)
+
+    }
+
+
+    // no reference
+    public static void marketeye_received_혼합종목(string mixed_stock, List<string> list)
         {
             double[] t = new double[12];
             double tick_매수배 = 0.0;
