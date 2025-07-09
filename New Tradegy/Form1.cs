@@ -146,9 +146,6 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.StockRepository = StockRepository.Instance;
             g.StockManager = new StockManager(g.StockRepository);
 
-            g.Npts[0] = 0; //
-            g.Npts[1] = g.MAX_ROW; //
-
             g.q = "o&s";
 
             g.gid = 0;

@@ -233,16 +233,16 @@ namespace New_Tradegy.Library.PostProcessing
                 var api = data.Api;
                 double money_factor = api.전일종가 / g.억원;
 
-                int row = 0;
+                int checkRow = 0;
                 if (g.test)
-                    row = g.Npts[1] - 1;
+                    checkRow = g.Npts[1] - 1;
                 else
-                    row = api.nrow - 1;
+                    checkRow = api.nrow - 1;
 
-                MajorIndex.Instance.KospiProgramNetBuy += (int)(api.x[row, 4] * money_factor);
-                MajorIndex.Instance.KospiForeignNetBuy += (int)(api.x[row, 5] * money_factor);
-                MajorIndex.Instance.KospiBuyPower = api.x[row, 8] * g.kospi_mixed.weight[i]; // double
-                MajorIndex.Instance.KospiSellPower = api.x[row, 9] * g.kospi_mixed.weight[i]; // double
+                MajorIndex.Instance.KospiProgramNetBuy += (int)(api.x[checkRow, 4] * money_factor);
+                MajorIndex.Instance.KospiForeignNetBuy += (int)(api.x[checkRow, 5] * money_factor);
+                MajorIndex.Instance.KospiBuyPower = api.x[checkRow, 8] * g.kospi_mixed.weight[i]; // double
+                MajorIndex.Instance.KospiSellPower = api.x[checkRow, 9] * g.kospi_mixed.weight[i]; // double
             }
 
             MajorIndex.Instance.KosdaqBuyPower = 0;
@@ -259,16 +259,16 @@ namespace New_Tradegy.Library.PostProcessing
                 var api = data.Api;
                 double money_factor = api.전일종가 / g.억원;
 
-                int row = 0;
+                int checkRow = 0;
                 if (g.test)
-                    row = g.Npts[1] - 1;
+                    checkRow = g.Npts[1] - 1;
                 else
-                    row = api.nrow - 1;
+                    checkRow = api.nrow - 1;
 
-                MajorIndex.Instance.KosdaqProgramNetBuy += (int)(api.x[row, 4] * money_factor);
-                MajorIndex.Instance.KosdaqForeignNetBuy += (int)(api.x[row, 5] * money_factor);
-                MajorIndex.Instance.KosdaqBuyPower = api.x[row, 8] * g.kosdaq_mixed.weight[i];
-                MajorIndex.Instance.KosdaqSellPower = api.x[row, 9] * g.kosdaq_mixed.weight[i];
+                MajorIndex.Instance.KosdaqProgramNetBuy += (int)(api.x[checkRow, 4] * money_factor);
+                MajorIndex.Instance.KosdaqForeignNetBuy += (int)(api.x[checkRow, 5] * money_factor);
+                MajorIndex.Instance.KosdaqBuyPower = api.x[checkRow, 8] * g.kosdaq_mixed.weight[i];
+                MajorIndex.Instance.KosdaqSellPower = api.x[checkRow, 9] * g.kosdaq_mixed.weight[i];
             }
         }
 

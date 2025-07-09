@@ -44,7 +44,12 @@ namespace New_Tradegy.Library.UI.KeyBindings
         // F1
         public static readonly Action DealHalf_TimeFinalKey = () =>
         {
-            if (!g.test)
+            if (g.test)
+            {
+                g.Npts[0] = 0;
+                g.Npts[1] = g.TestMaximumRow;
+            }
+            else
             {
                 if (g.일회거래액 > 500)
                     g.일회거래액 /= 2;
@@ -58,21 +63,19 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 if (g.controlPane.GetCellValue(0, 2) != g.일회거래액.ToString())
                 {
                     g.controlPane.SetCellValue(0, 2, g.일회거래액);
-
                 }
-            }
-            else
-            {
-                g.Npts[0] = 0;
-                g.Npts[1] = g.MAX_ROW;
             }
         };
 
         // F2
         public static readonly Action DealDoubleKey = () =>
         {
-            if (!g.test)
+            if (g.test)
             {
+                return;
+            }
+            else
+            { 
                 if (g.일회거래액 < 100)
                     g.일회거래액 = 100;
                 else if (g.일회거래액 < 500)
@@ -241,7 +244,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             if (g.test) // 시간 앞으로 (테스트)
             {
                 g.Npts[1]++;
-                if (g.Npts[1] > g.MAX_ROW)
+                if (g.Npts[1] > g.TestMaximumRow)
                 {
                     g.Npts[0] = 0;
                     g.Npts[1] = 2;
@@ -276,14 +279,14 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.q_advance_lines);
                     ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
                 }
-                    
+
                 else
                 {
                     TimeUtils.MinuteAdvanceRetreat(0);
                     ActionCode.New(true, post: true, eval: true, draw: 'B').Run();
                 }
-                    
-                
+
+
             }
         };
 
@@ -296,7 +299,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     TimeUtils.MinuteAdvanceRetreat(g.v.Q_advance_lines);
                     ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
                 }
-                    
+
                 else
                 {
                     TimeUtils.MinuteAdvanceRetreat(0);
@@ -320,7 +323,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 if (g.draw_selection == 1)
                 {
                     g.Npts[1] += 10;
-                    if (g.Npts[1] > g.MAX_ROW)
+                    if (g.Npts[1] > g.RealMaximumRow)
                     {
                         g.Npts[0] = 0;
                         g.Npts[1] = 10;
@@ -356,7 +359,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             {
                 g.Npts[1] += 30;
 
-                if (g.Npts[1] > g.MAX_ROW)
+                if (g.Npts[1] > g.TestMaximumRow)
                 {
                     g.Npts[0] = 0;
                     g.Npts[1] = 30;

@@ -122,7 +122,8 @@ namespace New_Tradegy.Library
 
         public static readonly object lockObject = new object(); // Make sure it's initialized
 
-        public static int MAX_ROW = 382; // maximum rows of minute data for each stock from 0859 to 1520
+        public static int RealMaximumRow = 382; // maximum rows of minute data for each stock from 0859 to 1520
+        public static int TestMaximumRow = 0; // maximum rows of minute data for each stock from 0859 to 1520
 
         public static string clickedStock = ""; // target stock to be used
         public static string clickedTitle = ""; // target group title to be used

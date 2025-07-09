@@ -171,7 +171,8 @@ namespace New_Tradegy.Library.IO
                 g.StockManager.IndexList.Add("KODEX 코스닥150선물인버스");
             }
 
-            g.Npts[1] = 0;
+            // no need 
+            // g.Npts[1] = 0;
             foreach (var t in g.StockRepository.AllDatas)
             {
                 string file = Path.Combine(path, t.Stock + ".txt");
@@ -199,7 +200,7 @@ namespace New_Tradegy.Library.IO
                     lines = File.ReadAllLines(file);
                 }
 
-                t.Api.nrow = 0;
+        
 
                 foreach (var line in lines)
                 {
@@ -223,16 +224,14 @@ namespace New_Tradegy.Library.IO
                         break;
                 }
 
-                if (t.Api.nrow > g.Npts[1]) // set g.Npts[1] the max. of nrow
+                if(g.test)
                 {
-                    g.Npts[1] = t.Api.nrow;
-                   // g.MAX_ROW = t.Api.nrow;
+                    if (t.Api.nrow > g.Npts[1]) // set g.Npts[1] the max. of nrow for g.test only
+                    {
+                        g.Npts[1] = t.Api.nrow;
+                        g.TestMaximumRow = t.Api.nrow;
+                    }
                 }
-                    
-
-                for (int j = t.Api.nrow; j < g.MAX_ROW; j++)
-                    for (int m = 0; m < 12; m++)
-                        t.Api.x[j, m] = 0;
 
                 if (t.Api.nrow == 0) continue;
 
@@ -286,9 +285,6 @@ namespace New_Tradegy.Library.IO
 
             // PostProcessor.post_코스닥_코스피_프외_순매수_배차_합산_382();
         }
-
-
-
 
         // 업종, 10억이상, 상관, 상관, 통계
         public static void gen_ogl_data()
@@ -1158,16 +1154,6 @@ namespace New_Tradegy.Library.IO
             }
             List<string> lines = File.ReadLines(file).Reverse().Take(nline).ToList();
 
-            // Error Prone : Below 8 lines not Tested Exactly
-            //if (g.test)
-            //{
-            //    if (n < g.Npts[1] + 1)
-            //    {
-            //        g.Npts[1] = n;
-            //    }
-            //    lines = File.ReadLines(file).Skip(g.Npts[1] - nline).Take(nline).Reverse().ToList();
-            //}
-
             int nrow = 0;
             foreach (var line in lines)
             {
@@ -1298,8 +1284,6 @@ namespace New_Tradegy.Library.IO
                 return 0;
             }
 
-
-
             string[] lines = File.ReadAllLines(file, Encoding.Default);
             if (lines.Length == 0)
             {
@@ -1344,23 +1328,9 @@ namespace New_Tradegy.Library.IO
                     x[nrow, 11] = Convert.ToInt32(words[11]);   // sell multiple 10 times
                 }
                 nrow++;
-                if (nrow == g.MAX_ROW)
+                if (nrow == g.RealMaximumRow)
                     break;
-                //if (x[nrow - 1 , 0] > 152100) //0505 from nrow > 390 to current if
-                //{
-                //    x[nrow - 1, 0] = 0;
-                //    nrow--;
-                //    break;
-                //}
             }
-            for (int i = nrow; i < g.MAX_ROW; i++)
-            {
-                for (int j = 0; j < 12; j++)
-                {
-                    x[i, j] = 0;
-                }
-            }
-
 
             return nrow;
         }
@@ -1435,6 +1405,7 @@ namespace New_Tradegy.Library.IO
             return nrow;
         }
 
+        // not used
         public static int read_일주월(string stock, string dwm, int nrow, int[] col, int[,] x)
         {
             string file = "";
@@ -1526,10 +1497,6 @@ namespace New_Tradegy.Library.IO
             string[] words = lastline.Split(' ');
             return Convert.ToInt32(words[4]);
         }
-
-
-
-
 
         public static List<string> read_그룹_네이버_업종() // this is for single list of stocks in 그룹_네이버_업종
         {

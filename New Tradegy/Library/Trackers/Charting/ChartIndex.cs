@@ -46,8 +46,8 @@ namespace New_Tradegy.Library.Trackers
 
 
             // Determine Start and End Row
-            int start = g.Npts[0];
-            int end = g.test ? Math.Min(g.Npts[1], data.Api.nrow) : data.Api.nrow;
+            int start = 0;
+            int end = g.test ? g.Npts[1] : data.Api.nrow;
             if (data.Misc.ShrinkDraw)
                 start = Math.Max(end - g.NptsForShrinkDraw, g.Npts[0]);
 
@@ -360,7 +360,7 @@ namespace New_Tradegy.Library.Trackers
             var data = g.StockRepository.TryGetDataOrNull(stock);
             if (data == null) return;
 
-            int totalPoints = g.test ? Math.Min(g.Npts[1], data.Api.nrow) : data.Api.nrow;
+            int totalPoints = g.test ? g.Npts[1] : data.Api.nrow;
             string label = "      " + ((int)(data.Api.x[totalPoints - 1, columnIndex])).ToString();
 
             for (int i = totalPoints - 1; i >= totalPoints - 4; i--)

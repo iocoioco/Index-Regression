@@ -1,16 +1,13 @@
 ﻿
+using New_Tradegy.Library.IO;
+using New_Tradegy.Library.Models;
+using New_Tradegy.Library.PostProcessing;
+using New_Tradegy.Library.Trackers;
+using New_Tradegy.Library.Utils;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using New_Tradegy.Library.Utils;
-using New_Tradegy.Library.Models;
-using New_Tradegy.Library.Trackers;
-using New_Tradegy.Library.IO;
-using New_Tradegy.Library.PostProcessing;
-using System.Collections;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using System.Linq;
+using System.Threading;
 
 namespace New_Tradegy.Library.Listeners
 {
@@ -21,7 +18,7 @@ namespace New_Tradegy.Library.Listeners
         private static CPUTILLib.CpStockCode _cpstockcode = new CPUTILLib.CpStockCode();
 
         private static IndexRangeTracker indexRangeTracker = new IndexRangeTracker();
-  
+
         public static void RunDownloaderLoop()
         {
             if (!g.connected)
@@ -133,11 +130,11 @@ namespace New_Tradegy.Library.Listeners
 
             // ✅ Fill the codes using your BatchSelector
             var selected = MarketEyeBatchSelector.Select200Batch(
-                indexList: g.StockManager.IndexList,                   
+                indexList: g.StockManager.IndexList,
                 holding: g.StockManager.HoldingList,
                 interestedWithBid: g.StockManager.InterestedWithBidList,
                 interestedOnly: g.StockManager.InterestedOnlyList,
-                rankedStockList: g.StockManager.StockRankingList          
+                rankedStockList: g.StockManager.StockRankingList
             );
 
             for (int i = 0; i < codes.Length && i < selected.Count; i++)
@@ -179,8 +176,8 @@ namespace New_Tradegy.Library.Listeners
             {
                 string code = _marketeye.GetDataValue(0, k);
                 var stock = _cpstockcode.CodeToName(code);
-            
-                if (!g.StockRepository.Contains(stock)) 
+
+                if (!g.StockRepository.Contains(stock))
                     continue;
 
                 var data = g.StockRepository.TryGetDataOrNull(stock);
@@ -210,7 +207,7 @@ namespace New_Tradegy.Library.Listeners
                 api.전일종가 = _marketeye.GetDataValue(18, k);
                 api.체강 = (double)_marketeye.GetDataValue(19, k);
 
-                if (api.전일종가 > 100 && api.매수1호가 > 100 && api.매도1호가 > 100 && 
+                if (api.전일종가 > 100 && api.매수1호가 > 100 && api.매도1호가 > 100 &&
                     api.시초가 > 100 && api.전저가 > 100) // zero devider protection
                 {
                     api.가격 = (int)((api.매수1호가 - (int)api.전일종가) * 10000.0 / api.전일종가);
@@ -248,7 +245,7 @@ namespace New_Tradegy.Library.Listeners
                     현누적매도체결거래량 = api.거래량 * 100.0 / (100.0 + api.체강);
                 }
 
-                if (api.nrow <= 0 || api.nrow >= g.MAX_ROW)
+                if (api.nrow <= 0 || api.nrow >= g.RealMaximumRow)
                     continue;
 
                 int time_befr_4int = api.x[api.nrow - 1, 0] / 100;
@@ -321,7 +318,7 @@ namespace New_Tradegy.Library.Listeners
                 }
 
                 int append_or_replace_row = append ? api.nrow : api.nrow - 1;
-                if (append_or_replace_row >= g.MAX_ROW) return;
+                if (append_or_replace_row >= g.RealMaximumRow) return;
 
                 for (int i = 0; i < 12; i++)
                 {
@@ -360,18 +357,18 @@ namespace New_Tradegy.Library.Listeners
 
                 double 틱매수체결배수 = 0.0;
                 double 틱매도체결배수 = 0.0;
-                if (MathUtils.IsSafeToDivide(totalMilliSeconds)) 
+                if (MathUtils.IsSafeToDivide(totalMilliSeconds))
                 {
                     multiple_factor = 0.0;
                     if (data.Statistics.일평균거래량 > 100)
-                        multiple_factor = 60.0 / totalMilliSeconds * 380.0  * 1000 / data.Statistics.일평균거래량 * 10.0; 
-                    틱매수체결배수 = (현누적매수체결거래량 - api.틱매수량[0]) * multiple_factor; 
-                    틱매도체결배수 = (현누적매도체결거래량 - api.틱매도량[0]) * multiple_factor; 
+                        multiple_factor = 60.0 / totalMilliSeconds * 380.0 * 1000 / data.Statistics.일평균거래량 * 10.0;
+                    틱매수체결배수 = (현누적매수체결거래량 - api.틱매수량[0]) * multiple_factor;
+                    틱매도체결배수 = (현누적매도체결거래량 - api.틱매도량[0]) * multiple_factor;
                 }
 
 
 
-                
+
                 // ⏩ Optional next: tick + minute shifting + post_real + index sync
                 api.AppendTick(
                     t,
@@ -418,19 +415,19 @@ namespace New_Tradegy.Library.Listeners
             {
                 string[] items = line.Split('\t');
 
-                var data = g.StockRepository.TryGetDataOrNull(items[0]).Api;
+                var data1 = g.StockRepository.TryGetDataOrNull(items[0]).Api;
 
                 double weight = Convert.ToDouble(items[1]);
 
-                t[1] += data.가격 * weight;
-                t[2] += data.수급 * weight;
-                t[3] += data.체강 * g.HUNDRED * weight;
-                t[7] += data.거래량 * weight;
-                t[8] += data.매수배 * weight;
-                t[9] += data.매도배 * weight;
+                t[1] += data1.가격 * weight;
+                t[2] += data1.수급 * weight;
+                t[3] += data1.체강 * g.HUNDRED * weight;
+                t[7] += data1.거래량 * weight;
+                t[8] += data1.매수배 * weight;
+                t[9] += data1.매도배 * weight;
 
-                tick_매수배 += data.틱매수배[0] * weight;
-                tick_매도배 += data.틱매도배[0] * weight;
+                tick_매수배 += data1.틱매수배[0] * weight;
+                tick_매도배 += data1.틱매도배[0] * weight;
             }
 
             t[4] = MajorIndex.Instance.ShanghaiIndex * g.HUNDRED;
@@ -442,28 +439,28 @@ namespace New_Tradegy.Library.Listeners
             if (!!g.StockRepository.Contains(mixed_stock))
                 return;
 
-            var v = g.StockRepository.TryGetDataOrNull(mixed_stock);
+            var data = g.StockRepository.TryGetDataOrNull(mixed_stock);
 
             int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
-            int time_bef_4int = v.Api.x[v.Api.nrow - 1, 0] / 100;
+            int time_bef_4int = data.Api.x[data.Api.nrow - 1, 0] / 100;
             t[0] = Convert.ToInt32(DateTime.Now.ToString("HHmmss"));
 
             if (HHmm == time_bef_4int)
             {
                 for (int j = 0; j < 12; j++)
                 {
-                    v.Api.x[v.Api.nrow - 1, j] = (int)t[j];
+                    data.Api.x[data.Api.nrow - 1, j] = (int)t[j];
                 }
             }
             else
             {
-                if (v.Api.nrow < g.MAX_ROW)
+                if (data.Api.nrow < g.RealMaximumRow)
                 {
                     for (int j = 0; j < 12; j++)
                     {
-                        v.Api.x[v.Api.nrow, j] = (int)t[j];
+                        data.Api.x[data.Api.nrow, j] = (int)t[j];
                     }
-                    v.Api.nrow++;
+                    data.Api.nrow++;
                 }
             }
 

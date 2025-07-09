@@ -342,11 +342,11 @@ namespace New_Tradegy.Library.Core
                     if (data == null || data.Api.nrow < 2 || data.Api.nrow > 382)
                         continue;
 
-                    int row = g.test
+                    int checkRow = g.test
                         ? Math.Min(g.Npts[1] - 1, data.Api.nrow - 1)
                         : data.Api.nrow - 1;
 
-                    if (data.Api.x[row, 1] < -3000 || data.Api.x[row, 1] > 3000)
+                    if (data.Api.x[checkRow, 1] < -3000 || data.Api.x[checkRow, 1] > 3000)
                         continue;
 
 

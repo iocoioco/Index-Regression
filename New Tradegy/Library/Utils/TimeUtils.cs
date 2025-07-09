@@ -69,8 +69,8 @@ namespace New_Tradegy.Library.Utils
             {
                 g.EndNptsBeforeExtend = g.Npts[1];
                 g.Npts[1] += advance_lines; // expedientH
-                if (g.Npts[1] > g.MAX_ROW)
-                    g.Npts[1] = g.MAX_ROW;
+                if (g.Npts[1] > g.TestMaximumRow)
+                    g.Npts[1] = g.TestMaximumRow;
 
                 g.EndNptsExtendedOrNot = true;
             }

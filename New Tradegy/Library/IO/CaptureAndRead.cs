@@ -61,7 +61,8 @@ namespace New_Tradegy.Library.IO
                 // 3. Convert to double
                 double.TryParse(firstFive, out double currentNasdaq);
 
-                MajorIndex.Instance.NasdaqIndex = (float)((currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis * 100);
+                MajorIndex.Instance.NasdaqIndex = (float)((currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis * 
+                    g.HUNDRED * g.HUNDRED);
                 // Update the global data table
 
                 if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
@@ -236,10 +237,10 @@ namespace New_Tradegy.Library.IO
                 else
                     append_or_replace_row = data.Api.nrow - 1;
 
-                if (append_or_replace_row >= g.MAX_ROW)
+                if (append_or_replace_row >= g.RealMaximumRow)
                     return;
 
-                data.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * g.HUNDRED); // AAA teethed pattern
+                data.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex); // AAA teethed pattern
             }
         }
     }

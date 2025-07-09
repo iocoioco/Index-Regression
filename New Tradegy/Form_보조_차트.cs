@@ -158,7 +158,7 @@ namespace New_Tradegy
 
         public void Form_보조_차트_DRAW()
         {
-            if (g.EndNptsBeforeExtend == 0) // if not zero, ShortMove or LongMove test
+            if (g.EndNptsBeforeExtend == 0) // if not zero, ShortMove or LongMove test : use old displayList
                 DisplayListGivenDisplayMode(g.v.SubChartDisplayMode, displayList, g.clickedStock, g.clickedTitle);
 
             // Update form title 
@@ -447,23 +447,17 @@ namespace New_Tradegy
                             if (string.IsNullOrWhiteSpace(stock))
                                 continue;
 
-                            int check_row = 0;
-                            int nrow = data.Api.nrow;
+                            int checkRow = g.test ? g.Npts[1] - 1 : data.Api.nrow - 1;
 
-                            if (nrow < 2)
-                                continue;
-
-                            check_row = g.connected ? nrow - 1 : Math.Min(g.Npts[1] - 1, nrow - 1);
-
-                            if (data.Api.x[check_row, 4] < 0)
+                            if (data.Api.x[checkRow, 4] < 0)
                                 continue;
 
                             double value = 0.0;
                             var x = data.Api.x;
 
-                            for (int i = check_row - 1; i >= 1; i--)
+                            for (int i = checkRow - 1; i >= 1; i--)
                             {
-                                double deltaPrice = x[check_row, 1] - (x[i, 1] + x[i - 1, 1]) / 2.0;
+                                double deltaPrice = x[checkRow, 1] - (x[i, 1] + x[i - 1, 1]) / 2.0;
                                 int deltaVolume = x[i, 4] - x[i - 1, 4];
                                 value += deltaPrice * deltaVolume;
                             }

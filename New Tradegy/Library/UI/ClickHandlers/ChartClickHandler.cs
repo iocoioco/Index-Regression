@@ -225,7 +225,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     if (g.test)
                     {
                         g.Npts[1]++;
-                        if (g.Npts[1] > g.MAX_ROW)
+                        if (g.Npts[1] > g.TestMaximumRow)
                         {
                             g.Npts[0] = 0;
                             g.Npts[1] = 2;
@@ -244,7 +244,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         g.Gid = g.saved_Gid;
                         g.Npts[0] = g.test ? g.SavedNpts[0] : 0;
-                        g.Npts[1] = g.test ? g.SavedNpts[1] : g.MAX_ROW;
+                        g.Npts[1] = g.test ? g.SavedNpts[1] : g.RealMaximumRow;
 
                         int month = g.date % 10000 / 100;
                         int day = g.date % 100;
@@ -262,7 +262,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                         g.saved_Gid = g.Gid;
                         g.moving_reference_date = g.date;
                         g.Npts[0] = g.test ? g.SavedNpts[0] : 0;
-                        g.Npts[1] = g.test ? g.SavedNpts[1] : g.MAX_ROW;
+                        g.Npts[1] = g.test ? g.SavedNpts[1] : g.RealMaximumRow;
                     }
                     break;
 

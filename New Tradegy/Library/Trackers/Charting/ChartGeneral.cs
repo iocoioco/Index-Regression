@@ -52,14 +52,13 @@ namespace New_Tradegy.Library.Trackers
             double y_min = 100000;
             double y_max = -100000;
 
-            int StartNpts = g.Npts[0];
-            int EndNpts = (!g.test) ? data.Api.nrow : Math.Min(g.Npts[1], data.Api.nrow);
+            //  int StartNpts = g.Npts[0]; no need
+            int StartNpts = 0;
+            int EndNpts = g.test ? g.Npts[1] : data.Api.nrow;
 
             if (data.Misc.ShrinkDraw)
                 StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
 
-            if (data.Api.x[EndNpts - 1, 3] == 0) //?
-                return null;
             
             var area = new ChartArea(areaName);
             chart.ChartAreas.Add(area);
@@ -194,8 +193,8 @@ namespace New_Tradegy.Library.Trackers
                 {
                     if (o.Api.x[k, 0] == 0)
                     {
-                        if (pointsCount < 2) return false;
-                        else break;
+                       
+                        break;
                     }
 
                     int value = PointValue(o, k, typeId);
@@ -368,7 +367,7 @@ namespace New_Tradegy.Library.Trackers
 
             var api = data.Api;
             var post = data.Post;
-            int totalPoints = g.test ? Math.Min(g.Npts[1], api.nrow) : api.nrow;
+            int totalPoints = g.test ? g.Npts[1] : data.Api.nrow;
 
             string s = "";
 
@@ -442,7 +441,7 @@ namespace New_Tradegy.Library.Trackers
                 chart.Annotations.Remove(previousAnnotation);
 
             // Determine range for annotation based on shrink setting
-            int StartNpts = g.Npts[0];
+            int StartNpts = 0;
             int EndNpts = (!g.test) ? data.Api.nrow : Math.Min(g.Npts[1], data.Api.nrow);
 
             if (data.Misc.ShrinkDraw)
@@ -479,8 +478,9 @@ namespace New_Tradegy.Library.Trackers
             string stock = o.Stock;
             string stock_title = "";
 
-            if (EndNpts - 1 < 0)
-                return stock_title;
+            // no need
+            //if (EndNpts - 1 < 0)
+            //    return stock_title;
 
             // 일반의 첫째 라인
             if (g.StockManager.HoldingList.Contains(stock))
