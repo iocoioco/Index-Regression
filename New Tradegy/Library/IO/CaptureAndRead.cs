@@ -65,7 +65,7 @@ namespace New_Tradegy.Library.IO
                 // Update the global data table
 
                 if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
-                    g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString());
+                    g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString("F3"));
 
                 // update the Nasdaq Index value
                 DateTime date = DateTime.Now;

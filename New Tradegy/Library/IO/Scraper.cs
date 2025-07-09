@@ -348,7 +348,7 @@ namespace New_Tradegy.Library.IO
                     // Update the global data table
                  
                     if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
-                        g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString());
+                        g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString("F3"));
                     if (g.controlPane.GetCellValue(1, 3) != MajorIndex.Instance.Snp500Index.ToString())
                         g.controlPane.SetCellValue(1, 3, MajorIndex.Instance.Snp500Index.ToString());
 
