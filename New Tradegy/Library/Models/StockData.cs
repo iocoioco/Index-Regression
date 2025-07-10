@@ -94,7 +94,7 @@ namespace New_Tradegy.Library.Models
         public int 피올_등수;
         public int 닥올_등수;
 
-        public int 피누_등수; public double 피누;
+        public int 푀누_등수; public double 푀누;
         public int 종누_등수; public double 종누;
 
         public int 푀분_등수; public double 푀분;
@@ -123,8 +123,8 @@ namespace New_Tradegy.Library.Models
                 피올_등수 = this.피올_등수,
                 닥올_등수 = this.닥올_등수,
 
-                피누_등수 = this.피누_등수,
-                피누 = this.피누,
+                푀누_등수 = this.푀누_등수,
+                푀누 = this.푀누,
                 종누_등수 = this.종누_등수,
                 종누 = this.종누,
 
@@ -164,13 +164,13 @@ namespace New_Tradegy.Library.Models
     // public StatData Stat { get; set; } = new StatData();
     public class StatisticsData
     {
-        public int 피분_count;
+        public int 푀분_count;
 
         public double 푀분_avr, 푀분_dev;
         public double 거분_avr, 거분_dev;
         public double 배차_avr, 배차_dev;
         public double 배합_avr, 배합_dev;
-        public double 피누_avr, 피누_dev;
+        public double 푀누_avr, 푀누_dev;
         public double 종누_avr, 종누_dev;
 
         public char 시장구분; // P 코스피, D 코스닥
@@ -189,7 +189,7 @@ namespace New_Tradegy.Library.Models
         {
             return new StatisticsData
             {
-                피분_count = this.피분_count,
+                푀분_count = this.푀분_count,
 
                 푀분_avr = this.푀분_avr,
                 푀분_dev = this.푀분_dev,
@@ -199,8 +199,8 @@ namespace New_Tradegy.Library.Models
                 배차_dev = this.배차_dev,
                 배합_avr = this.배합_avr,
                 배합_dev = this.배합_dev,
-                피누_avr = this.피누_avr,
-                피누_dev = this.피누_dev,
+                푀누_avr = this.푀누_avr,
+                푀누_dev = this.푀누_dev,
                 종누_avr = this.종누_avr,
                 종누_dev = this.종누_dev,
 
