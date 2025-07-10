@@ -67,9 +67,9 @@ namespace New_Tradegy.Library.PostProcessing
         }
 
         // done by Sensei
-        public static void post_real(List<StockData> downloadedList)
+        public static void post_real(List<StockData> cloneList)
         {
-            foreach (var data in downloadedList)
+            foreach (var data in cloneList)
             {
                 post(data);
             }
@@ -80,7 +80,7 @@ namespace New_Tradegy.Library.PostProcessing
                 RankLogic.RankProcedure();
             }
 
-            foreach (var data in downloadedList)
+            foreach (var data in cloneList)
             {
                 if (g.StockManager.HoldingList.Contains(data.Stock)) // Stock is the name
                 {

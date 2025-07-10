@@ -215,6 +215,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                
                 Task.Run(() => MarketEyeBatchDownloader.RunDownloaderLoop());
+
                 Task.Run(() => CaptureAndRead.NasdaqIndex());
 
                 _= Task.Run(Scraper.task_major_indices); // ✅ fire-and-forget, clean

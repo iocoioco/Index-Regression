@@ -238,7 +238,7 @@ namespace New_Tradegy.Library.Deals
                 if (수익률 < -0.45 && data.Deal.평가금액 > 4_500_000)
                 {
                     Utils.SoundUtils.Sound("alarm", "lost already");
-                    return true;
+                    
                 }
             }
             return false;

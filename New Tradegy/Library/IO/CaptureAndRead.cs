@@ -16,7 +16,8 @@ namespace New_Tradegy.Library.IO
 {
     internal class CaptureAndRead
     {
-        private static double lastIndex = g.NasdaqBasis;
+        private static double lastIndex;
+        private static bool first = true;
         public static async Task NasdaqIndex()
         {
             while (true)
@@ -61,15 +62,24 @@ namespace New_Tradegy.Library.IO
                 // 3. Convert to double
                 double.TryParse(firstFive, out double currentNasdaq);
 
-                if (Math.Abs(currentNasdaq - lastIndex) > 50)
+                if(first)
                 {
-                    Thread.Sleep(1500);
-                    continue;
+                    lastIndex = currentNasdaq;
+                    first = false;
                 }
+                else
+                {
+                    if (Math.Abs(currentNasdaq - lastIndex) > 200)
+                    {
+                        Thread.Sleep(1500);
+                        continue;
+                    }
+                }
+                
                 lastIndex = currentNasdaq;
 
                 MajorIndex.Instance.NasdaqIndex = (float)((currentNasdaq - g.NasdaqBasis) / g.NasdaqBasis * 
-                    g.HUNDRED * g.HUNDRED);
+                    g.HUNDRED);
                 // Update the global data table
 
                 if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
@@ -84,11 +94,13 @@ namespace New_Tradegy.Library.IO
                 {
                     AppendOrReplaceNasdaqIndex();
                 }
+                // elaspedMilliSeconds = 180
+                //stopwatch.Stop();
+                //double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
 
                 Thread.Sleep(1500);
 
-                //stopwatch.Stop();
-                //double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+                
             }
         }
 
