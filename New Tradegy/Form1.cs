@@ -248,7 +248,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             // RankLogic.RankByMode(); // duration : 0.025 ~ 0.054 seconds
 
             g.ChartMain = new ChartMain(); // all new, Form_1 start
-            g.ChartMain.RefreshMainChart();
+            PostProcessor.ManageChart1Invoke();
+           //?? g.ChartMain.RefreshMainChart();
 
             Form Form_보조_차트 = new Form_보조_차트();
             Form_보조_차트.Show(); // second chart
@@ -371,7 +372,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                             {
                                 retryCount++;
                                 //Logger.Warn($"BlockRequest failed. Retrying {retryCount}/3...");
-                                await Task.Delay(5000, cancellationToken); // Wait 5 seconds before retrying
+                                await Task.Delay(3000, cancellationToken); // Wait 5 seconds before retrying
                             }
                         }
 
@@ -382,7 +383,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     }
 
                     // Wait for 15 seconds before the next iteration
-                    await Task.Delay(1500, cancellationToken);
+                    await Task.Delay(3000, cancellationToken);
                 }
             }
         }
@@ -475,7 +476,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     }
 
                     // Wait for 15 seconds before the next iteration
-                    await Task.Delay(1500, cancellationToken);
+                    await Task.Delay(3000, cancellationToken);
                 }
             }
         }
@@ -670,49 +671,49 @@ namespace New_Tradegy // added for test on 20241020 0300
 
 
 
-        private void timer_코스피_코스닥_Tick(object sender, EventArgs e)
-        {
-            _cpsvrnew7222 = new CPSYSDIBLib.CpSvrNew7222();
+        //private void timer_코스피_코스닥_Tick(object sender, EventArgs e)
+        //{
+        //    _cpsvrnew7222 = new CPSYSDIBLib.CpSvrNew7222();
 
-            if (wk.isWorkingHour())
-            {
-                _cpsvrnew7222.SetInputValue(0, 'B'); // 코스피
-                _cpsvrnew7222.SetInputValue(1, 0); // 전체
-                _cpsvrnew7222.SetInputValue(2, '1'); // 누적
-                _cpsvrnew7222.SetInputValue(4, '2'); // 금액
+        //    if (wk.isWorkingHour())
+        //    {
+        //        _cpsvrnew7222.SetInputValue(0, 'B'); // 코스피
+        //        _cpsvrnew7222.SetInputValue(1, 0); // 전체
+        //        _cpsvrnew7222.SetInputValue(2, '1'); // 누적
+        //        _cpsvrnew7222.SetInputValue(4, '2'); // 금액
 
-                if (_cpsvrnew7222.GetDibStatus() != 1)
-                {
-                    if (_cpsvrnew7222.BlockRequest() == 0)
-                    {
-                        //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
-                        MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                        // MarketData.Instance.KospiForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
-                        MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
-                        MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
-                        MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
-                    }
-                }
+        //        if (_cpsvrnew7222.GetDibStatus() != 1)
+        //        {
+        //            if (_cpsvrnew7222.BlockRequest() == 0)
+        //            {
+        //                //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
+        //                MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+        //                // MarketData.Instance.KospiForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED);
+        //                MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
+        //                MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
+        //                MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
+        //            }
+        //        }
 
-                //코스닥 매수액(개인, 외인, 기관)
-                _cpsvrnew7222.SetInputValue(0, 'C'); // 코스닥
-                _cpsvrnew7222.SetInputValue(1, 0); // 전체
-                _cpsvrnew7222.SetInputValue(2, '1'); // 누적
-                _cpsvrnew7222.SetInputValue(4, '2'); // 금액
+        //        //코스닥 매수액(개인, 외인, 기관)
+        //        _cpsvrnew7222.SetInputValue(0, 'C'); // 코스닥
+        //        _cpsvrnew7222.SetInputValue(1, 0); // 전체
+        //        _cpsvrnew7222.SetInputValue(2, '1'); // 누적
+        //        _cpsvrnew7222.SetInputValue(4, '2'); // 금액
 
-                if (_cpsvrnew7222.GetDibStatus() != 1)
-                {
-                    if (_cpsvrnew7222.BlockRequest() == 0)
-                    {
-                        MajorIndex.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                        //MajorIndex.Instance.KosdaqForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED); //
-                        MajorIndex.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
-                        MajorIndex.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
-                        MajorIndex.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
-                    }
-                }
-            }
-        }
+        //        if (_cpsvrnew7222.GetDibStatus() != 1)
+        //        {
+        //            if (_cpsvrnew7222.BlockRequest() == 0)
+        //            {
+        //                MajorIndex.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
+        //                //MajorIndex.Instance.KosdaqForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED); //
+        //                MajorIndex.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
+        //                MajorIndex.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
+        //                MajorIndex.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
+        //            }
+        //        }
+        //    }
+        //}
 
 
 

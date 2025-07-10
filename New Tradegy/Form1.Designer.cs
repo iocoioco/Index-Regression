@@ -27,14 +27,12 @@ namespace New_Tradegy
     private void InitializeComponent()
     {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             this.timer_eval_draw = new System.Windows.Forms.Timer(this.components);
-            this.timer_코스피_코스닥 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
-
-            this.timer_코스피_코스닥.Tick += new System.EventHandler(this.timer_코스피_코스닥_Tick);
             // 
             // contextMenuStrip1
             // 
@@ -44,16 +42,13 @@ namespace New_Tradegy
             // 
             // chart1
             // 
+            chartArea1.Name = "MainArea";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Location = new System.Drawing.Point(72, 141);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(300, 300);
             this.chart1.TabIndex = 1;
             this.chart1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseClick);
-
-            // ✅ Fix: Add a chart area
-            var chartArea = new ChartArea("MainArea");
-            this.chart1.ChartAreas.Add(chartArea);
-
             // 
             // Form1
             // 
@@ -73,7 +68,6 @@ namespace New_Tradegy
 
     }
         private System.Windows.Forms.Timer timer_eval_draw;
-        private System.Windows.Forms.Timer timer_코스피_코스닥;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }

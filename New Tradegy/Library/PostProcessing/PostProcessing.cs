@@ -6,6 +6,7 @@ using New_Tradegy.Library.Models;
 using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Trackers.Charting;
+using System.Threading.Tasks;
 
 
 /* 배점 : 대형주 배차 조건 충족시, 수일 과다 움직임 높게(dev 큰 종목 가능성 높음) + 배차
@@ -40,31 +41,117 @@ namespace New_Tradegy.Library.PostProcessing
 {
     public class PostProcessor
     {
+        private static bool isDrawingMainNow = false;
+        private static bool drawMainRequestedWhileBusy = false;
+
         public static void ManageChart1Invoke()
         {
-            Form se = (Form)Application.OpenForms["Form1"];
-            if (se.InvokeRequired)
+            if (isDrawingMainNow)
             {
-                se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
+                drawMainRequestedWhileBusy = true;
+                return;
             }
-            else
+
+            Task.Run(() => DoDrawMain());
+        }
+
+        private static void DoDrawMain()
+        {
+            isDrawingMainNow = true;
+
+            try
             {
-                g.ChartMain.RefreshMainChart();
+                Form se = (Form)Application.OpenForms["Form1"];
+                if (se.InvokeRequired)
+                    se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
+                else
+                    g.ChartMain.RefreshMainChart();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Main Draw failed: " + ex.Message);
+            }
+            finally
+            {
+                isDrawingMainNow = false;
+
+                if (drawMainRequestedWhileBusy)
+                {
+                    drawMainRequestedWhileBusy = false;
+                    ManageChart1Invoke();  // retry once if skipped
+                }
             }
         }
+
+        private static bool isDrawingSubNow = false;
+        private static bool drawSubRequestedWhileBusy = false;
+
         public static void ManageChart2Invoke()
         {
-
-            Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-            if (Form_보조_차트.InvokeRequired)
+            if (isDrawingSubNow)
             {
-                Form_보조_차트.Invoke(new Action(() => Form_보조_차트.Form_보조_차트_DRAW()));
+                drawSubRequestedWhileBusy = true;
+                return;
             }
-            else
+
+            Task.Run(() => DoDrawSub());
+        }
+
+        private static void DoDrawSub()
+        {
+            isDrawingSubNow = true;
+
+            try
             {
-                Form_보조_차트.Form_보조_차트_DRAW();
+                Form_보조_차트 subForm = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
+                if (subForm.InvokeRequired)
+                    subForm.Invoke(new Action(() => subForm.Form_보조_차트_DRAW()));
+                else
+                    subForm.Form_보조_차트_DRAW();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Sub Draw failed: " + ex.Message);
+            }
+            finally
+            {
+                isDrawingSubNow = false;
+
+                if (drawSubRequestedWhileBusy)
+                {
+                    drawSubRequestedWhileBusy = false;
+                    ManageChart2Invoke();  // retry once if skipped
+                }
             }
         }
+
+
+        //public static void ManageChart1Invoke()
+        //{
+        //    Form se = (Form)Application.OpenForms["Form1"];
+        //    if (se.InvokeRequired)
+        //    {
+        //        se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
+        //    }
+        //    else
+        //    {
+        //        g.ChartMain.RefreshMainChart();
+        //    }
+        //}
+
+        //public static void ManageChart2Invoke()
+        //{
+
+        //    Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
+        //    if (Form_보조_차트.InvokeRequired)
+        //    {
+        //        Form_보조_차트.Invoke(new Action(() => Form_보조_차트.Form_보조_차트_DRAW()));
+        //    }
+        //    else
+        //    {
+        //        Form_보조_차트.Form_보조_차트_DRAW();
+        //    }
+        //}
 
         // done by Sensei
         public static void post_real(List<StockData> cloneList)

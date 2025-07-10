@@ -68,7 +68,7 @@ namespace New_Tradegy.Library.Listeners
                 }
 
                 // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
-                Thread.Sleep(250);
+                Thread.Sleep(500);
             }
         }
 

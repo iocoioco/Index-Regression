@@ -46,7 +46,8 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
-                    g.ChartMain.RefreshMainChart(); // index already has bookbid
+                    PostProcessor.ManageChart1Invoke();
+                    //?? g.ChartMain.RefreshMainChart(); // index already has bookbid
 
                     int price = GetAskPriceFromGivenStock(g.clickedStock);
                     if (price < 0) return;

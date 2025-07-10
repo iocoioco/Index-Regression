@@ -4,6 +4,49 @@
 
 
 
+private bool isDrawingNow = false;
+private bool drawRequestedWhileBusy = false;
+
+public void RequestDraw()
+{
+    if (isDrawingNow)
+    {
+        drawRequestedWhileBusy = true; // Mark to re-draw once current one ends
+        return;
+    }
+
+    Task.Run(() => DoDraw());
+}
+
+private void DoDraw()
+{
+    isDrawingNow = true;
+
+    try
+    {
+        // Do heavy chart drawing work here
+        g.ChartMain.RefreshMainChart(); // Or your method
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Draw failed: " + ex.Message);
+    }
+    finally
+    {
+        isDrawingNow = false;
+
+        if (drawRequestedWhileBusy)
+        {
+            drawRequestedWhileBusy = false;
+            RequestDraw(); // Draw again once if skipped
+        }
+    }
+}
+
+
+
+
+
 shrink
 update cycle button
 피올, 닥올 overapping
