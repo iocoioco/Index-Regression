@@ -8,6 +8,7 @@ using New_Tradegy.Library.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,15 +25,21 @@ namespace New_Tradegy.Library.Listeners
 
         private static Dictionary<string, int> lastPrices = new Dictionary<string, int>();
 
+
+        // 1 cycle of download takes 200ms but 800ms if spike happen
+        // to run every 500ms, set Thread.Sleep(300) 
         public static void RunDownloaderLoop()
         {
             if (!g.connected)
                 return;
 
+
+
             int minuteSaveAll = -1;
 
             while (true)
             {
+               
                 DateTime date = DateTime.Now;
                 int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
                 int HHmm = Convert.ToInt32(date.ToString("HHmm"));
@@ -67,8 +74,18 @@ namespace New_Tradegy.Library.Listeners
                     }
                 }
 
-                // Wait 250 milliseconds (non-blocking) Block Request 60times/ 15 Secs
-                Thread.Sleep(500);
+
+
+
+
+
+                
+                // Wait 300 milliseconds (non-blocking) Block Request 60times/ 15 Secs
+                Thread.Sleep(300);
+
+
+
+
             }
         }
 
@@ -189,10 +206,11 @@ namespace New_Tradegy.Library.Listeners
                         continue;
 
                     var data = g.StockRepository.TryGetDataOrNull(stock);
-                    if (data == null) continue;
+                    if (data == null) 
+                        continue;
                     var api = data.Api;
 
-                    if (g.StockRepository.AllGeneralDatas.Any(x => x.Stock == data.Stock))
+                    if (g.StockRepository.AllDatas.Any(x => x.Stock == data.Stock))
                     {
                         downloadList.Add(data);
                     }
@@ -380,7 +398,9 @@ namespace New_Tradegy.Library.Listeners
                             api.x[api.nrow - 1, 11] = 0;
                     }
 
-                    totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(HHmmssfff, api.틱의시간[0]); // second can be zero, oops
+
+                    //?? zero and continue, 코스닥레버리지 and 코스피레버리지
+                    totalMilliSeconds = Utils.TimeUtils.ElapsedMillisecondsDouble(HHmmssfff, api.틱의시간[0]); 
                     if (totalMilliSeconds <= 0)
                         continue;
 

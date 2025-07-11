@@ -82,6 +82,8 @@ namespace New_Tradegy.Library.IO
                     g.HUNDRED);
                 // Update the global data table
 
+                //Console.WriteLine($" Nasdaq index {MajorIndex.Instance.NasdaqIndex}");
+
                 if (g.controlPane.GetCellValue(1, 2) != MajorIndex.Instance.NasdaqIndex.ToString())
                     g.controlPane.SetCellValue(1, 2, MajorIndex.Instance.NasdaqIndex.ToString("F3"));
 
@@ -90,10 +92,10 @@ namespace New_Tradegy.Library.IO
                 int HHmm = Convert.ToInt32(date.ToString("HHmm"));
 
                 // Check if the task should be performed based on time and day
-                if (wk.isWorkingHour())
-                {
-                    AppendOrReplaceNasdaqIndex();
-                }
+                //if (wk.isWorkingHour())
+                //{
+                //    AppendOrReplaceNasdaqIndex();
+                //}
                 // elaspedMilliSeconds = 180
                 //stopwatch.Stop();
                 //double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
@@ -259,7 +261,7 @@ namespace New_Tradegy.Library.IO
                 if (append_or_replace_row >= g.RealMaximumRow)
                     return;
 
-                data.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex); // AAA teethed pattern
+                data.Api.x[append_or_replace_row, 10] = (int)(MajorIndex.Instance.NasdaqIndex * 100); // AAA teethed pattern
             }
         }
     }

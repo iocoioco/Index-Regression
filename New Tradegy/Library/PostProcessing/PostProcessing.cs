@@ -7,6 +7,7 @@ using New_Tradegy.Library.Core;
 using New_Tradegy.Library.Trackers;
 using New_Tradegy.Library.Trackers.Charting;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 
 /* 배점 : 대형주 배차 조건 충족시, 수일 과다 움직임 높게(dev 큰 종목 가능성 높음) + 배차
@@ -61,11 +62,16 @@ namespace New_Tradegy.Library.PostProcessing
 
             try
             {
+               
+                // 600ms depedning on the number of points(26 chartareas)
                 Form se = (Form)Application.OpenForms["Form1"];
                 if (se.InvokeRequired)
                     se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
                 else
                     g.ChartMain.RefreshMainChart();
+
+               
+
             }
             catch (Exception ex)
             {
@@ -103,11 +109,15 @@ namespace New_Tradegy.Library.PostProcessing
 
             try
             {
+               
+                // 300ms depedning on the number of points(26 chartareas)
                 Form_보조_차트 subForm = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
                 if (subForm.InvokeRequired)
                     subForm.Invoke(new Action(() => subForm.Form_보조_차트_DRAW()));
                 else
                     subForm.Form_보조_차트_DRAW();
+
+               
             }
             catch (Exception ex)
             {
@@ -156,28 +166,54 @@ namespace New_Tradegy.Library.PostProcessing
         // done by Sensei
         public static void post_real(List<StockData> cloneList)
         {
-            foreach (var data in cloneList)
+            //Stopwatch sw = new Stopwatch();
+            //sw.Restart();
+
+            
+            foreach (var clone in cloneList)
             {
+                // Find the corresponding data in the repository
+                var data = g.StockRepository.TryGetDataOrNull(clone.Stock);
+                if (data == null) continue;
+
+                // Copy API snapshot safely
+                data.Api = clone.Api.Clone();
+
+                // Perform post-processing using the repository data
                 post(data);
             }
+
+
+
+
+
             post_코스닥_코스피_프외_순매수_배차_합산();
 
             if (g.MarketeyeCount % g.MarketeyeCountDivider == 1)
             {
+                // 20 : elapsed time to repeat : // 18 15 18 16 15 16 18 14
                 RankLogic.RankProcedure();
+                //Console.WriteLine($"[{DateTime.Now:HH:mm:ss}]");
+                
             }
 
-            foreach (var data in cloneList)
+            foreach (var clone in cloneList)
             {
-                if (g.StockManager.HoldingList.Contains(data.Stock)) // Stock is the name
+                if (g.StockManager.HoldingList.Contains(clone.Stock)) // Stock is the name
                 {
+                    var data = g.StockRepository.TryGetDataOrNull(clone.Stock);
+                    if (data == null) continue;
+
                     g.tradePane?.Update(); // update DGV for holding stock
                     marketeye_received_보유종목_푀분의매수매도_소리내기(data); // renamed to match new structure
                 }
             }
 
+           // Console.WriteLine($"[Chart1 Draw] Time: {sw.ElapsedMilliseconds} ms");
+
             ManageChart1Invoke();
             ManageChart2Invoke();
+            
         }
 
         // done by Sensei
@@ -598,7 +634,7 @@ namespace New_Tradegy.Library.PostProcessing
 
                 if (selected > 0)
                 {
-                    double totalMilliSeconds = 
+                    double totalMilliSeconds =
                         Utils.TimeUtils.ElapsedMillisecondsDouble(api.틱의시간[0], api.틱의시간[selected]);
                     if (totalMilliSeconds <= 0) return;
 
@@ -617,7 +653,7 @@ namespace New_Tradegy.Library.PostProcessing
                     api.분배수차[0] = api.분매수배[0] - api.분매도배[0];
                     api.분배수합[0] = api.분매수배[0] + api.분매도배[0];
 
-                    post.분당가격차 = (int)((api.틱의가격[0] - api.틱의가격[selected]) / 
+                    post.분당가격차 = (int)((api.틱의가격[0] - api.틱의가격[selected]) /
                         totalMilliSeconds * 60 * 1000);
                 }
             }

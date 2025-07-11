@@ -94,7 +94,7 @@ namespace New_Tradegy.Library
 
                 Utils.SoundUtils.Sound("time", "date forwards");
             }
-            FileIn.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
+            FileInStockData.read_or_set_stocks(); // date forward with stocks in the list of g.ogl_data
 
             // MOD info date modification
             int month_1 = g.date % 10000 / 100;

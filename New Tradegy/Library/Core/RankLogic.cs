@@ -10,6 +10,11 @@ using New_Tradegy.Library.Trackers;
 namespace New_Tradegy.Library.Core
 {
 
+
+
+
+
+
     public class RankLogic
     {
         public static List<StockData> RankBy등합(IEnumerable<StockData> datas)
@@ -220,6 +225,9 @@ namespace New_Tradegy.Library.Core
 
                     resultList.Add((value, data.Stock));
                 }
+
+
+               
             }
 
             resultList = resultList.OrderByDescending(x => x.value).ToList();
