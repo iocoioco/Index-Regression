@@ -16,6 +16,7 @@ using New_Tradegy.Library.Models;
 using New_Tradegy.Library.IO;
 using New_Tradegy.Library.UI.KeyBindings;
 using New_Tradegy.Library.Trackers;
+using System.Security.Policy;
 
 namespace New_Tradegy.Library
 {
@@ -878,31 +879,39 @@ namespace New_Tradegy.Library
 
         public static void CallNaverChart(string stock, string selection)
         {
-            if (string.IsNullOrEmpty(stock))
-            {
-                Process.Start("chrome.exe", "--new-tab https://finance.naver.com/");
-                return;
-            }
+            CPUTILLib.CpStockCode _cd = new CPUTILLib.CpStockCode();
 
-            var cd = new CPUTILLib.CpStockCode();
-            string code = cd.NameToCode(stock);
-            code = new string(code.Where(Char.IsDigit).ToArray());
-
-            string url;
-            if (selection == "main")
-            {
-                url = "https://finance.naver.com/item/main.nhn?code="; // 종합정보 or foreign 매매동향
-            }
-            else if (selection == "fchart")
-            {
-                url = "https://finance.naver.com/item/fchart.nhn?code="; // 차트
-            }
+            if (stock == null)
+                Process.Start("chrome.exe", "https://finance.naver.com/");
+            //Process.Start("microsoft-edge:https://finance.naver.com/");
             else
             {
-                url = "https://finance.naver.com/item/main.nhn?code="; // fallback
+                string url;
+                if (selection == "fchart") // fchart
+                {
+                    url = "https://finance.naver.com/item/fchart.nhn?code=";
+                    //url = "microsoft-edge:https://finance.naver.com/item/fchart.nhn?code=";
+                }
+                else if (selection == "main") // main
+                {
+                    url = "https://finance.naver.com/item/main.naver?code="; // 투자자별 매매동향
+                    //url = "microsoft-edge:https://finance.naver.com/item/main.nhn?code="; // 종합정보
+                    //url = "microsoft-edge:https://finance.naver.com/item/main.nhn?code=";
+                }
+                else // foreign & institute buying history
+                {
+                    url = "https://finance.naver.com/item/frgn.naver?code=";
+                }
+
+                string code = _cd.NameToCode(stock);
+                code = new String(code.Where(Char.IsDigit).ToArray());
+                url += code;
+                Process.Start("chrome.exe", url);
+
+                //Process.Start("chrome.exe", $"--new-tab {url}{code}");
             }
 
-            Process.Start("chrome.exe", $"--new-tab {url}{code}");
+           
         }
 
     }
