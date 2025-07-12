@@ -239,31 +239,20 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     break;
 
                 case "r6":
-                    // this is not implemented correctly, thus return for the time being
-                    
-                    if (g.q == "h&s")
+                  
+                    if(g.v.MainChartDisplayMode != "Datewise")
                     {
-                        g.Gid = g.saved_Gid;
-                        g.Npts[0] = g.test ? g.SavedNpts[0] : 0;
-                        g.Npts[1] = g.test ? g.SavedNpts[1] : g.RealMaximumRow;
+                        g.v.PreviousMainChartDisplayMode = g.v.MainChartDisplayMode;
+                        g.v.MainChartDisplayMode = "Datewise";
 
-                        int month = g.date % 10000 / 100;
-                        int day = g.date % 100;
-                        string newValue = month + "/" + day;
-
-
-                        if (g.controlPane.GetCellValue(0, 0) != newValue)
-                            g.controlPane.SetCellValue(0, 0, newValue);
-
-
+                        g.DataOffset = 0;
+                        g.ChartMain.DisplayDatewiseStockHistory(g.clickedStock, g.DataOffset);
                     }
                     else
                     {
-                        g.q = "h&s";
-                        g.saved_Gid = g.Gid;
-                        g.moving_reference_date = g.date;
-                        g.Npts[0] = g.test ? g.SavedNpts[0] : 0;
-                        g.Npts[1] = g.test ? g.SavedNpts[1] : g.RealMaximumRow;
+                        g.DataOffset = 0;
+                        g.v.MainChartDisplayMode = g.v.PreviousMainChartDisplayMode;
+                        ActionCode.New(false, post: true, eval: true, draw: 'm').Run();
                     }
                     break;
 

@@ -46,12 +46,28 @@ namespace New_Tradegy.Library.IO
             }
         }
 
-        private static void LoadStockData(StockData t, string path)
+        public static void LoadStockData(StockData t, string file)
         {
-            string file = Path.Combine(path, t.Stock + ".txt");
-            bool isIndex = g.StockManager.IndexList.Contains(t.Stock);
-            EnsureStockFile(file, isIndex);
+            if(!file.Contains(".txt"))
+            {
+                file += "\\" + t.Stock + ".txt";
+            }
 
+            if(!File.Exists(file))
+            {
+                if (g.test)
+                {
+                    t.Api.nrow = 0;
+                    return;
+                }
+                   
+                else
+                {
+                    bool isIndex = g.StockManager.IndexList.Contains(t.Stock);
+                    EnsureStockFile(file, isIndex);
+                }
+            }
+           
             var lines = File.ReadAllLines(file);
             if (lines.Length == 0) return;
 
@@ -141,7 +157,6 @@ namespace New_Tradegy.Library.IO
             var x = t.Api.x;
 
             if (!g.StockManager.IndexList.Contains(t.Stock) &&
-                !t.Stock.Contains("혼합") &&
                 t.Api.nrow >= 2)
             {
                 for (int j = 1; j < t.Api.nrow; j++)

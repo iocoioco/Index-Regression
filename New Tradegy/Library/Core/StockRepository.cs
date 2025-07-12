@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using DSCBO1Lib;
 using New_Tradegy.Library.Models;
 
 namespace New_Tradegy.Library.Core
@@ -29,6 +30,20 @@ namespace New_Tradegy.Library.Core
         }
 
         private Dictionary<string, StockData> _stockMap = new Dictionary<string, StockData>();
+
+        public void AddDateStock(string key, StockData data)
+        {
+            if (_stockMap.ContainsKey(key))
+                _stockMap[key] = data;
+            else
+                _stockMap.Add(key, data);
+        }
+
+        public void RemoveStock(string key)
+        {
+            if (_stockMap.ContainsKey(key))
+                _stockMap.Remove(key);
+        }
 
         public void AddOrUpdate(string stock, StockData data)
         {

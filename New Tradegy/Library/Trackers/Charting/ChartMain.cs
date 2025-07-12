@@ -1,10 +1,16 @@
-﻿using System;
+﻿using New_Tradegy.Library.Models;
+using New_Tradegy.Library.PostProcessing;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
+using New_Tradegy.Library.IO;
+using System.Drawing;
 
 namespace New_Tradegy.Library.Trackers.Charting
 {
@@ -426,12 +432,102 @@ namespace New_Tradegy.Library.Trackers.Charting
 
                 if (!placed) break; // no space left
             }
-
             return displayList;
         }
 
 
+        public void DisplayDatewiseStockHistory(string stock, int offset)
+        {
+            g.ChartManager.Chart1Handler?.Clear();                 // ✅ Clear Chart1 only
+            g.BookBidManager.CleanupAllExcept(Enumerable.Empty<string>());         // ✅ Clear all bookbids
 
+            var chart = g.ChartManager.Chart1;
+
+            var folders = Directory.GetDirectories(@"C:\병신\분\")
+                .Select(Path.GetFileName)
+                .Where(name => int.TryParse(name, out _))
+                .OrderByDescending(name => name)
+                .ToList();
+
+            int startIndex = offset * 24;
+            var selectedDates = folders.Skip(startIndex).Take(24).ToList();
+
+            
+            int row = 0, col = 0;
+
+            foreach (var date in selectedDates)
+            {
+                string file = $@"C:\병신\분\{date}\{stock}.txt";
+                if (!File.Exists(file)) continue;
+
+                var sd = new StockData();
+                sd.Stock = g.clickedStock;
+                FileInStockData.LoadStockData(sd, file);  // ✅ now correct
+                if(sd.Api.nrow < 2)
+                {
+                    row++;
+                    if (row >= 3)
+                    {
+                        row = 0;
+                        col++;
+                    }
+                    continue;
+                }
+
+                string MMdd = date.Length >= 8 ? date.Substring(4, 4) : stock;
+                sd.Stock = MMdd;
+                g.StockRepository.AddDateStock(MMdd, sd);
+
+                PostProcessor.post(sd);  // ✅ process once
+     
+                var (area, anno) = ChartGeneral.UpdateChartArea(chart, sd);
+
+                // === 🧭 Relocate immediately to col 2–9, row 0–2 ===
+                float cellWidth = 100f / g.nCol;
+                float cellHeight = 100f / g.nRow;
+                float margin = 0.0f;
+
+                int absCol = 2 + col;
+                float x = absCol * cellWidth + margin;
+                float y = row * cellHeight;
+                float width = cellWidth - 2 * margin;
+
+                if (area != null)
+                {
+                    area.Position = new ElementPosition(x, y, width, cellHeight);
+                    //area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(width, cellHeight);
+                    //area.BackColor = Color.FromArgb(240, 248, 255); // light blue-gray
+                    //area.BorderColor = Color.Silver;
+                    //area.BorderDashStyle = ChartDashStyle.Solid;
+                    //area.BorderWidth = 1;
+                    area.Visible = true;
+                }
+
+                if (anno is RectangleAnnotation rect)
+                {
+                    rect.X = x;
+                    rect.Y = y;
+                    //rect.Width = width;
+                    //rect.Height = 7.155f;
+                    //rect.LineColor = Color.Gray;
+                    rect.BackColor = Color.White;
+                    //rect.ForeColor = Color.Black;
+                    //rect.Font = new Font("맑은 고딕", 8f, FontStyle.Bold);
+                    rect.Visible = true;
+                }
+
+                // === Move down and to the right ===
+                row++;
+                if (row >= 3)
+                {
+                    row = 0;
+                    col++;
+                }
+
+                g.StockRepository.RemoveStock(date);
+            }
+
+            chart.Invalidate();  // ✅ refresh the chart after drawing
+        }
     }
-
 }

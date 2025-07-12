@@ -162,6 +162,8 @@ namespace New_Tradegy.Library
         
         public static int AlarmedHHmm = 0; // to bock alarm repeated like "Taiwan market open"
 
+        public static int DataOffset = 0;
+
         public static int moving_reference_date = 0; // to check history data
 
         public static int[] Npts = new int[2]; // total number of point from start Npts[0] to current Npts[1] used for test

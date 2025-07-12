@@ -67,9 +67,11 @@ namespace New_Tradegy.Library.UI.KeyBindings
             KeyBindingManager.Register('c', false, false, ActionHandlers.KillWebTxtFormKey);
             KeyBindingManager.Register(' ', false, false, ActionHandlers.NextPage);
             KeyBindingManager.Register('n', false, false, ActionHandlers.PreviousPage);
+            KeyBindingManager.Register(Keys.Oemcomma, false, false, false, ActionHandlers.PrevDatewisePage);  // '<'
+            KeyBindingManager.Register(Keys.OemPeriod, false, false, false, ActionHandlers.NextDatewisePage); // '>'
 
-          
-     
+
+
         }
     }
 }

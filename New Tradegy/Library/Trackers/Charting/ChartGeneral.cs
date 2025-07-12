@@ -358,44 +358,44 @@ namespace New_Tradegy.Library.Trackers
             string stock = "";
             string chartAreaName = "";
             int columnIndex = 0;
-            int markingPoint = 0;
+            int endPoint = 0;
 
-            ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref markingPoint);
+            ChartHandler.SeriesInfomation(t, ref stock, ref chartAreaName, ref columnIndex, ref endPoint);
 
             var data = g.StockRepository.TryGetDataOrNull(stock);
             if (data == null) return;
 
             var api = data.Api;
             var post = data.Post;
-            int totalPoints = g.test ? g.Npts[1] : data.Api.nrow;
+            // int totalPoints = g.test ? g.Npts[1] : data.Api.nrow; //????
 
             string s = "";
 
             switch (columnIndex)
             {
                 case 1: // price
-                    s = "      " + api.x[totalPoints - 1, columnIndex].ToString();
+                    s = "      " + api.x[endPoint - 1, columnIndex].ToString();
                     for (int k = 0; k < 4; k++)
                     {
-                        if (totalPoints - 2 - k < 0) break;
-                        int d = api.x[totalPoints - 1 - k, columnIndex] - api.x[totalPoints - 2 - k, columnIndex];
+                        if (endPoint - 2 - k < 0) break;
+                        int d = api.x[endPoint - 1 - k, columnIndex] - api.x[endPoint - 2 - k, columnIndex];
                         s += (d >= 0 ? "+" : "") + d.ToString("F0");
                     }
                     break;
 
                 case 2: // amount
-                    s = api.x[totalPoints - 1, columnIndex].ToString();
+                    s = api.x[endPoint - 1, columnIndex].ToString();
                     break;
 
                 case 3: // intensity
-                    s = (api.x[totalPoints - 1, columnIndex] / 100).ToString();
+                    s = (api.x[endPoint - 1, columnIndex] / 100).ToString();
                     break;
 
                 case 4: // program
                     s = (post.푀누천 / 10.0).ToString("F1");
                     for (int k = 0; k < 4; k++)
                     {
-                        if (totalPoints - 2 - k < 0) break;
+                        if (endPoint - 2 - k < 0) break;
                         double d = api.분프로천[k] / 10.0;
                         s += (d >= 0 ? "+" : "") + d.ToString("F1");
                     }
@@ -405,7 +405,7 @@ namespace New_Tradegy.Library.Trackers
                     s = (post.외누천 / 10.0).ToString("F1");
                     for (int k = 0; k < 4; k++)
                     {
-                        if (totalPoints - 2 - k < 0) break;
+                        if (endPoint - 2 - k < 0) break;
                         double d = api.분외인천[k] / 10.0;
                         s += (d >= 0 ? "+" : "") + d.ToString("F1");
                     }
@@ -415,7 +415,7 @@ namespace New_Tradegy.Library.Trackers
                     return;
             }
 
-            t.Points[markingPoint].Label = s;
+            t.Points[endPoint].Label = s;
             t.LabelForeColor = colorGeneral[columnIndex];
 
             t.Font = new Font("Arial", g.v.font, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));

@@ -75,7 +75,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 return;
             }
             else
-            { 
+            {
                 if (g.일회거래액 < 100)
                     g.일회거래액 = 100;
                 else if (g.일회거래액 < 500)
@@ -659,6 +659,32 @@ namespace New_Tradegy.Library.UI.KeyBindings
                     break;
             }
         };
-        #endregion
-    }
+
+
+
+
+
+        public static void PrevDatewisePage()
+        {
+            if (g.v.MainChartDisplayMode != "Datewise") return;
+
+            g.DataOffset++;
+            g.ChartMain.DisplayDatewiseStockHistory(g.clickedStock, g.DataOffset);
+            Utils.SoundUtils.Sound("time", "date backwards");
+        }
+
+        public static void NextDatewisePage()
+        {
+            if (g.v.MainChartDisplayMode != "Datewise") return;
+
+            if (g.DataOffset > 0)
+            {
+                g.DataOffset--;
+                g.ChartMain.DisplayDatewiseStockHistory(g.clickedStock, g.DataOffset);
+                Utils.SoundUtils.Sound("time", "date forwards");
+            }
+        }
+    };
+    #endregion
 }
+
