@@ -96,8 +96,8 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[0][3] = g.예치금;
 
             // Row 2–13 configuration
-            _table.Rows[4][0] = "adv";
-            _table.Rows[4][1] = g.v.q_advance_lines;
+            _table.Rows[4][0] = "adv"; _table.Rows[4][1] = g.v.q_advance_lines;
+            //_table.Rows[4][2] = "분모"; _table.Rows[4][3] = g.MarketeyeCountDivider;
 
             _table.Rows[5][0] = "종거"; _table.Rows[5][1] = 1000; g.v.종가기준추정거래액이상_천만원 = 1000;
             _table.Rows[5][2] = "분거"; _table.Rows[5][3] = 10; g.v.분당거래액이상_천만원 = 10;
@@ -111,7 +111,7 @@ namespace New_Tradegy.Library.Trackers
             _table.Rows[8][0] = "수과"; _table.Rows[8][1] = 20; g.v.수급과장배수 = 20;
             _table.Rows[8][2] = "배과"; _table.Rows[8][3] = 1; g.v.배수과장배수 = 1;
 
-            _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 20; g.MarketeyeCountDivider = 20;
+            _table.Rows[9][0] = "평가"; _table.Rows[9][1] = 10; g.MarketeyeCountDivider = 10;
             _table.Rows[9][2] = "초간"; _table.Rows[9][3] = 30 * 1000; g.postIntervalTime = 30 * 1000;
 
             _table.Rows[10][0] = "Font"; _table.Rows[10][1] = g.v.font = 17; g.v.font /= 2.0f;
@@ -251,7 +251,7 @@ namespace New_Tradegy.Library.Trackers
             Settings["평가"] = new ControlSetting
             {
                 Name = "평가",
-                Values = new[] { 2, 5, 7, 10, 15, 20, 25, 40, 60 },
+                Values = new[] { 2, 5, 7, 10, 13, 15, 17, 20, 25, 40, 60 },
                 Get = () => g.MarketeyeCountDivider,
                 Set = val =>
                 {
@@ -403,19 +403,37 @@ namespace New_Tradegy.Library.Trackers
                             Process.Start("chrome.exe", "--new-tab https://www.investing.com/crypto/bitcoin/chart");
                         break;
 
-
+                
                     case 4:
-                        if (e.ColumnIndex == 0)
+                        if(e.ColumnIndex == 0 || e.ColumnIndex ==1)
                         {
-                            g.v.q_advance_lines -= 5;
-                            if (g.v.q_advance_lines < 5)
-                                g.v.q_advance_lines = 5;
+                            if (e.ColumnIndex == 0)
+                            {
+                                g.v.q_advance_lines -= 5;
+                                if (g.v.q_advance_lines < 5)
+                                    g.v.q_advance_lines = 5;
+                            }
+                            if (e.ColumnIndex == 1)
+                            {
+                                g.v.q_advance_lines += 5;
+                            }
+                            _table.Rows[4][1] = g.v.q_advance_lines;
                         }
-                        if (e.ColumnIndex == 1)
-                        {
-                            g.v.q_advance_lines += 5;
-                        }
-                        _table.Rows[4][1] = g.v.q_advance_lines;
+                        //else
+                        //{
+                        //    if (e.ColumnIndex == 2)
+                        //    {
+                        //        g.MarketeyeCountDivider--; 
+                        //        if (g.MarketeyeCountDivider < 3)
+                        //            g.MarketeyeCountDivider = 3;
+                        //    }
+                        //    if (e.ColumnIndex == 3)
+                        //    {
+                        //        g.MarketeyeCountDivider++;
+                        //    }
+                        //    _table.Rows[4][3] = g.MarketeyeCountDivider;
+                        //}
+                        
                         break;
                 }
             }

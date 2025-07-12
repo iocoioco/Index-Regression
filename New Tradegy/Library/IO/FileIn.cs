@@ -1118,10 +1118,13 @@ namespace New_Tradegy.Library.IO
                     if (empty_line_met == false)
                     {
                         //?
-                        if (kospi_mixed_stock_count <= 20)
+                        if (kospi_mixed_stock_count < 50)
                         {
                             string stock = words[1];
-                            if (!wk.isStock(stock) || stock.Contains("KODEX"))
+                            if (!wk.isStock(stock) ||
+                                stock.Contains("KODEX") ||
+                                stock.Contains("PLUS") ||
+                                stock.Contains("200"))
                                 continue;
                             g.kospi_mixed.stock.Add(stock);
                             string t = words[5].Trim(new Char[] { '%', '(', ')' });
@@ -1135,11 +1138,14 @@ namespace New_Tradegy.Library.IO
                     else
                     {
                         //?
-                        if (kosdaq_mixed_stock_count <= 20)
+                        if (kosdaq_mixed_stock_count < 50)
 
                         {
                             string stock = words[1];
-                            if (!wk.isStock(stock) || stock.Contains("KODEX"))
+                            if (!wk.isStock(stock) ||
+                                stock.Contains("KODEX") ||
+                                stock.Contains("RISE") ||
+                                stock.Contains("SOL"))
                                 continue;
                             g.kosdaq_mixed.stock.Add(stock);
                             string t = words[5].Trim(new Char[] { '%', '(', ')' });

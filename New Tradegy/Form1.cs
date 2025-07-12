@@ -383,7 +383,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     }
 
                     // Wait for 15 seconds before the next iteration
-                    await Task.Delay(3000, cancellationToken);
+                    await Task.Delay(1000, cancellationToken);
                 }
             }
         }
@@ -476,7 +476,7 @@ namespace New_Tradegy // added for test on 20241020 0300
                     }
 
                     // Wait for 15 seconds before the next iteration
-                    await Task.Delay(3000, cancellationToken);
+                    await Task.Delay(1000, cancellationToken);
                 }
             }
         }
