@@ -1139,7 +1139,7 @@ namespace New_Tradegy.Library.IO
                     {
                         //?
                         if (kosdaq_mixed_stock_count < 50)
-
+                             
                         {
                             string stock = words[1];
                             if (!wk.isStock(stock) ||
