@@ -1089,6 +1089,7 @@ namespace New_Tradegy.Library.IO
             }
         }
 
+
         public static void read_삼성_코스피_코스닥_전체종목()
         {
             string filename = @"C:\병신\data work\삼성_코스피_코스닥_전체종목.txt";
@@ -1112,13 +1113,13 @@ namespace New_Tradegy.Library.IO
                 if (words[0] == "")
                     empty_line_met = true;
 
-                
+
                 if (words[0].Length > 0)
                 {
                     if (empty_line_met == false)
                     {
                         //?
-                        if (kospi_mixed_stock_count < 50)
+                        if (kospi_mixed_stock_count < 98)
                         {
                             string stock = words[1];
                             if (!wk.isStock(stock) ||
@@ -1138,8 +1139,8 @@ namespace New_Tradegy.Library.IO
                     else
                     {
                         //?
-                        if (kosdaq_mixed_stock_count < 50)
-                             
+                        if (kosdaq_mixed_stock_count < 98)
+
                         {
                             string stock = words[1];
                             if (!wk.isStock(stock) ||
@@ -1154,30 +1155,42 @@ namespace New_Tradegy.Library.IO
                             kosdaq_weight_sum += d;
                             kosdaq_mixed_stock_count++;
                         }
-
                     }
                 }
             }
 
             g.kospi_mixed.weight = AdjustToSumOne(g.kospi_mixed.weight);
             g.kosdaq_mixed.weight = AdjustToSumOne(g.kosdaq_mixed.weight);
-            //g.평불종목.Add("코스피혼합");
-            //g.평불종목.Add("코스닥혼합");
 
-            //g.지수종목.Clear();
-            //foreach (string stock in g.kospi_mixed.stock)
-            //{
-            //    g.지수종목.Add(stock);
-            //}
-            //foreach (string stock in g.kosdaq_mixed.stock)
-            //{
-            //    g.지수종목.Add(stock);
-            //}
 
-            //g.지수종목.Add("KODEX 레버리지"); // 0504
-            //g.지수종목.Add("KODEX 200선물인버스2X");
-            //g.지수종목.Add("KODEX 코스닥150레버리지");
-            //g.지수종목.Add("KODEX 코스닥150선물인버스");
+            // checking finally
+            int kospiCount = g.kospi_mixed.stock.Count;
+            int kosdaqCount = g.kosdaq_mixed.stock.Count;
+            double kospiSum = g.kospi_mixed.weight.Sum();
+            double kosdaqSum = g.kosdaq_mixed.weight.Sum();
+
+            bool showWarning = false;
+            string msg = "";
+
+            if (kospiCount < 98 || kosdaqCount < 98)
+            {
+                showWarning = true;
+                msg += $"⚠️ Warning: One of the groups has less than 98 stocks.\n";
+                msg += $"KOSPI count: {kospiCount}, KOSDAQ count: {kosdaqCount}\n";
+            }
+
+            if (Math.Abs(kospiSum - 1.0) > 0.001 || Math.Abs(kosdaqSum - 1.0) > 0.001)
+            {
+                showWarning = true;
+                msg += $"⚠️ Warning: One of the weight sums is not exactly 1.0.\n";
+                msg += $"KOSPI sum: {kospiSum:0.000}, KOSDAQ sum: {kosdaqSum:0.000}\n";
+            }
+
+            if (showWarning)
+            {
+                MessageBox.Show(msg, "Constituent Stock Check");
+            }
+
         }
 
         static List<double> AdjustToSumOne(List<double> numbers)

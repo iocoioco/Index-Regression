@@ -254,8 +254,11 @@ namespace New_Tradegy // added for test on 20241020 0300
             Form Form_보조_차트 = new Form_보조_차트();
             Form_보조_차트.Show(); // second chart
 
+            FormMonitor fcp = new FormMonitor();
+            fcp.TopMost = true;
+            fcp.Show();
 
-            // updated on 20241020 0300
+            
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());
             SoundUtils.Sound("일반", "to jsb");
 
