@@ -66,7 +66,7 @@ namespace New_Tradegy.Library.PostProcessing
                 // 600ms depedning on the number of points(26 chartareas)
                 Form se = (Form)Application.OpenForms["Form1"];
                 if (se.InvokeRequired)
-                    se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
+                    se.Invoke(new Action(() => g.ChartMain.RefreshMainChart())); // DoDrawMain
                 else
                     g.ChartMain.RefreshMainChart();
 
@@ -84,7 +84,7 @@ namespace New_Tradegy.Library.PostProcessing
                 if (drawMainRequestedWhileBusy)
                 {
                     drawMainRequestedWhileBusy = false;
-                    ManageChart1Invoke();  // retry once if skipped
+                    ManageChart1Invoke();  // DoDrawMain
                 }
             }
         }
@@ -130,7 +130,7 @@ namespace New_Tradegy.Library.PostProcessing
                 if (drawSubRequestedWhileBusy)
                 {
                     drawSubRequestedWhileBusy = false;
-                    ManageChart2Invoke();  // retry once if skipped
+                    ManageChart2Invoke();  // DoDrawSub
                 }
             }
         }
@@ -209,10 +209,12 @@ namespace New_Tradegy.Library.PostProcessing
                 }
             }
 
-           // Console.WriteLine($"[Chart1 Draw] Time: {sw.ElapsedMilliseconds} ms");
-
-            ManageChart1Invoke();
-            ManageChart2Invoke();
+            // Console.WriteLine($"[Chart1 Draw] Time: {sw.ElapsedMilliseconds} ms");
+            if (g.MarketeyeCount % 2 == 1)
+            {
+                ManageChart1Invoke(); // post_real
+                ManageChart2Invoke(); // post real
+            }
             
         }
 

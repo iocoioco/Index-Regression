@@ -178,7 +178,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             var list = new List<string> { "피올", "닥올" };
             g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
 
-            PostProcessor.ManageChart2Invoke();
+            ActionCode.New(true, post: false, eval: false, draw: 's').Run();
         };
 
         public static readonly Action 보조차트_순위_관심 = () =>
@@ -186,7 +186,7 @@ namespace New_Tradegy.Library.UI.KeyBindings
             List<string> list = new List<string> { "그순", "관심" };
             g.v.SubChartDisplayMode = StringUtils.CycleStrings(g.v.SubChartDisplayMode, list);
 
-            PostProcessor.ManageChart2Invoke();
+            ActionCode.New(true, post: false, eval: true, draw: 's').Run();
         };
 
         public static readonly Action 상순_저순 = () =>
@@ -573,11 +573,6 @@ namespace New_Tradegy.Library.UI.KeyBindings
             if (Form_매수_매도 != null)
             {
                 Form_매수_매도.Close();
-            }
-            Form_지수_조정 Form_지수_조정 = (Form_지수_조정)Application.OpenForms["Form_지수_조정"];
-            if (Form_지수_조정 != null)
-            {
-                Form_지수_조정.Close();
             }
         };
 

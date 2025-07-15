@@ -81,7 +81,7 @@ namespace New_Tradegy.Library.Listeners
 
                 
                 // Wait 300 milliseconds (non-blocking) Block Request 60times/ 15 Secs
-                Thread.Sleep(300);
+                Thread.Sleep(500);
 
 
 

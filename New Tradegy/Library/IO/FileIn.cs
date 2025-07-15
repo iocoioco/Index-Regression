@@ -489,7 +489,7 @@ namespace New_Tradegy.Library.IO
 
             FileIn.read_파일관심종목(); // g.ogl_data에 없는 종목은 skip as g.StockManager.InterestedWithBidList
 
-            FileIn.read_write_kodex_magnifier("read"); // duration 0.001 seconds
+            FileIn.read_write_KodexMagnifier("read"); // duration 0.001 seconds
         }
 
 
@@ -1031,15 +1031,15 @@ namespace New_Tradegy.Library.IO
         }
 
 
-        public static void read_write_kodex_magnifier(string to_do)
+        public static void read_write_KodexMagnifier(string to_do)
         {
-            string filename = @"C:\병신\data work\kodex_magnifier.txt";
+            string filename = @"C:\병신\data work\KodexMagnifier.txt";
 
             if (to_do == "read")
             {
                 if (!File.Exists(filename))
                 {
-                    MessageBox.Show("kodex_magnifier.txt Not Exist");
+                    MessageBox.Show("KodexMagnifier.txt Not Exist");
                     return;
                 }
 
@@ -1050,9 +1050,9 @@ namespace New_Tradegy.Library.IO
                 foreach (string line in grlines)
                 {
                     string[] words = line.Split('\t');
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < 2; i++)
                     {
-                        g.kodex_magnifier[id, i] = Convert.ToDouble(words[i]);
+                        g.KodexMagnifier[id, i] = Convert.ToDouble(words[i]);
                     }
                     id++;
                 }
@@ -1065,25 +1065,19 @@ namespace New_Tradegy.Library.IO
                     File.Delete(filename);
                 }
                 string str = "";
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 2; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < 2; j++)
                     {
-                        if (MathUtils.IsSafeToDivide(g.kodex_magnifier[i, j]))
-                        {
-                            str += g.kodex_magnifier[i, j];
-                            if (j < 3)
-                                str += "\t";
-                            else
-                            {
-                                str += "\n";
-                            }
-                        }
-                        else
-                        {
-                            g.kodex_magnifier[i, j] = 1.0;
-                        }
+
+                        str += g.KodexMagnifier[i, j];
+                        
+                        if(i == 0 && j == 1)
+                            str += "\n";
+                        else if (j < 2)
+                            str += "\t";
                     }
+
                 }
                 File.WriteAllText(filename, str);
             }
@@ -1649,30 +1643,7 @@ namespace New_Tradegy.Library.IO
             return (int)(전일종가 * (전일거래량 / g.천만원));
         }
 
-        public static int read_전일종가_GivenDate(string stock, int date)
-        {
-
-            string path = @"C:\병신\data work\일\" + stock + ".txt";
-            if (!File.Exists(path))
-            {
-                return -1;
-            }
-            string[] grlines = File.ReadAllLines(path);
-            int FoundLine = 0;
-            foreach (string line in grlines)
-            {
-                string[] wordss = line.Split(' ');
-                if (Convert.ToInt32(wordss[0]) == date)
-                    break;
-                else
-                    FoundLine++;
-            }
-            string aline = File.ReadLines(path).Skip(FoundLine - 1).Take(1).First();
-
-            string[] words = aline.Split(' ');
-            return Convert.ToInt32(words[4]);
-        }
-
+        
         public static int read_전일종가(string stock)
         {
 

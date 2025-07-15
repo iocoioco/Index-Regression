@@ -93,7 +93,7 @@ namespace New_Tradegy
                         break;
                     }
                 }
-                g.kodex_magnifier[id, jd] *= (value / 100.0);
+                g.KodexMagnifier[id, jd] *= (value / 100.0);
 
                 var data = g.StockRepository.TryGetDataOrNull(g.clickedStock);
                 if (data != null) { return; }

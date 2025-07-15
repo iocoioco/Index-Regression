@@ -82,10 +82,7 @@ namespace New_Tradegy.Library.Trackers.Charting
             var usedAnnotations = new List<string>();
             var usedBookbids = new List<string>();
 
-            chart.Series.Clear();
-            chart.ChartAreas.Clear();
-            chart.Annotations.Clear();
-
+            
             int areasCount = g.ChartManager.Chart1.ChartAreas.Count;
             int annotationsCount = g.ChartManager.Chart1.Annotations.Count;
             int seriesCount = g.ChartManager.Chart1.Series.Count;

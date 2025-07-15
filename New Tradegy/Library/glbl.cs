@@ -250,7 +250,7 @@ namespace New_Tradegy.Library
 
         // kodex (price, program buy, others buy, retail buys)
         // for kospi leverage inverse and kosdaq leverage and inverse
-        public static double[,] kodex_magnifier = new double[4, 4];
+        public static double[,] KodexMagnifier = new double[2, 2];
     }
 }
 

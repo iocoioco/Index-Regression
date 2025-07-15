@@ -15,6 +15,7 @@ using New_Tradegy.Library.Trackers.Charting;
 using New_Tradegy.Library.UI.KeyBindings;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using New_Tradegy.Library.IO;
 
 
 namespace New_Tradegy.Library.UI.ChartClickHandlers
@@ -39,6 +40,9 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
 
         public static void HandleControlClick(Chart chart, string selection, int row, int col)
         {
+            var data = g.StockRepository.TryGetDataOrNull(g.clickedStock);
+            if (data == null) return;
+
             switch (selection)
             {
                 case "l1": // Control click : buy at market price
@@ -46,8 +50,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         g.StockManager.InterestedWithBidList.Add(g.clickedStock);
                     }
-                    PostProcessor.ManageChart1Invoke();
-                    //?? g.ChartMain.RefreshMainChart(); // index already has bookbid
+                    PostProcessor.ManageChart1Invoke(); // control l1
 
                     int price = GetAskPriceFromGivenStock(g.clickedStock);
                     if (price < 0) return;
@@ -72,6 +75,48 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     confirmationDialog.OpenOrUpdateConfirmationForm(isSell, g.clickedStock, quantity, price, 100, info);
 
                     DealManager.DealExec("매수", g.clickedStock, quantity, price, "03");
+                    break;
+
+                case "l2": // 수급과장배수, Leverage magnifier * 1.5
+                    {
+                        if (g.StockRepository.AllGeneralDatas.Any(x => x.Stock == data.Stock))
+                        {
+                            data.Misc.수급과장배수 *= 1.5;
+                        }
+                        else
+                        {
+                            if (g.StockManager.LeverageList[0] == data.Stock) // KOSPI 레버리지
+                            {
+                                g.KodexMagnifier[0, 1] *= 1.5;
+                            }
+                            else
+                                g.KodexMagnifier[1, 1] *= 1.5;
+
+                            FileIn.read_write_KodexMagnifier("write");
+                        }
+                        ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
+                    }
+                    break;
+
+                case "l8": // 수급과장배수, Leverage magnifier * 1.5
+                    {
+                        if (g.StockRepository.AllGeneralDatas.Any(x => x.Stock == data.Stock))
+                        {
+                            data.Misc.수급과장배수 *= 1.5;
+                        }
+                        else
+                        {
+                            if (g.StockManager.LeverageList[0] == data.Stock) // KOSPI 레버리지
+                            {
+                                g.KodexMagnifier[0, 1] *= 0.66;
+                            }
+                            else
+                                g.KodexMagnifier[1, 1] *= 0.66;
+
+                            FileIn.read_write_KodexMagnifier("write");
+                        }
+                        ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
+                    }
                     break;
             }
         }
@@ -101,11 +146,14 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                         {
                             if (g.StockManager.LeverageList[0] == data.Stock)
                             {
-                                g.kodex_magnifier[0, 0] *= 1.5;
+                                g.KodexMagnifier[0, 0] *= 1.5;
                             }
                             else
-                                g.kodex_magnifier[1, 0] *= 1.5;
+                                g.KodexMagnifier[1, 0] *= 1.5;
+                            FileIn.read_write_KodexMagnifier("write");
                         }
+                        
+                
                         ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
                     }
                     break;
@@ -181,10 +229,12 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                     {
                         if (g.StockManager.LeverageList[0] == data.Stock)
                         {
-                            g.kodex_magnifier[0, 0] *= 0.66;
+                            g.KodexMagnifier[0, 0] *= 0.66;
                         }
                         else
-                            g.kodex_magnifier[1, 0] *= 0.66;
+                            g.KodexMagnifier[1, 0] *= 0.66;
+
+                        FileIn.read_write_KodexMagnifier("write");
                     }
 
                     

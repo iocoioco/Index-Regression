@@ -49,10 +49,10 @@ namespace New_Tradegy.Library.UI.KeyBindings
                 RankLogic.RankProcedure();
 
             if (DrawTarget == 'm' || DrawTarget == 'B')
-                PostProcessor.ManageChart1Invoke();
+                PostProcessor.ManageChart1Invoke(); // Run
 
             if (DrawTarget == 's' || DrawTarget == 'B')
-                PostProcessor.ManageChart2Invoke();
+                PostProcessor.ManageChart2Invoke(); // Run
         }
     }
 }

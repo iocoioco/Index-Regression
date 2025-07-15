@@ -248,8 +248,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             // RankLogic.RankByMode(); // duration : 0.025 ~ 0.054 seconds
 
             g.ChartMain = new ChartMain(); // all new, Form_1 start
-            PostProcessor.ManageChart1Invoke();
-           //?? g.ChartMain.RefreshMainChart();
+            PostProcessor.ManageChart1Invoke(); // Form1
+           
 
             Form Form_보조_차트 = new Form_보조_차트();
             Form_보조_차트.Show(); // second chart
@@ -339,21 +339,21 @@ namespace New_Tradegy // added for test on 20241020 0300
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
+                    if (HHmm < 903)
+                    {
+                        await Task.Delay(500);
+                        continue;
+                    }
 
                     if (wk.isWorkingHour())
                     {
-                        //Logger.Info("Attempting to fetch KOSPI data...");
-
                         _cpsvrnew7222.SetInputValue(0, 'B');
                         _cpsvrnew7222.SetInputValue(1, 0);
                         _cpsvrnew7222.SetInputValue(2, '1');
                         _cpsvrnew7222.SetInputValue(4, '2');
 
                         if (_cpsvrnew7222.GetDibStatus() == 1)
-                        {
-                            //Logger.Error("GetDibStatus returned an error");
                             continue;
-                        }
 
                         int retryCount = 0;
                         bool success = false;
@@ -362,26 +362,30 @@ namespace New_Tradegy // added for test on 20241020 0300
                         {
                             if (_cpsvrnew7222.BlockRequest() == 0)
                             {
-                                //데이터 저장 편의로 marketeye_Recevied에서 코스피개인매수액을 당일외인순매수량 컬럼에 저장
-                                MajorIndex.Instance.KospiRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                                MajorIndex.Instance.KospiInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
-                                MajorIndex.Instance.KospiInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
-                                MajorIndex.Instance.KospiPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
-                                //int KOSPI = (int)_cpsvrnew7222.GetDataValue(1, 0);
-                                //Logger.Info($"KOSPI: {KOSPI}");
+                                int retail = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED);
+                                int inst = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
+                                int invest = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
+                                int pens = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
+
+                                // ✅ NEW: skip if all values are zero (only if before 09:10)
+                                if (retail == 0 && inst == 0 && invest == 0 && pens == 0 && HHmm < 910)
+                                {
+                                    await Task.Delay(1000);
+                                    continue;
+                                }
+
+                                MajorIndex.Instance.KospiRetailNetBuy = retail;
+                                MajorIndex.Instance.KospiInstitutionNetBuy = inst;
+                                MajorIndex.Instance.KospiInvestmentNetBuy = invest;
+                                MajorIndex.Instance.KospiPensionNetBuy = pens;
+
                                 success = true;
                             }
                             else
                             {
                                 retryCount++;
-                                //Logger.Warn($"BlockRequest failed. Retrying {retryCount}/3...");
-                                await Task.Delay(3000, cancellationToken); // Wait 5 seconds before retrying
+                                await Task.Delay(500);
                             }
-                        }
-
-                        if (!success)
-                        {
-                            //Logger.Error("Failed to fetch KOSPI data after 3 retries.");
                         }
                     }
 
@@ -415,7 +419,6 @@ namespace New_Tradegy // added for test on 20241020 0300
                 _cancellationTokenSource.Cancel();
                 //LogManager.Shutdown();
             }
-
             private async Task RunPeriodicTask(CancellationToken cancellationToken)
             {
                 while (!cancellationToken.IsCancellationRequested)
@@ -424,10 +427,14 @@ namespace New_Tradegy // added for test on 20241020 0300
                     {
                         int HHmm = Convert.ToInt32(DateTime.Now.ToString("HHmm"));
 
+                        if (HHmm < 903)
+                        {
+                            await Task.Delay(500, cancellationToken);
+                            continue;
+                        }
+
                         if (wk.isWorkingHour())
                         {
-                            //Logger.Info("Attempting to fetch KOSDAQ data...");
-
                             _cpsvrnew7222.SetInputValue(0, 'C');
                             _cpsvrnew7222.SetInputValue(1, 0);
                             _cpsvrnew7222.SetInputValue(2, '1');
@@ -435,7 +442,6 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                             if (_cpsvrnew7222.GetDibStatus() == 1)
                             {
-                                //Logger.Error("GetDibStatus returned an error");
                                 continue;
                             }
 
@@ -446,20 +452,29 @@ namespace New_Tradegy // added for test on 20241020 0300
                             {
                                 if (_cpsvrnew7222.BlockRequest() == 0)
                                 {
-                                    MajorIndex.Instance.KosdaqRetailNetBuy = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED); // 억 단위로 변환
-                                    //MarketData.Instance.KosdaqForeignNetBuy = (int)(_cpsvrnew7222.GetDataValue(2, 0) / g.HUNDRED); //
-                                    MajorIndex.Instance.KosdaqInstitutionNetBuy = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED); //
-                                    MajorIndex.Instance.KosdaqInvestmentNetBuy = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED); //
-                                    MajorIndex.Instance.KosdaqPensionNetBuy = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED); //
-                                    //int KOSDAQ = (int)_cpsvrnew7222.GetDataValue(1, 0);
-                                    //Logger.Info($"KOSDAQ: {KOSDAQ}");
+                                    int retail = (int)(_cpsvrnew7222.GetDataValue(1, 0) / g.HUNDRED);
+                                    int inst = (int)(_cpsvrnew7222.GetDataValue(3, 0) / g.HUNDRED);
+                                    int invest = (int)(_cpsvrnew7222.GetDataValue(4, 0) / g.HUNDRED);
+                                    int pens = (int)(_cpsvrnew7222.GetDataValue(9, 0) / g.HUNDRED);
+
+                                    // ✅ Skip if all values are zero and it's still early
+                                    if (retail == 0 && inst == 0 && invest == 0 && pens == 0 && HHmm < 910)
+                                    {
+                                        await Task.Delay(1000, cancellationToken);
+                                        continue;
+                                    }
+
+                                    MajorIndex.Instance.KosdaqRetailNetBuy = retail;
+                                    MajorIndex.Instance.KosdaqInstitutionNetBuy = inst;
+                                    MajorIndex.Instance.KosdaqInvestmentNetBuy = invest;
+                                    MajorIndex.Instance.KosdaqPensionNetBuy = pens;
+
                                     success = true;
                                 }
                                 else
                                 {
                                     retryCount++;
-                                    //Logger.Warn($"BlockRequest failed. Retrying {retryCount}/3...");
-                                    await Task.Delay(5000, cancellationToken); // Wait 5 seconds before retrying
+                                    await Task.Delay(500, cancellationToken);
                                 }
                             }
 
@@ -478,10 +493,11 @@ namespace New_Tradegy // added for test on 20241020 0300
                         //Logger.Error(ex, "An error occurred while fetching KOSDAQ data.");
                     }
 
-                    // Wait for 15 seconds before the next iteration
+                    // Wait for 1 second before the next iteration
                     await Task.Delay(1000, cancellationToken);
                 }
             }
+
         }
 
 

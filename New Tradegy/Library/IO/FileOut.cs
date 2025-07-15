@@ -45,7 +45,7 @@ namespace New_Tradegy.Library.IO
             if (g.test || !g.connected)
                 return; // ❌ Don't save during test mode or not connected
 
-            FileIn.read_write_kodex_magnifier("write");
+            FileIn.read_write_KodexMagnifier("write");
 
             string directory = $@"C:\병신\분\{g.date}";
             Directory.CreateDirectory(directory);

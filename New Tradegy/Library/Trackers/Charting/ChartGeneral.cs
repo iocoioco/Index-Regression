@@ -25,19 +25,19 @@ namespace New_Tradegy.Library.Trackers
             Annotation anno = null;
 
             // Update exiting chartarea
-            //if (chart.ChartAreas.IndexOf(areaName) >= 0)
-            //{
-            //    area = chart.ChartAreas[areaName];
-            //    UpdateSeries(chart, data);
+            if (chart.ChartAreas.IndexOf(areaName) >= 0) // stockName(areaName) exists, update series
+            {
+                area = chart.ChartAreas[areaName];
+                UpdateSeries(chart, data);
 
-            //}
-            //// Generate a new chartarea
-            //else
-            //{
+            }
+            // Generate a new chartarea
+            else
+            {
                 ChartBasic.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
                 area = CreateChartArea(chart, data);
-            //}
-            if(area != null)
+            }
+            if (area != null)
             {
                 anno = RedrawAnnotation(chart, data); // existing annotation will be deleted in RedrawAnnotation
             }

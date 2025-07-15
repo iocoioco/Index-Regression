@@ -23,17 +23,17 @@ namespace New_Tradegy.Library.Trackers
             string areaName = data.Stock;
             ChartArea area;
 
-            //if (chart.ChartAreas.IndexOf(areaName) >= 0)
-            //{
-            //    area = chart.ChartAreas[areaName];
-            //    UpdateSeries(chart, data);
-            //}
-            //// Generate a new chartarea
-            //else
-            //{
+            if (chart.ChartAreas.IndexOf(areaName) >= 0)
+            {
+                area = chart.ChartAreas[areaName];
+                UpdateSeries(chart, data);
+            }
+            // Generate a new chartarea
+            else
+            {
                 ChartBasic.RemoveChartBlock(chart, data.Stock); 
                 area = CreateChartArea(chart, data);
-            //}
+            }
             return area;
         }
 
@@ -84,9 +84,7 @@ namespace New_Tradegy.Library.Trackers
                 for (int i = start; i < end; i++)
                 {
                     if (data.Api.x[i, 0] == 0) break;
-                    int val = id == 10
-                        ? (int)(HandleUSFuture(data, i, end, start, id) * mag)
-                        : (int)(data.Api.x[i, id] * mag);
+                    int val =  (int)(data.Api.x[i, id] * mag);
                     series.Points.AddXY((data.Api.x[i, 0] / g.HUNDRED).ToString(), val);
 
                     ymin = Math.Min(ymin, val);
@@ -162,11 +160,6 @@ namespace New_Tradegy.Library.Trackers
             double magnifier = 1.0;
             Magnifier(data.Stock, id, ref magnifier);
 
-            if (id == 10)
-            {
-                return (int)(HandleUSFuture(data, k, data.Api.nrow, 0, id) * magnifier);
-            }
-
             return (int)(data.Api.x[k, id] * magnifier);
         }
 
@@ -188,8 +181,8 @@ namespace New_Tradegy.Library.Trackers
                 string seriesName = $"{stock} {typeId}";
 
                 // Skip if the series doesn't exist
-                // fater than any because of internal dictionary lookup
-                if (chart.Series.IsUniqueName(seriesName))
+                // faster than any because of internal dictionary lookup
+                if (chart.Series.IsUniqueName(seriesName)) // if not exist continue
                     continue;
 
                 var series = chart.Series[seriesName];
@@ -204,7 +197,6 @@ namespace New_Tradegy.Library.Trackers
                     series.Points.AddXY(xLabel, value);
                 }
 
-
                 Label(chart, series); // ✅ Annotate
                 Mark(chart, series.Points.Count - 1, series); // ✅ Mark position
             }
@@ -212,7 +204,6 @@ namespace New_Tradegy.Library.Trackers
             if (!chart.ChartAreas.IsUniqueName(stock))
             {
                 var area = chart.ChartAreas[stock];
-
 
                 string seriesName = stock + " " + "1";
                 var series = chart.Series[seriesName];
@@ -281,37 +272,26 @@ namespace New_Tradegy.Library.Trackers
             }
         }
 
-        private static double HandleUSFuture(StockData data, int k, int end, int start, int id)
-        {
-            // Placeholder: you can move your US index interpolation logic here
-            return data.Api.x[k, id];
-        }
-
+        
         private static void Magnifier(string stock, int id, ref double magnifier)
         {
+            magnifier = 1.0;
             int i = -1;
             switch (stock) // "가격", "지수", "기타", "나스닥"
             {
                 case "KODEX 레버리지": i = 0; break;
                 case "KODEX 코스닥150레버리지": i = 1; break;
-                case "KODEX 200선물인버스2X": i = 2; break;
-                case "KODEX 코스닥150선물인버스": i = 3; break;
             }
 
             int j = -1;
             switch (id)
             {
                 case 1: j = 0; break;  // 가격
-                case 3: j = 1; break;  // 지수(프로 + 외인)
-                case 4:                // 기관
-                case 5:                // 외인
-                case 6:                // 개인
-                case 11: j = 2; break; // 연기
-                case 10: j = 3; break; // 나스닥
+                case 10: j = 1; break; // 나스닥
             }
 
             if (i >= 0 && j >= 0)
-                magnifier = g.kodex_magnifier[i, j];
+                magnifier = g.KodexMagnifier[i, j];
         }
 
         public static void Mark(Chart chart, int markStartPoint, Series series)
