@@ -49,9 +49,6 @@ namespace New_Tradegy.Library.Trackers
         {
             var areaName = data.Stock;
 
-            double y_min = 100000;
-            double y_max = -100000;
-
             //  int StartNpts = g.Npts[0]; no need
             int StartNpts = 0;
             int EndNpts = g.test ? g.Npts[1] : data.Api.nrow;
@@ -64,7 +61,7 @@ namespace New_Tradegy.Library.Trackers
             chart.ChartAreas.Add(area);
             area.Visible = false;
 
-            bool success = AddSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts, ref y_min, ref y_max);
+            bool success = AddSeriesLines(chart, data, data.Stock, area.Name, StartNpts, EndNpts);
             if (!success)
                 return null;
 
@@ -80,9 +77,9 @@ namespace New_Tradegy.Library.Trackers
 
             area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight);  
                                      //new ElementPosition(20, 5, 55, 80);
-            double padding = (y_max - y_min) * 0.1; // was 0.05
-            area.AxisY.Minimum = y_min - 0.0 * padding; // was 1.0
-            area.AxisY.Maximum = y_max + 2.5 * padding; // was 1.5
+            double padding = (data.Misc.y_max - data.Misc.y_min) * 0.1; // was 0.05
+            area.AxisY.Minimum = data.Misc.y_min - 0.0 * padding; // was 1.0
+            area.AxisY.Maximum = data.Misc.y_max + 2.5 * padding; // was 1.5
 
             int TotalNumberPoint = EndNpts - StartNpts;
             area.AxisX.LabelStyle.Enabled = true;
@@ -108,7 +105,77 @@ namespace New_Tradegy.Library.Trackers
 
 
         // General stock version: incremental update only, minimal redraw
+
         public static void UpdateSeries(Chart chart, StockData data)
+        {
+
+            int last = g.test ? g.Npts[1] - 1 : data.Api.nrow - 1;
+
+            string stock = data.Stock;
+            
+            if (last < 0 || data.Api.x[last, 0] == 0)
+                return;
+
+            string xLabel = ((int)(data.Api.x[last, 0] / g.HUNDRED)).ToString();
+            int[] seriesIds = { 1, 2, 3, 4, 5, 6 };
+
+            foreach (int typeId in seriesIds)
+            {
+                string seriesName = stock + " " + typeId;
+                if (chart.Series.IsUniqueName(seriesName)) continue;
+
+                var series = chart.Series[seriesName];
+                int value = PointValue(data, last, typeId);
+
+                if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
+                {
+                    series.Points.Last().YValues[0] = value;
+                }
+                else
+                {
+                    series.Points.AddXY(xLabel, value);
+                }
+                
+                Label(chart, series);
+                series.Points.Last().Label = "";
+                Mark(chart, series.Points.Count - 1, series);
+            }
+
+            if (!chart.ChartAreas.IsUniqueName(stock))
+            {
+                var area = chart.ChartAreas[stock];
+
+                string seriesName = stock + " " + "1";
+                var series = chart.Series[seriesName];
+                int totalPoints = series.Points.Count;
+
+                // 1. Determine range to evaluate
+                int startIndex = 0;
+                if (data.Misc.ShrinkDraw)
+                    startIndex = Math.Max(0, totalPoints - g.NptsForShrinkDraw);
+
+                // 2. Recalculate y_min and y_max
+                int y_min = int.MaxValue, y_max = int.MinValue;
+                for (int i = startIndex; i < totalPoints; i++)
+                {
+                    int y = (int)series.Points[i].YValues[0];
+                    y_min = Math.Min(y_min, y);
+                    y_max = Math.Max(y_max, y);
+                }
+                data.Misc.y_min = y_min;
+                data.Misc.y_max = y_max;
+
+                // 3. Apply Y axis limits with padding
+                double padding = (y_max - y_min) * 0.1;
+                area.AxisY.Minimum = y_min - 0.0 * padding;
+                area.AxisY.Maximum = y_max + 2.5 * padding;
+
+                // 4. X axis setup (unchanged)
+                area.AxisX.Interval = data.Api.nrow - 1;
+            }
+        }
+
+        public static void UpdateSeriesold(Chart chart, StockData data)
         {
             string stock = data.Stock;
             int last = data.Api.nrow - 1;
@@ -154,8 +221,8 @@ namespace New_Tradegy.Library.Trackers
 
 
       
-        private static bool AddSeriesLines(Chart chart, StockData o, string stockName, string area,
-                                 int StartNpts, int EndNpts, ref double y_min, ref double y_max)
+        private static bool AddSeriesLines(Chart chart, StockData data, string stockName, string area,
+                                 int StartNpts, int EndNpts)
         {
             var lineTypes = new List<(int id, string label, Color color, int width)>
     {
@@ -191,14 +258,14 @@ namespace New_Tradegy.Library.Trackers
 
                 for (int k = StartNpts; k < EndNpts; k++)
                 {
-                    if (o.Api.x[k, 0] == 0)
+                    if (data.Api.x[k, 0] == 0)
                     {
                        
                         break;
                     }
 
-                    int value = PointValue(o, k, typeId);
-                    string xLabel = ((int)(o.Api.x[k, 0] / g.HUNDRED)).ToString();
+                    int value = PointValue(data, k, typeId);
+                    string xLabel = ((int)(data.Api.x[k, 0] / g.HUNDRED)).ToString();
 
                     if (chart.InvokeRequired)
                         chart.Invoke(new Action(() => series.Points.AddXY(xLabel, value)));
@@ -206,8 +273,8 @@ namespace New_Tradegy.Library.Trackers
                         series.Points.AddXY(xLabel, value);
 
                     pointsCount++;
-                    y_min = Math.Min(y_min, value);
-                    y_max = Math.Max(y_max, value);
+                    data.Misc.y_min = Math.Min(data.Misc.y_min, value);
+                    data.Misc.y_max = Math.Max(data.Misc.y_max, value);
                 }
 
                 if (pointsCount < 2) return false;

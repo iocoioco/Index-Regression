@@ -61,7 +61,7 @@ namespace New_Tradegy.Library.Trackers
 
 
 
-            int ymin = int.MaxValue, ymax = int.MinValue;
+     
             int[] ids = { 1, 3, 4, 5, 6, 10, 11 };
 
             foreach (int id in ids)
@@ -87,8 +87,8 @@ namespace New_Tradegy.Library.Trackers
                     int val =  (int)(data.Api.x[i, id] * mag);
                     series.Points.AddXY((data.Api.x[i, 0] / g.HUNDRED).ToString(), val);
 
-                    ymin = Math.Min(ymin, val);
-                    ymax = Math.Max(ymax, val);
+                    data.Misc.y_min = Math.Min(data.Misc.y_min, val);
+                    data.Misc.y_max = Math.Max(data.Misc.y_max, val);
                 }
 
                 if (series.Points.Count < 2)
@@ -107,9 +107,9 @@ namespace New_Tradegy.Library.Trackers
             area.AxisY.MinorTickMark.Enabled = false;
             area.AxisY.MinorGrid.Enabled = false;
 
-            double pad = (ymax - ymin) * 0.05;
-            area.AxisY.Minimum = ymin - pad;
-            area.AxisY.Maximum = ymax + pad;
+            double pad = (data.Misc.y_max - data.Misc.y_min) * 0.05;
+            area.AxisY.Minimum = data.Misc.y_min - pad;
+            area.AxisY.Maximum = data.Misc.y_max + pad;
 
             area.AxisX.LabelStyle.Enabled = true;
             area.AxisX.MajorGrid.Enabled = false;
@@ -166,8 +166,11 @@ namespace New_Tradegy.Library.Trackers
         // Index stock version: full chart update per call
         public static void UpdateSeries(Chart chart, StockData data)
         {
-            string stock = data.Stock;
             int last = data.Api.nrow - 1;
+            if (g.test)
+                last = g.Npts[1];
+
+            string stock = data.Stock;
 
             if (last < 0 || data.Api.x[last, 0] == 0)
                 return;
@@ -181,7 +184,6 @@ namespace New_Tradegy.Library.Trackers
                 string seriesName = $"{stock} {typeId}";
 
                 // Skip if the series doesn't exist
-                // faster than any because of internal dictionary lookup
                 if (chart.Series.IsUniqueName(seriesName)) // if not exist continue
                     continue;
 
@@ -197,8 +199,8 @@ namespace New_Tradegy.Library.Trackers
                     series.Points.AddXY(xLabel, value);
                 }
 
-                Label(chart, series); // ✅ Annotate
-                Mark(chart, series.Points.Count - 1, series); // ✅ Mark position
+                Label(chart, series);
+                Mark(chart, series.Points.Count - 1, series);
             }
 
             if (!chart.ChartAreas.IsUniqueName(stock))
@@ -208,13 +210,36 @@ namespace New_Tradegy.Library.Trackers
                 string seriesName = stock + " " + "1";
                 var series = chart.Series[seriesName];
                 int totalPoints = series.Points.Count;
+
+                // Handle shrink draw
+                int startIndex = 0;
                 if (data.Misc.ShrinkDraw)
-                    totalPoints -= g.NptsForShrinkDraw;
+                    startIndex = Math.Max(0, totalPoints - g.NptsForShrinkDraw);
+
+                // === Recalculate y_min and y_max ===
+                int y_min = int.MaxValue, y_max = int.MinValue;
+                for (int i = startIndex; i < totalPoints; i++)
+                {
+                    int y = (int)series.Points[i].YValues[0];
+                    y_min = Math.Min(y_min, y);
+                    y_max = Math.Max(y_max, y);
+                }
+
+                data.Misc.y_min = y_min;
+                data.Misc.y_max = y_max;
+
+                // === Apply Y-axis range with padding ===
+                double pad = (y_max - y_min) * 0.05;
+                area.AxisY.Minimum = y_min - pad;
+                area.AxisY.Maximum = y_max + pad;
+
+                // === AxisX interval ===
                 area.AxisX.Interval = totalPoints - 1;
             }
         }
 
-        public static void UpdateSeries_old(Chart chart, StockData data)
+
+        public static void UpdateSeriesoldold(Chart chart, StockData data)
         {
             int totalPoints = data.Api.nrow;
             if (data.Misc.ShrinkDraw)

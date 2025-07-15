@@ -559,6 +559,11 @@ namespace New_Tradegy.Library.Models
         public int oGL_sequence_id;
         public bool ShrinkDraw = false;
 
+   
+
+        public int y_min = int.MaxValue;
+        public double y_max = int.MinValue;
+
         public List<string> Friends { get; set; } = new List<string>();
 
         public MiscData Clone()
