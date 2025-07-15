@@ -117,29 +117,44 @@ namespace New_Tradegy.Library.Trackers
                 return;
 
             string xLabel = ((int)(data.Api.x[last, 0] / g.HUNDRED)).ToString();
+
             int[] seriesIds = { 1, 2, 3, 4, 5, 6 };
 
             foreach (int typeId in seriesIds)
             {
                 string seriesName = stock + " " + typeId;
-                if (chart.Series.IsUniqueName(seriesName)) continue;
+                if (chart.Series.IsUniqueName(seriesName))
+                    continue;
 
                 var series = chart.Series[seriesName];
                 int value = PointValue(data, last, typeId);
 
+                // Always clear old label first
+                int oldIndex = series.Points.Count - 1;
+                if (oldIndex >= 0)
+                    series.Points[oldIndex].Label = "";
+
+                // Case 1: Update existing end point
                 if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
                 {
                     series.Points.Last().YValues[0] = value;
                 }
-                else
+                else // Case 2: Add new point
                 {
                     series.Points.AddXY(xLabel, value);
+
+                    // Update y_min / y_max
+                    if (value < data.Misc.y_min)
+                        data.Misc.y_min = value;
+                    if (value > data.Misc.y_max)
+                        data.Misc.y_max = value;
                 }
-                
+
+                // Add updated label for current last point
                 Label(chart, series);
-                series.Points.Last().Label = "";
                 Mark(chart, series.Points.Count - 1, series);
             }
+
 
             if (!chart.ChartAreas.IsUniqueName(stock))
             {
@@ -149,29 +164,12 @@ namespace New_Tradegy.Library.Trackers
                 var series = chart.Series[seriesName];
                 int totalPoints = series.Points.Count;
 
-                // 1. Determine range to evaluate
-                int startIndex = 0;
-                if (data.Misc.ShrinkDraw)
-                    startIndex = Math.Max(0, totalPoints - g.NptsForShrinkDraw);
-
-                // 2. Recalculate y_min and y_max
-                int y_min = int.MaxValue, y_max = int.MinValue;
-                for (int i = startIndex; i < totalPoints; i++)
-                {
-                    int y = (int)series.Points[i].YValues[0];
-                    y_min = Math.Min(y_min, y);
-                    y_max = Math.Max(y_max, y);
-                }
-                data.Misc.y_min = y_min;
-                data.Misc.y_max = y_max;
-
-                // 3. Apply Y axis limits with padding
-                double padding = (y_max - y_min) * 0.1;
-                area.AxisY.Minimum = y_min - 0.0 * padding;
-                area.AxisY.Maximum = y_max + 2.5 * padding;
+                double padding = (data.Misc.y_max - data.Misc.y_min) * 0.1;
+                area.AxisY.Minimum = data.Misc.y_min - 0.0 * padding;
+                area.AxisY.Maximum = data.Misc.y_max + 2.5 * padding;
 
                 // 4. X axis setup (unchanged)
-                area.AxisX.Interval = data.Api.nrow - 1;
+                area.AxisX.Interval = totalPoints - 1;
             }
         }
 
@@ -441,28 +439,28 @@ namespace New_Tradegy.Library.Trackers
             switch (columnIndex)
             {
                 case 1: // price
-                    s = "      " + api.x[endPoint - 1, columnIndex].ToString();
+                    s = "      " + api.x[endPoint, columnIndex].ToString();
                     for (int k = 0; k < 4; k++)
                     {
-                        if (endPoint - 2 - k < 0) break;
-                        int d = api.x[endPoint - 1 - k, columnIndex] - api.x[endPoint - 2 - k, columnIndex];
+                        if (endPoint - 1 - k < 0) break;
+                        int d = api.x[endPoint - k, columnIndex] - api.x[endPoint - 1 - k, columnIndex];
                         s += (d >= 0 ? "+" : "") + d.ToString("F0");
                     }
                     break;
 
                 case 2: // amount
-                    s = api.x[endPoint - 1, columnIndex].ToString();
+                    s = api.x[endPoint, columnIndex].ToString();
                     break;
 
                 case 3: // intensity
-                    s = (api.x[endPoint - 1, columnIndex] / 100).ToString();
+                    s = (api.x[endPoint, columnIndex] / 100).ToString();
                     break;
 
                 case 4: // program
                     s = (post.푀누천 / 10.0).ToString("F1");
                     for (int k = 0; k < 4; k++)
                     {
-                        if (endPoint - 2 - k < 0) break;
+                        if (endPoint - 1 - k < 0) break;
                         double d = api.분프로천[k] / 10.0;
                         s += (d >= 0 ? "+" : "") + d.ToString("F1");
                     }
@@ -472,7 +470,7 @@ namespace New_Tradegy.Library.Trackers
                     s = (post.외누천 / 10.0).ToString("F1");
                     for (int k = 0; k < 4; k++)
                     {
-                        if (endPoint - 2 - k < 0) break;
+                        if (endPoint - 1 - k < 0) break;
                         double d = api.분외인천[k] / 10.0;
                         s += (d >= 0 ? "+" : "") + d.ToString("F1");
                     }

@@ -166,9 +166,7 @@ namespace New_Tradegy.Library.Trackers
         // Index stock version: full chart update per call
         public static void UpdateSeries(Chart chart, StockData data)
         {
-            int last = data.Api.nrow - 1;
-            if (g.test)
-                last = g.Npts[1];
+            int last = g.test ? g.Npts[1] - 1 : data.Api.nrow - 1;
 
             string stock = data.Stock;
 
@@ -183,25 +181,37 @@ namespace New_Tradegy.Library.Trackers
             {
                 string seriesName = $"{stock} {typeId}";
 
-                // Skip if the series doesn't exist
-                if (chart.Series.IsUniqueName(seriesName)) // if not exist continue
+                if (chart.Series.IsUniqueName(seriesName))
                     continue;
 
                 var series = chart.Series[seriesName];
                 int value = PointValueIndex(data, last, typeId);
 
+                // Always clear the previous label
+                int oldIndex = series.Points.Count - 1;
+                if (oldIndex >= 0)
+                    series.Points[oldIndex].Label = "";
+
+                // Case 1: Update end point
                 if (series.Points.Count > 0 && series.Points.Last().AxisLabel == xLabel)
                 {
                     series.Points.Last().YValues[0] = value;
                 }
-                else
+                else // Case 2: Add new point
                 {
                     series.Points.AddXY(xLabel, value);
+
+                    if (value < data.Misc.y_min)
+                        data.Misc.y_min = value;
+                    if (value > data.Misc.y_max)
+                        data.Misc.y_max = value;
                 }
 
+                // Add new label and marker at the current end point
                 Label(chart, series);
                 Mark(chart, series.Points.Count - 1, series);
             }
+
 
             if (!chart.ChartAreas.IsUniqueName(stock))
             {
@@ -211,27 +221,9 @@ namespace New_Tradegy.Library.Trackers
                 var series = chart.Series[seriesName];
                 int totalPoints = series.Points.Count;
 
-                // Handle shrink draw
-                int startIndex = 0;
-                if (data.Misc.ShrinkDraw)
-                    startIndex = Math.Max(0, totalPoints - g.NptsForShrinkDraw);
-
-                // === Recalculate y_min and y_max ===
-                int y_min = int.MaxValue, y_max = int.MinValue;
-                for (int i = startIndex; i < totalPoints; i++)
-                {
-                    int y = (int)series.Points[i].YValues[0];
-                    y_min = Math.Min(y_min, y);
-                    y_max = Math.Max(y_max, y);
-                }
-
-                data.Misc.y_min = y_min;
-                data.Misc.y_max = y_max;
-
-                // === Apply Y-axis range with padding ===
-                double pad = (y_max - y_min) * 0.05;
-                area.AxisY.Minimum = y_min - pad;
-                area.AxisY.Maximum = y_max + pad;
+                double padding = (data.Misc.y_max - data.Misc.y_min) * 0.05;
+                area.AxisY.Minimum = data.Misc.y_min - padding;
+                area.AxisY.Maximum = data.Misc.y_max + padding;
 
                 // === AxisX interval ===
                 area.AxisX.Interval = totalPoints - 1;

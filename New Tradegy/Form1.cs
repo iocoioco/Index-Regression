@@ -151,6 +151,8 @@ namespace New_Tradegy // added for test on 20241020 0300
             g.gid = 0;
             g.Gid = 0;
 
+     
+
             FileIn.read_제어();
 
             this.FormClosing += Form1_FormClosing;
@@ -254,9 +256,9 @@ namespace New_Tradegy // added for test on 20241020 0300
             Form Form_보조_차트 = new Form_보조_차트();
             Form_보조_차트.Show(); // second chart
 
-            FormMonitor fcp = new FormMonitor();
-            fcp.TopMost = true;
-            fcp.Show();
+            //FormMonitor fcp = new FormMonitor();
+            //fcp.TopMost = true;
+            //fcp.Show();
 
             
             Task taskJsb = Task.Run(async () => await Scraper.task_jsb());
