@@ -47,6 +47,7 @@ namespace New_Tradegy.Library.PostProcessing
 
         public static void ManageChart1Invoke()
         {
+           
             if (isDrawingMainNow)
             {
                 drawMainRequestedWhileBusy = true;
@@ -54,10 +55,13 @@ namespace New_Tradegy.Library.PostProcessing
             }
 
             Task.Run(() => DoDrawMain());
+            
         }
 
         private static void DoDrawMain()
         {
+            
+
             isDrawingMainNow = true;
 
             try
@@ -85,6 +89,8 @@ namespace New_Tradegy.Library.PostProcessing
                     ManageChart1Invoke();  // DoDrawMain
                 }
             }
+
+            
         }
 
         private static bool isDrawingSubNow = false;
@@ -104,6 +110,11 @@ namespace New_Tradegy.Library.PostProcessing
         private static void DoDrawSub()
         {
             isDrawingSubNow = true;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+
+            
 
             try
             {
@@ -131,42 +142,16 @@ namespace New_Tradegy.Library.PostProcessing
                     ManageChart2Invoke();  // DoDrawSub
                 }
             }
+
+            Debug.WriteLine($"[⏱️] Elapsed: {sw.ElapsedMilliseconds} ms");
         }
 
 
-        //public static void ManageChart1Invoke()
-        //{
-        //    Form se = (Form)Application.OpenForms["Form1"];
-        //    if (se.InvokeRequired)
-        //    {
-        //        se.Invoke(new Action(() => g.ChartMain.RefreshMainChart()));
-        //    }
-        //    else
-        //    {
-        //        g.ChartMain.RefreshMainChart();
-        //    }
-        //}
-
-        //public static void ManageChart2Invoke()
-        //{
-
-        //    Form_보조_차트 Form_보조_차트 = (Form_보조_차트)Application.OpenForms["Form_보조_차트"];
-        //    if (Form_보조_차트.InvokeRequired)
-        //    {
-        //        Form_보조_차트.Invoke(new Action(() => Form_보조_차트.Form_보조_차트_DRAW()));
-        //    }
-        //    else
-        //    {
-        //        Form_보조_차트.Form_보조_차트_DRAW();
-        //    }
-        //}
-
-        // done by Sensei
         public static void post_real(List<StockData> cloneList)
         {
-            // Stopwatch sw = new Stopwatch();
-            // sw.Restart();
-            // Debug.WriteLine($"[⏱️] Elapsed: {sw.ElapsedMilliseconds} ms");
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+            
 
             foreach (var clone in cloneList)
             {
@@ -181,18 +166,12 @@ namespace New_Tradegy.Library.PostProcessing
                 post(data);
             }
 
-
-
-
-
             post_코스닥_코스피_프외_순매수_배차_합산();
 
             if (g.MarketeyeCount % g.MarketeyeCountDivider == 1)
             {
-                // 20 : elapsed time to repeat : // 18 15 18 16 15 16 18 14
+                // 10 : elapsed time to repeat : // 18 15 18 16 15 16 18 14
                 RankLogic.RankProcedure();
-                //Console.WriteLine($"[{DateTime.Now:HH:mm:ss}]");
-                
             }
 
             foreach (var clone in cloneList)
@@ -213,7 +192,8 @@ namespace New_Tradegy.Library.PostProcessing
                 ManageChart1Invoke(); // post_real
                 ManageChart2Invoke(); // post real
             }
-            
+
+            Debug.WriteLine($"[⏱️] Elapsed: {sw.ElapsedMilliseconds} ms");
         }
 
         // done by Sensei

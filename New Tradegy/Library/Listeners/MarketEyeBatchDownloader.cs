@@ -37,8 +37,7 @@ namespace New_Tradegy.Library.Listeners
             while (true)
             {
 
-                Stopwatch sw = new Stopwatch();
-                sw.Restart();
+                
 
                 DateTime date = DateTime.Now;
                 int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
@@ -77,7 +76,7 @@ namespace New_Tradegy.Library.Listeners
                 // Wait 300 milliseconds (non-blocking) Block Request 60times/ 15 Secs
                 Thread.Sleep(500);
 
-                 Debug.WriteLine($"[⏱️] Elapsed: {sw.ElapsedMilliseconds} ms");
+                
 
             }
         }
