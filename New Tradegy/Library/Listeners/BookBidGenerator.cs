@@ -769,13 +769,17 @@ namespace New_Tradegy.Library.Listeners
             }
 
             // Finally apply the assigned colors to each cessl of _dataGridView
-            for (int i = 0; i < 2 * Rows; i++)
+            if (_dataGridView.Rows.Count == 0)
+                return;
+
+            for (int i = 0; i < Math.Min(2 * Rows, _dataGridView.Rows.Count); i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < Math.Min(3, _dataGridView.Columns.Count); j++)
                 {
                     _dataGridView.Rows[i].Cells[j].Style.BackColor = cellColors[i, j];
                 }
             }
+
         }
 
         // Sensei 20250420

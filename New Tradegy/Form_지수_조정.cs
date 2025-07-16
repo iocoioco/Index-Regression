@@ -96,10 +96,12 @@ namespace New_Tradegy
                 g.KodexMagnifier[id, jd] *= (value / 100.0);
 
                 var data = g.StockRepository.TryGetDataOrNull(g.clickedStock);
-                if (data != null) { return; }
 
-                ChartIndex.UpdateSeries(g.ChartManager.Chart1, data);
-                ChartIndex.UpdateSeries(g.ChartManager.Chart2, data);
+                if (data != null && data.Api != null && data.Api.nrow > 0)
+                {
+                    ChartIndex.UpdateSeries(g.ChartManager.Chart1, data);
+                    ChartIndex.UpdateSeries(g.ChartManager.Chart2, data);
+                }
             }
         }
 

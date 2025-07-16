@@ -132,6 +132,7 @@ namespace New_Tradegy.Library.UI.ChartClickHandlers
                 case "l1": // Shrink Toggle
                     {
                         data.Misc.ShrinkDraw = !data.Misc.ShrinkDraw;
+                        data.Misc.CreateNewChartArea = true;
                         ActionCode.New(true, post: false, eval: false, draw: 'B').Run();
                     }
                     break;

@@ -70,8 +70,6 @@ namespace New_Tradegy.Library.PostProcessing
                 else
                     g.ChartMain.RefreshMainChart();
 
-               
-
             }
             catch (Exception ex)
             {
@@ -166,10 +164,10 @@ namespace New_Tradegy.Library.PostProcessing
         // done by Sensei
         public static void post_real(List<StockData> cloneList)
         {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Restart();
+            // Stopwatch sw = new Stopwatch();
+            // sw.Restart();
+            // Debug.WriteLine($"[⏱️] Elapsed: {sw.ElapsedMilliseconds} ms");
 
-            
             foreach (var clone in cloneList)
             {
                 // Find the corresponding data in the repository

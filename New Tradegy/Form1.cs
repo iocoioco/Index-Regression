@@ -620,6 +620,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
             int row_id = 0, col_id = 0;
            
+
             var DisplayList = g.ChartMain.DisplayList;
             g.clickedStock = ChartClickMapper.CoordinateMapping(chart1, g.nRow, g.nCol, DisplayList, e, ref selection, ref col_id, ref row_id);
             if (g.clickedStock == null)

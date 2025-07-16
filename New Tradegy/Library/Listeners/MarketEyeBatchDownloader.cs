@@ -26,20 +26,20 @@ namespace New_Tradegy.Library.Listeners
         private static Dictionary<string, int> lastPrices = new Dictionary<string, int>();
 
 
-        // 1 cycle of download takes 200ms but 800ms if spike happen
-        // to run every 500ms, set Thread.Sleep(300) 
+        // 1 cycle of download takes 200ms 
         public static void RunDownloaderLoop()
         {
             if (!g.connected)
                 return;
 
-
-
             int minuteSaveAll = -1;
 
             while (true)
             {
-               
+
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+
                 DateTime date = DateTime.Now;
                 int HHmmss = Convert.ToInt32(date.ToString("HHmmss"));
                 int HHmm = Convert.ToInt32(date.ToString("HHmm"));
@@ -73,18 +73,11 @@ namespace New_Tradegy.Library.Listeners
                         Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❗DownloadBatch failed: {ex.Message}");
                     }
                 }
-
-
-
-
-
-
                 
                 // Wait 300 milliseconds (non-blocking) Block Request 60times/ 15 Secs
                 Thread.Sleep(500);
 
-
-
+                 Debug.WriteLine($"[⏱️] Elapsed: {sw.ElapsedMilliseconds} ms");
 
             }
         }

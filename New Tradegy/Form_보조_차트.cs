@@ -171,10 +171,7 @@ namespace New_Tradegy
             int annotationsCount = g.ChartManager.Chart2.Annotations.Count;
             int seriesCount = g.ChartManager.Chart2.Series.Count;
 
-            chart.Series.Clear();
-            chart.ChartAreas.Clear();
-            chart.Annotations.Clear();
-
+            
             areasCount = g.ChartManager.Chart2.ChartAreas.Count;
             annotationsCount = g.ChartManager.Chart2.Annotations.Count;
             seriesCount = g.ChartManager.Chart2.Series.Count;

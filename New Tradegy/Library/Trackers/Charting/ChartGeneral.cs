@@ -25,23 +25,25 @@ namespace New_Tradegy.Library.Trackers
             Annotation anno = null;
 
             // Update exiting chartarea
-            if (chart.ChartAreas.IndexOf(areaName) >= 0) // stockName(areaName) exists, update series
+            if (chart.ChartAreas.IndexOf(areaName) >= 0 && !data.Misc.CreateNewChartArea) // stockName(areaName) exists, update series
             {
                 area = chart.ChartAreas[areaName];
-                UpdateSeries(chart, data);
-
+                if (data != null && data.Api != null && data.Api.nrow > 0)
+                    UpdateSeries(chart, data);
             }
             // Generate a new chartarea
             else
             {
                 ChartBasic.RemoveChartBlock(chart, data.Stock); // delete chartarea & related series
                 area = CreateChartArea(chart, data);
+                if (data.Misc.CreateNewChartArea)
+                    data.Misc.CreateNewChartArea = false;
             }
             if (area != null)
             {
                 anno = RedrawAnnotation(chart, data); // existing annotation will be deleted in RedrawAnnotation
             }
-            
+
             return (area, anno);
         }
 
@@ -56,7 +58,7 @@ namespace New_Tradegy.Library.Trackers
             if (data.Misc.ShrinkDraw)
                 StartNpts = Math.Max(EndNpts - g.NptsForShrinkDraw, g.Npts[0]);
 
-            
+
             var area = new ChartArea(areaName);
             chart.ChartAreas.Add(area);
             area.Visible = false;
@@ -75,8 +77,8 @@ namespace New_Tradegy.Library.Trackers
             var cellWidth = 100f / g.nCol;
             var cellHeight = 100f / g.nRow;
 
-            area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight);  
-                                     //new ElementPosition(20, 5, 55, 80);
+            area.InnerPlotPosition = ChartBasic.CalculateInnerPlotPosition(cellWidth, cellHeight);
+            //new ElementPosition(20, 5, 55, 80);
             double padding = (data.Misc.y_max - data.Misc.y_min) * 0.1; // was 0.05
             area.AxisY.Minimum = data.Misc.y_min - 0.0 * padding; // was 1.0
             area.AxisY.Maximum = data.Misc.y_max + 2.5 * padding; // was 1.5
@@ -92,7 +94,7 @@ namespace New_Tradegy.Library.Trackers
 
             if (g.q == "o&s" && data.Score.그룹_등수 < 5)
             {
-               // area.BackColor = g.Colors[data.Score.그룹_등수];
+                // area.BackColor = g.Colors[data.Score.그룹_등수];
             }
 
             if (data.Api.분프로천[0] > 5 && data.Api.분외인천[0] > 5 && data.Api.분배수차[0] > 0)
@@ -112,7 +114,7 @@ namespace New_Tradegy.Library.Trackers
             int last = g.test ? g.Npts[1] - 1 : data.Api.nrow - 1;
 
             string stock = data.Stock;
-            
+
             if (last < 0 || data.Api.x[last, 0] == 0)
                 return;
 
@@ -161,6 +163,9 @@ namespace New_Tradegy.Library.Trackers
                 var area = chart.ChartAreas[stock];
 
                 string seriesName = stock + " " + "1";
+                if (chart.Series.IndexOf(seriesName) == -1)
+                    return; // or optionally, create the series dynamically here
+
                 var series = chart.Series[seriesName];
                 int totalPoints = series.Points.Count;
 
@@ -218,7 +223,7 @@ namespace New_Tradegy.Library.Trackers
         }
 
 
-      
+
         private static bool AddSeriesLines(Chart chart, StockData data, string stockName, string area,
                                  int StartNpts, int EndNpts)
         {
@@ -258,7 +263,7 @@ namespace New_Tradegy.Library.Trackers
                 {
                     if (data.Api.x[k, 0] == 0)
                     {
-                       
+
                         break;
                     }
 
@@ -501,7 +506,7 @@ namespace New_Tradegy.Library.Trackers
 
             // Remove old annotation
             string annotationName = data.Stock;
-            var previousAnnotation  = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
+            var previousAnnotation = chart.Annotations.FirstOrDefault(a => a.Name == annotationName);
             if (previousAnnotation != null)
                 chart.Annotations.Remove(previousAnnotation);
 
@@ -519,9 +524,9 @@ namespace New_Tradegy.Library.Trackers
             AnnotationCalculateHeights(g.v.font, 5, g.nRow, out double annotationHeight, out double chartAreaHeight);
 
             Color BackColor = Color.White;
-            if(data.Score.그룹_등수 < 5)
+            if (data.Score.그룹_등수 < 5)
                 BackColor = g.Colors[data.Score.그룹_등수];
-            
+
             // Adjust vertical offset depending on chart
             float yOffset = chart.Name == "chart1" ? 0f : 3f;
 

@@ -558,7 +558,7 @@ namespace New_Tradegy.Library.Models
         public double 수급과장배수 = 1;
         public int oGL_sequence_id;
         public bool ShrinkDraw = false;
-
+        public bool CreateNewChartArea = false;
    
 
         public int y_min = int.MaxValue;

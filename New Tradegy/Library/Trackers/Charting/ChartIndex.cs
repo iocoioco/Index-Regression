@@ -23,16 +23,19 @@ namespace New_Tradegy.Library.Trackers
             string areaName = data.Stock;
             ChartArea area;
 
-            if (chart.ChartAreas.IndexOf(areaName) >= 0)
+            if (chart.ChartAreas.IndexOf(areaName) >= 0 && !data.Misc.CreateNewChartArea)
             {
                 area = chart.ChartAreas[areaName];
-                UpdateSeries(chart, data);
+                if (data != null && data.Api != null && data.Api.nrow > 0)
+                    UpdateSeries(chart, data);
             }
             // Generate a new chartarea
             else
             {
                 ChartBasic.RemoveChartBlock(chart, data.Stock); 
                 area = CreateChartArea(chart, data);
+                if (data.Misc.CreateNewChartArea)
+                    data.Misc.CreateNewChartArea = false;
             }
             return area;
         }
