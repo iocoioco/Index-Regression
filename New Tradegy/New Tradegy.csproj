@@ -199,7 +199,7 @@
     <Compile Include="Library\Trackers\Panel\GroupPane.cs" />
     <Compile Include="Library\Trackers\Charting\ChartIndex.cs" />
     <Compile Include="Library\Trackers\OrderItemTracker.cs" />
-    <Compile Include="Library\temp_program_loss.cs" />
+    <Compile Include="Regression\Index.cs" />
     <Compile Include="Library\glbl.cs" />
     <Compile Include="Library\TimerHelper.cs" />
     <Compile Include="Library\Deals\TradeLogger.cs" />
@@ -220,6 +220,8 @@
     <Compile Include="Library\Listeners\MarketEyeBatchDownloader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Regression\IndexMinuteReader.cs" />
+    <Compile Include="TwoDeimensionalRegression.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>

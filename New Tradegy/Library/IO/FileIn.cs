@@ -1113,7 +1113,7 @@ namespace New_Tradegy.Library.IO
                     if (empty_line_met == false)
                     {
                         //?
-                        if (kospi_mixed_stock_count < 98)
+                        if (kospi_mixed_stock_count < 50)
                         {
                             string stock = words[1];
                             if (!wk.isStock(stock) ||
@@ -1133,7 +1133,7 @@ namespace New_Tradegy.Library.IO
                     else
                     {
                         //?
-                        if (kosdaq_mixed_stock_count < 98)
+                        if (kosdaq_mixed_stock_count < 50)
 
                         {
                             string stock = words[1];
@@ -1166,23 +1166,23 @@ namespace New_Tradegy.Library.IO
             bool showWarning = false;
             string msg = "";
 
-            if (kospiCount < 98 || kosdaqCount < 98)
+            if (kospiCount < 50 || kosdaqCount < 50)
             {
-                showWarning = true;
-                msg += $"⚠️ Warning: One of the groups has less than 98 stocks.\n";
-                msg += $"KOSPI count: {kospiCount}, KOSDAQ count: {kosdaqCount}\n";
+                //showWarning = true;
+                //msg += $"⚠️ Warning: One of the groups has less than 98 stocks.\n";
+                //msg += $"KOSPI count: {kospiCount}, KOSDAQ count: {kosdaqCount}\n";
             }
 
             if (Math.Abs(kospiSum - 1.0) > 0.001 || Math.Abs(kosdaqSum - 1.0) > 0.001)
             {
-                showWarning = true;
-                msg += $"⚠️ Warning: One of the weight sums is not exactly 1.0.\n";
-                msg += $"KOSPI sum: {kospiSum:0.000}, KOSDAQ sum: {kosdaqSum:0.000}\n";
+                //showWarning = true;
+                //msg += $"⚠️ Warning: One of the weight sums is not exactly 1.0.\n";
+                //msg += $"KOSPI sum: {kospiSum:0.000}, KOSDAQ sum: {kosdaqSum:0.000}\n";
             }
 
             if (showWarning)
             {
-                MessageBox.Show(msg, "Constituent Stock Check");
+                //MessageBox.Show(msg, "Constituent Stock Check");
             }
 
         }

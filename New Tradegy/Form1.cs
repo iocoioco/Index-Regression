@@ -25,6 +25,8 @@ using New_Tradegy.Library.Trackers.Charting;
 using System.Data;
 using New_Tradegy.Library.PostProcessing;
 using New_Tradegy.Library.Utils;
+using System.Runtime.InteropServices.ComTypes;
+using New_Tradegy.Regression;
 
 namespace New_Tradegy // added for test on 20241020 0300
 {
@@ -59,6 +61,19 @@ namespace New_Tradegy // added for test on 20241020 0300
             //ms.Speech("testing");
             //ts.지수합계점검();
             //return;
+
+            string baseDir = @"C:\병신\분";
+
+            var validDirectoryList = Index.GetValidDirectories(baseDir);
+            
+            FileIn.read_삼성_코스피_코스닥_전체종목();  // g.kospi_mixed.stock & g.kospi_mixed.weight
+
+            var existingStocks = Index.GetExistingStocksInDirectory(validDirectoryList[0], g.kospi_mixed.stock);
+            //"KODEX 레버리지",
+            //"KODEX 코스닥150레버리지",
+
+            var IndexFileName = validDirectoryList[0] + "/" + "KODEX 레버리지.txt";
+            IndexMinuteReader.GetValidMinuteChanges(IndexFileName);
 
             SoundUtils.Sound("일반", "by 2032");
         }
