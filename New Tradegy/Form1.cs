@@ -72,8 +72,12 @@ namespace New_Tradegy // added for test on 20241020 0300
             //"KODEX 레버리지",
             //"KODEX 코스닥150레버리지",
 
-            var IndexFileName = validDirectoryList[0] + "/" + "KODEX 레버리지.txt";
-            IndexMinuteReader.GetValidMinuteChanges(IndexFileName);
+            foreach ( var directory in validDirectoryList )
+            {
+                var IndexFileName = directory + "/" + "KODEX 레버리지.txt";
+                IndexMinuteReader.GetValidMinutePriceDiffs(IndexFileName);
+            }
+           
 
             SoundUtils.Sound("일반", "by 2032");
         }

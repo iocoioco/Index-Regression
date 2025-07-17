@@ -1,0 +1,81 @@
+﻿
+
+
+
+✅ Finalized Procedure for Building Linear Regression Data (Index Movement vs. Multiples):
+Initial Setup
+Define constituent stock list:
+Use 50 KOSPI or KOSDAQ stocks with their normalized weights (sum = 1.0).
+
+Set root directory:
+Data directories are located at @"C:\병신\분\".
+
+Get and reverse-sort directories:
+Most recent date should be first (descending order).
+
+For Each Directory (Date)
+Check "삼성전자" minute file:
+If row count < 300 → skip this date (not enough trading data).
+
+Identify available stocks:
+Among the 50 stock list, build a list of stocks that exist in the current directory.
+If fewer than 35 stocks found → skip this date.
+
+Load stock data:
+Read 6-digit HHmmss data of existing stocks and index ETF file.
+
+Loop over time (minute-wise)
+Check index time interval:
+For each row i and i-1 in index ETF file, compare time difference in seconds using full 6-digit time.
+Accept only if 50 < Δt < 70 seconds.
+
+Get price change:
+
+From t_prev to t_now (e.g., 085959 → 090058).
+
+Use rounded times to 4-digit (HHmm) like 0859 and 0900 to record Δprice.
+
+Calculate Factor Values
+For each stock at time t_now (e.g., 090058):
+
+Check the same 6-digit time exists.
+
+Validate stock time interval (Δt < 90 seconds as well).
+
+Read:
+
+Buy multiple (col 8)
+
+Sell multiple (col 9)
+
+Calculate:
+
+diff = buy - sell
+
+sum = buy + sell
+
+Multiply by weight:
+For each stock:
+
+weighted_diff += diff * weight
+
+weighted_sum += sum * weight
+
+total_weight += weight
+
+Accept or discard:
+
+If total_weight < 0.8, discard the row.
+
+Else:
+
+Normalize:
+
+final_diff = weighted_diff / total_weight
+
+final_sum = weighted_sum / total_weight
+
+Record one data row:
+
+(Δprice, final_diff, final_sum)
+

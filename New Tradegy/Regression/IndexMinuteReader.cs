@@ -14,15 +14,14 @@ namespace New_Tradegy.Regression
     }
     internal class IndexMinuteReader
     {
-
-        public static List<IndexMinutePoint> GetValidMinuteChanges(string filePath)
+        public static Dictionary<int, float> GetValidMinutePriceDiffs(string filePath)
         {
-            var points = new List<IndexMinutePoint>();
+            var result = new Dictionary<int, float>();
 
-            if (!File.Exists(filePath)) return points;
+            if (!File.Exists(filePath)) return result;
 
             string[] lines = File.ReadAllLines(filePath);
-            if (lines.Length < 2) return points;
+            if (lines.Length < 2) return result;
 
             string prevTime = null;
             double prevPrice = 0;
@@ -35,7 +34,6 @@ namespace New_Tradegy.Regression
                 string rawTime = words[0].PadLeft(6, '0'); // ensure 6-digit
                 if (rawTime.Length != 6) continue;
 
-                string hhmm = rawTime.Substring(0, 4);
                 if (!double.TryParse(words[1], out double currentPrice)) continue;
 
                 if (prevTime != null)
@@ -43,11 +41,10 @@ namespace New_Tradegy.Regression
                     int deltaSec = TimeDiffInSeconds(rawTime, prevTime);
                     if (deltaSec > 50 && deltaSec < 70)
                     {
-                        points.Add(new IndexMinutePoint
-                        {
-                            HHmm = hhmm,
-                            PriceDiff = currentPrice - prevPrice
-                        });
+                        int minuteTime = int.Parse(rawTime.Substring(0, 4)); // e.g., 0931, 1359
+                        float diff = (float)(currentPrice - prevPrice);
+
+                        result[minuteTime] = diff;
                     }
                 }
 
@@ -55,7 +52,7 @@ namespace New_Tradegy.Regression
                 prevPrice = currentPrice;
             }
 
-            return points;
+            return result;
         }
 
         private static int TimeDiffInSeconds(string time1, string time2)
@@ -75,6 +72,7 @@ namespace New_Tradegy.Regression
             var t2 = new TimeSpan(0, h2, m2, s2);
             return (int)Math.Abs((t1 - t2).TotalSeconds);
         }
+
     }
 }
 
