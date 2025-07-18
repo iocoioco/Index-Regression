@@ -64,26 +64,95 @@ namespace New_Tradegy // added for test on 20241020 0300
             //return;
 
             string baseDir = @"C:\병신\분";
+            // g.kospi_mixed.stock g.kospi_mixed.weight;
+            //"KODEX 레버리지",
+            //"KODEX 코스닥150레버리지",
 
+
+            // 0. Select directory : 삼성전자 includes more than 300 rows
             var validDirectoryList = Index.GetValidDirectories(baseDir);
             
             FileIn.read_삼성_코스피_코스닥_전체종목();  // g.kospi_mixed.stock & g.kospi_mixed.weight
 
-            // var existingStocks = Index.GetExistingStocksInDirectory(validDirectoryList[0], g.kospi_mixed.stock);
-            //"KODEX 레버리지",
-            //"KODEX 코스닥150레버리지",
+            
+           
 
-            foreach ( var directory in validDirectoryList )
+            foreach (var directory in validDirectoryList)
             {
-                var IndexFileName = directory + "/" + "KODEX 레버리지.txt";
-                var indexTimesDiffPrice = IndexMinuteReader.GetValidMinutePriceDiffs(IndexFileName);
+                var IndexFileName = Path.Combine(directory, "KODEX 레버리지.txt");
+
+                //  1. Kospi index file readonly in
+                var indexTimesDiffPrices = IndexMinuteReader.GetValidMinutePriceDiffs(IndexFileName);
+
+                // 2. More than 45 files exist amoung 50 stocks
                 var availableStocks = Index.GetAvailableStocks(directory, g.kospi_mixed.stock);
                 if (availableStocks.Count < 45)
                     continue;
-            }
-           
 
-            SoundUtils.Sound("일반", "by 2032");
+                // 3. read in Api.x for all availableStocks
+                var stockDataList = new List<StockData>();
+                foreach (var stock in availableStocks)
+                {
+                    string file = Path.Combine(directory, $"{stock}.txt");
+                    if (!File.Exists(file)) continue;
+
+                    var sd = new StockData();  // assumes constructor sets sd.Stock = stock
+                    sd.Stock = stock;
+                    FileInStockData.LoadStockData(sd, file);  // fills sd.api.틱의시간, 틱의가격, etc.
+
+                    stockDataList.Add(sd);  // save into final list
+                }
+
+                for (int i = 1; i < indexTimesDiffPrice.Count; i++)
+                {
+                    string currentTime = indexTimesDiffPrice[i].Time;
+                    string prevTime = indexTimesDiffPrice[i - 1].Time;
+                    double deltaPrice = indexTimesDiffPrice[i].PriceDiff;
+
+                    int deltaSec = TimeDiffInSeconds(currentTime, prevTime);
+                    if (deltaSec < 50 || deltaSec > 70) continue;
+
+                    double weightedDiff = 0;
+                    double weightedSum = 0;
+                    double totalWeight = 0;
+
+                    foreach (var sd in stockDataList)
+                    {
+                        var api = sd.Api;
+
+                        // Find rows in sd.Api.틱의시간 matching prevTime and currentTime
+                        int i1 = Array.IndexOf(api.틱의시간, prevTime);
+                        int i2 = Array.IndexOf(api.틱의시간, currentTime);
+                        if (i1 < 0 || i2 < 0 || i2 <= i1) continue;
+
+                        double buy = api.틱의수급[i2, 8];   // Buy multiple
+                        double sell = api.틱의수급[i2, 9];  // Sell multiple
+
+                        double diff = buy - sell;
+                        double sum = buy + sell;
+
+                        if (!g.kospi_mixed.weight.TryGetValue(sd.Stock, out double weight)) continue;
+
+                        weightedDiff += diff * weight;
+                        weightedSum += sum * weight;
+                        totalWeight += weight;
+                    }
+
+                    if (totalWeight < 0.8) continue;  // discard this minute
+
+                    double finalDiff = weightedDiff / totalWeight;
+                    double finalSum = weightedSum / totalWeight;
+
+                    // ✅ Save (deltaPrice, finalDiff, finalSum)
+                    string result = $"{deltaPrice:F2}\t{finalDiff:F2}\t{finalSum:F2}";
+                    File.AppendAllText("C:\\병신\\temp.txt", result + Environment.NewLine);
+                }
+            }
+
+        
+
+
+        SoundUtils.Sound("일반", "by 2032");
         }
 
         private void StartNetworkMonitor()

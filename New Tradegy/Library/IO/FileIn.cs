@@ -76,16 +76,16 @@ namespace New_Tradegy.Library.IO
                 if (!TryParseLineToApi(t, line)) break;
             }
 
-            if (g.test && t.Api.nrow > g.Npts[1])
-            {
-                g.Npts[1] = t.Api.nrow;
-                g.TestMaximumRow = t.Api.nrow;
-            }
+            //if (g.test && t.Api.nrow > g.Npts[1])
+            //{
+            //    g.Npts[1] = t.Api.nrow;
+            //    g.TestMaximumRow = t.Api.nrow;
+            //}
 
-            if (t.Api.nrow == 0) return;
+            //if (t.Api.nrow == 0) return;
 
-            ApplyLastTickData(t);
-            PostProcessStock(t);
+            //ApplyLastTickData(t);
+            //PostProcessStock(t);
         }
 
         private static void EnsureStockFile(string file, bool isIndex)
