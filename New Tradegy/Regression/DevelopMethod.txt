@@ -21,6 +21,9 @@ Identify available stocks:
 Among the 50 stock list, build a list of stocks that exist in the current directory.
 If fewer than 35 stocks found → skip this date.
 
+
+
+
 Load stock data:
 Read 6-digit HHmmss data of existing stocks and index ETF file.
 
@@ -40,7 +43,7 @@ For each stock at time t_now (e.g., 090058):
 
 Check the same 6-digit time exists.
 
-Validate stock time interval (Δt < 90 seconds as well).
+Validate stock time interval (50 < Δt < 70 seconds as well).
 
 Read:
 

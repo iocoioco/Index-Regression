@@ -58,5 +58,25 @@ namespace New_Tradegy.Library
             return existingStocks;
         }
 
+
+        public static List<string> GetAvailableStocks(string directory, List<string> stockList)
+        {
+            var availableStocks = new List<string>();
+
+            foreach (var stock in stockList)
+            {
+                string filePath = Path.Combine(directory, stock + ".txt");
+                if (File.Exists(filePath))
+                    availableStocks.Add(stock);
+            }
+
+            // Skip if fewer than 35
+            if (availableStocks.Count < 35)
+                return new List<string>(); // or return null or throw, depending on your logic
+
+            return availableStocks;
+        }
+
+
     }
 }
