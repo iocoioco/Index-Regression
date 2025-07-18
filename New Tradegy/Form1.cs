@@ -74,8 +74,10 @@ namespace New_Tradegy // added for test on 20241020 0300
             
             FileIn.read_삼성_코스피_코스닥_전체종목();  // g.kospi_mixed.stock & g.kospi_mixed.weight
 
-            
-           
+
+
+            List<(float deltaPrice, float diff, float sum)> resultList =
+                   new List<(float deltaPrice, float diff, float sum)>();
 
             foreach (var directory in validDirectoryList)
             {
@@ -91,6 +93,7 @@ namespace New_Tradegy // added for test on 20241020 0300
 
                 // 3. read in Api.x for all availableStocks
                 var stockDataList = new List<StockData>();
+
                 foreach (var stock in availableStocks)
                 {
                     string file = Path.Combine(directory, $"{stock}.txt");
@@ -103,56 +106,61 @@ namespace New_Tradegy // added for test on 20241020 0300
                     stockDataList.Add(sd);  // save into final list
                 }
 
-                for (int i = 1; i < indexTimesDiffPrice.Count; i++)
+
+                // 4. data collection
+                foreach (var kvp in indexTimesDiffPrices)
                 {
-                    string currentTime = indexTimesDiffPrice[i].Time;
-                    string prevTime = indexTimesDiffPrice[i - 1].Time;
-                    double deltaPrice = indexTimesDiffPrice[i].PriceDiff;
+                    int targetTime = kvp.Key;
+                    float deltaPrice = kvp.Value;
 
-                    int deltaSec = TimeDiffInSeconds(currentTime, prevTime);
-                    if (deltaSec < 50 || deltaSec > 70) continue;
+                    float weightedBuySum = 0;
+                    float weightedSellSum = 0;
+                    float totalWeight = 0;
 
-                    double weightedDiff = 0;
-                    double weightedSum = 0;
-                    double totalWeight = 0;
-
-                    foreach (var sd in stockDataList)
+                    foreach (var data in stockDataList)
                     {
-                        var api = sd.Api;
+                        var stock = data.Stock;
+                        int[,] x = data.Api.x;
 
-                        // Find rows in sd.Api.틱의시간 matching prevTime and currentTime
-                        int i1 = Array.IndexOf(api.틱의시간, prevTime);
-                        int i2 = Array.IndexOf(api.틱의시간, currentTime);
-                        if (i1 < 0 || i2 < 0 || i2 <= i1) continue;
+                        int idx = g.kospi_mixed.stock.IndexOf(data.Stock);
+                        if (idx == -1) continue; // Stock not found in weight list — skip
 
-                        double buy = api.틱의수급[i2, 8];   // Buy multiple
-                        double sell = api.틱의수급[i2, 9];  // Sell multiple
+                        float weight = (float)g.kospi_mixed.weight[idx]; // Convert double to float if needed
 
-                        double diff = buy - sell;
-                        double sum = buy + sell;
+                        for (int i = 1; i < x.GetLength(0); i++)
+                        {
+                            int t = (int)x[i, 0];      // current time
+                            int tPrev = (int)x[i - 1, 0]; // previous time
 
-                        if (!g.kospi_mixed.weight.TryGetValue(sd.Stock, out double weight)) continue;
+                            if (t / 100 == targetTime)
+                            {
+                                int diffSec = Index.ElapsedTimeInSeconds(t, tPrev);
+                                if (diffSec < 50 || diffSec > 70) continue;
 
-                        weightedDiff += diff * weight;
-                        weightedSum += sum * weight;
-                        totalWeight += weight;
+                                float buy = x[i, 8];  // column 8
+                                float sell = x[i, 9]; // column 9
+
+                                weightedBuySum += buy * weight;
+                                weightedSellSum += sell * weight;
+                                totalWeight += weight;
+
+                                break; // process this stock only once per time
+                            }
+                        }
                     }
 
-                    if (totalWeight < 0.8) continue;  // discard this minute
+                    if (totalWeight < 0.8) continue;
 
-                    double finalDiff = weightedDiff / totalWeight;
-                    double finalSum = weightedSum / totalWeight;
-
-                    // ✅ Save (deltaPrice, finalDiff, finalSum)
-                    string result = $"{deltaPrice:F2}\t{finalDiff:F2}\t{finalSum:F2}";
-                    File.AppendAllText("C:\\병신\\temp.txt", result + Environment.NewLine);
+                    float a1 = weightedBuySum / totalWeight;
+                    float a2 = weightedSellSum / totalWeight;
+                    resultList.Add((deltaPrice, a1 - a2, a1 + a2));
                 }
             }
 
-        
 
 
-        SoundUtils.Sound("일반", "by 2032");
+
+            SoundUtils.Sound("일반", "by 2032");
         }
 
         private void StartNetworkMonitor()

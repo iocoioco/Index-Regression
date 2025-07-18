@@ -78,5 +78,21 @@ namespace New_Tradegy.Library
         }
 
 
+        public static int ElapsedTimeInSeconds(int t1, int t2)
+        {
+            int h1 = t1 / 10000;
+            int m1 = (t1 / 100) % 100;
+            int s1 = t1 % 100;
+
+            int h2 = t2 / 10000;
+            int m2 = (t2 / 100) % 100;
+            int s2 = t2 % 100;
+
+            var ts1 = new TimeSpan(h1, m1, s1);
+            var ts2 = new TimeSpan(h2, m2, s2);
+            return (int)(ts1 - ts2).TotalSeconds;
+        }
+
+
     }
 }
